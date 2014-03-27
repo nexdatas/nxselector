@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>Selector</class>
+ <widget class="QDialog" name="Selector">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>762</width>
+    <height>650</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>NeXus Sardana Recorder Selector</string>
+  </property>
+  <layout class="QGridLayout" name="gridLayout">
+   <item row="0" column="0">
+    <widget class="QTabWidget" name="Default">
+     <property name="currentIndex">
+      <number>1</number>
+     </property>
+     <widget class="QWidget" name="selectable">
+      <attribute name="title">
+       <string>Scan Components</string>
+      </attribute>
+     </widget>
+     <widget class="QWidget" name="mandatory">
+      <attribute name="title">
+       <string>Default Components</string>
+      </attribute>
+     </widget>
+     <widget class="QWidget" name="automatic">
+      <attribute name="title">
+       <string>Setting Components</string>
+      </attribute>
+     </widget>
+     <widget class="QWidget" name="preferences">
+      <attribute name="title">
+       <string>Preferences</string>
+      </attribute>
+     </widget>
+    </widget>
+   </item>
+   <item row="1" column="0">
+    <widget class="QDialogButtonBox" name="buttonBox">
+     <property name="standardButtons">
+      <set>QDialogButtonBox::Apply|QDialogButtonBox::Close|QDialogButtonBox::Reset</set>
+     </property>
+    </widget>
+   </item>
+  </layout>
+ </widget>
+ <resources/>
+ <connections>
+  <connection>
+   <sender>buttonBox</sender>
+   <signal>rejected()</signal>
+   <receiver>Selector</receiver>
+   <slot>close()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>380</x>
+     <y>625</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>380</x>
+     <y>324</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
+</ui>
