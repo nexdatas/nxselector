@@ -69,8 +69,8 @@ class Selector(QDialog):
             [[("MCAs", 1), ("SCAs", 4)]],
             [[("Misc", 5) ]]
             ])
-#        self.frames = Frames([[[("Controllers", 0)]],[[("Components", 1)]]])
-        self.frames =  Frames()
+        self.frames = Frames([[[("My Controllers", 0)]],[[("My Components", 1)]]])
+#        self.frames =  Frames()
 
         self.groups = {2:[("ct01", 0, None), ("ct02", 0, None)],5:[("appscan", 1, None)]}
 
@@ -86,15 +86,12 @@ class Selector(QDialog):
     def updateGroups(self):
         ucp = set()
         uds = set()
-        uel = set()
         for gr in self.groups.values():
             for elem in gr:
                 if elem[1] == 0:
                     uds.add(elem[0])
                 elif elem[1] == 1:
                     ucp.add(elem[0])
-                else:
-                    uel.add(elem[0])
         for ds, flag in self.dsgroup.items():
             if flag and ds not in uds:
                 if 0 not in self.groups:
