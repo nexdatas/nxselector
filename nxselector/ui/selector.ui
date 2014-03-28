@@ -14,10 +14,23 @@
    <string>NeXus Sardana Recorder Selector</string>
   </property>
   <layout class="QGridLayout" name="gridLayout">
+   <item row="1" column="0">
+    <widget class="QDialogButtonBox" name="buttonBox">
+     <property name="toolTip">
+      <string/>
+     </property>
+     <property name="standardButtons">
+      <set>QDialogButtonBox::Apply|QDialogButtonBox::Close|QDialogButtonBox::Reset</set>
+     </property>
+    </widget>
+   </item>
    <item row="0" column="0">
     <widget class="QTabWidget" name="Default">
+     <property name="toolTip">
+      <string/>
+     </property>
      <property name="currentIndex">
-      <number>1</number>
+      <number>0</number>
      </property>
      <widget class="QWidget" name="selectable">
       <attribute name="title">
@@ -31,7 +44,7 @@
      </widget>
      <widget class="QWidget" name="automatic">
       <attribute name="title">
-       <string>Setting Components</string>
+       <string>State Components</string>
       </attribute>
      </widget>
      <widget class="QWidget" name="preferences">
@@ -39,13 +52,6 @@
        <string>Preferences</string>
       </attribute>
      </widget>
-    </widget>
-   </item>
-   <item row="1" column="0">
-    <widget class="QDialogButtonBox" name="buttonBox">
-     <property name="standardButtons">
-      <set>QDialogButtonBox::Apply|QDialogButtonBox::Close|QDialogButtonBox::Reset</set>
-     </property>
     </widget>
    </item>
   </layout>

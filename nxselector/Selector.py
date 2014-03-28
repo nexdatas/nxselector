@@ -25,11 +25,10 @@ import os
 
 from PyQt4.QtCore import (
     SIGNAL, QSettings, Qt, QVariant)
-from PyQt4.QtGui import (
-    QDialog, 
-    QMessageBox, QIcon, 
-    QLabel, QFrame,
-    QUndoGroup, QUndoStack)
+from PyQt4.QtGui import (QHBoxLayout,QVBoxLayout,
+    QDialog, QGroupBox,QGridLayout,QSpacerItem,QSizePolicy,
+    QMessageBox, QIcon, QTableView,
+    QLabel, QFrame)
 
 from .ui.ui_selector import Ui_Selector
 
@@ -50,11 +49,14 @@ class Selector(QDialog):
 
         ## user interface
         self.ui = Ui_Selector()
-
+        
 
         settings = QSettings()
 
         self.createGUI()            
+
+        self.restoreGeometry(
+            settings.value("Selector/Geometry").toByteArray())
 
 #        status = self.createStatusBar()        
 #        status.showMessage("Ready", 5000)
@@ -65,4 +67,45 @@ class Selector(QDialog):
     # \brief It create dialogs for the main window application
     def createGUI(self):
         self.ui.setupUi(self)
+        layout = QHBoxLayout(self.ui.selectable)
+        
+        ## frames/columns/groups
+        frames =[[["Counters1", "Counters2"],["VCounters"]],[[ "MCAs","SCAs" ]],[[ "Misc" ]]]
+        
+        self.views =[]
+        for frame in frames:
 
+
+            mframe = QFrame(self.ui.selectable)
+            mframe.setFrameShape(QFrame.StyledPanel)
+            mframe.setFrameShadow(QFrame.Raised)
+            layout_columns = QHBoxLayout(mframe)
+
+            for column in frame: 
+                layout_groups = QVBoxLayout()
+
+                for group in column:
+                    mgroup = QGroupBox(mframe)
+                    mgroup.setTitle(group)
+                    layout_auto = QGridLayout(mgroup)
+                    mview = QTableView(mgroup)
+
+                    layout_auto.addWidget(mview,0,0,1,1)
+                    layout_groups.addWidget(mgroup)
+
+                    self.views.append(mview)
+
+                layout_columns.addLayout(layout_groups)
+
+            layout.addWidget(mframe)
+
+
+
+        
+        
+
+    def closeEvent(self, event):
+        settings = QSettings()
+        settings.setValue(
+            "Selector/Geometry",
+            QVariant(self.saveGeometry()))
