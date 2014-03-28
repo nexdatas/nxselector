@@ -66,11 +66,13 @@ class Selector(QDialog):
         ## frames/columns/groups
         self.frames =  Frames([
             [[("Counters1", 0), ("Counters2", 2)], [("VCounters", 3)]],
-            [[ ("MCAs", 1), ("SCAs", 4)]],
-            [[ ("Misc", 5) ]]
+            [[("MCAs", 1), ("SCAs", 4)]],
+            [[("Misc", 5) ]]
             ])
-#        self.frames = Frames([[[("Controlers", 0)]],[[("Components", 1)]]])
+#        self.frames = Frames([[[("Controllers", 0)]],[[("Components", 1)]]])
+        self.frames =  Frames()
 
+        self.groups = {2:[("ct01", 0, None), ("ct02", 0, None)],5:[("appscan", 1, None)]}
 
         self.createGUI()            
 
@@ -106,7 +108,7 @@ class Selector(QDialog):
             try:
                 if self.dp.state() != PyTango.DevState.RUNNING:
                     found = True
-            except (PyTango.DevFailed, PyTango.Except,  PyTango.DevError):
+            except (PyTango.DevFailed, PyTango.Except, PyTango.DevError):
                 time.sleep(0.01)
                 found = False
                 if cnt == 999:
@@ -156,9 +158,6 @@ class Selector(QDialog):
         return res
 
 
-    def createGroups(self, config = None):
-        return
-
     ##  creates GUI
     # \brief It create dialogs for the main window application
     def createGUI(self):
@@ -184,7 +183,7 @@ class Selector(QDialog):
                     layout_auto = QGridLayout(mgroup)
                     mview = QTableView(mgroup)
 
-                    layout_auto.addWidget(mview,0,0,1,1)
+                    layout_auto.addWidget(mview, 0, 0, 1, 1)
                     layout_groups.addWidget(mgroup)
 
                     self.views[group] = mview

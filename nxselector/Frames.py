@@ -36,24 +36,48 @@ class Frames(object):
     # \param settings frame settings
     def __init__(self, settings=None):
 
+        self.dslabel = "Controllers"
+        self.cplabel = "Components"
+
+        self.set(settings)
+   
+
+    def set(self, settings):    
         self.__dct = {}    
-        self.__settings = []
+        self.__settings = [
+            [[(self.dslabel, 0)]],[[(self.cplabel, 1)]]]
         try:
-            self.__settings = list(settings)
-            for frame in self.__settings:
-                for column in frame:
-                    for group in column:
-                        if group[1] in self.__dct.keys():
-                            raise Exception("Duplicated Frame ID")
-                        self.__dct[group[1]]=(group[0])
+            if settings:
+                self.__settings = list(settings)
+            self.__makedict()
+
+            ids = set(self.ids())
+            if len(ids) < 2:
+                self.__settings = [
+                    [[(self.dslabel, 0)]],[[(self.cplabel, 1)]]]
+                self.__makedict()
+                
+                
         except:
             self.__settings = [
-                [[("Controlers", 0)]],[[("Components", 1)]]]
-        
+                [[(self.dslabel, 0)]],[[(self.cplabel, 1)]]]
+            self.__makedict()
 
-            
+        ids = list(set(self.ids()))
+        self.dsid = ids[0]
+        self.cpid = ids[1]
+        logger.debug("DSid = %s, CPid = %s " % ( self.dsid, self.cpid))
         logger.debug(self.__dct)            
         logger.debug(self.ids())            
+
+    def __makedict(self):
+        for frame in self.__settings:
+            for column in frame:
+                for group in column:
+                    if group[1] in self.__dct.keys():
+                        raise Exception("Duplicated Frame ID")
+                    self.__dct[group[1]]=(group[0])
+        
 
     def __iter__(self):
         return iter(self.__settings)
