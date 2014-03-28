@@ -74,19 +74,50 @@ class Selector(QDialog):
 
         self.groups = {2:[("ct01", 0, None), ("ct02", 0, None)],5:[("appscan", 1, None)]}
 
+        self.updateGroups()
+        logger.debug("GROUPS: %s " % str(self.groups))
+
         self.createGUI()            
 
         settings = QSettings()
         self.restoreGeometry(
             settings.value("Selector/Geometry").toByteArray())
 
+    def updateGroups(self):
+        ucp = set()
+        uds = set()
+        uel = set()
+        for gr in self.groups.values():
+            for elem in gr:
+                if elem[1] == 0:
+                    uds.add(elem[0])
+                elif elem[1] == 1:
+                    ucp.add(elem[0])
+                else:
+                    uel.add(elem[0])
+        for ds, flag in self.dsgroup.items():
+            if flag and ds not in uds:
+                if 0 not in self.groups:
+                    self.groups[0] = []
+                self.groups[0].append((ds, 0, None))
+        for cp, flag in self.cpgroup.items():
+            if flag and cp not in ucp and cp not in self.mcplist and cp not in self.acplist:
+                if 1 not in self.groups:
+                    self.groups[1] = []
+                self.groups[1].append((cp, 1, None))
+
+                
+                    
+
+
     def fetchSettings(self):
         self.dsgroup = self.loadDict("DataSourceGroup") 
         self.dslabels = self.loadDict("DataSourceLabels") 
         self.cpgroup = self.loadDict("ComponentGroup") 
         self.acpgroup = self.loadDict("AutomaticComponentGroup") 
+        self.acplist = self.loadList("AutomaticComponents") 
         self.ddslist = self.loadList("DisableDataSources") 
-        self.mcpgroup = self.getList("MandatoryComponents") 
+        self.mcplist = self.getList("MandatoryComponents") 
 
         
 
