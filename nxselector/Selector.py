@@ -22,6 +22,8 @@
 """ main window application dialog """
 
 import os
+import PyTango
+import json
 
 from PyQt4.QtCore import (
     SIGNAL, QSettings, Qt, QVariant)
@@ -30,7 +32,10 @@ from PyQt4.QtGui import (QHBoxLayout,QVBoxLayout,
     QMessageBox, QIcon, QTableView,
     QLabel, QFrame)
 
+from .Frames import Frames
+
 from .ui.ui_selector import Ui_Selector
+
 
 import logging
 logger = logging.getLogger(__name__)
@@ -43,25 +48,116 @@ class Selector(QDialog):
     # \param parent parent widget
     def __init__(self, server=None, parent=None):
         super(Selector, self).__init__(parent)
-        logger.debug("PARAMETERS: %s %s %s %s", 
+        logger.debug("PARAMETERS: %s %s", 
                      server, parent)
+
+        self.server = server
+        ## device proxy
+        self.dp = None
+        ## tango database
+        self.__db = PyTango.Database()
+        
+        self.fetchSettings()
 
 
         ## user interface
         self.ui = Ui_Selector()
-        
 
-        settings = QSettings()
+        ## frames/columns/groups
+        self.frames =  Frames([
+            [[("Counters1", 0), ("Counters2", 2)], [("VCounters", 3)]],
+            [[ ("MCAs", 1), ("SCAs", 4)]],
+            [[ ("Misc", 5) ]]
+            ])
+#        self.frames = Frames([[[("Controlers", 0)]],[[("Components", 1)]]])
+
 
         self.createGUI()            
 
+        settings = QSettings()
         self.restoreGeometry(
             settings.value("Selector/Geometry").toByteArray())
 
-#        status = self.createStatusBar()        
-#        status.showMessage("Ready", 5000)
+    def fetchSettings(self):
+        self.dsgroup = self.loadDict("DataSourceGroup") 
+        self.dslabels = self.loadDict("DataSourceLabels") 
+        self.cpgroup = self.loadDict("ComponentGroup") 
+        self.acpgroup = self.loadDict("AutomaticComponentGroup") 
+        self.ddslist = self.loadList("DisableDataSources") 
+        self.mcpgroup = self.getList("MandatoryComponents") 
 
-#        self.setWindowTitle("NXS Component Designer")
+        
+
+    def setServer(self):
+        if self.server is None:
+            servers = self.__db.get_device_exported_for_class(
+                "NXSRecSettings").value_string
+            if len(servers):
+                self.server = servers[0]                
+
+        found = False
+        cnt = 0
+        self.dp = PyTango.DeviceProxy(self.server)
+
+
+        while not found and cnt < 1000:
+            if cnt > 1:
+                time.sleep(0.01)
+            try:
+                if self.dp.state() != PyTango.DevState.RUNNING:
+                    found = True
+            except (PyTango.DevFailed, PyTango.Except,  PyTango.DevError):
+                time.sleep(0.01)
+                found = False
+                if cnt == 999:
+                    raise
+            cnt += 1
+
+
+
+    def loadDict(self, name):    
+        if not self.dp:
+            self.setServer()
+        dsg = self.dp.read_attribute(name).value
+        res = {}
+        if dsg:
+            dc = json.loads(dsg)
+            if isinstance(dc, dict):
+                res = dc
+        logger.debug(" %s = %s" % (name, res) )
+        return res
+
+
+    def loadList(self, name, encoded = False):    
+        if not self.dp:
+            self.setServer()
+        dc = self.dp.read_attribute(name).value
+        logger.debug(dc)
+        res = []
+        if dc:
+            if encoded:
+                dc = json.loads(dc)
+            if isinstance(dc, (list, tuple)):
+                res = dc
+        logger.debug(" %s = %s" % (name, res) )
+        return res
+
+
+    def getList(self, name):    
+        if not self.dp:
+            self.setServer()
+        dc = self.dp.command_inout(name)
+        logger.debug(dc)
+        res = []
+        if dc:
+            if isinstance(dc, (list, tuple)):
+                res = dc
+        logger.debug(" %s = %s" % (name, res) )
+        return res
+
+
+    def createGroups(self, config = None):
+        return
 
     ##  creates GUI
     # \brief It create dialogs for the main window application
@@ -69,13 +165,11 @@ class Selector(QDialog):
         self.ui.setupUi(self)
         layout = QHBoxLayout(self.ui.selectable)
         
-        ## frames/columns/groups
-        frames =[[["Counters1", "Counters2"],["VCounters"]],[[ "MCAs","SCAs" ]],[[ "Misc" ]]]
-        
-        self.views =[]
-        for frame in frames:
+
+        self.views = {} 
 
 
+        for frame in self.frames:
             mframe = QFrame(self.ui.selectable)
             mframe.setFrameShape(QFrame.StyledPanel)
             mframe.setFrameShadow(QFrame.Raised)
@@ -86,23 +180,19 @@ class Selector(QDialog):
 
                 for group in column:
                     mgroup = QGroupBox(mframe)
-                    mgroup.setTitle(group)
+                    mgroup.setTitle(group[0])
                     layout_auto = QGridLayout(mgroup)
                     mview = QTableView(mgroup)
 
                     layout_auto.addWidget(mview,0,0,1,1)
                     layout_groups.addWidget(mgroup)
 
-                    self.views.append(mview)
+                    self.views[group] = mview
 
                 layout_columns.addLayout(layout_groups)
 
             layout.addWidget(mframe)
 
-
-
-        
-        
 
     def closeEvent(self, event):
         settings = QSettings()
