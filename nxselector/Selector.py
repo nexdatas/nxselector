@@ -26,14 +26,15 @@ import PyTango
 import json
 
 from PyQt4.QtCore import (
-    SIGNAL, QSettings, Qt, QVariant)
+    SIGNAL, QSettings, Qt, QVariant, SIGNAL)
 from PyQt4.QtGui import (QHBoxLayout,QVBoxLayout,
     QDialog, QGroupBox,QGridLayout,QSpacerItem,QSizePolicy,
     QMessageBox, QIcon, QTableView,
     QLabel, QFrame)
 
 from .Frames import Frames
-
+from .Element import Element, DSElement, CPElement, CP, DS
+from .ElementModel import ElementModel, ElementDelegate
 from .ui.ui_selector import Ui_Selector
 
 
@@ -72,13 +73,20 @@ class Selector(QDialog):
         self.frames = Frames([[[("My Controllers", 0)]],[[("My Components", 1)]]])
 #        self.frames =  Frames()
 
-        self.groups = {2:[("ct01", 0, None), ("ct02", 0, None)],5:[("appscan", 1, None)]}
+        self.groups = {2:[DSElement("ct01", self.dp), DSElement("ct02",self.dp)],
+                       5:[CPElement("appscan", self.dp)]}
 
-        self.updateGroups()
-        logger.debug("GROUPS: %s " % str(self.groups))
+        self.availableGroups = set()
+
+        self.views = {} 
+        self.setServer()
+        
+        logger.debug("GROUPS: %s " % self.groups)
 
         self.createGUI()            
-
+        self.updateGroups()
+        self.setModels()
+        
         settings = QSettings()
         self.restoreGeometry(
             settings.value("Selector/Geometry").toByteArray())
@@ -86,22 +94,26 @@ class Selector(QDialog):
     def updateGroups(self):
         ucp = set()
         uds = set()
-        for gr in self.groups.values():
-            for elem in gr:
-                if elem[1] == 0:
-                    uds.add(elem[0])
-                elif elem[1] == 1:
-                    ucp.add(elem[0])
+        for k, gr in self.groups.items():
+            if k in self.availableGroups:
+                for elem in gr:
+                    print "ELEM", elem.name
+                    if elem.eltype == DS:
+                        uds.add(elem.name)
+                        print "ELEM2 DS", elem.name
+                    elif elem.eltype == CP: 
+                        print "ELEM2 CP", elem.name
+                        ucp.add(elem.name)
         for ds, flag in self.dsgroup.items():
-            if flag and ds not in uds:
-                if 0 not in self.groups:
-                    self.groups[0] = []
-                self.groups[0].append((ds, 0, None))
+            if ds not in uds:
+                if DS not in self.groups:
+                    self.groups[DS] = []
+                self.groups[DS].append(DSElement(ds, self.dp))
         for cp, flag in self.cpgroup.items():
-            if flag and cp not in ucp and cp not in self.mcplist and cp not in self.acplist:
-                if 1 not in self.groups:
-                    self.groups[1] = []
-                self.groups[1].append((cp, 1, None))
+            if cp not in ucp and cp not in self.mcplist and cp not in self.acplist:
+                if CP not in self.groups:
+                    self.groups[CP] = []
+                self.groups[CP].append(CPElement(cp, self.dp))
 
                 
                     
@@ -214,15 +226,32 @@ class Selector(QDialog):
                     layout_auto.addWidget(mview, 0, 0, 1, 1)
                     layout_groups.addWidget(mgroup)
 
-                    self.views[group] = mview
+                    self.availableGroups.add(group[1])
+                    self.views[group[1]] = mview
+                    
 
                 layout_columns.addLayout(layout_groups)
 
             layout.addWidget(mframe)
 
+    def setModels(self):
+        for k, vw in self.views.items():
+            if k in self.groups.keys():
+                md = ElementModel(self.groups[k])
+            else:
+                md = ElementModel([])
+                
+            self.views[k].setModel(md)
+            md.connect(md, SIGNAL("componentChecked"), self.updateViews)
+#            self.views[k].setItemDelegate(ElementDelegate(self))
+            
+    def updateViews(self):
+        for vw in self.views.values():
+            vw.reset()
 
     def closeEvent(self, event):
         settings = QSettings()
         settings.setValue(
             "Selector/Geometry",
             QVariant(self.saveGeometry()))
+
