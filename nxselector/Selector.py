@@ -70,7 +70,7 @@ class Selector(QDialog):
             [[("MCAs", 1), ("SCAs", 4)]],
             [[("Misc", 5) ]]
             ])
-        self.frames = Frames([[[("My Controllers", 0)]],[[("My Components", 1)]]])
+#        self.frames = Frames([[[("My Controllers", 0)]],[[("My Components", 1)]]])
 #        self.frames =  Frames()
 
         self.groups = {2:[DSElement("ct01", self.dp), DSElement("ct02",self.dp)],
