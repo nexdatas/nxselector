@@ -49,7 +49,9 @@ class ElementModel(QAbstractTableModel):
     # \param parent parent widget
     def __init__(self, group = None):
         super(ElementModel, self).__init__()
+        self.enable = True
         self.group = []
+
         if group:
             self.group = group
         pass
@@ -90,17 +92,17 @@ class ElementModel(QAbstractTableModel):
         if not index.isValid():
             return Qt.ItemIsEnabled
 
-        enable = True
+        enable = self.enable
         device = self.group[index.row()]
         flag = QAbstractTableModel.flags(self, index)
         if device.eltype == DS:
-            dds = device.dp.DisableDataSources
+            dds = device.state.ddslist
             if device.name in dds:
                 enable = False
                 flag &= ~Qt.ItemIsEnabled
         elif device.eltype == CP:
-            mcp = device.dp.MandatoryComponents()
-            acp = device.dp.AutomaticComponents
+            mcp = device.state.mcplist
+            acp = device.state.acplist
             if device.name in mcp or device.name in acp:
                 enable = False
                 flag &= ~Qt.ItemIsEnabled

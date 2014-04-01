@@ -47,12 +47,12 @@ class Element(object):
     ## constructor
     # \param name element name
     # \param eltype element type, i.e. DS or CP
-    # \param proxy recorder settings proxy
+    # \param state recorder settings state
     # \param params parameters
-    def __init__(self, name, eltype, proxy, params = None):
+    def __init__(self, name, eltype, state, params = None):
         self.name = name
         self.eltype = eltype
-        self.dp = proxy
+        self.state = state
         self.params = params 
 
         
@@ -74,28 +74,22 @@ class DSElement(Element):
     
     ## constructor
     # \param parent parent widget
-    # \param proxy recorder settings proxy
+    # \param state recorder settings state
     # \param params parameters
-    def __init__(self, name, proxy, params=None):
-        super(DSElement, self).__init__(name, DS, proxy, params)
+    def __init__(self, name, state, params=None):
+        super(DSElement, self).__init__(name, DS, state, params)
 
 
     def _getChecked(self):
-        dsg = self.dp.read_attribute("DataSourceGroup").value
-        dc = json.loads(dsg)
-        if isinstance(dc, dict):
-            res = dc
-            if self.name in res.keys():
-                return res[self.name]
+        res = self.state.dsgroup
+        if self.name in res.keys():
+            return res[self.name]
         return False
 
     def _setChecked(self, status):
-        dsg = self.dp.read_attribute("DataSourceGroup").value
-        dc = json.loads(dsg)
-        if isinstance(dc, dict):
-            dc[self.name] = status
-            att = json.dumps(dc)
-            dsg = self.dp.DataSourceGroup = att
+        dc = self.state.dsgroup
+        dc[self.name] = status
+#        self.state.dsgroup = dc
 
 
 ## datasource element class
@@ -103,24 +97,26 @@ class CPElement(Element):
     
     ## constructor
     # \param parent parent widget
-    # \param proxy recorder settings proxy
+    # \param state recorder settings state
     # \param params parameters
-    def __init__(self, name, proxy, params=None):
-        super(CPElement, self).__init__(name, CP, proxy, params)
+    def __init__(self, name, state, params=None, group=None):
+        super(CPElement, self).__init__(name, CP, state, params)
+        self.group = group
 
     def _getChecked(self):
-        cpg = self.dp.read_attribute("ComponentGroup").value
-        dc = json.loads(cpg)
-        if isinstance(dc, dict):
-            res = dc
-            if self.name in res.keys():
-                return res[self.name]
+        if not self.group:
+            res = self.state.cpgroup
+        else:
+            res = self.group
+        if self.name in res.keys():
+            return res[self.name]
         return False
 
     def _setChecked(self, status):
-        dsg = self.dp.read_attribute("ComponentGroup").value
-        dc = json.loads(dsg)
-        if isinstance(dc, dict):
-            dc[self.name] = status
-            att = json.dumps(dc)
-            dsg = self.dp.ComponentGroup = att
+        if not self.group:
+            ds = self.state.cpgroup
+        else:
+            ds = self.group
+        dc[self.name] = status
+#        self.state.cpgroup = dc
+

@@ -35,6 +35,7 @@ from PyQt4.QtGui import (QHBoxLayout,QVBoxLayout,
 from .Frames import Frames
 from .Element import Element, DSElement, CPElement, CP, DS
 from .ElementModel import ElementModel, ElementDelegate
+from .ServerState import ServerState
 from .ui.ui_selector import Ui_Selector
 
 
@@ -52,13 +53,9 @@ class Selector(QDialog):
         logger.debug("PARAMETERS: %s %s", 
                      server, parent)
 
-        self.server = server
-        ## device proxy
-        self.dp = None
-        ## tango database
-        self.__db = PyTango.Database()
         
-        self.fetchSettings()
+        self.state = ServerState(server)
+        self.state.fetchSettings()
 
 
         ## user interface
@@ -70,16 +67,17 @@ class Selector(QDialog):
             [[("MCAs", 1), ("SCAs", 4)]],
             [[("Misc", 5) ]]
             ])
-#        self.frames = Frames([[[("My Controllers", 0)]],[[("My Components", 1)]]])
+        self.frames = Frames([[[("My Controllers", 0)]],[[("My Components", 1)]]])
 #        self.frames =  Frames()
 
-        self.groups = {2:[DSElement("ct01", self.dp), DSElement("ct02",self.dp)],
-                       5:[CPElement("appscan", self.dp)]}
+        self.groups = {2:[DSElement("ct01", self.state), DSElement("ct02",self.state)],
+                       5:[CPElement("appscan", self.state)]}
+
+        self.agroup = []
 
         self.availableGroups = set()
 
         self.views = {} 
-        self.setServer()
         
         logger.debug("GROUPS: %s " % self.groups)
 
@@ -104,109 +102,41 @@ class Selector(QDialog):
                     elif elem.eltype == CP: 
                         print "ELEM2 CP", elem.name
                         ucp.add(elem.name)
-        for ds, flag in self.dsgroup.items():
+        for ds, flag in self.state.dsgroup.items():
             if ds not in uds:
                 if DS not in self.groups:
                     self.groups[DS] = []
-                self.groups[DS].append(DSElement(ds, self.dp))
-        for cp, flag in self.cpgroup.items():
-            if cp not in ucp and cp not in self.mcplist and cp not in self.acplist:
+                self.groups[DS].append(DSElement(ds, self.state))
+        for cp, flag in self.state.cpgroup.items():
+            if cp not in ucp and cp not in self.state.mcplist and cp not in self.state.acplist:
                 if CP not in self.groups:
                     self.groups[CP] = []
-                self.groups[CP].append(CPElement(cp, self.dp))
+                self.groups[CP].append(CPElement(cp, self.state))
+
+        self.agroup =[]
+        for cp, flag in self.state.acpgroup.items():
+                self.agroup.append(CPElement(cp, self.state, group = self.state.acpgroup))
 
                 
                     
 
 
-    def fetchSettings(self):
-        self.dsgroup = self.loadDict("DataSourceGroup") 
-        self.dslabels = self.loadDict("DataSourceLabels") 
-        self.cpgroup = self.loadDict("ComponentGroup") 
-        self.acpgroup = self.loadDict("AutomaticComponentGroup") 
-        self.acplist = self.loadList("AutomaticComponents") 
-        self.ddslist = self.loadList("DisableDataSources") 
-        self.mcplist = self.getList("MandatoryComponents") 
 
         
 
-    def setServer(self):
-        if self.server is None:
-            servers = self.__db.get_device_exported_for_class(
-                "NXSRecSettings").value_string
-            if len(servers):
-                self.server = servers[0]                
-
-        found = False
-        cnt = 0
-        self.dp = PyTango.DeviceProxy(self.server)
-
-
-        while not found and cnt < 1000:
-            if cnt > 1:
-                time.sleep(0.01)
-            try:
-                if self.dp.state() != PyTango.DevState.RUNNING:
-                    found = True
-            except (PyTango.DevFailed, PyTango.Except, PyTango.DevError):
-                time.sleep(0.01)
-                found = False
-                if cnt == 999:
-                    raise
-            cnt += 1
-
-
-
-    def loadDict(self, name):    
-        if not self.dp:
-            self.setServer()
-        dsg = self.dp.read_attribute(name).value
-        res = {}
-        if dsg:
-            dc = json.loads(dsg)
-            if isinstance(dc, dict):
-                res = dc
-        logger.debug(" %s = %s" % (name, res) )
-        return res
-
-
-    def loadList(self, name, encoded = False):    
-        if not self.dp:
-            self.setServer()
-        dc = self.dp.read_attribute(name).value
-        logger.debug(dc)
-        res = []
-        if dc:
-            if encoded:
-                dc = json.loads(dc)
-            if isinstance(dc, (list, tuple)):
-                res = dc
-        logger.debug(" %s = %s" % (name, res) )
-        return res
-
-
-    def getList(self, name):    
-        if not self.dp:
-            self.setServer()
-        dc = self.dp.command_inout(name)
-        logger.debug(dc)
-        res = []
-        if dc:
-            if isinstance(dc, (list, tuple)):
-                res = dc
-        logger.debug(" %s = %s" % (name, res) )
-        return res
 
 
     ##  creates GUI
     # \brief It create dialogs for the main window application
     def createGUI(self):
         self.ui.setupUi(self)
+        self.createSelectableGUI()
+        self.createAutomaticGUI()
+
+    def createSelectableGUI(self):
         layout = QHBoxLayout(self.ui.selectable)
-        
 
         self.views = {} 
-
 
         for frame in self.frames:
             mframe = QFrame(self.ui.selectable)
@@ -234,6 +164,33 @@ class Selector(QDialog):
 
             layout.addWidget(mframe)
 
+
+    def createAutomaticGUI(self):
+        layout = QHBoxLayout(self.ui.automatic)
+
+        self.views = {} 
+
+        mframe = QFrame(self.ui.automatic)
+        mframe.setFrameShape(QFrame.StyledPanel)
+        mframe.setFrameShadow(QFrame.Raised)
+        layout_groups = QHBoxLayout(mframe)
+
+        mgroup = QGroupBox(mframe)
+        mgroup.setTitle("Mandatory")
+        layout_auto = QGridLayout(mgroup)
+        mview = QTableView(mgroup)
+
+        layout_auto.addWidget(mview, 0, 0, 1, 1)
+        layout_groups.addWidget(mgroup)
+            
+        self.aview = mview
+                    
+
+
+        layout.addWidget(mframe)
+
+
+            
     def setModels(self):
         for k, vw in self.views.items():
             if k in self.groups.keys():
@@ -244,8 +201,13 @@ class Selector(QDialog):
             self.views[k].setModel(md)
             md.connect(md, SIGNAL("componentChecked"), self.updateViews)
 #            self.views[k].setItemDelegate(ElementDelegate(self))
+        md = ElementModel(self.agroup)
+        md.enable = False
+        self.aview.setModel(md)    
+        
             
     def updateViews(self):
+        logger.debug("update views")
         for vw in self.views.values():
             vw.reset()
 
