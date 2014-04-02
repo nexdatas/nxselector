@@ -11,7 +11,7 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>NeXus Sardana Recorder Selector</string>
+   <string>NeXus Component Selector</string>
   </property>
   <layout class="QGridLayout" name="gridLayout">
    <item row="1" column="0">

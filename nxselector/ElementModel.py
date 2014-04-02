@@ -40,7 +40,7 @@ import logging
 logger = logging.getLogger(__name__)
 
 
-NAME, CHECKED = range(2)
+NAME = range(1)
 
 ## main window class
 class ElementModel(QAbstractTableModel):
@@ -61,9 +61,11 @@ class ElementModel(QAbstractTableModel):
         
 
     def columnCount(self, index=QModelIndex()):
-        return 2
+        return 1
 
-    
+    def index(self, row, column, parent=QModelIndex()):
+        return self.createIndex(row, column)
+
     def data(self, index, role=Qt.DisplayRole):
         if not index.isValid() or \
                 not (0 <= index.row() < len(self.group)):
@@ -71,21 +73,22 @@ class ElementModel(QAbstractTableModel):
         device = self.group[index.row()]
         column = index.column()
         if role == Qt.DisplayRole:
-            if column == NAME:
-                return QVariant(device.name)
-            elif column == CHECKED:
-                if not (self.flags(index) & Qt.ItemIsEnabled):
-                    return QVariant(True)
-                return QVariant(device.checked)
+            return QVariant(device.name)
+        if role == Qt.CheckStateRole: 
+            if not (self.flags(index) & Qt.ItemIsEnabled) or device.checked:
+                return Qt.Checked
+            else:
+                return Qt.Unchecked
+
+
         return QVariant()
 
-    def headerData(self, section, orientation, role=Qt.DisplayRole):
-        if role == Qt.DisplayRole:
-            if column == NAME:
-                return QVariant("Element")
-            elif column == CHECKED:
-                return QVariant("Checked")
-        return QVariant(int(section + 1))
+#    def headerData(self, section, orientation, role=Qt.DisplayRole):
+#        if role != Qt.DisplayRole:
+#            return QVariant()
+#        if section == NAME:
+#            return QVariant("Element")
+#        return QVariant(int(section + 1))
 
 
     def flags(self, index):
@@ -106,19 +109,18 @@ class ElementModel(QAbstractTableModel):
             if device.name in mcp or device.name in acp:
                 enable = False
                 flag &= ~Qt.ItemIsEnabled
-        if index.column() == CHECKED:
-            return Qt.ItemFlags( flag | 
-                                 Qt.ItemIsEditable | (Qt.ItemIsEnabled * enable))
-        else:
-            return Qt.ItemFlags(flag | (Qt.ItemIsEnabled * enable))
-
+        return Qt.ItemFlags( flag | 
+                             (Qt.ItemIsEnabled * enable) | 
+                             Qt.ItemIsUserCheckable 
+#                             | Qt.ItemIsEditable
+                             )
 
 
     def setData(self, index, value, role=Qt.EditRole):
         if index.isValid() and 0 <= index.row() < len(self.group):
             device = self.group[index.row()]
             column = index.column()
-            if column == CHECKED:
+            if role == Qt.CheckStateRole: 
                 device.checked = value.toBool()
                 self.emit(SIGNAL("dataChanged(QModelIndex, QModelIndex)"), 
                           index, index)

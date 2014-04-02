@@ -114,9 +114,9 @@ class CPElement(Element):
 
     def _setChecked(self, status):
         if not self.group:
-            ds = self.state.cpgroup
+            dc = self.state.cpgroup
         else:
-            ds = self.group
+            dc = self.group
         dc[self.name] = status
 #        self.state.cpgroup = dc
 

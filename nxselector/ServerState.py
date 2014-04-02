@@ -52,6 +52,14 @@ class ServerState(object):
         self.mcplist = self.getList("MandatoryComponents") 
         self.description = self.loadList("Description", True) 
 
+    def storeSettings(self):
+        self.storeDict("DataSourceGroup", self.dsgroup) 
+        self.storeDict("ComponentGroup", self.cpgroup) 
+
+    def updateMntGrp(self):
+        self.storeSettings()
+        self.__dp.UpdateMntGrp()
+
     def setServer(self):
         if self.server is None:
             servers = self.__db.get_device_exported_for_class(
@@ -93,6 +101,15 @@ class ServerState(object):
         return res
 
 
+    def storeDict(self, name, value):    
+        if not self.__dp:
+            self.setServer()
+
+        jvalue = json.dumps(value)    
+        self.__dp.write_attribute(name, jvalue)
+        logger.debug(" %s = %s" % (name, jvalue) )
+
+
     def loadList(self, name, encoded = False):    
         if not self.__dp:
             self.setServer()
@@ -127,9 +144,10 @@ class ServerState(object):
 
         for cpg in res:
             for cp, dss in cpg.items():
-                if cp in self.cplist and isinstance(dss, dict):
-                    for ds in dss.keys():
-                        dds.add(ds)
+                if isinstance(dss, dict):
+                    if cp in self.cplist or cp in self.mcplist or cp in self.acplist:
+                        for ds in dss.keys():
+                            dds.add(ds)
         return list(dds)
 
 

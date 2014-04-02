@@ -32,6 +32,7 @@ from nxselector.Selector import Selector
 #from nxselector.qrc import qrc_resources
 from nxselector import __version__
 
+logger = logging.getLogger(__name__)
 
 ## the main function
 def main():
@@ -89,8 +90,8 @@ def main():
     app.setOrganizationDomain("desy.de")
     app.setApplicationName("NXS Component Designer")
     form = Selector(options.server)
-    form.show()
 
+    form.show()
     sys.exit(app.exec_())
 
 

@@ -29,8 +29,8 @@ from PyQt4.QtCore import (
     SIGNAL, QSettings, Qt, QVariant, SIGNAL)
 from PyQt4.QtGui import (QHBoxLayout,QVBoxLayout,
     QDialog, QGroupBox,QGridLayout,QSpacerItem,QSizePolicy,
-    QMessageBox, QIcon, QTableView,
-    QLabel, QFrame)
+    QMessageBox, QIcon, QTableView, QDialogButtonBox,
+    QLabel, QFrame, QHeaderView)
 
 from .Frames import Frames
 from .Element import Element, DSElement, CPElement, CP, DS
@@ -38,10 +38,12 @@ from .ElementModel import ElementModel, ElementDelegate
 from .ServerState import ServerState
 from .ui.ui_selector import Ui_Selector
 
+from .Views import TableView, CheckerView
 
 import logging
 logger = logging.getLogger(__name__)
 
+    
 
 ## main window class
 class Selector(QDialog):
@@ -67,13 +69,19 @@ class Selector(QDialog):
             [[("MCAs", 1), ("SCAs", 4)]],
             [[("Misc", 5) ]]
             ])
-        self.frames = Frames([[[("My Controllers", 0)]],[[("My Components", 1)]]])
+
+#        self.frames = Frames([[[("My Controllers", 0)]],[[("My Components", 1)]]])
 #        self.frames =  Frames()
 
         self.groups = {2:[DSElement("ct01", self.state), DSElement("ct02",self.state)],
                        5:[CPElement("appscan", self.state)]}
 
+        self.userView = TableView
+        self.userView = CheckerView
+
         self.agroup = []
+
+        self.mgroup = []
 
         self.availableGroups = set()
 
@@ -95,12 +103,9 @@ class Selector(QDialog):
         for k, gr in self.groups.items():
             if k in self.availableGroups:
                 for elem in gr:
-                    print "ELEM", elem.name
                     if elem.eltype == DS:
                         uds.add(elem.name)
-                        print "ELEM2 DS", elem.name
                     elif elem.eltype == CP: 
-                        print "ELEM2 CP", elem.name
                         ucp.add(elem.name)
         for ds, flag in self.state.dsgroup.items():
             if ds not in uds:
@@ -116,6 +121,13 @@ class Selector(QDialog):
         self.agroup =[]
         for cp, flag in self.state.acpgroup.items():
                 self.agroup.append(CPElement(cp, self.state, group = self.state.acpgroup))
+                
+        self.mgroup =[]
+        mcpgroup = {}
+        for cp in self.state.mcplist:
+            mcpgroup[cp] = True
+        for cp, flag in mcpgroup.items():
+                self.mgroup.append(CPElement(cp, self.state, group = mcpgroup))
 
                 
                     
@@ -132,6 +144,13 @@ class Selector(QDialog):
         self.ui.setupUi(self)
         self.createSelectableGUI()
         self.createAutomaticGUI()
+        self.createMandatoryGUI()
+
+        self.connect(self.ui.buttonBox.button(QDialogButtonBox.Apply), 
+                     SIGNAL("clicked()"), self.apply)
+        self.connect(self.ui.buttonBox.button(QDialogButtonBox.Reset), 
+                     SIGNAL("clicked()"), self.reset)
+
 
     def createSelectableGUI(self):
         layout = QHBoxLayout(self.ui.selectable)
@@ -151,14 +170,13 @@ class Selector(QDialog):
                     mgroup = QGroupBox(mframe)
                     mgroup.setTitle(group[0])
                     layout_auto = QGridLayout(mgroup)
-                    mview = QTableView(mgroup)
+                    mview = self.userView(mgroup)
 
                     layout_auto.addWidget(mview, 0, 0, 1, 1)
                     layout_groups.addWidget(mgroup)
 
                     self.availableGroups.add(group[1])
                     self.views[group[1]] = mview
-                    
 
                 layout_columns.addLayout(layout_groups)
 
@@ -168,7 +186,6 @@ class Selector(QDialog):
     def createAutomaticGUI(self):
         layout = QHBoxLayout(self.ui.automatic)
 
-        self.views = {} 
 
         mframe = QFrame(self.ui.automatic)
         mframe.setFrameShape(QFrame.StyledPanel)
@@ -176,17 +193,35 @@ class Selector(QDialog):
         layout_groups = QHBoxLayout(mframe)
 
         mgroup = QGroupBox(mframe)
-        mgroup.setTitle("Mandatory")
+        mgroup.setTitle("Automatic")
         layout_auto = QGridLayout(mgroup)
-        mview = QTableView(mgroup)
+        mview = self.userView(mgroup)
 
         layout_auto.addWidget(mview, 0, 0, 1, 1)
         layout_groups.addWidget(mgroup)
             
         self.aview = mview
-                    
+        layout.addWidget(mframe)
 
 
+    def createMandatoryGUI(self):
+        layout = QHBoxLayout(self.ui.mandatory)
+
+
+        mframe = QFrame(self.ui.mandatory)
+        mframe.setFrameShape(QFrame.StyledPanel)
+        mframe.setFrameShadow(QFrame.Raised)
+        layout_groups = QHBoxLayout(mframe)
+
+        mgroup = QGroupBox(mframe)
+        mgroup.setTitle("Mandatory")
+        layout_auto = QGridLayout(mgroup)
+        mview = self.userView(mgroup)
+
+        layout_auto.addWidget(mview, 0, 0, 1, 1)
+        layout_groups.addWidget(mgroup)
+            
+        self.mview = mview
         layout.addWidget(mframe)
 
 
@@ -201,19 +236,35 @@ class Selector(QDialog):
             self.views[k].setModel(md)
             md.connect(md, SIGNAL("componentChecked"), self.updateViews)
 #            self.views[k].setItemDelegate(ElementDelegate(self))
+#            self.views[k].resizeColumnsToContents()
         md = ElementModel(self.agroup)
         md.enable = False
         self.aview.setModel(md)    
+
+        md = ElementModel(self.mgroup)
+        md.enable = False
+        self.mview.setModel(md)    
         
             
     def updateViews(self):
         logger.debug("update views")
         for vw in self.views.values():
             vw.reset()
+#            vw.resizeColumnsToContents()
 
-    def closeEvent(self, event):
+    def __saveSettings(self):
         settings = QSettings()
         settings.setValue(
             "Selector/Geometry",
             QVariant(self.saveGeometry()))
+        
+            
+    def closeEvent(self, event):
+        self.__saveSettings()
 
+    def reset(self):
+        self.state.fetchSettings()
+        self.updateViews()
+
+    def apply(self):
+        self.state.updateMntGrp()

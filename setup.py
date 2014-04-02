@@ -40,7 +40,7 @@ def read(fname):
 
 UIDIR = os.path.join(TOOL, "ui")
 QRCDIR = os.path.join(TOOL, "qrc")
-SCRIPTS = ['nxsscan']
+SCRIPTS = ['nxscomp_selector']
 
 ## ui and qrc builder for python
 class toolBuild(build):
