@@ -109,11 +109,15 @@ class ElementModel(QAbstractTableModel):
             if device.name in mcp or device.name in acp:
                 enable = False
                 flag &= ~Qt.ItemIsEnabled
-        return Qt.ItemFlags( flag | 
-                             (Qt.ItemIsEnabled * enable) | 
-                             Qt.ItemIsUserCheckable 
-#                             | Qt.ItemIsEditable
-                             )
+        if enable:        
+            return Qt.ItemFlags( flag | 
+                                 Qt.ItemIsEnabled  | 
+                                 Qt.ItemIsUserCheckable 
+                                 )
+        else:
+            return Qt.ItemFlags( flag | 
+                                 Qt.ItemIsUserCheckable 
+                                 )
 
 
     def setData(self, index, value, role=Qt.EditRole):
