@@ -76,7 +76,7 @@ class Selector(QDialog):
 
         self.mframes.append(Frames([[[("My Controllers", 0)]],[[("My Components", 1)]]]))
         self.mframes.append(Frames())
-        self.cframe = 0
+        self.cframe = 1
         self.frames = self.mframes[self.cframe]
 
         self.mgroups = {2:[("ct01", DS), ("ct02",DS)],
@@ -84,7 +84,7 @@ class Selector(QDialog):
 
         self.groups = {}
         self.userView = TableView
-        self.userView = CheckerView
+#        self.userView = CheckerView
 
         self.agroup = []
 
@@ -170,12 +170,11 @@ class Selector(QDialog):
             while child:
                 if isinstance(child, QtGui.QWidgetItem):
                     child.widget().close()
-
                 self.layout.removeItem(child)
                 child = self.layout.takeAt(0)
         else:
             self.layout = QHBoxLayout(self.ui.selectable)
-
+            
         self.views = {} 
 
         for frame in self.frames:
@@ -202,6 +201,7 @@ class Selector(QDialog):
                 layout_columns.addLayout(layout_groups)
 
             self.layout.addWidget(mframe)
+        self.ui.selectable.updateGeometry()
 
 
     def createAutomaticGUI(self):
@@ -284,8 +284,8 @@ class Selector(QDialog):
         self.__saveSettings()
 
     def reset(self):
-        print "R1", self.cframe
-        self.cframe = (self.cframe + 1) % 3
+#        print "R1", self.cframe
+#        self.cframe = (self.cframe + 1) % 3
         print "R2", self.cframe
         self.frames = self.mframes[self.cframe]
         self.state.fetchSettings()
