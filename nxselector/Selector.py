@@ -40,7 +40,7 @@ from .ElementModel import ElementModel, ElementDelegate
 from .ServerState import ServerState
 from .ui.ui_selector import Ui_Selector
 
-from .Views import TableView, CheckerView
+from .Views import TableView, CheckerView, RadioView
 
 import logging
 logger = logging.getLogger(__name__)
@@ -84,6 +84,7 @@ class Selector(QDialog):
 
         self.groups = {}
         self.userView = TableView
+        self.userView = RadioView
         self.userView = CheckerView
 
         self.agroup = []
@@ -165,6 +166,7 @@ class Selector(QDialog):
 
 
     def createSelectableGUI(self):
+        
         self.ui.selectable.hide()
         if self.layout:
             child = self.layout.takeAt(0)
@@ -205,7 +207,8 @@ class Selector(QDialog):
 
             self.layout.addWidget(mframe)
         self.ui.selectable.update()
-        self.ui.selectable.show()
+        if self.ui.tabWidget.currentWidget() == self.ui.selectable:
+            self.ui.selectable.show()
 
 
     def createAutomaticGUI(self):
@@ -288,7 +291,7 @@ class Selector(QDialog):
         self.__saveSettings()
 
     def reset(self):
-#        self.cframe = (self.cframe + 1) % 3
+        self.cframe = (self.cframe + 1) % 3
         self.frames = self.mframes[self.cframe]
         self.state.fetchSettings()
         self.createSelectableGUI()

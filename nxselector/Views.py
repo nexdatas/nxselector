@@ -35,7 +35,8 @@ from PyQt4.QtCore import (
     SLOT)
 from PyQt4.QtGui import (QTableView, QHeaderView, QWidget, QGridLayout, 
                          QCheckBox, QAbstractScrollArea, QPalette,
-                         QAbstractItemView, QLabel, QFrame, QSpacerItem)
+                         QAbstractItemView, QLabel, QFrame, QSpacerItem,
+                         QRadioButton)
 
 
 
@@ -52,11 +53,10 @@ class TableView(QTableView):
 
 
 
-class CheckerView(QWidget):
-#class CheckerView(QAbstractItemView):
+class RadioView(QWidget):
 
     def __init__(self, parent=None):
-        super(CheckerView, self).__init__(parent)
+        super(RadioView, self).__init__(parent)
         self.model = None
 #        self.layout = QtGui.QFormLayout(self)
         self.layout = QGridLayout(self)
@@ -65,6 +65,7 @@ class CheckerView(QWidget):
         self.connect(self.mapper, SIGNAL("mapped(QWidget*)"),
                      self.checked)
         self.spacer = None
+        self.widget = QRadioButton
         
     def checked(self, widget):
         row = self.widgets.index(widget)
@@ -112,12 +113,13 @@ class CheckerView(QWidget):
                 if row < len(self.widgets):
                     cb = self.widgets[row]
                 else:
-                    cb = QCheckBox()
+                    cb = self.widget()
                 cb.setEnabled(bool(Qt.ItemIsEnabled & flags))
                 if name:
                     cb.setText(str(name.toString()))
                 if status is not None:    
-                    cb.setCheckState(status)
+#                    cb.setCheckState(status)
+                    cb.setChecked(bool(status))
                 if row >= len(self.widgets):
                     self.layout.addWidget(cb, row, 0, 1, 1)
                     self.widgets.append(cb)
@@ -133,3 +135,10 @@ class CheckerView(QWidget):
             
         self.update()
         self.updateGeometry()
+
+class CheckerView(RadioView):
+#class CheckerView(QAbstractItemView):
+
+    def __init__(self, parent=None):
+        super(CheckerView, self).__init__(parent)
+        self.widget = QCheckBox
