@@ -24,6 +24,9 @@
 import os
 import PyTango
 import json
+import copy
+
+from PyQt4 import QtCore, QtGui
 
 from PyQt4.QtCore import (
     SIGNAL, QSettings, Qt, QVariant, SIGNAL)
@@ -59,23 +62,28 @@ class Selector(QDialog):
         self.state = ServerState(server)
         self.state.fetchSettings()
 
+        self.layout = None
 
         ## user interface
         self.ui = Ui_Selector()
 
         ## frames/columns/groups
-        self.frames =  Frames([
-            [[("Counters1", 0), ("Counters2", 2)], [("VCounters", 3)]],
-            [[("MCAs", 1), ("SCAs", 4)]],
-            [[("Misc", 5) ]]
-            ])
+        self.mframes = []
+        self.mframes.append(Frames([
+                    [[("Counters1", 0), ("Counters2", 2)], [("VCounters", 3)]],
+                    [[("MCAs", 1), ("SCAs", 4)]],
+                    [[("Misc", 5) ]]
+                ]))
 
-#        self.frames = Frames([[[("My Controllers", 0)]],[[("My Components", 1)]]])
-#        self.frames =  Frames()
+        self.mframes.append(Frames([[[("My Controllers", 0)]],[[("My Components", 1)]]]))
+        self.mframes.append(Frames())
+        self.cframe = 0
+        self.frames = self.mframes[self.cframe]
 
-        self.groups = {2:[DSElement("ct01", self.state), DSElement("ct02",self.state)],
+        self.mgroups = {2:[DSElement("ct01", self.state), DSElement("ct02",self.state)],
                        5:[CPElement("appscan", self.state)]}
 
+        self.groups = {}
         self.userView = TableView
         self.userView = CheckerView
 
@@ -87,7 +95,6 @@ class Selector(QDialog):
 
         self.views = {} 
         
-        logger.debug("GROUPS: %s " % self.groups)
 
         self.createGUI()            
         self.updateGroups()
@@ -98,6 +105,7 @@ class Selector(QDialog):
             settings.value("Selector/Geometry").toByteArray())
 
     def updateGroups(self):
+        self.groups = copy.deepcopy(self.mgroups)
         ucp = set()
         uds = set()
         for k, gr in self.groups.items():
@@ -153,7 +161,16 @@ class Selector(QDialog):
 
 
     def createSelectableGUI(self):
-        layout = QHBoxLayout(self.ui.selectable)
+        if self.layout:
+            child = self.layout.takeAt(0)
+            while child:
+                if isinstance(child, QtGui.QWidgetItem):
+                    child.widget().close()
+
+                self.layout.removeItem(child)
+                child = self.layout.takeAt(0)
+        else:
+            self.layout = QHBoxLayout(self.ui.selectable)
 
         self.views = {} 
 
@@ -180,7 +197,7 @@ class Selector(QDialog):
 
                 layout_columns.addLayout(layout_groups)
 
-            layout.addWidget(mframe)
+            self.layout.addWidget(mframe)
 
 
     def createAutomaticGUI(self):
@@ -263,7 +280,12 @@ class Selector(QDialog):
         self.__saveSettings()
 
     def reset(self):
+#        self.cframe = (self.cframe + 1) % 3
+#        self.frames = self.mframes[self.cframe]
         self.state.fetchSettings()
+        self.createSelectableGUI()
+        self.updateGroups()
+        self.setModels()
         self.updateViews()
 
     def apply(self):

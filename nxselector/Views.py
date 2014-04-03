@@ -35,7 +35,7 @@ from PyQt4.QtCore import (
     SLOT)
 from PyQt4.QtGui import (QTableView, QHeaderView, QWidget, QGridLayout, 
                          QCheckBox, QAbstractScrollArea, QPalette,
-                         QAbstractItemView, QLabel, QFrame)
+                         QAbstractItemView, QLabel, QFrame, QSpacerItem)
 
 
 
@@ -59,15 +59,14 @@ class CheckerView(QWidget):
         super(CheckerView, self).__init__(parent)
         self.model = None
 #        self.layout = QtGui.QFormLayout(self)
-        self.frame = QFrame(self)
-        self.layout = QGridLayout(self.frame)
+        self.layout = QGridLayout(self)
         self.widgets = []
-        self.mapper = QSignalMapper(self.frame)
+        self.mapper = QSignalMapper(self)
         self.connect(self.mapper, SIGNAL("mapped(QWidget*)"),
                      self.checked)
-
+        self.spacer = None
+        
     def checked(self, widget):
-        print "checked", widget.text(), widget
         row = self.widgets.index(widget)
         
         ind = self.model.index(row, 1)
@@ -85,49 +84,32 @@ class CheckerView(QWidget):
         self.updateState()
 
     def reset(self):
-        print "RESET", [str(w.text()) for w in self.widgets]   
-        self.frame = QFrame(self)
-        self.layout = QGridLayout(self.frame)
-#        self.widgets = []
-#        self.mapper = QSignalMapper(self.frame)
-#        self.connect(self.mapper, SIGNAL("mapped(QWidget*)"),
-#                     self.checked)
-        self.updateState(new = False)
-        print "END RESET"
 
-    def updateState(self, new = False):
+        if self.layout:
+            self.widgets = []
+            self.spacer = None
+            child = self.layout.takeAt(0)
+            while child:
+                if isinstance(child, QtGui.QWidgetItem):
+                    child.widget().close()
+                self.layout.removeItem(child)
+                child = self.layout.takeAt(0)
+            self.mapper = QSignalMapper(self)
+            self.connect(self.mapper, SIGNAL("mapped(QWidget*)"),
+                         self.checked)
+        self.updateState()
+
+    def updateState(self):
         if not self.model is None:
-            print "UPDATE", [str(w.text()) for w in self.widgets]   
-#        self.scrollArea = QtGui.QScrollArea(self)
-#        self.scrollArea.setVerticalScrollBarPolicy(QtCore.Qt.ScrollBarAsNeeded)
-#        self.scrollArea.setWidgetResizable(True)
-#        self.scrollArea.setBackgroundRole(QPalette.Dark)
-#        self.scrollAreaWidgetContents = QtGui.QWidget()
-#        self.scrollAreaWidgetContents.setGeometry(QtCore.QRect(0, 0, 380, 280))
-#        self.formLayout = QtGui.QFormLayout(self.scrollAreaWidgetContents)
-
-#        self.checkLayout = QtGui.QGridLayout()
-
-#        self.pushButton = QtGui.QPushButton(self.scrollAreaWidgetContents)
-#        self.checkLayout.addWidget(self.pushButton, 0, 0, 1, 1)
-#        self.pushButton_2 = QtGui.QPushButton(self.scrollAreaWidgetContents)
-#        self.checkLayout.addWidget(self.pushButton_2, 1, 0, 1, 1)
             for row in range(self.model.rowCount()):
-                print "A1"
                 ind = self.model.index(row,1)
-                print "A2"
                 name = self.model.data(ind, role = Qt.DisplayRole)
-                print "A3"
                 status = self.model.data(ind, role = Qt.CheckStateRole)
-                print "A4"
                 flags = self.model.flags(ind)
-                print "A5"
                 if row < len(self.widgets):
                     cb = self.widgets[row]
-                    print "OLD"
                 else:
                     cb = QCheckBox()
-                    print "NEW", row
                 cb.setEnabled(bool(Qt.ItemIsEnabled & flags))
                 if name:
                     cb.setText(str(name.toString()))
@@ -136,16 +118,15 @@ class CheckerView(QWidget):
                 if row >= len(self.widgets):
                     self.layout.addWidget(cb, row, 0, 1, 1)
                     self.widgets.append(cb)
-                    print "APPENDING", cb.text(), cb
                     self.connect(cb, SIGNAL("clicked()"),
                                  self.mapper, SLOT("map()"))
                     self.mapper.setMapping(cb, cb)
-                print "END LOOP"    
-#        self.formLayout.setLayout(0, QtGui.QFormLayout.LabelRole, self.checkLayout)
-#        self.layout.setLayout(0, QtGui.QFormLayout.LabelRole, self.checkLayout)
-
-#        self.scrollArea.setWidget(self.scrollAreaWidgetContents)
-#        self.layout.addWidget(self.scrollArea, 0, 0, 1, 1)
+            if not self.spacer:
+                self.spacer = QSpacerItem(10, 10, 
+                                         QtGui.QSizePolicy.Expanding, 
+                                         QtGui.QSizePolicy.Expanding)
+                self.layout.addItem(self.spacer)
+                
             
-#        self.update()
-#        self.updateGeometry()
+        self.update()
+        self.updateGeometry()
