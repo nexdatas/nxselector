@@ -285,16 +285,13 @@ class Selector(QDialog):
         self.__saveSettings()
 
     def reset(self):
-#        print "R1", self.cframe
 #        self.cframe = (self.cframe + 1) % 3
-        print "R2", self.cframe
         self.frames = self.mframes[self.cframe]
         self.state.fetchSettings()
         self.createSelectableGUI()
         self.updateGroups()
         self.setModels()
         self.updateViews()
-        print "R3", self.cframe
 
     def apply(self):
         self.state.updateMntGrp()
