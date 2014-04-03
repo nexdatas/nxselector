@@ -90,9 +90,11 @@ class CheckerView(QWidget):
             self.spacer = None
             child = self.layout.takeAt(0)
             while child:
-                if isinstance(child, QtGui.QWidgetItem):
-                    child.widget().close()
                 self.layout.removeItem(child)
+                if isinstance(child, QtGui.QWidgetItem):
+                    child.widget().hide()
+                    child.widget().close()
+                    self.layout.removeWidget(child.widget())
                 child = self.layout.takeAt(0)
             self.mapper = QSignalMapper(self)
             self.connect(self.mapper, SIGNAL("mapped(QWidget*)"),

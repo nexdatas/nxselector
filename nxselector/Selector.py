@@ -84,7 +84,7 @@ class Selector(QDialog):
 
         self.groups = {}
         self.userView = TableView
-#        self.userView = CheckerView
+        self.userView = CheckerView
 
         self.agroup = []
 
@@ -169,9 +169,11 @@ class Selector(QDialog):
         if self.layout:
             child = self.layout.takeAt(0)
             while child:
-                if isinstance(child, QtGui.QWidgetItem):
-                    child.widget().close()
                 self.layout.removeItem(child)
+                if isinstance(child, QtGui.QWidgetItem):
+                    child.widget().hide()
+                    child.widget().close()
+                    self.layout.removeWidget(child.widget())
                 child = self.layout.takeAt(0)
         else:
             self.layout = QHBoxLayout(self.ui.selectable)
@@ -202,6 +204,7 @@ class Selector(QDialog):
                 layout_columns.addLayout(layout_groups)
 
             self.layout.addWidget(mframe)
+        self.ui.selectable.update()
         self.ui.selectable.show()
 
 
