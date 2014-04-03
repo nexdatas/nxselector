@@ -24,7 +24,6 @@
 import os
 import PyTango
 import json
-import copy
 
 from PyQt4 import QtCore, QtGui
 
@@ -80,8 +79,8 @@ class Selector(QDialog):
         self.cframe = 0
         self.frames = self.mframes[self.cframe]
 
-        self.mgroups = {2:[DSElement("ct01", self.state), DSElement("ct02",self.state)],
-                       5:[CPElement("appscan", self.state)]}
+        self.mgroups = {2:[("ct01", DS), ("ct02",DS)],
+                       5:[("appscan", CP)]}
 
         self.groups = {}
         self.userView = TableView
@@ -105,16 +104,21 @@ class Selector(QDialog):
             settings.value("Selector/Geometry").toByteArray())
 
     def updateGroups(self):
-        self.groups = copy.deepcopy(self.mgroups)
+        self.groups = {}
         ucp = set()
         uds = set()
-        for k, gr in self.groups.items():
+
+        for k, gr in self.mgroups.items():
             if k in self.availableGroups:
+                self.groups[k] = []
                 for elem in gr:
-                    if elem.eltype == DS:
-                        uds.add(elem.name)
-                    elif elem.eltype == CP: 
-                        ucp.add(elem.name)
+                    if elem[1] == DS:
+                        self.groups[k].append(DSElement(elem[0], self.state))
+                        uds.add(elem[0])
+                    elif elem[1] == CP: 
+                        self.groups[k].append(CPElement(elem[0], self.state))
+                        ucp.add(elem[0])
+        
         for ds, flag in self.state.dsgroup.items():
             if ds not in uds:
                 if DS not in self.groups:
@@ -280,13 +284,16 @@ class Selector(QDialog):
         self.__saveSettings()
 
     def reset(self):
-#        self.cframe = (self.cframe + 1) % 3
-#        self.frames = self.mframes[self.cframe]
+        print "R1", self.cframe
+        self.cframe = (self.cframe + 1) % 3
+        print "R2", self.cframe
+        self.frames = self.mframes[self.cframe]
         self.state.fetchSettings()
         self.createSelectableGUI()
         self.updateGroups()
         self.setModels()
         self.updateViews()
+        print "R3", self.cframe
 
     def apply(self):
         self.state.updateMntGrp()
