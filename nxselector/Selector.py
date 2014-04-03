@@ -165,6 +165,7 @@ class Selector(QDialog):
 
 
     def createSelectableGUI(self):
+        self.ui.selectable.hide()
         if self.layout:
             child = self.layout.takeAt(0)
             while child:
@@ -201,7 +202,7 @@ class Selector(QDialog):
                 layout_columns.addLayout(layout_groups)
 
             self.layout.addWidget(mframe)
-        self.ui.selectable.updateGeometry()
+        self.ui.selectable.show()
 
 
     def createAutomaticGUI(self):

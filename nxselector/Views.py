@@ -84,7 +84,7 @@ class CheckerView(QWidget):
         self.updateState()
 
     def reset(self):
-
+        self.hide()
         if self.layout:
             self.widgets = []
             self.spacer = None
@@ -98,6 +98,7 @@ class CheckerView(QWidget):
             self.connect(self.mapper, SIGNAL("mapped(QWidget*)"),
                          self.checked)
         self.updateState()
+        self.show()
 
     def updateState(self):
         if not self.model is None:
