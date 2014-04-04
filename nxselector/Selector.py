@@ -82,47 +82,35 @@ class Selector(QDialog):
         self.storage = Storage(self.ui, self.state)
         self.preferences = Preferences(self.ui, self.state)
 
+        self.tabs = [self.selectable, self.automatic, self.mandatory,
+                     self.storage, self.preferences]
+
+
         self.createGUI()            
-        self.updateGroups()
-        self.setModels()
         
         settings = QSettings()
         self.restoreGeometry(
             settings.value("Selector/Geometry").toByteArray())
 
-    def updateGroups(self):
-        self.selectable.updateGroups()
-        self.automatic.updateGroups()
-        self.mandatory.updateGroups()
-        
-                
     ##  creates GUI
     # \brief It create dialogs for the main window application
     def createGUI(self):
         self.ui.setupUi(self)
-        self.selectable.createGUI()
-        self.automatic.createGUI()
-        self.mandatory.createGUI()
+        for tab in self.tabs:
+            tab.reset()
 
         self.connect(self.ui.buttonBox.button(QDialogButtonBox.Apply), 
                      SIGNAL("clicked()"), self.apply)
         self.connect(self.ui.buttonBox.button(QDialogButtonBox.Reset), 
                      SIGNAL("clicked()"), self.reset)
 
+        self.connect(self.ui.preferences, 
+                     SIGNAL("serverChanged()"), self.resetServer)
 
+        self.connect(self.ui.viewComboBox, 
+                     SIGNAL("currentIndexChanged(int)"), self.resetViews)
 
-
-
-            
-    def setModels(self):
-        self.selectable.setModels()
-        self.automatic.setModels()
-        self.mandatory.setModels()
-            
-    def updateViews(self):
-        self.selectable.updateViews()
-        self.automatic.updateViews()
-        self.mandatory.updateViews()
+        
 
     def __saveSettings(self):
         settings = QSettings()
@@ -133,11 +121,20 @@ class Selector(QDialog):
     def closeEvent(self, event):
         self.__saveSettings()
 
+    def resetServer(self):
+        self.state.setServer()
+        self.reset()
+
+    def resetViews(self):
+        for tab in self.tabs:
+            tab.userView = self.preferences.views[
+                str(self.ui.viewComboBox.currentText())]
+        self.reset()
+        
     def reset(self):
         self.state.fetchSettings()
-        self.selectable.reset()
-        self.automatic.reset()
-        self.mandatory.reset()
+        for tab in self.tabs:
+            tab.reset()
 
     def apply(self):
         self.state.updateMntGrp()

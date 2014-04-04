@@ -30,6 +30,12 @@ logger = logging.getLogger(__name__)
 
 from .Views import TableView, CheckerView, RadioView
 
+from PyQt4.QtCore import (
+    SIGNAL, QSettings, Qt, QVariant, SIGNAL, QString)
+
+from PyQt4.QtGui import (QMessageBox)
+import PyTango
+
 ## main window class
 class Preferences(object):
 
@@ -38,4 +44,40 @@ class Preferences(object):
     def __init__(self, ui, state = None):
         self.ui = ui
         self.state = state
+
+        self.views = {"CheckBoxes":CheckerView, "Tables":TableView, "RadioButtons":RadioView}
         
+
+    def connectSignals(self):
+        self.ui.preferences.disconnect(self.ui.devSettingsLineEdit,
+                                       SIGNAL("editingFinished()"), 
+                                       self.on_devSettingsLineEdit_editingFinished)
+        self.ui.preferences.connect(self.ui.devSettingsLineEdit,
+                                    SIGNAL("editingFinished()"), 
+                                    self.on_devSettingsLineEdit_editingFinished)
+       
+    def reset(self):
+        if self.ui.viewComboBox.count() != len(self.views.keys()):
+            self.ui.viewComboBox.clear()
+            self.ui.viewComboBox.addItems(sorted(self.views.keys()))
+        self.updateForm()
+        self.connectSignals()
+
+    def on_devSettingsLineEdit_editingFinished(self):
+        server = str(self.ui.devSettingsLineEdit.text())
+        if server != self.state.server or True:
+            try:
+                dp = PyTango.DeviceProxy(server)
+                if dp.info().dev_class == 'NXSRecSettings':
+                    self.state.server = str(server)
+            except:
+                self.reset()
+            self.ui.preferences.emit(SIGNAL("serverChanged()"))
+
+    def updateForm(self):
+        self.ui.devSettingsLineEdit.setText(self.state.server)
+            
+            
+
+    def apply(self):
+        pass
