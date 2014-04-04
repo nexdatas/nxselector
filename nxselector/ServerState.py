@@ -42,6 +42,33 @@ class ServerState(object):
         self.setServer()
         self.fetchSettings()
 
+        self.scanDir = None
+        self.scanFile = []
+        self.scanID = 0
+
+        self.timer = None
+        self.mntgrp = None
+        self.macroServer = None 
+
+        self.configDevice = None
+        self.writerDevice = None
+
+        self.appendEntry = None
+        self.timeZone = None
+
+        self.dynamicComponents = None
+        self.dynamicLinks = None
+        self.dynamicPath = None
+
+
+        self.dsgroup = {}
+        self.dslabels = {}
+        self.cpgroup = {}
+        self.acpgroup = {}
+        self.acplist = []
+        self.mcplist = []
+        self.description = []
+
 
     def fetchSettings(self):
         self.dsgroup = self.loadDict("DataSourceGroup") 
@@ -58,12 +85,39 @@ class ServerState(object):
         self.scanFile = self.loadData("ScanFile")
         self.scanID = self.loadData("ScanID")
 
+        self.timer = self.loadData("Timer")
+        self.mntgrp = self.loadData("ActiveMntGrp")
+        self.macroServer = self.loadData("MacroServer")
 
+        self.configDevice = self.loadData("ConfigDevice")
+        self.writerDevice = self.loadData("WriterDevice")
+            
+        self.appendEntry = self.loadData("AppendEntry")
+        self.timeZone = self.loadData("TimeZone")
+
+        self.dynamicComponents = self.loadData("DynamicComponents")
+        self.dynamicLinks = self.loadData("DynamicLinks")
+        self.dynamicPath = self.loadData("DynamicPath")
 
     def storeFileData(self):
         self.storeData("ScanDir", self.scanDir)
         self.storeData("ScanFile", self.scanFile)
 #        self.storeData("ScanID", self.scanID)
+
+        self.storeData("Timer", self.timer)
+        self.storeData("ActiveMntGrp", self.mntgrp)
+        self.storeData("MacroServer", self.macroServer)
+
+        self.storeData("ConfigDevice", self.configDevice)
+        self.storeData("WriterDevice", self.writerDevice)
+
+        self.storeData("AppendEntry", self.appendEntry)
+        self.storeData("TimeZone", self.timeZone)
+
+        self.storeData("DynamicComponents", self.dynamicComponents)
+        self.storeData("DynamicLinks", self.dynamicLinks)
+        self.storeData("DynamicPath", self.dynamicPath)
+
 
     def storeSettings(self):
         self.storeDict("DataSourceGroup", self.dsgroup) 
