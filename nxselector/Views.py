@@ -53,10 +53,10 @@ class TableView(QTableView):
 
 
 
-class RadioView(QWidget):
+class CheckerView(QWidget):
 
     def __init__(self, parent=None):
-        super(RadioView, self).__init__(parent)
+        super(CheckerView, self).__init__(parent)
         self.model = None
 #        self.layout = QtGui.QFormLayout(self)
         self.layout = QGridLayout(self)
@@ -65,7 +65,7 @@ class RadioView(QWidget):
         self.connect(self.mapper, SIGNAL("mapped(QWidget*)"),
                      self.checked)
         self.spacer = None
-        self.widget = QRadioButton
+        self.widget = QCheckBox
         
     def checked(self, widget):
         row = self.widgets.index(widget)
@@ -136,9 +136,9 @@ class RadioView(QWidget):
         self.update()
         self.updateGeometry()
 
-class CheckerView(RadioView):
+class RadioView(CheckerView):
 #class CheckerView(QAbstractItemView):
 
     def __init__(self, parent=None):
-        super(CheckerView, self).__init__(parent)
-        self.widget = QCheckBox
+        super(RadioView, self).__init__(parent)
+        self.widget = QRadioButton
