@@ -264,7 +264,6 @@ class Selector(QDialog):
             self.views[k].setModel(md)
             md.connect(md, SIGNAL("componentChecked"), self.updateViews)
 #            self.views[k].setItemDelegate(ElementDelegate(self))
-#            self.views[k].resizeColumnsToContents()
         md = ElementModel(self.agroup)
         md.enable = False
         self.aview.setModel(md)    
@@ -278,7 +277,6 @@ class Selector(QDialog):
         logger.debug("update views")
         for vw in self.views.values():
             vw.reset()
-#            vw.resizeColumnsToContents()
 
     def __saveSettings(self):
         settings = QSettings()

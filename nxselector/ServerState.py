@@ -51,10 +51,24 @@ class ServerState(object):
         self.acplist = self.loadList("AutomaticComponents") 
         self.mcplist = self.getList("MandatoryComponents") 
         self.description = self.loadList("Description", True) 
+        self.fetchFileData()
+
+    def fetchFileData(self):
+        self.scanDir = self.loadData("ScanDir")
+        self.scanFile = self.loadData("ScanFile")
+        self.scanID = self.loadData("ScanID")
+
+
+
+    def storeFileData(self):
+        self.storeData("ScanDir", self.scanDir)
+        self.storeData("ScanFile", self.scanFile)
+#        self.storeData("ScanID", self.scanID)
 
     def storeSettings(self):
         self.storeDict("DataSourceGroup", self.dsgroup) 
         self.storeDict("ComponentGroup", self.cpgroup) 
+        self.storeFileData()
 
     def updateMntGrp(self):
         self.storeSettings()
@@ -110,6 +124,14 @@ class ServerState(object):
         logger.debug(" %s = %s" % (name, jvalue) )
 
 
+    def storeData(self, name, value):    
+        if not self.__dp:
+            self.setServer()
+
+        self.__dp.write_attribute(name, value)
+        logger.debug(" %s = %s" % (name, value) )
+
+
     def loadList(self, name, encoded = False):    
         if not self.__dp:
             self.setServer()
@@ -125,6 +147,14 @@ class ServerState(object):
         return res
 
 
+    def loadData(self, name):    
+        if not self.__dp:
+            self.setServer()
+        dc = self.__dp.read_attribute(name).value
+        logger.debug(dc)
+        return dc
+
+
     def getList(self, name):    
         if not self.__dp:
             self.setServer()
@@ -136,6 +166,7 @@ class ServerState(object):
                 res = dc
         logger.debug(" %s = %s" % (name, res) )
         return res
+
 
     ## update a list of Disable DataSources
     def disableDataSources(self):
