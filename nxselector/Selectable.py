@@ -59,19 +59,16 @@ class Selectable(object):
 
         ## frames/columns/groups
         self.mframes = []
-        self.mframes.append(Frames([
-                    [[("Counters1", 0), ("Counters2", 2)], [("VCounters", 3)]],
-                    [[("MCAs", 1), ("SCAs", 4)]],
-                    [[("Misc", 5) ]]
-                ]))
+        self.mframes.append(Frames('[[[["Counters1", 0], ["Counters2", 2]], [["VCounters", 3]]],'
+                                   + '[[["MCAs", 1], ["SCAs", 4]]], [[["Misc", 5] ]]]'))
 
-        self.mframes.append(Frames([[[("My Controllers", 0)]],[[("My Components", 1)]]]))
+        self.mframes.append(Frames('[[[["My Controllers", 0]]],[[["My Components", 1]]]]'))
         self.mframes.append(Frames())
         self.cframe = 1
         self.frames = self.mframes[self.cframe]
 
-        self.mgroups = {2:[("ct01", DS), ("ct02",DS)],
-                       5:[("appscan", CP)]}
+
+        self.mgroups = '{"2":[["ct01", 0], ["ct02",0]], "5":[["appscan", 1]]}'
 
 
 
@@ -86,15 +83,16 @@ class Selectable(object):
         ucp = set()
         uds = set()
 
-        for k, gr in self.mgroups.items():
-            if k in self.availableGroups:
-                self.groups[k] = []
+        mgroups = json.loads(self.mgroups)
+        for k, gr in mgroups.items():
+            if int(k) in self.availableGroups:
+                self.groups[int(k)] = []
                 for elem in gr:
                     if elem[1] == DS:
-                        self.groups[k].append(DSElement(elem[0], self.state))
+                        self.groups[int(k)].append(DSElement(elem[0], self.state))
                         uds.add(elem[0])
                     elif elem[1] == CP: 
-                        self.groups[k].append(CPElement(elem[0], self.state))
+                        self.groups[int(k)].append(CPElement(elem[0], self.state))
                         ucp.add(elem[0])
         
         for ds, flag in self.state.dsgroup.items():

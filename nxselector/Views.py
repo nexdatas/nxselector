@@ -36,7 +36,7 @@ from PyQt4.QtCore import (
 from PyQt4.QtGui import (QTableView, QHeaderView, QWidget, QGridLayout, 
                          QCheckBox, QAbstractScrollArea, QPalette,
                          QAbstractItemView, QLabel, QFrame, QSpacerItem,
-                         QRadioButton)
+                         QRadioButton, QPushButton)
 
 
 
@@ -114,6 +114,8 @@ class CheckerView(QWidget):
                     cb = self.widgets[row]
                 else:
                     cb = self.widget()
+                    if hasattr(cb, "setCheckable"):
+                        cb.setCheckable(True)
                 cb.setEnabled(bool(Qt.ItemIsEnabled & flags))
                 if name:
                     cb.setText(str(name.toString()))
@@ -142,3 +144,11 @@ class RadioView(CheckerView):
     def __init__(self, parent=None):
         super(RadioView, self).__init__(parent)
         self.widget = QRadioButton
+
+
+class ButtonView(CheckerView):
+#class CheckerView(QAbstractItemView):
+
+    def __init__(self, parent=None):
+        super(ButtonView, self).__init__(parent)
+        self.widget = QPushButton

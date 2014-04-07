@@ -42,25 +42,29 @@ class Frames(object):
         self.set(settings)
    
 
-    def set(self, settings):    
+    def set(self, settings):
+        if settings:
+            mysettings = json.loads(settings)
+        else:
+            msettings = None
         self.__dct = {}    
         self.__settings = [
-            [[(self.dslabel, 0)]],[[(self.cplabel, 1)]]]
+            [[[self.dslabel, 0]]],[[[self.cplabel, 1]]]]
         try:
-            if settings:
-                self.__settings = list(settings)
+            if mysettings:
+                self.__settings = list(mysettings)
             self.__makedict()
 
             ids = set(self.ids())
             if len(ids) < 2:
                 self.__settings = [
-                    [[(self.dslabel, 0)]],[[(self.cplabel, 1)]]]
+                    [[[self.dslabel, 0]]],[[[self.cplabel, 1]]]]
                 self.__makedict()
                 
                 
         except:
             self.__settings = [
-                [[(self.dslabel, 0)]],[[(self.cplabel, 1)]]]
+                [[[self.dslabel, 0]]],[[[self.cplabel, 1]]]]
             self.__makedict()
 
         ids = list(set(self.ids()))

@@ -28,7 +28,7 @@ import json
 import logging
 logger = logging.getLogger(__name__)
 
-from .Views import TableView, CheckerView, RadioView
+from .Views import TableView, CheckerView, RadioView, ButtonView
 
 from PyQt4.QtCore import (
     SIGNAL, QSettings, Qt, QVariant, SIGNAL, QString)
@@ -45,7 +45,10 @@ class Preferences(object):
         self.ui = ui
         self.state = state
 
-        self.views = {"CheckBoxes":CheckerView, "Tables":TableView, "RadioButtons":RadioView}
+        self.views = {"CheckBoxes":CheckerView, 
+                      "Tables":TableView, 
+                      "RadioButtons":RadioView,
+                      "Buttons":ButtonView}
         
 
     def connectSignals(self):
@@ -68,7 +71,7 @@ class Preferences(object):
         if server != self.state.server or True:
             try:
                 dp = PyTango.DeviceProxy(server)
-                if dp.info().dev_class == 'NXSRecSettings':
+                if dp.info().dev_class == 'NXSRecSelector':
                     self.state.server = str(server)
             except:
                 self.reset()

@@ -131,7 +131,7 @@ class ServerState(object):
     def setServer(self):
         if self.server is None:
             servers = self.__db.get_device_exported_for_class(
-                "NXSRecSettings").value_string
+                "NXSRecSelector").value_string
             if len(servers):
                 self.server = servers[0]                
 

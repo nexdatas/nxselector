@@ -29,7 +29,7 @@ import json
 from PyQt4 import QtCore, QtGui
  
 from PyQt4.QtCore import (
-    SIGNAL, QSettings, Qt, QVariant, SIGNAL)
+    SIGNAL, QSettings, Qt, QVariant, SIGNAL, QString)
 from PyQt4.QtGui import (QHBoxLayout,QVBoxLayout,
     QDialog, QGroupBox,QGridLayout,QSpacerItem,QSizePolicy,
     QMessageBox, QIcon, QTableView, QDialogButtonBox,
@@ -48,7 +48,7 @@ from .Mandatory import Mandatory
 from .Storage import Storage
 
 
-from .Views import TableView, CheckerView, RadioView
+from .Views import TableView, CheckerView, RadioView, ButtonView
 
 import logging
 logger = logging.getLogger(__name__)
@@ -70,23 +70,30 @@ class Selector(QDialog):
         self.state.fetchSettings()
 
 
-        self.userView = TableView
-        self.userView = RadioView
-        self.userView = CheckerView
+        self.userView = "Tables"
+        self.userView = "RadioButtons"
+        self.userView = "Buttons"
+        self.userView = "CheckBoxes"
+
 
         ## user interface
         self.ui = Ui_Selector()
-        self.selectable = Selectable(self.ui, self.state, self.userView)
-        self.automatic = Automatic(self.ui, self.state, self.userView)
-        self.mandatory = Mandatory(self.ui, self.state, self.userView)
-        self.storage = Storage(self.ui, self.state)
         self.preferences = Preferences(self.ui, self.state)
+        self.selectable = Selectable(self.ui, self.state, 
+                                     self.preferences.views[self.userView])
+        self.automatic = Automatic(self.ui, self.state, 
+                                   self.preferences.views[self.userView])
+        self.mandatory = Mandatory(self.ui, self.state, 
+                                   self.preferences.views[self.userView])
+        self.storage = Storage(self.ui, self.state)
 
         self.tabs = [self.selectable, self.automatic, self.mandatory,
                      self.storage, self.preferences]
 
 
-        self.createGUI()            
+        self.createGUI()  
+        
+        
         
         settings = QSettings()
         self.restoreGeometry(
@@ -98,7 +105,11 @@ class Selector(QDialog):
         self.ui.setupUi(self)
         for tab in self.tabs:
             tab.reset()
-
+            
+        cid = self.ui.viewComboBox.findText(QString(self.userView))
+        if cid >= 0:
+            self.ui.viewComboBox.setCurrentIndex(cid) 
+            
         self.connect(self.ui.buttonBox.button(QDialogButtonBox.Apply), 
                      SIGNAL("clicked()"), self.apply)
         self.connect(self.ui.buttonBox.button(QDialogButtonBox.Reset), 
