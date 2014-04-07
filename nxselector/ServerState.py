@@ -129,7 +129,7 @@ class ServerState(object):
         self.__dp.UpdateMntGrp()
 
     def setServer(self):
-        if self.server is None:
+        if not self.server:
             servers = self.__db.get_device_exported_for_class(
                 "NXSRecSelector").value_string
             if len(servers):

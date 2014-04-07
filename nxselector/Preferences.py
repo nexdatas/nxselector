@@ -33,7 +33,7 @@ from .Views import TableView, CheckerView, RadioView, ButtonView
 from PyQt4.QtCore import (
     SIGNAL, QSettings, Qt, QVariant, SIGNAL, QString)
 
-from PyQt4.QtGui import (QMessageBox)
+from PyQt4.QtGui import (QMessageBox, QCompleter)
 import PyTango
 
 ## main window class
@@ -45,24 +45,71 @@ class Preferences(object):
         self.ui = ui
         self.state = state
 
-        self.views = {"CheckBoxes":CheckerView, 
-                      "Tables":TableView, 
-                      "RadioButtons":RadioView,
-                      "Buttons":ButtonView}
+
+        self.frameshelp = [
+            QString('[[[["Counters1", 0], ["Counters2", 2]], [["VCounters", 3]]],'
+                + '[[["MCAs", 1], ["SCAs", 4]]], [[["Misc", 5] ]]]'), 
+            QString('[[[["My Controllers", 0]]],[[["My Components", 1]]]]'), 
+            QString('')]
+        self.mgroupshelp = [
+            QString('{"2":[["ct01", 0], ["ct02",0]], "5":[["appscan", 1]]}'), 
+            QString('')]
+        self.serverhelp = [
+            QString(self.state.server)]
         
+        self.mgroups = str(self.mgroupshelp[0])
+        self.frames = str(self.frameshelp[0])
+
+        self.views = {
+            "CheckBoxes":CheckerView, 
+            "Tables":TableView, 
+            "RadioButtons":RadioView,
+            "Buttons":ButtonView}
+
+        self.maxHelp = 10
 
     def connectSignals(self):
-        self.ui.preferences.disconnect(self.ui.devSettingsLineEdit,
-                                       SIGNAL("editingFinished()"), 
-                                       self.on_devSettingsLineEdit_editingFinished)
-        self.ui.preferences.connect(self.ui.devSettingsLineEdit,
-                                    SIGNAL("editingFinished()"), 
-                                    self.on_devSettingsLineEdit_editingFinished)
+        self.ui.preferences.disconnect(
+            self.ui.devSettingsLineEdit,
+            SIGNAL("editingFinished()"), 
+            self.on_devSettingsLineEdit_editingFinished)
+
+        self.ui.preferences.disconnect(
+            self.ui.groupLineEdit,
+            SIGNAL("editingFinished()"), 
+            self.on_groupLineEdit_editingFinished)
+
+        self.ui.preferences.disconnect(
+            self.ui.frameLineEdit,
+            SIGNAL("editingFinished()"), 
+            self.on_frameLineEdit_editingFinished)
+
+        self.ui.preferences.connect(
+            self.ui.frameLineEdit,
+            SIGNAL("editingFinished()"), 
+            self.on_frameLineEdit_editingFinished)
+
+        self.ui.preferences.connect(
+            self.ui.groupLineEdit,
+            SIGNAL("editingFinished()"), 
+            self.on_groupLineEdit_editingFinished)
+
+        self.ui.preferences.connect(
+            self.ui.devSettingsLineEdit,
+            SIGNAL("editingFinished()"), 
+            self.on_devSettingsLineEdit_editingFinished)
+
        
     def reset(self):
         if self.ui.viewComboBox.count() != len(self.views.keys()):
             self.ui.viewComboBox.clear()
             self.ui.viewComboBox.addItems(sorted(self.views.keys()))
+        completer = QCompleter(self.mgroupshelp, self.ui.preferences)
+        self.ui.groupLineEdit.setCompleter(completer)
+        completer = QCompleter(self.serverhelp, self.ui.preferences)
+        self.ui.devSettingsLineEdit.setCompleter(completer) 
+        completer = QCompleter(self.frameshelp, self.ui.preferences)
+        self.ui.frameLineEdit.setCompleter(completer)
         self.updateForm()
         self.connectSignals()
 
@@ -73,13 +120,63 @@ class Preferences(object):
                 dp = PyTango.DeviceProxy(server)
                 if dp.info().dev_class == 'NXSRecSelector':
                     self.state.server = str(server)
+                    qstring = QString(server)
+                    if qstring not in self.serverhelp:
+                        self.serverhelp.append(server)
+                    if self.maxHelp < len(self.serverhelp):
+                        self.serverhelp.pop(0)
+
             except:
                 self.reset()
             self.ui.preferences.emit(SIGNAL("serverChanged()"))
 
+
+    def on_groupLineEdit_editingFinished(self):
+        string = str(self.ui.groupLineEdit.text())
+        try:
+            if not string:
+                string = '{}'
+            mgroups =  json.loads(string)
+            if isinstance(mgroups, dict):
+                self.mgroups = string
+                qstring = QString(string)
+                if qstring not in self.mgroupshelp:
+                    self.mgroupshelp.append(string)
+                if self.maxHelp < len(self.mgroupshelp):
+                    self.mgroupshelp.pop(0)
+                self.ui.preferences.emit(
+                    SIGNAL("groupsChanged(QString)"),
+                    qstring) 
+        except:    
+            self.reset()
+
+
+    def on_frameLineEdit_editingFinished(self):
+        string = str(self.ui.frameLineEdit.text())
+        try:
+            if not string:
+                string = '[]'
+            mframes =  json.loads(string)
+            
+            if isinstance(mframes, list):
+                self.frames = string
+                qstring = QString(string)
+                if qstring not in self.frameshelp:
+                    self.frameshelp.append(string)
+                if self.maxHelp < len(self.frameshelp):
+                    self.frameshelp.pop(0)
+                self.ui.preferences.emit(
+                    SIGNAL("framesChanged(QString)"),
+                    qstring) 
+        except:
+            self.reset()
+
+
+
     def updateForm(self):
         self.ui.devSettingsLineEdit.setText(self.state.server)
-            
+        self.ui.groupLineEdit.setText(self.mgroups)
+        self.ui.frameLineEdit.setText(self.frames)
             
 
     def apply(self):

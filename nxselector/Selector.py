@@ -69,35 +69,51 @@ class Selector(QDialog):
         self.state = ServerState(server)
         self.state.fetchSettings()
 
+        settings = QSettings()
 
-        self.userView = "Tables"
-        self.userView = "RadioButtons"
-        self.userView = "Buttons"
-        self.userView = "CheckBoxes"
-
+#        self.userView = "Tables"
+#        self.userView = "RadioButtons"
+#        self.userView = "Buttons"
+#        self.userView = "CheckBoxes"
+        
+        self.userView = self.restoreUserView(
+            settings, 'Preferences/UserView', 'CheckBoxes')
 
         ## user interface
         self.ui = Ui_Selector()
         self.preferences = Preferences(self.ui, self.state)
-        self.selectable = Selectable(self.ui, self.state, 
-                                     self.preferences.views[self.userView])
-        self.automatic = Automatic(self.ui, self.state, 
-                                   self.preferences.views[self.userView])
-        self.mandatory = Mandatory(self.ui, self.state, 
-                                   self.preferences.views[self.userView])
         self.storage = Storage(self.ui, self.state)
+        self.selectable = Selectable(
+            self.ui, self.state, 
+            self.preferences.views[self.userView])
+        self.selectable.mgroups = self.preferences.mgroups
+        self.selectable.frames = Frames(self.preferences.frames)
+        self.automatic = Automatic(
+            self.ui, self.state, 
+            self.preferences.views[self.userView])
+        self.mandatory = Mandatory(
+            self.ui, self.state, 
+            self.preferences.views[self.userView])
+
 
         self.tabs = [self.selectable, self.automatic, self.mandatory,
                      self.storage, self.preferences]
 
-
         self.createGUI()  
         
-        
-        
-        settings = QSettings()
         self.restoreGeometry(
             settings.value("Selector/Geometry").toByteArray())
+
+
+    def restoreUserView(self, settings, name, default):
+        res = default
+        try:
+            res = unicode(settings.value(name).toString())  
+            if not res:
+                res = default
+        except:
+            res = default
+        return res
 
     ##  creates GUI
     # \brief It create dialogs for the main window application
@@ -118,6 +134,12 @@ class Selector(QDialog):
         self.connect(self.ui.preferences, 
                      SIGNAL("serverChanged()"), self.resetServer)
 
+        self.connect(self.ui.preferences, 
+                     SIGNAL("groupsChanged(QString)"), self.resetGroups)
+
+        self.connect(self.ui.preferences, 
+                     SIGNAL("framesChanged(QString)"), self.resetFrames)
+
         self.connect(self.ui.viewComboBox, 
                      SIGNAL("currentIndexChanged(int)"), self.resetViews)
 
@@ -128,6 +150,9 @@ class Selector(QDialog):
         settings.setValue(
             "Selector/Geometry",
             QVariant(self.saveGeometry()))
+        settings.setValue(
+            "Preferences/UserView",
+            QVariant(str(self.ui.viewComboBox.currentText())))
                     
     def closeEvent(self, event):
         self.__saveSettings()
@@ -135,6 +160,15 @@ class Selector(QDialog):
     def resetServer(self):
         self.state.setServer()
         self.reset()
+
+    def resetGroups(self, groups):
+        self.selectable.mgroups = str(groups)
+        self.resetViews()
+
+
+    def resetFrames(self, frames):
+        self.selectable.frames = Frames(str(frames))
+        self.resetViews()
 
     def resetViews(self):
         for tab in self.tabs:

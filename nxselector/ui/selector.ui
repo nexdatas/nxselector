@@ -6,15 +6,15 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>853</width>
-    <height>580</height>
+    <width>614</width>
+    <height>529</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>NeXus Component Selector</string>
   </property>
   <layout class="QGridLayout" name="gridLayout">
-   <item row="6" column="0">
+   <item row="7" column="0">
     <widget class="QDialogButtonBox" name="buttonBox">
      <property name="toolTip">
       <string/>
@@ -24,7 +24,7 @@
      </property>
     </widget>
    </item>
-   <item row="0" column="0">
+   <item row="1" column="0">
     <widget class="QTabWidget" name="tabWidget">
      <property name="toolTip">
       <string/>
@@ -54,61 +54,6 @@
       <layout class="QGridLayout" name="gridLayout_10">
        <item row="0" column="0">
         <layout class="QVBoxLayout" name="verticalLayout_3">
-         <item>
-          <widget class="QFrame" name="frame">
-           <property name="frameShape">
-            <enum>QFrame::StyledPanel</enum>
-           </property>
-           <property name="frameShadow">
-            <enum>QFrame::Raised</enum>
-           </property>
-           <layout class="QGridLayout" name="gridLayout_16">
-            <item row="0" column="0">
-             <widget class="QGroupBox" name="mntGroupBox">
-              <property name="title">
-               <string>Measurement:</string>
-              </property>
-              <layout class="QGridLayout" name="gridLayout_3">
-               <item row="1" column="0">
-                <layout class="QGridLayout" name="gridLayout_4">
-                 <item row="0" column="0">
-                  <widget class="QLabel" name="mntTimerLabel">
-                   <property name="text">
-                    <string>Timer:</string>
-                   </property>
-                  </widget>
-                 </item>
-                 <item row="0" column="1">
-                  <widget class="QLineEdit" name="mntTimerLineEdit"/>
-                 </item>
-                 <item row="1" column="0">
-                  <widget class="QLabel" name="mntGrpLabel">
-                   <property name="text">
-                    <string>ActiveMntGrp:</string>
-                   </property>
-                  </widget>
-                 </item>
-                 <item row="1" column="1">
-                  <widget class="QLineEdit" name="mntGrpLineEdit"/>
-                 </item>
-                 <item row="2" column="0">
-                  <widget class="QLabel" name="mntServerLabel">
-                   <property name="text">
-                    <string>MacroServer:</string>
-                   </property>
-                  </widget>
-                 </item>
-                 <item row="2" column="1">
-                  <widget class="QLineEdit" name="mntServerLineEdit"/>
-                 </item>
-                </layout>
-               </item>
-              </layout>
-             </widget>
-            </item>
-           </layout>
-          </widget>
-         </item>
          <item>
           <widget class="QFrame" name="frame_5">
            <property name="frameShape">
@@ -220,6 +165,13 @@
               </layout>
              </widget>
             </item>
+            <item row="2" column="0">
+             <widget class="QPushButton" name="pushButton">
+              <property name="text">
+               <string>Device Labels ...</string>
+              </property>
+             </widget>
+            </item>
            </layout>
           </widget>
          </item>
@@ -251,16 +203,6 @@
                    </property>
                   </widget>
                  </item>
-                 <item row="0" column="1">
-                  <widget class="QLineEdit" name="devConfigLineEdit"/>
-                 </item>
-                 <item row="0" column="2">
-                  <widget class="QToolButton" name="devConfigToolButton">
-                   <property name="text">
-                    <string>...</string>
-                   </property>
-                  </widget>
-                 </item>
                  <item row="1" column="0">
                   <widget class="QLabel" name="devWriterLabel">
                    <property name="text">
@@ -268,13 +210,33 @@
                    </property>
                   </widget>
                  </item>
+                 <item row="2" column="0">
+                  <widget class="QLabel" name="mntServerLabel">
+                   <property name="text">
+                    <string>MacroServer:</string>
+                   </property>
+                  </widget>
+                 </item>
                  <item row="1" column="1">
                   <widget class="QLineEdit" name="devWriterLineEdit"/>
                  </item>
-                 <item row="1" column="2">
-                  <widget class="QToolButton" name="devWriterToolButton">
+                 <item row="2" column="1">
+                  <widget class="QLineEdit" name="mntServerLineEdit"/>
+                 </item>
+                 <item row="0" column="1">
+                  <widget class="QLineEdit" name="devConfigLineEdit"/>
+                 </item>
+                 <item row="0" column="2">
+                  <widget class="QPushButton" name="devConfigPushButton">
                    <property name="text">
-                    <string>...</string>
+                    <string>Variables ...</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="1" column="2">
+                  <widget class="QPushButton" name="devWriterPushButton">
+                   <property name="text">
+                    <string>Records ...</string>
                    </property>
                   </widget>
                  </item>
@@ -352,13 +314,6 @@
            </layout>
           </widget>
          </item>
-         <item>
-          <widget class="QPushButton" name="pushButton">
-           <property name="text">
-            <string>Device Labels ...</string>
-           </property>
-          </widget>
-         </item>
         </layout>
        </item>
       </layout>
@@ -402,9 +357,6 @@
            </widget>
           </item>
          </layout>
-         <zorder>groupBox_5</zorder>
-         <zorder>groupBox_4</zorder>
-         <zorder>groupBox_4</zorder>
         </widget>
        </item>
        <item row="1" column="0">
@@ -419,7 +371,7 @@
           <item row="0" column="0">
            <widget class="QGroupBox" name="serverGroupBox">
             <property name="title">
-             <string>Settings Server:</string>
+             <string>Selector Server:</string>
             </property>
             <layout class="QGridLayout" name="gridLayout_15">
              <item row="0" column="0">
@@ -486,8 +438,6 @@
            </widget>
           </item>
          </layout>
-         <zorder>groupBox_3</zorder>
-         <zorder>groupBox_3</zorder>
         </widget>
        </item>
        <item row="2" column="0">
@@ -505,6 +455,42 @@
        </item>
       </layout>
      </widget>
+    </widget>
+   </item>
+   <item row="0" column="0">
+    <widget class="QFrame" name="frame_9">
+     <property name="frameShape">
+      <enum>QFrame::StyledPanel</enum>
+     </property>
+     <property name="frameShadow">
+      <enum>QFrame::Raised</enum>
+     </property>
+     <layout class="QGridLayout" name="gridLayout_24">
+      <item row="0" column="0">
+       <layout class="QHBoxLayout" name="horizontalLayout_2">
+        <item>
+         <widget class="QLabel" name="mntTimerLabel">
+          <property name="text">
+           <string>Timer:</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QLineEdit" name="mntTimerLineEdit"/>
+        </item>
+        <item>
+         <widget class="QLabel" name="mntGrpLabel">
+          <property name="text">
+           <string>ActiveMntGrp:</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QLineEdit" name="mntGrpLineEdit"/>
+        </item>
+       </layout>
+      </item>
+     </layout>
     </widget>
    </item>
   </layout>
