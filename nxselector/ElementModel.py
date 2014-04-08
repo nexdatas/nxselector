@@ -53,7 +53,7 @@ class ElementModel(QAbstractTableModel):
         self.group = []
 
         if group:
-            self.group = group
+            self.group = sorted(group)
         pass
 
     def rowCount(self, index=QModelIndex()):
