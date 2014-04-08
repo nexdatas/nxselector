@@ -39,7 +39,7 @@ from PyQt4.QtGui import (QHBoxLayout,QVBoxLayout,
 from .Element import Element, DSElement, CPElement, CP, DS
 from .ElementModel import ElementModel, ElementDelegate
 
-from .Views import TableView, CheckerView, RadioView
+from .Views import TableView, CheckerView, RadioView, LeftCheckerView
 from .Frames import Frames
 
 import logging

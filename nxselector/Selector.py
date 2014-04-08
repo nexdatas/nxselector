@@ -48,7 +48,6 @@ from .Mandatory import Mandatory
 from .Storage import Storage
 
 
-from .Views import TableView, CheckerView, RadioView, ButtonView
 
 import logging
 logger = logging.getLogger(__name__)
@@ -85,9 +84,15 @@ class Selector(QDialog):
 
         self.preferences.mgroups = QString(self.restoreString(
                 settings, 'Preferences/Groups', '{}'))
-
         self.preferences.frames = self.restoreString(
                 settings, 'Preferences/Frames', '[]')
+        
+        self.preferences.addHint(
+            self.preferences.mgroups,
+            self.preferences.mgroupshelp)
+        self.preferences.addHint(
+            self.preferences.frames,
+            self.preferences.frameshelp)
 
         self.selectable.mgroups = str(self.preferences.mgroups)
         self.selectable.frames = Frames(self.preferences.frames)

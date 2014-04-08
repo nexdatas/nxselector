@@ -28,7 +28,7 @@ import json
 import logging
 logger = logging.getLogger(__name__)
 
-from .Views import TableView, CheckerView, RadioView, ButtonView
+from .Views import TableView, CheckerView, RadioView, ButtonView, LeftCheckerView, LeftRadioView
 
 from PyQt4.QtCore import (
     SIGNAL, QSettings, Qt, QVariant, SIGNAL, QString)
@@ -63,8 +63,10 @@ class Preferences(object):
 
         self.views = {
             "CheckBoxes":CheckerView, 
+            "LeftCheckBoxes":LeftCheckerView, 
             "Tables":TableView, 
             "RadioButtons":RadioView,
+            "LeftRadioButtons":LeftRadioView,
             "Buttons":ButtonView}
 
         self.maxHelp = 10
@@ -121,12 +123,7 @@ class Preferences(object):
                 dp = PyTango.DeviceProxy(server)
                 if dp.info().dev_class == 'NXSRecSelector':
                     self.state.server = str(server)
-                    qstring = QString(server)
-                    if qstring not in self.serverhelp:
-                        self.serverhelp.append(server)
-                    if self.maxHelp < len(self.serverhelp):
-                        self.serverhelp.pop(0)
-
+                    self.addHint(server, self.serverhelp)
             except:
                 self.reset()
             self.ui.preferences.emit(SIGNAL("serverChanged()"))
@@ -140,16 +137,19 @@ class Preferences(object):
             mgroups =  json.loads(string)
             if isinstance(mgroups, dict):
                 self.mgroups = string
-                qstring = QString(string)
-                if qstring not in self.mgroupshelp:
-                    self.mgroupshelp.append(string)
-                if self.maxHelp < len(self.mgroupshelp):
-                    self.mgroupshelp.pop(0)
+                self.addHint(string, self.mgroupshelp)
                 self.ui.preferences.emit(
                     SIGNAL("groupsChanged(QString)"),
                     qstring) 
         except:    
             self.reset()
+
+    def addHint(self, string, hints):
+        qstring = QString(string)
+        if qstring not in hints:
+            hints.append(string)
+        if self.maxHelp < len(hints):
+            hints.pop(0)
 
 
     def on_frameLineEdit_editingFinished(self):
@@ -161,11 +161,7 @@ class Preferences(object):
             
             if isinstance(mframes, list):
                 self.frames = string
-                qstring = QString(string)
-                if qstring not in self.frameshelp:
-                    self.frameshelp.append(string)
-                if self.maxHelp < len(self.frameshelp):
-                    self.frameshelp.pop(0)
+                self.addHint(string, self.frameshelp)
                 self.ui.preferences.emit(
                     SIGNAL("framesChanged(QString)"),
                     qstring) 

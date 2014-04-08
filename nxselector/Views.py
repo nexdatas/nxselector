@@ -150,15 +150,25 @@ class CheckerView(QWidget):
         self.updateGeometry()
 
 class RadioView(CheckerView):
-#class CheckerView(QAbstractItemView):
 
     def __init__(self, parent=None):
         super(RadioView, self).__init__(parent)
         self.widget = QRadioButton
 
+class LeftRadioView(CheckerView):
+
+    def __init__(self, parent=None):
+        super(LeftRadioView, self).__init__(parent)
+        self.widget = QRadioButton
+        self.center = False
+
+class LeftCheckerView(CheckerView):
+
+    def __init__(self, parent=None):
+        super(LeftCheckerView, self).__init__(parent)
+        self.center = False
 
 class ButtonView(CheckerView):
-#class CheckerView(QAbstractItemView):
 
     def __init__(self, parent=None):
         super(ButtonView, self).__init__(parent)
