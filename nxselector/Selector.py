@@ -89,7 +89,7 @@ class Selector(QDialog):
         self.preferences.frames = self.restoreString(
                 settings, 'Preferences/Frames', '[]')
 
-        self.selectable.mgroups = self.preferences.mgroups
+        self.selectable.mgroups = str(self.preferences.mgroups)
         self.selectable.frames = Frames(self.preferences.frames)
         self.automatic = Automatic(
             self.ui, self.state, 
