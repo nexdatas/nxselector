@@ -66,6 +66,7 @@ class CheckerView(QWidget):
                      self.checked)
         self.spacer = None
         self.widget = QCheckBox
+        self.center = True
         
     def checked(self, widget):
         row = self.widgets.index(widget)
@@ -116,6 +117,15 @@ class CheckerView(QWidget):
                     cb = self.widget()
                     if hasattr(cb, "setCheckable"):
                         cb.setCheckable(True)
+                    if hasattr(cb, "setSizePolicy") and self.center: 
+                        sizePolicy = QtGui.QSizePolicy(
+                            QtGui.QSizePolicy.Fixed, QtGui.QSizePolicy.Fixed)
+                        sizePolicy.setHorizontalStretch(0)
+                        sizePolicy.setVerticalStretch(0)
+                        sizePolicy.setHeightForWidth(
+                            cb.sizePolicy().hasHeightForWidth())
+                        cb.setSizePolicy(sizePolicy)
+
                 cb.setEnabled(bool(Qt.ItemIsEnabled & flags))
                 if name:
                     cb.setText(str(name.toString()))
@@ -130,7 +140,8 @@ class CheckerView(QWidget):
                     self.mapper.setMapping(cb, cb)
             if not self.spacer:
                 self.spacer = QSpacerItem(10, 10, 
-                                         QtGui.QSizePolicy.Expanding, 
+                                          QtGui.QSizePolicy.Minimum,
+#                                         QtGui.QSizePolicy.Expanding, 
                                          QtGui.QSizePolicy.Expanding)
                 self.layout.addItem(self.spacer)
                 
@@ -152,3 +163,4 @@ class ButtonView(CheckerView):
     def __init__(self, parent=None):
         super(ButtonView, self).__init__(parent)
         self.widget = QPushButton
+        self.center = False
