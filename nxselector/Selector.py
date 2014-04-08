@@ -82,10 +82,17 @@ class Selector(QDialog):
             self.ui, self.state, 
             self.preferences.views[self.userView])
 
-        self.preferences.mgroups = QString(self.restoreString(
+        self.preferences.mgroups = str(self.restoreString(
                 settings, 'Preferences/Groups', '{}'))
         self.preferences.frames = self.restoreString(
                 settings, 'Preferences/Frames', '[]')
+
+        self.preferences.mgroupshelp = self.restoreList(
+                settings, 'Preferences/GroupsHints', 
+                self.preferences.mgroupshelp)
+        self.preferences.frameshelp = self.restoreList(
+                settings, 'Preferences/FramesHints',
+                self.preferences.frameshelp)
         
         self.preferences.addHint(
             self.preferences.mgroups,
@@ -118,6 +125,16 @@ class Selector(QDialog):
         res = default
         try:
             res = unicode(settings.value(name).toString())  
+            if not res:
+                res = default
+        except:
+            res = default
+        return res
+
+    def restoreList(self, settings, name, default):
+        res = default
+        try:
+            res = settings.value(name).toList()
             if not res:
                 res = default
         except:
@@ -170,6 +187,12 @@ class Selector(QDialog):
         settings.setValue(
             "Preferences/Frames",
             QVariant(str(self.preferences.frames)))
+        settings.setValue(
+            "Preferences/FramesHints",
+            QVariant(str(self.preferences.frameshelp)))
+        settings.setValue(
+            "Preferences/GroupsHints",
+            QVariant(str(self.preferences.mgroupshelp)))
 
                     
     def closeEvent(self, event):

@@ -62,11 +62,11 @@ class Preferences(object):
         self.frames = str(self.frameshelp[0])
 
         self.views = {
-            "CheckBoxes":CheckerView, 
-            "LeftCheckBoxes":LeftCheckerView, 
+            "CentralCheckBoxes":CheckerView, 
+            "CheckBoxes":LeftCheckerView, 
             "Tables":TableView, 
-            "RadioButtons":RadioView,
-            "LeftRadioButtons":LeftRadioView,
+            "CentralRadioButtons":RadioView,
+            "RadioButtons":LeftRadioView,
             "Buttons":ButtonView}
 
         self.maxHelp = 10
@@ -140,7 +140,7 @@ class Preferences(object):
                 self.addHint(string, self.mgroupshelp)
                 self.ui.preferences.emit(
                     SIGNAL("groupsChanged(QString)"),
-                    qstring) 
+                    QString(qstring)) 
         except:    
             self.reset()
 
@@ -164,7 +164,7 @@ class Preferences(object):
                 self.addHint(string, self.frameshelp)
                 self.ui.preferences.emit(
                     SIGNAL("framesChanged(QString)"),
-                    qstring) 
+                    QString(string)) 
         except:
             self.reset()
 

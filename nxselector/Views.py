@@ -67,6 +67,7 @@ class CheckerView(QWidget):
         self.spacer = None
         self.widget = QCheckBox
         self.center = True
+        self.maxHeight = 0
         
     def checked(self, widget):
         row = self.widgets.index(widget)
@@ -133,7 +134,13 @@ class CheckerView(QWidget):
 #                    cb.setCheckState(status)
                     cb.setChecked(bool(status))
                 if row >= len(self.widgets):
-                    self.layout.addWidget(cb, row, 0, 1, 1)
+                    if self.maxHeight:
+                        lrow = row % self.maxHeight
+                        lcol = row / self.maxHeight
+                    else :
+                        lrow = row
+                        lcol = 0
+                    self.layout.addWidget(cb, lrow, lcol, 1, 1)
                     self.widgets.append(cb)
                     self.connect(cb, SIGNAL("clicked()"),
                                  self.mapper, SLOT("map()"))
