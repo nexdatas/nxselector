@@ -73,6 +73,9 @@ class Selector(QDialog):
         self.userView = self.restoreString(
             settings, 'Preferences/UserView', 'CheckBoxes')
 
+        self.rowMax = self.restoreInt(
+            settings, 'Preferences/RowMax', 0)
+
 
         ## user interface
         self.ui = Ui_Selector()
@@ -80,7 +83,8 @@ class Selector(QDialog):
         self.storage = Storage(self.ui, self.state)
         self.selectable = Selectable(
             self.ui, self.state, 
-            self.preferences.views[self.userView])
+            self.preferences.views[self.userView],
+            self.rowMax)
 
         self.preferences.mgroups = str(self.restoreString(
                 settings, 'Preferences/Groups', '{}'))
@@ -105,10 +109,12 @@ class Selector(QDialog):
         self.selectable.frames = Frames(self.preferences.frames)
         self.automatic = Automatic(
             self.ui, self.state, 
-            self.preferences.views[self.userView])
+            self.preferences.views[self.userView],
+            self.rowMax)
         self.mandatory = Mandatory(
             self.ui, self.state, 
-            self.preferences.views[self.userView])
+            self.preferences.views[self.userView],
+            self.rowMax)
 
 
         self.tabs = [self.selectable, self.automatic, self.mandatory,
@@ -120,6 +126,16 @@ class Selector(QDialog):
             settings.value("Selector/Geometry").toByteArray())
 
 
+
+    def restoreInt(self, settings, name, default):
+        res = default
+        try:
+            res = int(settings.value(name).toInt()[0])  
+            if not res:
+                res = default
+        except:
+            res = default
+        return res
 
     def restoreString(self, settings, name, default):
         res = default
@@ -153,6 +169,7 @@ class Selector(QDialog):
         cid = self.ui.viewComboBox.findText(QString(self.userView))
         if cid >= 0:
             self.ui.viewComboBox.setCurrentIndex(cid) 
+        self.ui.rowMaxSpinBox.setValue(self.rowMax)    
             
         self.connect(self.ui.buttonBox.button(QDialogButtonBox.Apply), 
                      SIGNAL("clicked()"), self.apply)
@@ -184,6 +201,9 @@ class Selector(QDialog):
         settings.setValue(
             "Preferences/UserView",
             QVariant(str(self.ui.viewComboBox.currentText())))
+        settings.setValue(
+            "Preferences/RowMax",
+            QVariant(self.ui.rowMaxSpinBox.value()))
         settings.setValue(
             "Preferences/Groups",
             QVariant(str(self.preferences.mgroups)))
