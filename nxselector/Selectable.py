@@ -108,7 +108,8 @@ class Selectable(object):
                 if CP not in self.groups:
                     self.groups[CP] = []
                 self.groups[CP].append(CPElement(cp, self.state))
-        
+        for k in self.groups.keys():
+            self.groups[k] = sorted(self.groups[k])
 
 
     def createGUI(self):
