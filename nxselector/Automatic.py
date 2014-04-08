@@ -49,10 +49,12 @@ class Automatic(object):
 
     ## constructor
     # \param settings frame settings
-    def __init__(self, ui, state = None, userView = CheckerView):
+    def __init__(self, ui, state = None, userView = CheckerView,
+                 rowMax = 0):
         self.ui = ui
         self.state = state
         self.userView = userView
+        self.rowMax = rowMax
 
         self.agroup = []
         self.aview = None
@@ -83,6 +85,7 @@ class Automatic(object):
         mgroup.setTitle("Automatic")
         layout_auto = QGridLayout(mgroup)
         mview = self.userView(mgroup)
+        mview.rowMax = self.rowMax
 
         layout_auto.addWidget(mview, 0, 0, 1, 1)
         layout_groups.addWidget(mgroup)

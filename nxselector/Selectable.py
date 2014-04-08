@@ -49,11 +49,12 @@ logger = logging.getLogger(__name__)
 class Selectable(object):
 
     ## constructor
-    def __init__(self, ui, state = None, userView = CheckerView):
+    def __init__(self, ui, state = None, userView = CheckerView,
+                 rowMax = 0):
         self.ui = ui
         self.state = state
         self.userView = userView
-
+        self.rowMax = rowMax
         self.layout = None
 
 
@@ -134,6 +135,7 @@ class Selectable(object):
                     mgroup.setTitle(group[0])
                     layout_auto = QGridLayout(mgroup)
                     mview = self.userView(mgroup)
+                    mview.rowMax = self.rowMax
 
                     layout_auto.addWidget(mview, 0, 0, 1, 1)
                     layout_groups.addWidget(mgroup)

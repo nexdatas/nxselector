@@ -46,11 +46,12 @@ logger = logging.getLogger(__name__)
 class Mandatory(object):
 
     ## constructor
-    def __init__(self, ui, state = None, userView = CheckerView):
+    def __init__(self, ui, state = None, userView = CheckerView, 
+                 rowMax=0):
         self.ui = ui
         self.state = state
         self.userView = userView
-
+        self.rowMax = rowMax
         self.layout = None
         
         self.mgroup = []
@@ -91,6 +92,7 @@ class Mandatory(object):
         mgroup.setTitle("Mandatory")
         layout_auto = QGridLayout(mgroup)
         mview = self.userView(mgroup)
+        mview.rowMax = self.rowMax
 
         layout_auto.addWidget(mview, 0, 0, 1, 1)
         layout_groups.addWidget(mgroup)

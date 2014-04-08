@@ -67,7 +67,7 @@ class CheckerView(QWidget):
         self.spacer = None
         self.widget = QCheckBox
         self.center = True
-        self.maxHeight = 0
+        self.rowMax = 0
         
     def checked(self, widget):
         row = self.widgets.index(widget)
@@ -134,9 +134,9 @@ class CheckerView(QWidget):
 #                    cb.setCheckState(status)
                     cb.setChecked(bool(status))
                 if row >= len(self.widgets):
-                    if self.maxHeight:
-                        lrow = row % self.maxHeight
-                        lcol = row / self.maxHeight
+                    if self.rowMax:
+                        lrow = row % self.rowMax
+                        lcol = row / self.rowMax
                     else :
                         lrow = row
                         lcol = 0

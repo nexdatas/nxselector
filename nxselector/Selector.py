@@ -171,6 +171,9 @@ class Selector(QDialog):
         self.connect(self.ui.viewComboBox, 
                      SIGNAL("currentIndexChanged(int)"), self.resetViews)
 
+        self.connect(self.ui.rowMaxSpinBox, 
+                     SIGNAL("valueChanged(int)"), self.resetRows)
+
         
 
     def __saveSettings(self):
@@ -211,6 +214,12 @@ class Selector(QDialog):
         self.selectable.frames = Frames(str(frames))
         self.resetViews()
 
+
+    def resetRows(self, rowMax):
+        for tab in self.tabs:
+            tab.rowMax = rowMax
+        self.resetViews()
+
     def resetViews(self):
         for tab in self.tabs:
             tab.userView = self.preferences.views[
@@ -221,6 +230,8 @@ class Selector(QDialog):
         self.state.fetchSettings()
         for tab in self.tabs:
             tab.reset()
+
+
 
     def apply(self):
         self.state.updateMntGrp()
