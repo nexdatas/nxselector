@@ -57,17 +57,7 @@ class Selectable(object):
         self.layout = None
 
 
-        ## frames/columns/groups
-        self.mframes = []
-        self.mframes.append(Frames(
-                '[[[["Counters1", 0], ["Counters2", 2]], [["VCounters", 3]]],'
-                + '[[["MCAs", 1], ["SCAs", 4]]], [[["Misc", 5] ]]]'))
-        self.mframes.append(Frames(
-                '[[[["My Controllers", 0]]],[[["My Components", 1]]]]'))
-        self.mframes.append(Frames())
-        self.cframe = 1
-        self.frames = self.mframes[self.cframe]
-
+        self.frames = None
         self.mgroups = None
         self.groups = {}
         self.availableGroups = set()

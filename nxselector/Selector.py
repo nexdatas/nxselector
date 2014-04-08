@@ -71,13 +71,9 @@ class Selector(QDialog):
 
         settings = QSettings()
 
-#        self.userView = "Tables"
-#        self.userView = "RadioButtons"
-#        self.userView = "Buttons"
-#        self.userView = "CheckBoxes"
-        
-        self.userView = self.restoreUserView(
+        self.userView = self.restoreString(
             settings, 'Preferences/UserView', 'CheckBoxes')
+
 
         ## user interface
         self.ui = Ui_Selector()
@@ -86,6 +82,13 @@ class Selector(QDialog):
         self.selectable = Selectable(
             self.ui, self.state, 
             self.preferences.views[self.userView])
+
+        self.preferences.mgroups = QString(self.restoreString(
+                settings, 'Preferences/Groups', '{}'))
+
+        self.preferences.frames = self.restoreString(
+                settings, 'Preferences/Frames', '[]')
+
         self.selectable.mgroups = self.preferences.mgroups
         self.selectable.frames = Frames(self.preferences.frames)
         self.automatic = Automatic(
@@ -105,7 +108,8 @@ class Selector(QDialog):
             settings.value("Selector/Geometry").toByteArray())
 
 
-    def restoreUserView(self, settings, name, default):
+
+    def restoreString(self, settings, name, default):
         res = default
         try:
             res = unicode(settings.value(name).toString())  
@@ -114,6 +118,8 @@ class Selector(QDialog):
         except:
             res = default
         return res
+
+
 
     ##  creates GUI
     # \brief It create dialogs for the main window application
@@ -153,6 +159,13 @@ class Selector(QDialog):
         settings.setValue(
             "Preferences/UserView",
             QVariant(str(self.ui.viewComboBox.currentText())))
+        settings.setValue(
+            "Preferences/Groups",
+            QVariant(str(self.preferences.mgroups)))
+        settings.setValue(
+            "Preferences/Frames",
+            QVariant(str(self.preferences.frames)))
+
                     
     def closeEvent(self, event):
         self.__saveSettings()

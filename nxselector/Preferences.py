@@ -46,6 +46,7 @@ class Preferences(object):
         self.state = state
 
 
+        # frames/columns/groups
         self.frameshelp = [
             QString('[[[["Counters1", 0], ["Counters2", 2]], [["VCounters", 3]]],'
                 + '[[["MCAs", 1], ["SCAs", 4]]], [[["Misc", 5] ]]]'), 
