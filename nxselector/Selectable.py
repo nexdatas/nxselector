@@ -164,13 +164,17 @@ class Selectable(object):
 #            self.views[k].setItemDelegate(ElementDelegate(self))
 
     def reset(self):
+        logger.debug("reset views")
         self.createGUI()
         self.updateGroups()
         self.setModels()
         self.updateViews()
+        logger.debug("reset views end")
 
     def updateViews(self):
         logger.debug("update views")
         for vw in self.views.values():
             vw.reset()
-
+            
+        logger.debug("update views end")
+                

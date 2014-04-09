@@ -174,7 +174,7 @@ class Selector(QDialog):
         self.connect(self.ui.buttonBox.button(QDialogButtonBox.Apply), 
                      SIGNAL("clicked()"), self.apply)
         self.connect(self.ui.buttonBox.button(QDialogButtonBox.Reset), 
-                     SIGNAL("clicked()"), self.reset)
+                     SIGNAL("clicked()"), self.resetAll)
 
         self.connect(self.ui.preferences, 
                      SIGNAL("serverChanged()"), self.resetServer)
@@ -251,6 +251,10 @@ class Selector(QDialog):
         for tab in self.tabs:
             tab.reset()
 
+    def resetAll(self):
+        self.state.updateControllers()
+        self.reset()
+        
 
 
     def apply(self):

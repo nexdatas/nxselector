@@ -75,7 +75,8 @@ class ElementModel(QAbstractTableModel):
         if role == Qt.DisplayRole:
             return QVariant(device.name)
         if role == Qt.CheckStateRole: 
-            if not (self.flags(index) & Qt.ItemIsEnabled) or device.checked:
+            if (not (self.flags(index) & Qt.ItemIsEnabled) and self.enable) \
+                    or device.checked:
                 return Qt.Checked
             else:
                 return Qt.Unchecked
@@ -115,6 +116,7 @@ class ElementModel(QAbstractTableModel):
                                  Qt.ItemIsUserCheckable 
                                  )
         else:
+            flag &= ~Qt.ItemIsEnabled
             return Qt.ItemFlags( flag | 
                                  Qt.ItemIsUserCheckable 
                                  )

@@ -68,10 +68,11 @@ class CheckerView(QWidget):
         self.widget = QCheckBox
         self.center = True
         self.rowMax = 0
-        
+        self.selectedWidgetRow = None
+
     def checked(self, widget):
-        row = self.widgets.index(widget)
-        
+        row = self.widgets.index(widget)        
+        self.selectedWidgetRow = row
         ind = self.model.index(row, 1)
         value = QVariant(self.widgets[row].isChecked())
         self.model.setData(ind, value, Qt.CheckStateRole)
@@ -103,6 +104,10 @@ class CheckerView(QWidget):
             self.connect(self.mapper, SIGNAL("mapped(QWidget*)"),
                          self.checked)
         self.updateState()
+        if self.selectedWidgetRow is not None:
+            if len(self.widgets) > self.selectedWidgetRow:
+                self.widgets[self.selectedWidgetRow].setFocus()
+            self.selectedWidgetRow = None
         self.show()
 
     def updateState(self):
@@ -155,6 +160,8 @@ class CheckerView(QWidget):
             
         self.update()
         self.updateGeometry()
+        
+            
 
 class RadioView(CheckerView):
 

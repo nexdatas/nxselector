@@ -128,6 +128,9 @@ class ServerState(object):
         self.storeSettings()
         self.__dp.UpdateMntGrp()
 
+    def updateControllers(self):
+        self.__dp.UpdateControllers()
+
     def setServer(self):
         if not self.server:
             servers = self.__db.get_device_exported_for_class(

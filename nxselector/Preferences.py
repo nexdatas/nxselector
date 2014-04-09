@@ -151,7 +151,6 @@ class Preferences(object):
         if self.maxHelp < len(hints):
             hints.pop(0)
 
-
     def on_frameLineEdit_editingFinished(self):
         string = str(self.ui.frameLineEdit.text())
         try:
