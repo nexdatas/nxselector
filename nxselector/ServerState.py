@@ -121,6 +121,7 @@ class ServerState(object):
 
     def storeSettings(self):
         self.storeDict("DataSourceGroup", self.dsgroup) 
+        self.storeDict("DataSourceLabels", self.dslabels) 
         self.storeDict("ComponentGroup", self.cpgroup) 
         self.storeFileData()
 

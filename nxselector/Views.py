@@ -46,7 +46,7 @@ class TableView(QTableView):
     def __init__(self, parent=None):
         super(TableView, self).__init__(parent)
         self.verticalHeader().setVisible(False)        
-        self.horizontalHeader().setVisible(False)        
+#        self.horizontalHeader().setVisible(False)        
         self.horizontalHeader().setStretchLastSection(True)        
         self.horizontalHeader().setResizeMode(QHeaderView.Stretch)
         
@@ -127,9 +127,12 @@ class CheckerView(QWidget):
         if not self.model is None:
             for row in range(self.model.rowCount()):
                 ind = self.model.index(row,0)
+                ind1 = self.model.index(row,1)
                 name = self.model.data(ind, role = Qt.DisplayRole)
+                label = self.model.data(ind1, role = Qt.DisplayRole)
                 status = self.model.data(ind, role = Qt.CheckStateRole)
                 flags = self.model.flags(ind)
+                flags = self.model.flags(ind1)
                 if row < len(self.widgets):
                     cb = self.widgets[row]
                 else:
@@ -147,7 +150,13 @@ class CheckerView(QWidget):
 
                 cb.setEnabled(bool(Qt.ItemIsEnabled & flags))
                 if name:
-                    cb.setText(str(name.toString()))
+                    if label and str(label.toString()).strip():
+                        cb.setText("%s [%s]" % (
+                                str(label.toString()),
+                                str(name.toString())))
+                    
+                    else:
+                        cb.setText(str(name.toString()))
                 if status is not None:    
 #                    cb.setCheckState(status)
                     cb.setChecked(bool(status))
