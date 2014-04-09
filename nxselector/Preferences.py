@@ -28,7 +28,8 @@ import json
 import logging
 logger = logging.getLogger(__name__)
 
-from .Views import TableView, CheckerView, RadioView, ButtonView, LeftCheckerView, LeftRadioView
+from .Views import (TableView, OneTableView, CheckerView, RadioView, ButtonView, 
+                    LeftCheckerView, LeftRadioView)
 
 from PyQt4.QtCore import (
     SIGNAL, QSettings, Qt, QVariant, SIGNAL, QString)
@@ -65,6 +66,7 @@ class Preferences(object):
             "CentralCheckBoxes":CheckerView, 
             "CheckBoxes":LeftCheckerView, 
             "Tables":TableView, 
+            "Columns":OneTableView, 
             "CentralRadioButtons":RadioView,
             "RadioButtons":LeftRadioView,
             "Buttons":ButtonView}

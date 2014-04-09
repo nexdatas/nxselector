@@ -49,9 +49,22 @@ class TableView(QTableView):
         self.horizontalHeader().setVisible(False)        
         self.horizontalHeader().setStretchLastSection(True)        
         self.horizontalHeader().setResizeMode(QHeaderView.Stretch)
+        
+
+class OneTableView(QTableView):
+
+    def __init__(self, parent=None):
+        super(OneTableView, self).__init__(parent)
+        self.verticalHeader().setVisible(False)        
+        self.horizontalHeader().setVisible(False)        
+        self.horizontalHeader().setStretchLastSection(True)        
+        self.horizontalHeader().setResizeMode(QHeaderView.Stretch)
 
 
 
+    def reset(self):
+        super(OneTableView, self).reset()
+        self.hideColumn(1)
 
 class CheckerView(QWidget):
 
@@ -73,7 +86,7 @@ class CheckerView(QWidget):
     def checked(self, widget):
         row = self.widgets.index(widget)        
         self.selectedWidgetRow = row
-        ind = self.model.index(row, 1)
+        ind = self.model.index(row, 0)
         value = QVariant(self.widgets[row].isChecked())
         self.model.setData(ind, value, Qt.CheckStateRole)
             
@@ -113,7 +126,7 @@ class CheckerView(QWidget):
     def updateState(self):
         if not self.model is None:
             for row in range(self.model.rowCount()):
-                ind = self.model.index(row,1)
+                ind = self.model.index(row,0)
                 name = self.model.data(ind, role = Qt.DisplayRole)
                 status = self.model.data(ind, role = Qt.CheckStateRole)
                 flags = self.model.flags(ind)

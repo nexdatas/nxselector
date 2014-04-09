@@ -61,7 +61,7 @@ class ElementModel(QAbstractTableModel):
         
 
     def columnCount(self, index=QModelIndex()):
-        return 1
+        return 2
 
     def index(self, row, column, parent=QModelIndex()):
         return self.createIndex(row, column)
@@ -72,14 +72,15 @@ class ElementModel(QAbstractTableModel):
             return
         device = self.group[index.row()]
         column = index.column()
-        if role == Qt.DisplayRole:
-            return QVariant(device.name)
-        if role == Qt.CheckStateRole: 
-            if (not (self.flags(index) & Qt.ItemIsEnabled) and self.enable) \
-                    or device.checked:
-                return Qt.Checked
-            else:
-                return Qt.Unchecked
+        if column == 0:
+            if role == Qt.DisplayRole:
+                return QVariant(device.name)
+            if role == Qt.CheckStateRole: 
+                if (not (self.flags(index) & Qt.ItemIsEnabled) and self.enable) \
+                        or device.checked:
+                    return Qt.Checked
+                else:
+                    return Qt.Unchecked
 
 
         return QVariant()
@@ -126,14 +127,15 @@ class ElementModel(QAbstractTableModel):
         if index.isValid() and 0 <= index.row() < len(self.group):
             device = self.group[index.row()]
             column = index.column()
-            if role == Qt.CheckStateRole: 
-                device.checked = value.toBool()
-                self.emit(SIGNAL("dataChanged(QModelIndex, QModelIndex)"), 
-                          index, index)
-                if device.eltype == CP:
-                    self.emit(SIGNAL("componentChecked"))
+            if column == 0:
+                if role == Qt.CheckStateRole: 
+                    device.checked = value.toBool()
+                    self.emit(SIGNAL("dataChanged(QModelIndex, QModelIndex)"), 
+                              index, index)
+                    if device.eltype == CP:
+                        self.emit(SIGNAL("componentChecked"))
                 
-            return True
+                return True
         return False
 
 
