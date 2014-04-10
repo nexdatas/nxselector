@@ -22,9 +22,9 @@
 """ main window application dialog """
 
 import os
+import sys 
 import PyTango
 import json
-
  
 from PyQt4 import QtCore, QtGui
  
@@ -258,4 +258,16 @@ class Selector(QDialog):
 
 
     def apply(self):
-        self.state.updateMntGrp()
+        try:
+            self.state.updateMntGrp()
+        except PyTango.DevFailed as e:
+            exctype , value = sys.exc_info()[:2]
+            QMessageBox.warning(
+                self, 
+                "Error in updating Measurement Group",
+                "%s" % str("\n".join(["%s " % (err.desc) for err in value])))
+        except Exception as e:
+            QMessageBox.warning(
+                self, 
+                "Error in updating Measurement Group",
+                str(e.DevError))
