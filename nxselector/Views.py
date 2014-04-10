@@ -82,6 +82,7 @@ class CheckerView(QWidget):
         self.center = True
         self.rowMax = 0
         self.selectedWidgetRow = None
+        self.showLabels = True
 
     def checked(self, widget):
         row = self.widgets.index(widget)        
@@ -150,7 +151,8 @@ class CheckerView(QWidget):
 
                 cb.setEnabled(bool(Qt.ItemIsEnabled & flags))
                 if name:
-                    if label and str(label.toString()).strip():
+                    if self.showLabels and label and \
+                            str(label.toString()).strip():
                         cb.setText("%s [%s]" % (
                                 str(label.toString()),
                                 str(name.toString())))
