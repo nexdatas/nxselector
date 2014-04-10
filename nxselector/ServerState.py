@@ -90,7 +90,6 @@ class ServerState(object):
 
         self.timer = self.loadData("Timer")
         self.mntgrp = str(self.loadData("ActiveMntGrp"))
-        print "SMNT", self.mntgrp
         self.macroServer = self.loadData("MacroServer")
 
         self.configDevice = self.loadData("ConfigDevice")

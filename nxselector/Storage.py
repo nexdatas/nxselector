@@ -44,7 +44,7 @@ class Storage(object):
 
 
 
-    def connectSignals(self):
+    def disconnectSignals(self):
         self.ui.storage.disconnect(self.ui.fileScanDirLineEdit,
                                 SIGNAL("editingFinished()"), self.apply)
 #        self.ui.storage.disconnect(self.ui.fileScanIDSpinBox,
@@ -81,6 +81,8 @@ class Storage(object):
         self.ui.storage.disconnect(self.ui.othersTimeZoneLineEdit,
                                 SIGNAL("editingFinished()"), self.apply)
 
+    def connectSignals(self):
+        self.disconnectSignals()
         self.ui.storage.connect(self.ui.fileScanDirLineEdit,
                                 SIGNAL("editingFinished()"), self.apply)
 #        self.ui.storage.connect(self.ui.fileScanIDSpinBox,
@@ -119,12 +121,12 @@ class Storage(object):
         
 
     def reset(self):
-        self.connectSignals()
+        self.disconnectSignals()
         self.updateForm()
+        self.connectSignals()
 
 
     def updateForm(self):
-        print "MNT0", self.state.mntgrp
         # file group
         self.ui.fileScanDirLineEdit.setText(self.state.scanDir)
         self.ui.fileScanIDSpinBox.setValue(self.state.scanID)
@@ -138,24 +140,15 @@ class Storage(object):
                 sfile = self.state.scanFile    
             self.ui.fileScanLineEdit.setText(sfile)
 
-        print "MNT1", self.state.mntgrp
         # measurement group    
         self.ui.mntTimerComboBox.clear()
-        print "MNT2", self.state.mntgrp
         self.ui.mntTimerComboBox.addItems([QString(tm) for tm in self.state.atlist])
-        for tm in self.state.atlist:
-            print "tm", tm
-#            self.ui.mntTimerComboBox.addItem(QString(tm))
-        print "MNT3", self.state.mntgrp
         cid = self.ui.mntTimerComboBox.findText(QString(self.state.timer))
-        print "MNT4", self.state.mntgrp
         if cid < 0:
             cid = 0
         self.ui.mntTimerComboBox.setCurrentIndex(cid)
 
-        print "MNT5", self.state.mntgrp
         self.ui.mntGrpLineEdit.setText(self.state.mntgrp)
-        print "MNT", self.state.mntgrp
         self.ui.mntServerLineEdit.setText(self.state.macroServer)
 
         # device group    
