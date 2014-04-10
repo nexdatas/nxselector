@@ -53,12 +53,14 @@ class Preferences(object):
 
 
         # frames/columns/groups
-        self.frameshelp = [
+        self.frameshelp = [\
+            QString('[[[["Devices", 0]]],[[["MCAs", 2],["Misc",1]]]]'),
             QString('[[[["Counters1", 0], ["Counters2", 2]], [["VCounters", 3]]],'
                 + '[[["MCAs", 1], ["SCAs", 4]]], [[["Misc", 5] ]]]'), 
             QString('[[[["My Controllers", 0]]],[[["My Components", 1]]]]'), 
             QString('')]
         self.mgroupshelp = [
+            QString('[[[["Counters", 0]]],[[["MCAs", 2],["Misc",1]]]]'),
             QString('{"2":[["ct01", 0], ["ct02",0]], "5":[["appscan", 1]]}'), 
             QString('')]
         self.serverhelp = [
@@ -161,8 +163,9 @@ class Preferences(object):
                 self.addHint(string, self.mgroupshelp)
                 self.ui.preferences.emit(
                     SIGNAL("groupsChanged(QString)"),
-                    QString(qstring)) 
-        except:    
+                    QString(string)) 
+        except Exception as e :    
+            logger.debug(str(e))
             self.reset()
 
     def addHint(self, string, hints):

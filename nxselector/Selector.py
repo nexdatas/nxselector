@@ -254,7 +254,7 @@ class Selector(QDialog):
         for tab in self.tabs:
             tab.rowMax = rowMax
         self.resetViews()
-
+        
     def resetViews(self):
         for tab in self.tabs:
             tab.userView = self.preferences.views[
