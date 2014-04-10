@@ -67,6 +67,7 @@ class ServerState(object):
         self.cpgroup = {}
         self.acpgroup = {}
         self.acplist = []
+        self.atlist = []
         self.mcplist = []
         self.description = []
 
@@ -77,7 +78,7 @@ class ServerState(object):
         self.cpgroup = self.loadDict("ComponentGroup") 
         self.acpgroup = self.loadDict("AutomaticComponentGroup") 
         self.acplist = self.loadList("AutomaticComponents") 
-        self.atlist = self.loadList("AvailableTimers") 
+        self.atlist = list(self.loadList("AvailableTimers"))
         self.mcplist = self.getList("MandatoryComponents") 
         self.description = self.loadList("Description", True) 
         self.fetchFileData()
@@ -88,7 +89,8 @@ class ServerState(object):
         self.scanID = self.loadData("ScanID")
 
         self.timer = self.loadData("Timer")
-        self.mntgrp = self.loadData("ActiveMntGrp")
+        self.mntgrp = str(self.loadData("ActiveMntGrp"))
+        print "SMNT", self.mntgrp
         self.macroServer = self.loadData("MacroServer")
 
         self.configDevice = self.loadData("ConfigDevice")
@@ -146,7 +148,7 @@ class ServerState(object):
         self.__dp = PyTango.DeviceProxy(self.server)
 
 
-        while not found and cnt < 1000:
+        while not found and cnt < 100:
             if cnt > 1:
                 time.sleep(0.01)
             try:
@@ -155,7 +157,7 @@ class ServerState(object):
             except (PyTango.DevFailed, PyTango.Except, PyTango.DevError):
                 time.sleep(0.01)
                 found = False
-                if cnt == 999:
+                if cnt == 99:
                     raise
             cnt += 1
 

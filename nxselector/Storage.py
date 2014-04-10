@@ -31,7 +31,7 @@ logger = logging.getLogger(__name__)
 from .Views import TableView, CheckerView, RadioView
 
 from PyQt4.QtCore import (
-    SIGNAL, QSettings, Qt, QVariant, SIGNAL)
+    SIGNAL, QSettings, Qt, QVariant, SIGNAL, QString)
 
 ## main window class
 class Storage(object):
@@ -53,8 +53,8 @@ class Storage(object):
                                 SIGNAL("editingFinished()"), self.apply)
                                 # measurement group    
 
-        self.ui.storage.disconnect(self.ui.mntTimerLineEdit,
-                                SIGNAL("editingFinished()"), self.apply)
+        self.ui.storage.disconnect(self.ui.mntTimerComboBox,
+                                SIGNAL("currentIndexChanged(int)"), self.apply)
         self.ui.storage.disconnect(self.ui.mntGrpLineEdit,
                                 SIGNAL("editingFinished()"), self.apply)
         self.ui.storage.disconnect(self.ui.mntServerLineEdit,
@@ -89,8 +89,8 @@ class Storage(object):
                                 SIGNAL("editingFinished()"), self.apply)
                                 # measurement group    
 
-        self.ui.storage.connect(self.ui.mntTimerLineEdit,
-                                SIGNAL("editingFinished()"), self.apply)
+        self.ui.storage.connect(self.ui.mntTimerComboBox,
+                                SIGNAL("currentIndexChanged(int)"), self.apply)
         self.ui.storage.connect(self.ui.mntGrpLineEdit,
                                 SIGNAL("editingFinished()"), self.apply)
         self.ui.storage.connect(self.ui.mntServerLineEdit,
@@ -124,6 +124,7 @@ class Storage(object):
 
 
     def updateForm(self):
+        print "MNT0", self.state.mntgrp
         # file group
         self.ui.fileScanDirLineEdit.setText(self.state.scanDir)
         self.ui.fileScanIDSpinBox.setValue(self.state.scanID)
@@ -137,9 +138,24 @@ class Storage(object):
                 sfile = self.state.scanFile    
             self.ui.fileScanLineEdit.setText(sfile)
 
+        print "MNT1", self.state.mntgrp
         # measurement group    
-        self.ui.mntTimerLineEdit.setText(self.state.timer)
+        self.ui.mntTimerComboBox.clear()
+        print "MNT2", self.state.mntgrp
+        self.ui.mntTimerComboBox.addItems([QString(tm) for tm in self.state.atlist])
+        for tm in self.state.atlist:
+            print "tm", tm
+#            self.ui.mntTimerComboBox.addItem(QString(tm))
+        print "MNT3", self.state.mntgrp
+        cid = self.ui.mntTimerComboBox.findText(QString(self.state.timer))
+        print "MNT4", self.state.mntgrp
+        if cid < 0:
+            cid = 0
+        self.ui.mntTimerComboBox.setCurrentIndex(cid)
+
+        print "MNT5", self.state.mntgrp
         self.ui.mntGrpLineEdit.setText(self.state.mntgrp)
+        print "MNT", self.state.mntgrp
         self.ui.mntServerLineEdit.setText(self.state.macroServer)
 
         # device group    
@@ -164,7 +180,7 @@ class Storage(object):
         self.state.scanFile = files.split()
 
         # measurement group    
-        self.state.timer = str(self.ui.mntTimerLineEdit.text())
+        self.state.timer = str(self.ui.mntTimerComboBox.currentText())
         self.state.mntgrp = str(self.ui.mntGrpLineEdit.text())
         self.state.macroServer = str(self.ui.mntServerLineEdit.text())
 

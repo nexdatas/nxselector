@@ -484,17 +484,23 @@
         <item>
          <widget class="QLabel" name="mntTimerLabel">
           <property name="text">
-           <string>Timer:</string>
+           <string>&amp;Timer:</string>
+          </property>
+          <property name="buddy">
+           <cstring>mntTimerComboBox</cstring>
           </property>
          </widget>
         </item>
         <item>
-         <widget class="QLineEdit" name="mntTimerLineEdit"/>
+         <widget class="QComboBox" name="mntTimerComboBox"/>
         </item>
         <item>
          <widget class="QLabel" name="mntGrpLabel">
           <property name="text">
-           <string>ActiveMntGrp:</string>
+           <string>Active&amp;MntGrp:</string>
+          </property>
+          <property name="buddy">
+           <cstring>mntGrpLineEdit</cstring>
           </property>
          </widget>
         </item>

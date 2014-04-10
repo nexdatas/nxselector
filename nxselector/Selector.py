@@ -65,7 +65,22 @@ class Selector(QDialog):
                      server, parent)
 
         
-        self.state = ServerState(server)
+        try:
+            self.state = ServerState(server)
+        except PyTango.DevFailed as e:
+            exctype , value = sys.exc_info()[:2]
+            QMessageBox.warning(
+                self, 
+                "Error in Setting Server",
+                "%s" % str("\n".join(["%s " % (err.desc) for err in value])))
+            sys.exit(-1)
+        except Exception as e:
+            QMessageBox.warning(
+                self, 
+                "Error in Setting Server",
+                str(e.DevError))
+            sys.exit(-1)
+
         self.state.fetchSettings()
 
         settings = QSettings()
