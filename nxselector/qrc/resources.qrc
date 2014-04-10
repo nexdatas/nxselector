@@ -1,0 +1,7 @@
+<!DOCTYPE RCC><RCC version="1.0">
+<qresource>
+<!-- <file alias="configtools.png">../images/config.png</file> -->
+<!-- <file alias="configtools.png">../images/config_tools.png</file> -->
+<file alias="configtools.png">../images/network_folder.png</file>
+</qresource>
+</RCC>
