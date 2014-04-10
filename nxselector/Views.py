@@ -71,7 +71,6 @@ class CheckerView(QWidget):
     def __init__(self, parent=None):
         super(CheckerView, self).__init__(parent)
         self.model = None
-#        self.layout = QtGui.QFormLayout(self)
         self.layout = QGridLayout(self)
         self.widgets = []
         self.mapper = QSignalMapper(self)
@@ -133,13 +132,15 @@ class CheckerView(QWidget):
                 label = self.model.data(ind1, role = Qt.DisplayRole)
                 status = self.model.data(ind, role = Qt.CheckStateRole)
                 flags = self.model.flags(ind)
-                flags = self.model.flags(ind1)
+                flags1 = self.model.flags(ind1)
                 if row < len(self.widgets):
                     cb = self.widgets[row]
                 else:
                     cb = self.widget()
                     if hasattr(cb, "setCheckable"):
                         cb.setCheckable(True)
+#                    if self.showLabels:
+#                        cb.setEditable(True)
                     if hasattr(cb, "setSizePolicy") and self.center: 
                         sizePolicy = QtGui.QSizePolicy(
                             QtGui.QSizePolicy.Fixed, QtGui.QSizePolicy.Fixed)

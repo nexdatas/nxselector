@@ -244,7 +244,7 @@ class Selector(QDialog):
         for tab in self.tabs:
             tab.userView = self.preferences.views[
                 str(self.ui.viewComboBox.currentText())]
-        self.reset()
+            tab.reset()
         
     def reset(self):
         self.state.fetchSettings()
