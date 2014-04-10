@@ -33,6 +33,8 @@ from .Views import TableView, CheckerView, RadioView
 from PyQt4.QtCore import (
     SIGNAL, QSettings, Qt, QVariant, SIGNAL, QString)
 
+from PyQt4.QtGui import (QMessageBox)
+
 ## main window class
 class Storage(object):
 
@@ -167,15 +169,22 @@ class Storage(object):
 
 
     def apply(self):
+        if not str(self.ui.mntGrpLineEdit.text()):
+            QMessageBox.warning(self.ui.mntGrpLineEdit, 
+                        "Empty Active Measurement Group",
+                        "Please provide a name of the Measurement Group")
+            self.ui.mntGrpLineEdit.setFocus()
+            return
+        # measurement group    
+        self.state.mntgrp = str(self.ui.mntGrpLineEdit.text())
+        self.state.timer = str(self.ui.mntTimerComboBox.currentText())
+        self.state.macroServer = str(self.ui.mntServerLineEdit.text())
+
         self.state.scanDir = str(self.ui.fileScanDirLineEdit.text())
 #        self.state.scanID = int(self.ui.fileScanIDSpinBox.value())
         files = str(self.ui.fileScanLineEdit.text())
         self.state.scanFile = files.split()
 
-        # measurement group    
-        self.state.timer = str(self.ui.mntTimerComboBox.currentText())
-        self.state.mntgrp = str(self.ui.mntGrpLineEdit.text())
-        self.state.macroServer = str(self.ui.mntServerLineEdit.text())
 
         # device group    
         self.state.writerDevice = str(self.ui.devWriterLineEdit.text())
