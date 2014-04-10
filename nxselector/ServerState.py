@@ -77,6 +77,7 @@ class ServerState(object):
         self.cpgroup = self.loadDict("ComponentGroup") 
         self.acpgroup = self.loadDict("AutomaticComponentGroup") 
         self.acplist = self.loadList("AutomaticComponents") 
+        self.atlist = self.loadList("AvailableTimers") 
         self.mcplist = self.getList("MandatoryComponents") 
         self.description = self.loadList("Description", True) 
         self.fetchFileData()
