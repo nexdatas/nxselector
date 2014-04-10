@@ -89,7 +89,7 @@ class Preferences(object):
 
         self.maxHelp = 10
 
-    def connectSignals(self):
+    def disconnectSignals(self):
         self.ui.preferences.disconnect(
             self.ui.devSettingsLineEdit,
             SIGNAL("editingFinished()"), 
@@ -105,6 +105,8 @@ class Preferences(object):
             SIGNAL("editingFinished()"), 
             self.on_frameLineEdit_editingFinished)
 
+    def connectSignals(self):
+        self.disconnectSignals()
         self.ui.preferences.connect(
             self.ui.frameLineEdit,
             SIGNAL("editingFinished()"), 
@@ -122,6 +124,7 @@ class Preferences(object):
 
        
     def reset(self):
+        self.disconnectSignals()
         if self.ui.viewComboBox.count() != len(self.views.keys()):
             self.ui.viewComboBox.clear()
             self.ui.viewComboBox.addItems(sorted(self.views.keys()))
