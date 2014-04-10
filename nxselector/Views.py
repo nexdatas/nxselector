@@ -82,6 +82,7 @@ class CheckerView(QWidget):
         self.rowMax = 0
         self.selectedWidgetRow = None
         self.showLabels = True
+        self.showNames = True
 
     def checked(self, widget):
         row = self.widgets.index(widget)        
@@ -154,9 +155,12 @@ class CheckerView(QWidget):
                 if name:
                     if self.showLabels and label and \
                             str(label.toString()).strip():
-                        cb.setText("%s [%s]" % (
-                                str(label.toString()),
-                                str(name.toString())))
+                        if self.showNames:
+                            cb.setText("%s [%s]" % (
+                                    str(label.toString()),
+                                    str(name.toString())))
+                        else:
+                            cb.setText("%s" % (str(label.toString())))
                     
                     else:
                         cb.setText(str(name.toString()))
@@ -246,3 +250,36 @@ class LeftRadioViewNL(LeftRadioView):
     def __init__(self, parent=None):
         super(LeftRadioViewNL, self).__init__(parent)
         self.showLabels = False
+
+
+class CheckerViewNN(CheckerView):
+
+    def __init__(self, parent=None):
+        super(CheckerViewNN, self).__init__(parent)
+        self.showNames = False
+
+
+class LeftCheckerViewNN(LeftCheckerView):
+
+    def __init__(self, parent=None):
+        super(LeftCheckerViewNN, self).__init__(parent)
+        self.showNames = False
+
+class ButtonViewNN(ButtonView):
+
+    def __init__(self, parent=None):
+        super(ButtonViewNN, self).__init__(parent)
+        self.showNames = False
+
+
+class RadioViewNN(RadioView):
+
+    def __init__(self, parent=None):
+        super(RadioViewNN, self).__init__(parent)
+        self.showNames = False
+
+class LeftRadioViewNN(LeftRadioView):
+
+    def __init__(self, parent=None):
+        super(LeftRadioViewNN, self).__init__(parent)
+        self.showNames = False

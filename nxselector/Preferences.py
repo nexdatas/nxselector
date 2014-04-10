@@ -31,7 +31,10 @@ logger = logging.getLogger(__name__)
 from .Views import (TableView, OneTableView, CheckerView, RadioView, ButtonView, 
                     LeftCheckerView, LeftRadioView, 
                     CheckerViewNL, RadioViewNL, ButtonViewNL, 
-                    LeftCheckerViewNL, LeftRadioViewNL)
+                    LeftCheckerViewNL, LeftRadioViewNL,
+                    CheckerViewNN, RadioViewNN, ButtonViewNN, 
+                    LeftCheckerViewNN, LeftRadioViewNN
+                    )
 
 from PyQt4.QtCore import (
     SIGNAL, QSettings, Qt, QVariant, SIGNAL, QString)
@@ -76,7 +79,13 @@ class Preferences(object):
             "CheckBoxes (NL)":LeftCheckerViewNL, 
             "CentralRadioButtons (NL)":RadioViewNL,
             "RadioButtons (NL)":LeftRadioViewNL,
-            "Buttons (NL)":ButtonViewNL}
+            "Buttons (NL)":ButtonViewNL,
+            "CentralCheckBoxes (NN)":CheckerViewNN, 
+            "CheckBoxes (NN)":LeftCheckerViewNN, 
+            "CentralRadioButtons (NN)":RadioViewNN,
+            "RadioButtons (NN)":LeftRadioViewNN,
+            "Buttons (NN)":ButtonViewNN
+            }
 
         self.maxHelp = 10
 
