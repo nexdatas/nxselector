@@ -212,3 +212,36 @@ class ButtonView(CheckerView):
         super(ButtonView, self).__init__(parent)
         self.widget = QPushButton
         self.center = False
+
+
+class CheckerViewNL(CheckerView):
+
+    def __init__(self, parent=None):
+        super(CheckerViewNL, self).__init__(parent)
+        self.showLabels = False
+
+
+class LeftCheckerViewNL(LeftCheckerView):
+
+    def __init__(self, parent=None):
+        super(LeftCheckerViewNL, self).__init__(parent)
+        self.showLabels = False
+
+class ButtonViewNL(ButtonView):
+
+    def __init__(self, parent=None):
+        super(ButtonViewNL, self).__init__(parent)
+        self.showLabels = False
+
+
+class RadioViewNL(RadioView):
+
+    def __init__(self, parent=None):
+        super(RadioViewNL, self).__init__(parent)
+        self.showLabels = False
+
+class LeftRadioViewNL(LeftRadioView):
+
+    def __init__(self, parent=None):
+        super(LeftRadioViewNL, self).__init__(parent)
+        self.showLabels = False
