@@ -42,6 +42,7 @@ class ServerState(object):
         self.__db = PyTango.Database()
         self.setServer()
         self.fetchSettings()
+            
 
         self.scanDir = None
         self.scanFile = []

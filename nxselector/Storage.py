@@ -58,7 +58,8 @@ class Storage(object):
         self.ui.storage.disconnect(self.ui.mntTimerComboBox,
                                 SIGNAL("currentIndexChanged(int)"), self.apply)
         self.ui.storage.disconnect(self.ui.mntGrpLineEdit,
-                                SIGNAL("editingFinished()"), self.apply)
+                                SIGNAL("editingFinished()"), 
+                                   self.apply)
         self.ui.storage.disconnect(self.ui.mntServerLineEdit,
                                 SIGNAL("editingFinished()"), self.apply)
         
@@ -96,7 +97,8 @@ class Storage(object):
         self.ui.storage.connect(self.ui.mntTimerComboBox,
                                 SIGNAL("currentIndexChanged(int)"), self.apply)
         self.ui.storage.connect(self.ui.mntGrpLineEdit,
-                                SIGNAL("editingFinished()"), self.apply)
+                                SIGNAL("editingFinished()"), 
+                                self.apply)
         self.ui.storage.connect(self.ui.mntServerLineEdit,
                                 SIGNAL("editingFinished()"), self.apply)
         
@@ -166,16 +168,12 @@ class Storage(object):
         # others group
         self.ui.othersEntryCheckBox.setChecked(self.state.appendEntry)
         self.ui.othersTimeZoneLineEdit.setText(self.state.timeZone)
-
+        
 
     def apply(self):
         if not str(self.ui.mntGrpLineEdit.text()):
-            QMessageBox.warning(self.ui.mntGrpLineEdit, 
-                        "Empty Active Measurement Group",
-                        "Please provide a name of the Measurement Group")
             self.ui.mntGrpLineEdit.setFocus()
             return
-        # measurement group    
         self.state.mntgrp = str(self.ui.mntGrpLineEdit.text())
         self.state.timer = str(self.ui.mntTimerComboBox.currentText())
         self.state.macroServer = str(self.ui.mntServerLineEdit.text())
