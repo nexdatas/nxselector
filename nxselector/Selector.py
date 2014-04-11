@@ -178,6 +178,7 @@ class Selector(QDialog):
     # \brief It create dialogs for the main window application
     def createGUI(self):
         self.ui.setupUi(self)
+        self.ui.buttonBox.setStandardButtons(QtGui.QDialogButtonBox.Reset | QtGui.QDialogButtonBox.Apply | QtGui.QDialogButtonBox.Close)
         for tab in self.tabs:
             tab.reset()
             

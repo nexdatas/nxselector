@@ -20,7 +20,7 @@
       <string/>
      </property>
      <property name="standardButtons">
-      <set>QDialogButtonBox::Apply|QDialogButtonBox::Close|QDialogButtonBox::Reset</set>
+      <set>QDialogButtonBox::NoButton</set>
      </property>
     </widget>
    </item>
