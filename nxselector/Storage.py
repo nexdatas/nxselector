@@ -125,12 +125,15 @@ class Storage(object):
         
 
     def reset(self):
+        logger.debug("reset storage")
         self.disconnectSignals()
         self.updateForm()
         self.connectSignals()
+        logger.debug("reset storage ended")
 
 
     def updateForm(self):
+        logger.debug("updateForm storage")
         # file group
         self.ui.fileScanDirLineEdit.setText(self.state.scanDir)
         self.ui.fileScanIDSpinBox.setValue(self.state.scanID)
@@ -169,10 +172,14 @@ class Storage(object):
         self.ui.othersEntryCheckBox.setChecked(self.state.appendEntry)
         self.ui.othersTimeZoneLineEdit.setText(self.state.timeZone)
         
+        logger.debug("updateForm storage ended")
 
     def apply(self):
+        logger.debug("updateForm apply")
+        self.disconnectSignals()
         if not str(self.ui.mntGrpLineEdit.text()):
             self.ui.mntGrpLineEdit.setFocus()
+            self.connectSignals()
             return
         self.state.mntgrp = str(self.ui.mntGrpLineEdit.text())
         self.state.timer = str(self.ui.mntTimerComboBox.currentText())
@@ -196,6 +203,8 @@ class Storage(object):
         # others group
         self.state.appendEntry = self.ui.othersEntryCheckBox.isChecked()
         self.state.timeZone = str(self.ui.othersTimeZoneLineEdit.text())
+        self.connectSignals()
         
+        logger.debug("updateForm apply ended")
 
         

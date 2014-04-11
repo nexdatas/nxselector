@@ -187,9 +187,9 @@ class Selector(QDialog):
         self.ui.rowMaxSpinBox.setValue(self.rowMax)    
             
         self.connect(self.ui.buttonBox.button(QDialogButtonBox.Apply), 
-                     SIGNAL("clicked()"), self.apply)
+                     SIGNAL("pressed()"), self.apply)
         self.connect(self.ui.buttonBox.button(QDialogButtonBox.Reset), 
-                     SIGNAL("clicked()"), self.resetAll)
+                     SIGNAL("pressed()"), self.resetAll)
 
         self.connect(self.ui.preferences, 
                      SIGNAL("serverChanged()"), self.resetServer)
@@ -237,23 +237,31 @@ class Selector(QDialog):
         self.__saveSettings()
 
     def resetServer(self):
+        logger.debug("reset server")
         self.state.setServer()
         self.reset()
+        logger.debug("reset server ended")
 
     def resetGroups(self, groups):
+        logger.debug("reset groups")
         self.selectable.mgroups = str(groups)
         self.resetViews()
+        logger.debug("reset groups ended")
 
 
     def resetFrames(self, frames):
+        logger.debug("reset famces")
         self.selectable.frames = Frames(str(frames))
         self.resetViews()
+        logger.debug("reset famces ended")
 
 
     def resetRows(self, rowMax):
+        logger.debug("reset rows")
         for tab in self.tabs:
             tab.rowMax = rowMax
         self.resetViews()
+        logger.debug("reset rows ended")
         
     def resetViews(self):
         for tab in self.tabs:
@@ -262,13 +270,17 @@ class Selector(QDialog):
             tab.reset()
         
     def reset(self):
+        logger.debug("reset selector")
         self.state.fetchSettings()
         for tab in self.tabs:
             tab.reset()
+        logger.debug("reset selector ended")
 
     def resetAll(self):
+        logger.debug("reset ALL")
         self.state.updateControllers()
         self.reset()
+        logger.debug("reset ENDED")
         
 
 

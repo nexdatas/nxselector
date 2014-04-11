@@ -126,6 +126,7 @@ class Preferences(object):
 
        
     def reset(self):
+        logger.debug("reset preferences")
         self.disconnectSignals()
         if self.ui.viewComboBox.count() != len(self.views.keys()):
             self.ui.viewComboBox.clear()
@@ -138,21 +139,38 @@ class Preferences(object):
         self.ui.frameLineEdit.setCompleter(completer)
         self.updateForm()
         self.connectSignals()
+        logger.debug("reset preferences ended")
 
     def on_devSettingsLineEdit_editingFinished(self):
+        logger.debug("on_devSettingsLineEdit_editingFinished")
+        self.disconnectSignals()
+        logger.debug("server changing")
         server = str(self.ui.devSettingsLineEdit.text())
-        if server != self.state.server or True:
-            try:
-                dp = PyTango.DeviceProxy(server)
-                if dp.info().dev_class == 'NXSRecSelector':
-                    self.state.server = str(server)
-                    self.addHint(server, self.serverhelp)
-            except:
-                self.reset()
-            self.ui.preferences.emit(SIGNAL("serverChanged()"))
-
+        logger.debug("from %s to  %s" % (self.state.server, server))
+        if server != self.state.server:
+            replay = QMessageBox.question(
+                self.ui.preferences, 
+                "Setting server has changed.", 
+                "Changing server will cause loosing the current data. Are you sure?",
+                QMessageBox.Yes|QMessageBox.No)
+            if replay == QMessageBox.Yes:
+                try:
+                    dp = PyTango.DeviceProxy(server)
+                    if dp.info().dev_class == 'NXSRecSelector':
+                        self.state.server = str(server)
+                        self.addHint(server, self.serverhelp)
+                except:
+                    self.reset()
+                self.connectSignals()
+                self.ui.preferences.emit(SIGNAL("serverChanged()"))
+            else:
+                self.ui.devSettingsLineEdit.setText(QString(self.state.server))
+        self.connectSignals()
+        logger.debug("server changed")
 
     def on_groupLineEdit_editingFinished(self):
+        logger.debug("on_groupLineEdit_editingFinished")
+        self.disconnectSignals()
         string = str(self.ui.groupLineEdit.text())
         try:
             if not string:
@@ -161,12 +179,14 @@ class Preferences(object):
             if isinstance(mgroups, dict):
                 self.mgroups = string
                 self.addHint(string, self.mgroupshelp)
+                self.connectSignals()
                 self.ui.preferences.emit(
                     SIGNAL("groupsChanged(QString)"),
                     QString(string)) 
         except Exception as e :    
             logger.debug(str(e))
             self.reset()
+        self.connectSignals()
 
     def addHint(self, string, hints):
         qstring = QString(string)
@@ -176,6 +196,8 @@ class Preferences(object):
             hints.pop(0)
 
     def on_frameLineEdit_editingFinished(self):
+        logger.debug("on_frameLineEdit_editingFinished")
+        self.disconnectSignals()
         string = str(self.ui.frameLineEdit.text())
         try:
             if not string:
@@ -185,12 +207,14 @@ class Preferences(object):
             if isinstance(mframes, list):
                 self.frames = string
                 self.addHint(string, self.frameshelp)
+                self.connectSignals()
                 self.ui.preferences.emit(
                     SIGNAL("framesChanged(QString)"),
                     QString(string)) 
         except:
             self.reset()
 
+        self.connectSignals()
 
 
     def updateForm(self):
