@@ -291,7 +291,7 @@ class Selector(QDialog):
 
     def cnfLoad(self):    
         filename = str(QFileDialog.getOpenFileName(
-                self.ui.storage,
+                self.ui.preferences,
                 "Load File",        
                 self.state.cnfFile,
                 "JSON files (*.json, *.cfg);;All files (*)"))
@@ -303,7 +303,8 @@ class Selector(QDialog):
 
     def cnfSave(self):
         filename = str(QFileDialog.getSaveFileName(
-                self.ui.storage,"Save File",
+                self.ui.preferences,
+                "Save File",
                 self.state.cnfFile,
                 "JSON files (*.json, *.cfg);;All files (*)"))
         logger.debug("saving to %s" % filename)
