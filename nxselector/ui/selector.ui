@@ -269,41 +269,45 @@
               <item row="0" column="0">
                <widget class="QGroupBox" name="groupBox_6">
                 <property name="title">
-                 <string>Configuration</string>
+                 <string>Configuration:</string>
                 </property>
-                <layout class="QFormLayout" name="formLayout">
-                 <property name="fieldGrowthPolicy">
-                  <enum>QFormLayout::AllNonFixedFieldsGrow</enum>
-                 </property>
+                <layout class="QGridLayout" name="gridLayout_8">
                  <item row="0" column="0">
-                  <widget class="QPushButton" name="pushButton_2">
-                   <property name="text">
-                    <string>Load</string>
-                   </property>
-                  </widget>
+                  <layout class="QHBoxLayout" name="horizontalLayout_6">
+                   <item>
+                    <widget class="QPushButton" name="pushButton_2">
+                     <property name="text">
+                      <string>Load ...</string>
+                     </property>
+                    </widget>
+                   </item>
+                   <item>
+                    <widget class="QPushButton" name="pushButton_3">
+                     <property name="text">
+                      <string>Save ...</string>
+                     </property>
+                    </widget>
+                   </item>
+                  </layout>
                  </item>
                  <item row="0" column="1">
-                  <widget class="QPushButton" name="pushButton_3">
-                   <property name="text">
-                    <string>Save</string>
+                  <spacer name="horizontalSpacer_4">
+                   <property name="orientation">
+                    <enum>Qt::Horizontal</enum>
                    </property>
-                  </widget>
+                   <property name="sizeType">
+                    <enum>QSizePolicy::Maximum</enum>
+                   </property>
+                   <property name="sizeHint" stdset="0">
+                    <size>
+                     <width>40</width>
+                     <height>20</height>
+                    </size>
+                   </property>
+                  </spacer>
                  </item>
                 </layout>
                </widget>
-              </item>
-              <item row="0" column="1">
-               <spacer name="horizontalSpacer_4">
-                <property name="orientation">
-                 <enum>Qt::Horizontal</enum>
-                </property>
-                <property name="sizeHint" stdset="0">
-                 <size>
-                  <width>40</width>
-                  <height>20</height>
-                 </size>
-                </property>
-               </spacer>
               </item>
              </layout>
             </widget>
@@ -338,27 +342,14 @@
                        </property>
                       </widget>
                      </item>
-                     <item>
-                      <spacer name="horizontalSpacer_3">
-                       <property name="orientation">
-                        <enum>Qt::Horizontal</enum>
-                       </property>
-                       <property name="sizeHint" stdset="0">
-                        <size>
-                         <width>40</width>
-                         <height>20</height>
-                        </size>
-                       </property>
-                      </spacer>
-                     </item>
-                     <item>
-                      <widget class="QCheckBox" name="dcLinksCheckBox">
-                       <property name="text">
-                        <string>Links </string>
-                       </property>
-                      </widget>
-                     </item>
                     </layout>
+                   </item>
+                   <item>
+                    <widget class="QCheckBox" name="dcLinksCheckBox">
+                     <property name="text">
+                      <string>Links </string>
+                     </property>
+                    </widget>
                    </item>
                    <item>
                     <widget class="QLabel" name="dcPathLabel">
@@ -386,6 +377,22 @@
             </widget>
            </item>
            <item>
+            <spacer name="verticalSpacer_3">
+             <property name="orientation">
+              <enum>Qt::Vertical</enum>
+             </property>
+             <property name="sizeType">
+              <enum>QSizePolicy::Expanding</enum>
+             </property>
+             <property name="sizeHint" stdset="0">
+              <size>
+               <width>20</width>
+               <height>9</height>
+              </size>
+             </property>
+            </spacer>
+           </item>
+           <item>
             <widget class="QFrame" name="frame_2">
              <property name="frameShape">
               <enum>QFrame::StyledPanel</enum>
@@ -410,16 +417,16 @@
                  <item row="0" column="0">
                   <layout class="QVBoxLayout" name="verticalLayout_7">
                    <item>
-                    <widget class="QCheckBox" name="othersEntryCheckBox_2">
+                    <widget class="QCheckBox" name="othersEntryCheckBox">
                      <property name="text">
                       <string>Append Entry</string>
                      </property>
                     </widget>
                    </item>
                    <item>
-                    <layout class="QHBoxLayout" name="othersHhorizontalLayout_2">
+                    <layout class="QHBoxLayout" name="othersHhorizontalLayout">
                      <item>
-                      <widget class="QLabel" name="othersTimeZoneLabel_2">
+                      <widget class="QLabel" name="othersTimeZoneLabel">
                        <property name="text">
                         <string>Time Zone:</string>
                        </property>
@@ -429,7 +436,7 @@
                       </widget>
                      </item>
                      <item>
-                      <widget class="QLineEdit" name="othersTimeZoneLineEdit_2"/>
+                      <widget class="QLineEdit" name="othersTimeZoneLineEdit"/>
                      </item>
                     </layout>
                    </item>
@@ -440,22 +447,6 @@
               </item>
              </layout>
             </widget>
-           </item>
-           <item>
-            <spacer name="verticalSpacer_3">
-             <property name="orientation">
-              <enum>Qt::Vertical</enum>
-             </property>
-             <property name="sizeType">
-              <enum>QSizePolicy::Expanding</enum>
-             </property>
-             <property name="sizeHint" stdset="0">
-              <size>
-               <width>20</width>
-               <height>9</height>
-              </size>
-             </property>
-            </spacer>
            </item>
           </layout>
          </item>
