@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>687</width>
-    <height>439</height>
+    <height>446</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -85,7 +85,11 @@
          </widget>
         </item>
         <item>
-         <widget class="QSpinBox" name="fileScanIDSpinBox"/>
+         <widget class="QSpinBox" name="fileScanIDSpinBox">
+          <property name="maximum">
+           <number>9999999</number>
+          </property>
+         </widget>
         </item>
        </layout>
       </item>
