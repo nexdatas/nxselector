@@ -48,6 +48,8 @@ class ServerState(object):
         self.scanFile = []
         self.scanID = 0
 
+        self.cnfFile = "/"
+
         self.timer = None
         self.mntgrp = None
         self.macroServer = None 
@@ -102,6 +104,7 @@ class ServerState(object):
         self.dynamicComponents = self.loadData("DynamicComponents")
         self.dynamicLinks = self.loadData("DynamicLinks")
         self.dynamicPath = self.loadData("DynamicPath")
+        self.cnfFile = self.loadData("ConfigFile")
 
     def storeFileData(self):
         self.storeData("ScanDir", self.scanDir)
@@ -132,6 +135,16 @@ class ServerState(object):
     def updateMntGrp(self):
         self.storeSettings()
         self.__dp.UpdateMntGrp()
+
+    def save(self, filename):
+        self.storeSettings()
+        self.storeData("ConfigFile", filename)
+        self.__dp.SaveConfiguration()
+
+    def load(self, filename):
+        self.storeData("ConfigFile", filename)
+        self.__dp.LoadConfiguration()
+        self.fetchSettings()
 
     def updateControllers(self):
         self.__dp.UpdateControllers()

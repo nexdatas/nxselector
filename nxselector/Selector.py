@@ -33,7 +33,7 @@ from PyQt4.QtCore import (
 from PyQt4.QtGui import (QHBoxLayout,QVBoxLayout,
     QDialog, QGroupBox,QGridLayout,QSpacerItem,QSizePolicy,
     QMessageBox, QIcon, QTableView, QDialogButtonBox,
-    QLabel, QFrame, QHeaderView)
+    QLabel, QFrame, QHeaderView, QFileDialog)
 
 from .Frames import Frames
 from .Element import Element, DSElement, CPElement, CP, DS
@@ -192,6 +192,11 @@ class Selector(QDialog):
         self.connect(self.ui.buttonBox.button(QDialogButtonBox.Reset), 
                      SIGNAL("pressed()"), self.resetAll)
 
+        self.connect(self.ui.cnfLoadPushButton, 
+                     SIGNAL("pressed()"), self.cnfLoad)
+        self.connect(self.ui.cnfSavePushButton, 
+                     SIGNAL("pressed()"), self.cnfSave)
+
         self.connect(self.ui.preferences, 
                      SIGNAL("serverChanged()"), self.resetServer)
 
@@ -283,6 +288,28 @@ class Selector(QDialog):
         self.reset()
         logger.debug("reset ENDED")
         
+
+    def cnfLoad(self):    
+        filename = str(QFileDialog.getOpenFileName(
+                self.ui.storage,
+                "Load File",        
+                self.state.cnfFile,
+                "JSON files (*.json, *.cfg);;All files (*)"))
+        logger.debug("loading from %s" % filename)
+        if filename:
+            self.state.load(filename)
+            self.resetAll()
+        
+
+    def cnfSave(self):
+        filename = str(QFileDialog.getSaveFileName(
+                self.ui.storage,"Save File",
+                self.state.cnfFile,
+                "JSON files (*.json, *.cfg);;All files (*)"))
+        logger.debug("saving to %s" % filename)
+        if filename:
+            self.state.save(filename)
+            self.resetAll()
 
 
     def apply(self):
