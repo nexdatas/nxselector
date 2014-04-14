@@ -39,7 +39,7 @@ from .Views import (TableView, OneTableView, CheckerView, RadioView, ButtonView,
 from PyQt4.QtCore import (
     SIGNAL, QSettings, Qt, QVariant, SIGNAL, QString)
 
-from PyQt4.QtGui import (QMessageBox, QCompleter)
+from PyQt4.QtGui import (QMessageBox, QCompleter, QFileDialog)
 import PyTango
 
 ## main window class
@@ -90,6 +90,7 @@ class Preferences(object):
             }
 
         self.maxHelp = 10
+        self.profFile = os.getcwd()
 
     def disconnectSignals(self):
         self.ui.preferences.disconnect(
@@ -106,6 +107,13 @@ class Preferences(object):
             self.ui.frameLineEdit,
             SIGNAL("editingFinished()"), 
             self.on_frameLineEdit_editingFinished)
+
+        self.ui.preferences.disconnect(
+            self.ui.profLoadPushButton, 
+            SIGNAL("pressed()"), self.profileLoad)
+        self.ui.preferences.disconnect(
+            self.ui.profSavePushButton, 
+            SIGNAL("pressed()"), self.profileSave)
 
     def connectSignals(self):
         self.disconnectSignals()
@@ -124,6 +132,12 @@ class Preferences(object):
             SIGNAL("editingFinished()"), 
             self.on_devSettingsLineEdit_editingFinished)
 
+        self.ui.preferences.connect(
+            self.ui.profLoadPushButton, 
+            SIGNAL("pressed()"), self.profileLoad)
+        self.ui.preferences.connect(
+            self.ui.profSavePushButton, 
+            SIGNAL("pressed()"), self.profileSave)
        
     def reset(self):
         logger.debug("reset preferences")
@@ -225,3 +239,63 @@ class Preferences(object):
 
     def apply(self):
         pass
+
+
+    def profileLoad(self):    
+        filename = str(
+            QFileDialog.getOpenFileName(
+                self.ui.preferences,
+                "Load Profile",        
+                self.profFile,
+                "JSON files (*.json);;All files (*)"))
+        logger.debug("loading profile from %s" % filename)
+        if filename:
+            self.profFile = filename
+            jprof=open(filename).read()
+            try:
+                profile = json.loads(jprof)
+                if isinstance(profile,dict):
+                    if "server" in profile.keys():
+                        self.ui.devSettingsLineEdit.setText(
+                            QString(profile["server"]))
+                        self.on_devSettingsLineEdit_editingFinished()
+                    if "frames" in profile.keys():
+                        self.ui.frameLineEdit.setText(
+                            QString(profile["frames"]))
+                        self.on_frameLineEdit_editingFinished()
+                    if "groups" in profile.keys():
+                        self.ui.groupLineEdit.setText(
+                            QString(profile["groups"]))
+                        self.ui.groupLineEdit.emit(
+                            SIGNAL("groupsChanged(QString)"),
+                            self.ui.groupLineEdit.text()) 
+                        self.on_groupLineEdit_editingFinished()
+                    if "rowMax" in profile.keys():
+                        self.ui.rowMaxSpinBox.setValue(
+                            int(profile["rowMax"]))
+                        
+            except Exception as e:
+                QMessageBox.warning(
+                    self.ui.preferences, 
+                    "Error during reading the file",
+                    str(e))
+                
+
+    def profileSave(self):
+        filename = str(QFileDialog.getSaveFileName(
+                self.ui.storage,
+                "Save Profile",
+                self.profFile,
+                "JSON files (*.json);;All files (*)"))
+        logger.debug("saving profile to %s" % filename)
+        if filename:
+            self.profFile = filename
+            profile = {}
+            profile["server"] = str(self.ui.devSettingsLineEdit.text())
+            profile["frames"] = str(self.ui.frameLineEdit.text())
+            profile["groups"] = str(self.ui.groupLineEdit.text())
+            profile["rowMax"] = self.ui.rowMaxSpinBox.value()
+            jprof = json.dumps(profile)
+            with open(filename, 'w') as myfile:
+                myfile.write(jprof)
+            
