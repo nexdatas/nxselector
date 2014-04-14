@@ -24,6 +24,74 @@
      </property>
     </widget>
    </item>
+   <item row="0" column="0">
+    <widget class="QFrame" name="frame_9">
+     <property name="frameShape">
+      <enum>QFrame::StyledPanel</enum>
+     </property>
+     <property name="frameShadow">
+      <enum>QFrame::Raised</enum>
+     </property>
+     <layout class="QGridLayout" name="gridLayout_24">
+      <item row="0" column="0">
+       <layout class="QHBoxLayout" name="horizontalLayout_2">
+        <item>
+         <widget class="QLabel" name="mntTimerLabel">
+          <property name="text">
+           <string>&amp;Timer:</string>
+          </property>
+          <property name="buddy">
+           <cstring>mntTimerComboBox</cstring>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QComboBox" name="mntTimerComboBox"/>
+        </item>
+        <item>
+         <widget class="QLabel" name="fileScanLabel">
+          <property name="text">
+           <string>Scan &amp;File:</string>
+          </property>
+          <property name="buddy">
+           <cstring>fileScanLineEdit</cstring>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QLineEdit" name="fileScanLineEdit"/>
+        </item>
+        <item>
+         <widget class="QLabel" name="fileScanDirLabel">
+          <property name="text">
+           <string>Scan &amp;Dir:</string>
+          </property>
+          <property name="buddy">
+           <cstring>fileScanDirLineEdit</cstring>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QLineEdit" name="fileScanDirLineEdit"/>
+        </item>
+        <item>
+         <widget class="QLabel" name="fileScanIDLabel">
+          <property name="text">
+           <string>Scan ID:</string>
+          </property>
+          <property name="buddy">
+           <cstring>fileScanIDSpinBox</cstring>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QSpinBox" name="fileScanIDSpinBox"/>
+        </item>
+       </layout>
+      </item>
+     </layout>
+    </widget>
+   </item>
    <item row="1" column="0">
     <widget class="QTabWidget" name="tabWidget">
      <property name="toolTip">
@@ -66,40 +134,36 @@
             <item row="0" column="0">
              <widget class="QGroupBox" name="fileGroupBox">
               <property name="title">
-               <string>File</string>
+               <string>Measurement:</string>
               </property>
               <layout class="QGridLayout" name="gridLayout_5">
                <item row="0" column="0">
                 <layout class="QGridLayout" name="gridLayout_2">
                  <item row="0" column="0">
-                  <widget class="QLabel" name="fileScanLabel">
+                  <widget class="QLabel" name="mntGrpLabel">
                    <property name="text">
-                    <string>Scan File:</string>
+                    <string>ActiveMntGrp:</string>
+                   </property>
+                   <property name="buddy">
+                    <cstring>mntGrpLineEdit</cstring>
                    </property>
                   </widget>
                  </item>
                  <item row="0" column="1">
-                  <widget class="QLineEdit" name="fileScanLineEdit"/>
-                 </item>
-                 <item row="1" column="0">
-                  <widget class="QLabel" name="fileScanDirLabel">
-                   <property name="text">
-                    <string>Scan Dir:</string>
-                   </property>
-                  </widget>
-                 </item>
-                 <item row="1" column="1">
-                  <widget class="QLineEdit" name="fileScanDirLineEdit"/>
+                  <widget class="QLineEdit" name="mntGrpLineEdit"/>
                  </item>
                  <item row="2" column="0">
-                  <widget class="QLabel" name="fileScanIDLabel">
+                  <widget class="QLabel" name="mntServerLabel">
                    <property name="text">
-                    <string>Scan ID:</string>
+                    <string>MacroServer:</string>
+                   </property>
+                   <property name="buddy">
+                    <cstring>mntServerLineEdit</cstring>
                    </property>
                   </widget>
                  </item>
                  <item row="2" column="1">
-                  <widget class="QSpinBox" name="fileScanIDSpinBox"/>
+                  <widget class="QLineEdit" name="mntServerLineEdit"/>
                  </item>
                 </layout>
                </item>
@@ -153,6 +217,9 @@
                      <property name="text">
                       <string>Time Zone:</string>
                      </property>
+                     <property name="buddy">
+                      <cstring>othersTimeZoneLineEdit</cstring>
+                     </property>
                     </widget>
                    </item>
                    <item>
@@ -201,6 +268,9 @@
                    <property name="text">
                     <string>Config Device:</string>
                    </property>
+                   <property name="buddy">
+                    <cstring>devConfigLineEdit</cstring>
+                   </property>
                   </widget>
                  </item>
                  <item row="1" column="0">
@@ -208,20 +278,13 @@
                    <property name="text">
                     <string>Writer Device:</string>
                    </property>
-                  </widget>
-                 </item>
-                 <item row="2" column="0">
-                  <widget class="QLabel" name="mntServerLabel">
-                   <property name="text">
-                    <string>MacroServer:</string>
+                   <property name="buddy">
+                    <cstring>devWriterLineEdit</cstring>
                    </property>
                   </widget>
                  </item>
                  <item row="1" column="1">
                   <widget class="QLineEdit" name="devWriterLineEdit"/>
-                 </item>
-                 <item row="2" column="1">
-                  <widget class="QLineEdit" name="mntServerLineEdit"/>
                  </item>
                  <item row="0" column="1">
                   <widget class="QLineEdit" name="devConfigLineEdit"/>
@@ -296,6 +359,9 @@
                   <widget class="QLabel" name="dcPathLabel">
                    <property name="text">
                     <string>Default NeXus Path for Dynamic Components:</string>
+                   </property>
+                   <property name="buddy">
+                    <cstring>dcPathLineEdit</cstring>
                    </property>
                   </widget>
                  </item>
@@ -468,48 +534,6 @@
        </item>
       </layout>
      </widget>
-    </widget>
-   </item>
-   <item row="0" column="0">
-    <widget class="QFrame" name="frame_9">
-     <property name="frameShape">
-      <enum>QFrame::StyledPanel</enum>
-     </property>
-     <property name="frameShadow">
-      <enum>QFrame::Raised</enum>
-     </property>
-     <layout class="QGridLayout" name="gridLayout_24">
-      <item row="0" column="0">
-       <layout class="QHBoxLayout" name="horizontalLayout_2">
-        <item>
-         <widget class="QLabel" name="mntTimerLabel">
-          <property name="text">
-           <string>&amp;Timer:</string>
-          </property>
-          <property name="buddy">
-           <cstring>mntTimerComboBox</cstring>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <widget class="QComboBox" name="mntTimerComboBox"/>
-        </item>
-        <item>
-         <widget class="QLabel" name="mntGrpLabel">
-          <property name="text">
-           <string>Active&amp;MntGrp:</string>
-          </property>
-          <property name="buddy">
-           <cstring>mntGrpLineEdit</cstring>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <widget class="QLineEdit" name="mntGrpLineEdit"/>
-        </item>
-       </layout>
-      </item>
-     </layout>
     </widget>
    </item>
   </layout>
