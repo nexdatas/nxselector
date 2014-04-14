@@ -648,12 +648,12 @@
               </widget>
              </item>
              <item>
-              <spacer name="horizontalSpacer_3">
+              <spacer name="horizontalSpacer_5">
                <property name="orientation">
                 <enum>Qt::Horizontal</enum>
                </property>
                <property name="sizeType">
-                <enum>QSizePolicy::MinimumExpanding</enum>
+                <enum>QSizePolicy::Minimum</enum>
                </property>
                <property name="sizeHint" stdset="0">
                 <size>
