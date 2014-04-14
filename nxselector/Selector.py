@@ -288,6 +288,7 @@ class Selector(QDialog):
     def apply(self):
         try:
             self.state.updateMntGrp()
+            self.resetAll()
         except PyTango.DevFailed as e:
             exctype , value = sys.exc_info()[:2]
             QMessageBox.warning(
