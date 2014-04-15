@@ -133,9 +133,13 @@ class ServerState(object):
         self.storeFileData()
 
     def updateMntGrp(self):
+        s1 = time.time() 
         self.storeSettings()
+        s2 = time.time() 
         self.__dp.UpdateMntGrp()
-
+        s3 = time.time() 
+#        print "UPDATE: STORE, UPDATEMG", s2-s1,s3-s2
+            
     def save(self, filename):
         self.storeSettings()
         self.storeData("ConfigFile", filename)

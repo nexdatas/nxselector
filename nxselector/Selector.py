@@ -25,6 +25,7 @@ import os
 import sys 
 import PyTango
 import json
+import time
  
 from PyQt4 import QtCore, QtGui
  
@@ -289,15 +290,23 @@ class Selector(QDialog):
         
     def reset(self):
         logger.debug("reset selector")
+        s1 = time.time() 
         self.state.fetchSettings()
+        s2 = time.time() 
         for tab in self.tabs:
             tab.reset()
+        s3 = time.time() 
+#        print "RESET: FETCH, RESETTABS", s2-s1,s3-s2
         logger.debug("reset selector ended")
 
     def resetAll(self):
         logger.debug("reset ALL")
+        s1 = time.time() 
         self.state.updateControllers()
+        s2 = time.time()
         self.reset()
+        s3 = time.time() 
+#        print "RESETALL: UPDATECONTR, RESET", s2-s1,s3-s2
         logger.debug("reset ENDED")
         
 
@@ -327,9 +336,13 @@ class Selector(QDialog):
 
     def apply(self):
         try:
+            s1 = time.time()
             self.state.updateMntGrp()
-            self.resetAll()
+            s2 = time.time()
+#            self.resetAll()
+            s3 = time.time()
             self.setDirty(False)
+#            print "APPLY: UPDATE, RESETALL", s2-s1,s3-s2
         except PyTango.DevFailed as e:
             exctype , value = sys.exc_info()[:2]
             QMessageBox.warning(
@@ -340,4 +353,4 @@ class Selector(QDialog):
             QMessageBox.warning(
                 self, 
                 "Error in updating Measurement Group",
-                str(e.DevError))
+                str(e))
