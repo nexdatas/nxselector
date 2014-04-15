@@ -205,6 +205,7 @@ class Storage(object):
         self.state.timeZone = str(self.ui.othersTimeZoneLineEdit.text())
         self.connectSignals()
         
+        self.ui.storage.emit(SIGNAL("dirty"))
         logger.debug("updateForm apply ended")
 
         

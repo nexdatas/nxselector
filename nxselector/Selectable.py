@@ -161,7 +161,12 @@ class Selectable(object):
             self.views[k].setModel(md)
             md.connect(md, SIGNAL("componentChecked"), 
                        self.updateViews)
+            md.connect(md, SIGNAL("dirty"), 
+                       self.dirty)
 #            self.views[k].setItemDelegate(ElementDelegate(self))
+
+    def dirty(self):
+        self.ui.selectable.emit(SIGNAL("dirty"))
 
     def reset(self):
         logger.debug("reset views")

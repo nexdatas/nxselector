@@ -157,7 +157,7 @@ class ElementModel(QAbstractTableModel):
                               index, index)
                     if device.eltype == CP:
                         self.emit(SIGNAL("componentChecked"))
-                
+                    self.emit(SIGNAL("dirty"))
                 return True
             elif column == 1:
                 if role == Qt.EditRole: 
@@ -165,6 +165,7 @@ class ElementModel(QAbstractTableModel):
                     device.state.dslabels[device.name] = str(label)
                     self.emit(SIGNAL("dataChanged(QModelIndex, QModelIndex)"), 
                               index, index)
+                    self.emit(SIGNAL("dirty"))
                     return True
         return False
 

@@ -64,7 +64,7 @@ class Selector(QDialog):
         logger.debug("PARAMETERS: %s %s", 
                      server, parent)
 
-        
+
         try:
             self.state = ServerState(server)
         except PyTango.DevFailed as e:
@@ -140,6 +140,8 @@ class Selector(QDialog):
         self.restoreGeometry(
             settings.value("Selector/Geometry").toByteArray())
 
+        self.title = 'NeXus Component Selector'
+        self.setDirty()
 
 
     def restoreInt(self, settings, name, default):
@@ -212,6 +214,16 @@ class Selector(QDialog):
         self.connect(self.ui.rowMaxSpinBox, 
                      SIGNAL("valueChanged(int)"), self.resetRows)
 
+        self.connect(self.ui.selectable, SIGNAL("dirty"), self.setDirty)
+        self.connect(self.ui.storage, SIGNAL("dirty"), self.setDirty)
+
+    def setDirty(self, flag = True):
+        if flag:
+            self.setWindowTitle(self.title + '*' )
+        else:
+           self.setWindowTitle(self.title)
+    
+       
         
 
     def __saveSettings(self):
@@ -299,7 +311,7 @@ class Selector(QDialog):
         if filename:
             self.state.load(filename)
             self.resetAll()
-        
+            self.setDirty()
 
     def cnfSave(self):
         filename = str(QFileDialog.getSaveFileName(
@@ -317,6 +329,7 @@ class Selector(QDialog):
         try:
             self.state.updateMntGrp()
             self.resetAll()
+            self.setDirty(False)
         except PyTango.DevFailed as e:
             exctype , value = sys.exc_info()[:2]
             QMessageBox.warning(
