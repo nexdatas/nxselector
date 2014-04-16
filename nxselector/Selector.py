@@ -220,7 +220,7 @@ class Selector(QDialog):
 
     def setDirty(self, flag = True):
         if flag:
-            self.setWindowTitle(self.title + '*' )
+            self.setWindowTitle(self.title + ' **[NOT APPLIED]**' )
         else:
            self.setWindowTitle(self.title)
     
