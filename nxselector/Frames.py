@@ -21,8 +21,6 @@
 
 """ main window application dialog """
 
-import os
-import PyTango
 import json
 
 import logging
@@ -39,6 +37,10 @@ class Frames(object):
         self.dslabel = "Controllers"
         self.cplabel = "Components"
 
+        self.dsid = None
+        self.cpid = None
+        self.__dct = None
+        self.__settings = None
         self.set(settings)
    
 
@@ -46,7 +48,7 @@ class Frames(object):
         if settings:
             mysettings = json.loads(settings)
         else:
-            msettings = None
+            mysettings = None
         self.__dct = {}    
         self.__settings = [
             [[[self.dslabel, 0]]],[[[self.cplabel, 1]]]]
@@ -80,7 +82,7 @@ class Frames(object):
                 for group in column:
                     if group[1] in self.__dct.keys():
                         raise Exception("Duplicated Frame ID")
-                    self.__dct[group[1]]=(group[0])
+                    self.__dct[group[1]] = (group[0])
         
 
     def __iter__(self):

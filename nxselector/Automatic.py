@@ -21,24 +21,13 @@
 
 """ automatic tab """
 
-import os
-import PyTango
-import json
 
-from PyQt4 import QtCore, QtGui
+from PyQt4.QtGui import (QHBoxLayout,
+    QGroupBox, QGridLayout, QFrame, QWidgetItem)
 
-
-
-from PyQt4.QtCore import (
-    SIGNAL, QSettings, Qt, QVariant, SIGNAL)
-from PyQt4.QtGui import (QHBoxLayout,QVBoxLayout,
-    QDialog, QGroupBox,QGridLayout,QSpacerItem,QSizePolicy,
-    QMessageBox, QIcon, QTableView, QDialogButtonBox,
-    QLabel, QFrame, QHeaderView)
-
-from .Element import Element, DSElement, CPElement, CP, DS
-from .ElementModel import ElementModel, ElementDelegate
-from .Views import TableView, CheckerView, RadioView
+from .Element import CPElement
+from .ElementModel import ElementModel
+from .Views import CheckerView
 
 import logging
 logger = logging.getLogger(__name__)
@@ -67,7 +56,7 @@ class Automatic(object):
             child = self.layout.takeAt(0)
             while child:
                 self.layout.removeItem(child)
-                if isinstance(child, QtGui.QWidgetItem):
+                if isinstance(child, QWidgetItem):
                     child.widget().hide()
                     child.widget().close()
                     self.layout.removeWidget(child.widget())
@@ -97,11 +86,11 @@ class Automatic(object):
             self.ui.automatic.show()
 
     def updateGroups(self):
-        self.agroup =[]
-        for cp, flag in self.state.acpgroup.items():
-                self.agroup.append(
-                    CPElement(cp, self.state, 
-                              group = self.state.acpgroup))
+        self.agroup = []
+        for cp in self.state.acpgroup.keys():
+            self.agroup.append(
+                CPElement(cp, self.state, 
+                          group = self.state.acpgroup))
 
 
     def setModels(self):

@@ -21,7 +21,6 @@
 
 """ state of recorder server """
 
-import os
 import PyTango
 import json
 import time 
@@ -138,8 +137,6 @@ class ServerState(object):
             pn = dp.get_property("PoolNames")["PoolNames"]
             if len(pn)>0:
                 pool = self.openProxy(pn[0])
-            if not pool and len(pools)> 0 :
-                pool = pools[0]
             if pool:
                 pool.CreateMeasurementGroup([self.mntgrp, self.timer])
 
@@ -207,7 +204,8 @@ class ServerState(object):
 
         self.__dp = self.openProxy(self.server)    
 
-    def openProxy(self, server):
+    @classmethod
+    def openProxy(cls, server):
         found = False
         cnt = 0
         proxy = PyTango.DeviceProxy(server)

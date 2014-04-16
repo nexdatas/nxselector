@@ -21,19 +21,12 @@
 
 """ storage tab """
 
-import os
-import PyTango
-import json
+
+
+from PyQt4.QtCore import (SIGNAL, QString)
 
 import logging
 logger = logging.getLogger(__name__)
-
-from .Views import TableView, CheckerView, RadioView
-
-from PyQt4.QtCore import (
-    SIGNAL, QSettings, Qt, QVariant, SIGNAL, QString)
-
-from PyQt4.QtGui import (QMessageBox)
 
 ## main window class
 class Storage(object):
@@ -141,7 +134,7 @@ class Storage(object):
 
         sfile = ""
         if self.state.scanFile:
-            if isinstance(self.state.scanFile, (list,tuple)):
+            if isinstance(self.state.scanFile, (list, tuple)):
                 sfile = ", ".join(self.state.scanFile)
             else:
                 sfile = self.state.scanFile    
