@@ -79,7 +79,7 @@ class Selector(QDialog):
             QMessageBox.warning(
                 self, 
                 "Error in Setting Server",
-                str(e.DevError))
+                str(e))
             sys.exit(-1)
 
         self.state.fetchSettings()
