@@ -131,6 +131,18 @@ class ServerState(object):
                   "ActiveMntGrp":"mntgrp"}
 
         dp = self.openProxy(self.macroServer)
+        if not self.__dp:
+            self.setServer()
+        full = self.__dp.FindMntGrp(self.mntgrp)    
+        if not full:
+            pn = dp.get_property("PoolNames")["PoolNames"]
+            if len(pn)>0:
+                pool = self.openProxy(pn[0])
+            if not pool and len(pools)> 0 :
+                pool = pools[0]
+            if pool:
+                pool.CreateMeasurementGroup([self.mntgrp, self.timer])
+
         rec = dp.Environment
         if rec[0] == 'pickle':
             dc = pickle.loads(rec[1])
