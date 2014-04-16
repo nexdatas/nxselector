@@ -130,6 +130,8 @@ class ServerState(object):
 #                  "ScanID":"scanID"],
                   "ActiveMntGrp":"mntgrp"}
 
+        s0 = time.time()
+
         dp = self.openProxy(self.macroServer)
         if not self.__dp:
             self.setServer()
@@ -156,13 +158,11 @@ class ServerState(object):
         s1 = time.time()
         
 #        self.storeData("ScanDir", self.scanDir)
-        s2 = time.time()
 #        self.storeData("ScanFile", self.scanFile)
 #        self.storeData("ScanID", self.scanID)
-        s3 = time.time()
 #        self.storeData("ActiveMntGrp", self.mntgrp)
-        s4 = time.time()
-#        print  "ESTORING", s2-s1, s3-s2, s4-s3
+        s2 = time.time()
+#        print  "ESTORING", s1-s0, s2-s1
 
     def storeFileData(self):
 
@@ -187,7 +187,7 @@ class ServerState(object):
         s12 = time.time()
         self.storeData("DynamicPath", self.dynamicPath)
         s13 = time.time()
-        print  "FSTORING", s5-s4,s6-s5,s7-s6,s8-s7,s9-s8,s10-s9,s11-s10,s12-s11,s13-s12
+#        print  "FSTORING", s5-s4,s6-s5,s7-s6,s8-s7,s9-s8,s10-s9,s11-s10,s12-s11,s13-s12
 
 
     def storeSettings(self):
@@ -202,7 +202,7 @@ class ServerState(object):
         s5 = time.time()
         self.storeEnvData()
         s6 = time.time()
-        print  "STORING", s2-s1, s3-s2, s4-s3, s5-s4, s6-s5
+#        print  "STORING", s2-s1, s3-s2, s4-s3, s5-s4, s6-s5
 
     def updateMntGrp(self):
         s1 = time.time() 
