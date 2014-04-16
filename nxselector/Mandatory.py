@@ -21,23 +21,15 @@
 
 """ mandatory tab """
 
-import os
-import PyTango
-import json
 
-from PyQt4 import QtCore, QtGui
+from PyQt4.QtGui import (QHBoxLayout,
+    QGroupBox, QGridLayout,
+    QFrame, QWidgetItem)
 
-from PyQt4.QtCore import (
-    SIGNAL, QSettings, Qt, QVariant, SIGNAL)
-from PyQt4.QtGui import (QHBoxLayout,QVBoxLayout,
-    QDialog, QGroupBox,QGridLayout,QSpacerItem,QSizePolicy,
-    QMessageBox, QIcon, QTableView, QDialogButtonBox,
-    QLabel, QFrame, QHeaderView)
+from .Element import CPElement
+from .ElementModel import ElementModel
 
-from .Element import Element, DSElement, CPElement, CP, DS
-from .ElementModel import ElementModel, ElementDelegate
-
-from .Views import TableView, CheckerView, RadioView
+from .Views import CheckerView
 
 import logging
 logger = logging.getLogger(__name__)
@@ -58,13 +50,13 @@ class Mandatory(object):
         self.mview = None
 
     def updateGroups(self):
-        self.mgroup =[]
+        self.mgroup = []
         mcpgroup = {}
         for cp in self.state.mcplist:
             mcpgroup[cp] = True
-        for cp, flag in mcpgroup.items():
-                self.mgroup.append(
-                    CPElement(cp, self.state, group = mcpgroup))
+        for cp, in mcpgroup.keys():
+            self.mgroup.append(
+                CPElement(cp, self.state, group = mcpgroup))
 
 
     def createGUI(self):
@@ -74,7 +66,7 @@ class Mandatory(object):
             child = self.layout.takeAt(0)
             while child:
                 self.layout.removeItem(child)
-                if isinstance(child, QtGui.QWidgetItem):
+                if isinstance(child, QWidgetItem):
                     child.widget().hide()
                     child.widget().close()
                     self.layout.removeWidget(child.widget())

@@ -130,8 +130,6 @@ class ServerState(object):
 #                  "ScanID":"scanID"],
                   "ActiveMntGrp":"mntgrp"}
 
-        s0 = time.time()
-
         dp = self.openProxy(self.macroServer)
         if not self.__dp:
             self.setServer()
@@ -155,62 +153,37 @@ class ServerState(object):
                 dp.Environment = ['pickle', pk]
 
 
-        s1 = time.time()
         
 #        self.storeData("ScanDir", self.scanDir)
 #        self.storeData("ScanFile", self.scanFile)
 #        self.storeData("ScanID", self.scanID)
 #        self.storeData("ActiveMntGrp", self.mntgrp)
-        s2 = time.time()
-#        print  "ESTORING", s1-s0, s2-s1
 
     def storeFileData(self):
 
-        s4 = time.time()
         self.storeData("Timer", self.timer)
-        s5 = time.time()
         self.storeData("MacroServer", self.macroServer)
 
-        s6 = time.time()
         self.storeData("ConfigDevice", self.configDevice)
-        s7 = time.time()
         self.storeData("WriterDevice", self.writerDevice)
-        s8 = time.time()
 
         self.storeData("AppendEntry", self.appendEntry)
-        s9 = time.time()
         self.storeData("TimeZone", self.timeZone)
-        s10 = time.time()
         self.storeData("DynamicComponents", self.dynamicComponents)
-        s11 = time.time()
         self.storeData("DynamicLinks", self.dynamicLinks)
-        s12 = time.time()
         self.storeData("DynamicPath", self.dynamicPath)
-        s13 = time.time()
-#        print  "FSTORING", s5-s4,s6-s5,s7-s6,s8-s7,s9-s8,s10-s9,s11-s10,s12-s11,s13-s12
 
 
     def storeSettings(self):
-        s1 = time.time()
         self.storeDict("DataSourceGroup", self.dsgroup) 
-        s2 = time.time()
         self.storeDict("DataSourceLabels", self.dslabels) 
-        s3 = time.time()
         self.storeDict("ComponentGroup", self.cpgroup) 
-        s4 = time.time()
         self.storeFileData()
-        s5 = time.time()
         self.storeEnvData()
-        s6 = time.time()
-#        print  "STORING", s2-s1, s3-s2, s4-s3, s5-s4, s6-s5
 
     def updateMntGrp(self):
-        s1 = time.time() 
         self.storeSettings()
-        s2 = time.time() 
         self.__dp.UpdateMntGrp()
-        s3 = time.time() 
-#        print "UPDATE: STORE, UPDATEMG", s2-s1,s3-s2
             
     def save(self, filename):
         self.storeSettings()

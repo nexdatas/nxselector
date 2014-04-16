@@ -21,25 +21,20 @@
 
 """ main window application dialog """
 
-import os
-import PyTango
-import json
+
+
+from PyQt4.QtCore import (
+    SIGNAL, Qt, QVariant, SIGNAL, QSignalMapper, SLOT)
+
+from PyQt4.QtGui import (QTableView, QHeaderView, QWidget, QGridLayout, 
+                         QCheckBox, QSpacerItem,
+                         QRadioButton, QPushButton, QWidgetItem,
+                         QSizePolicy)
+
+
 
 import logging
 logger = logging.getLogger(__name__)
-
-from PyQt4 import QtGui, QtCore
-
-from PyQt4.QtCore import (
-    SIGNAL, QSettings, Qt, QVariant, SIGNAL, QString, QSignalMapper,
-    SLOT)
-from PyQt4.QtGui import (QTableView, QHeaderView, QWidget, QGridLayout, 
-                         QCheckBox, QAbstractScrollArea, QPalette,
-                         QAbstractItemView, QLabel, QFrame, QSpacerItem,
-                         QRadioButton, QPushButton)
-
-
-
         
 class TableView(QTableView):
 
@@ -109,7 +104,7 @@ class CheckerView(QWidget):
             child = self.layout.takeAt(0)
             while child:
                 self.layout.removeItem(child)
-                if isinstance(child, QtGui.QWidgetItem):
+                if isinstance(child, QWidgetItem):
                     child.widget().hide()
                     child.widget().close()
                     self.layout.removeWidget(child.widget())
@@ -127,13 +122,13 @@ class CheckerView(QWidget):
     def updateState(self):
         if not self.model is None:
             for row in range(self.model.rowCount()):
-                ind = self.model.index(row,0)
-                ind1 = self.model.index(row,1)
+                ind = self.model.index(row, 0)
+                ind1 = self.model.index(row, 1)
                 name = self.model.data(ind, role = Qt.DisplayRole)
                 label = self.model.data(ind1, role = Qt.DisplayRole)
                 status = self.model.data(ind, role = Qt.CheckStateRole)
                 flags = self.model.flags(ind)
-                flags1 = self.model.flags(ind1)
+#                flags1 = self.model.flags(ind1)
                 if row < len(self.widgets):
                     cb = self.widgets[row]
                 else:
@@ -143,8 +138,8 @@ class CheckerView(QWidget):
 #                    if self.showLabels:
 #                        cb.setEditable(True)
                     if hasattr(cb, "setSizePolicy") and self.center: 
-                        sizePolicy = QtGui.QSizePolicy(
-                            QtGui.QSizePolicy.Fixed, QtGui.QSizePolicy.Fixed)
+                        sizePolicy = QSizePolicy(
+                            QSizePolicy.Fixed, QSizePolicy.Fixed)
                         sizePolicy.setHorizontalStretch(0)
                         sizePolicy.setVerticalStretch(0)
                         sizePolicy.setHeightForWidth(
@@ -181,9 +176,9 @@ class CheckerView(QWidget):
                     self.mapper.setMapping(cb, cb)
             if not self.spacer:
                 self.spacer = QSpacerItem(10, 10, 
-                                          QtGui.QSizePolicy.Minimum,
-#                                         QtGui.QSizePolicy.Expanding, 
-                                         QtGui.QSizePolicy.Expanding)
+                                          QSizePolicy.Minimum,
+#                                         QSizePolicy.Expanding, 
+                                          QSizePolicy.Expanding)
                 self.layout.addItem(self.spacer)
                 
             

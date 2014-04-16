@@ -21,25 +21,13 @@
 
 """ device Model """
 
-import os
-import PyTango
-import json
-
-from PyQt4.QtCore import (
-    SIGNAL, QSettings, Qt, QVariant)
-from PyQt4.QtGui import (QHBoxLayout,QVBoxLayout,
-    QDialog, QGroupBox,QGridLayout,QSpacerItem,QSizePolicy,
-    QMessageBox, QIcon, QTableView,
-    QLabel, QFrame)
-
-from .Frames import Frames
 
 
 import logging
 logger = logging.getLogger(__name__)
 
 
-DS,CP = range(2) 
+DS, CP = range(2) 
 
 ## element class
 class Element(object):
@@ -62,12 +50,17 @@ class Element(object):
     def __setChecked(self, status):
         self._setChecked(status)
 
+    def _getChecked(self):
+        pass
+
+    def _setChecked(self, _):
+        pass
 
     checked = property(__getChecked, __setChecked,
                        doc = 'check status')
 
     def __str__(self):
-        return (self.name, self.eltype, self.selected, self.params)
+        return (self.name, self.eltype, self.state, self.params)
 
 ## datasource element class
 class DSElement(Element):

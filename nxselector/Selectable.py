@@ -21,26 +21,18 @@
 
 """ selactable tab """
 
-import os
-import PyTango
 import json
 
 
+from PyQt4.QtCore import (SIGNAL)
+from PyQt4.QtGui import (QHBoxLayout, QVBoxLayout,
+    QGroupBox, QGridLayout,
+    QFrame, QWidgetItem)
 
-from PyQt4 import QtCore, QtGui
+from .Element import DSElement, CPElement, CP, DS
+from .ElementModel import ElementModel
 
-from PyQt4.QtCore import (
-    SIGNAL, QSettings, Qt, QVariant, SIGNAL)
-from PyQt4.QtGui import (QHBoxLayout,QVBoxLayout,
-    QDialog, QGroupBox,QGridLayout,QSpacerItem,QSizePolicy,
-    QMessageBox, QIcon, QTableView, QDialogButtonBox,
-    QLabel, QFrame, QHeaderView)
-
-from .Element import Element, DSElement, CPElement, CP, DS
-from .ElementModel import ElementModel, ElementDelegate
-
-from .Views import TableView, CheckerView, RadioView, LeftCheckerView
-from .Frames import Frames
+from .Views import CheckerView
 
 import logging
 logger = logging.getLogger(__name__)
@@ -88,12 +80,12 @@ class Selectable(object):
                             CPElement(elem[0], self.state))
                         ucp.add(elem[0])
         
-        for ds, flag in self.state.dsgroup.items():
+        for ds in self.state.dsgroup.keys():
             if ds not in uds:
                 if DS not in self.groups:
                     self.groups[DS] = []
                 self.groups[DS].append(DSElement(ds, self.state))
-        for cp, flag in self.state.cpgroup.items():
+        for cp in self.state.cpgroup.keys():
             if cp not in ucp and cp not in self.state.mcplist \
                     and cp not in self.state.acplist:
                 if CP not in self.groups:
@@ -111,7 +103,7 @@ class Selectable(object):
             child = self.layout.takeAt(0)
             while child:
                 self.layout.removeItem(child)
-                if isinstance(child, QtGui.QWidgetItem):
+                if isinstance(child, QWidgetItem):
                     child.widget().hide()
                     child.widget().close()
                     self.layout.removeWidget(child.widget())
@@ -152,7 +144,7 @@ class Selectable(object):
 
 
     def setModels(self):
-        for k, vw in self.views.items():
+        for k in self.views.keys():
             if k in self.groups.keys():
                 md = ElementModel(self.groups[k])
             else:

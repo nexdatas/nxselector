@@ -25,10 +25,13 @@ import os
 import PyTango
 import json
 
-import logging
-logger = logging.getLogger(__name__)
 
-from .Views import (TableView, OneTableView, CheckerView, RadioView, ButtonView, 
+from PyQt4.QtCore import (SIGNAL, QString)
+
+from PyQt4.QtGui import (QMessageBox, QCompleter, QFileDialog)
+
+from .Views import (TableView, OneTableView, CheckerView, RadioView, 
+                    ButtonView, 
                     LeftCheckerView, LeftRadioView, 
                     CheckerViewNL, RadioViewNL, ButtonViewNL, 
                     LeftCheckerViewNL, LeftRadioViewNL,
@@ -36,11 +39,8 @@ from .Views import (TableView, OneTableView, CheckerView, RadioView, ButtonView,
                     LeftCheckerViewNN, LeftRadioViewNN
                     )
 
-from PyQt4.QtCore import (
-    SIGNAL, QSettings, Qt, QVariant, SIGNAL, QString)
-
-from PyQt4.QtGui import (QMessageBox, QCompleter, QFileDialog)
-import PyTango
+import logging
+logger = logging.getLogger(__name__)
 
 ## main window class
 class Preferences(object):
@@ -55,7 +55,8 @@ class Preferences(object):
         # frames/columns/groups
         self.frameshelp = [\
             QString('[[[["Devices", 0]]],[[["MCAs", 2],["Misc",1]]]]'),
-            QString('[[[["Counters1", 0], ["Counters2", 2]], [["VCounters", 3]]],'
+            QString(
+                '[[[["Counters1", 0], ["Counters2", 2]], [["VCounters", 3]]],'
                 + '[[["MCAs", 1], ["SCAs", 4]]], [[["Misc", 5] ]]]'), 
             QString('[[[["My Controllers", 0]]],[[["My Components", 1]]]]'), 
             QString('')]
@@ -165,7 +166,8 @@ class Preferences(object):
             replay = QMessageBox.question(
                 self.ui.preferences, 
                 "Setting server has changed.", 
-                "Changing server will cause loosing the current data. Are you sure?",
+                "Changing server will cause loosing the current data. " \
+                    + " Are you sure?",
                 QMessageBox.Yes|QMessageBox.No)
             if replay == QMessageBox.Yes:
                 try:
@@ -251,10 +253,10 @@ class Preferences(object):
         logger.debug("loading profile from %s" % filename)
         if filename:
             self.profFile = filename
-            jprof=open(filename).read()
+            jprof = open(filename).read()
             try:
                 profile = json.loads(jprof)
-                if isinstance(profile,dict):
+                if isinstance(profile, dict):
                     if "server" in profile.keys():
                         self.ui.devSettingsLineEdit.setText(
                             QString(profile["server"]))

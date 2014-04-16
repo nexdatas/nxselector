@@ -21,26 +21,17 @@
 
 """ main window application dialog """
 
-import os
 import sys 
 import PyTango
-import json
-import time
  
-from PyQt4 import QtCore, QtGui
  
 from PyQt4.QtCore import (
-    SIGNAL, QSettings, Qt, QVariant, SIGNAL, QString)
-from PyQt4.QtGui import (QHBoxLayout,QVBoxLayout,
-    QDialog, QGroupBox,QGridLayout,QSpacerItem,QSizePolicy,
-    QMessageBox, QIcon, QTableView, QDialogButtonBox,
-    QLabel, QFrame, QHeaderView, QFileDialog)
+    SIGNAL, QSettings, QVariant, SIGNAL, QString)
+from PyQt4.QtGui import (
+    QDialog, QMessageBox, QDialogButtonBox, QFileDialog)
 
 from .Frames import Frames
-from .Element import Element, DSElement, CPElement, CP, DS
-from .ElementModel import ElementModel, ElementDelegate
 from .ServerState import ServerState
-from .ui.ui_selector import Ui_Selector
 
 from .Selectable import Selectable
 from .Preferences import Preferences
@@ -48,6 +39,7 @@ from .Automatic import Automatic
 from .Mandatory import Mandatory
 from .Storage import Storage
 
+from .ui.ui_selector import Ui_Selector
 
 
 import logging
@@ -69,7 +61,7 @@ class Selector(QDialog):
         try:
             self.state = ServerState(server)
         except PyTango.DevFailed as e:
-            exctype , value = sys.exc_info()[:2]
+            value = sys.exc_info()[1]
             QMessageBox.warning(
                 self, 
                 "Error in Setting Server",
@@ -145,7 +137,8 @@ class Selector(QDialog):
         self.setDirty()
 
 
-    def restoreInt(self, settings, name, default):
+    @classmethod    
+    def restoreInt(cls, settings, name, default):
         res = default
         try:
             res = int(settings.value(name).toInt()[0])  
@@ -155,7 +148,8 @@ class Selector(QDialog):
             res = default
         return res
 
-    def restoreString(self, settings, name, default):
+    @classmethod    
+    def restoreString(cls, settings, name, default):
         res = default
         try:
             res = unicode(settings.value(name).toString())  
@@ -165,7 +159,8 @@ class Selector(QDialog):
             res = default
         return res
 
-    def restoreList(self, settings, name, default):
+    @classmethod    
+    def restoreList(cls, settings, name, default):
         res = default
         try:
             res = settings.value(name).toList()
@@ -181,7 +176,9 @@ class Selector(QDialog):
     # \brief It create dialogs for the main window application
     def createGUI(self):
         self.ui.setupUi(self)
-        self.ui.buttonBox.setStandardButtons(QtGui.QDialogButtonBox.Reset | QtGui.QDialogButtonBox.Apply | QtGui.QDialogButtonBox.Close)
+        self.ui.buttonBox.setStandardButtons(
+           QDialogButtonBox.Reset | QDialogButtonBox.Apply \
+                | QDialogButtonBox.Close)
         for tab in self.tabs:
             tab.reset()
             
@@ -222,7 +219,7 @@ class Selector(QDialog):
         if flag:
             self.setWindowTitle(self.title + ' **[NOT APPLIED]**' )
         else:
-           self.setWindowTitle(self.title)
+            self.setWindowTitle(self.title)
     
        
         
@@ -252,7 +249,7 @@ class Selector(QDialog):
             QVariant(str(self.preferences.mgroupshelp)))
 
                     
-    def closeEvent(self, event):
+    def closeEvent(self, _):
         self.__saveSettings()
 
     def resetServer(self):
@@ -290,23 +287,15 @@ class Selector(QDialog):
         
     def reset(self):
         logger.debug("reset selector")
-        s1 = time.time() 
         self.state.fetchSettings()
-        s2 = time.time() 
         for tab in self.tabs:
             tab.reset()
-        s3 = time.time() 
-#        print "RESET: FETCH, RESETTABS", s2-s1,s3-s2
         logger.debug("reset selector ended")
 
     def resetAll(self):
         logger.debug("reset ALL")
-        s1 = time.time() 
         self.state.updateControllers()
-        s2 = time.time()
         self.reset()
-        s3 = time.time() 
-#        print "RESETALL: UPDATECONTR, RESET", s2-s1,s3-s2
         logger.debug("reset ENDED")
         
 
@@ -336,15 +325,11 @@ class Selector(QDialog):
 
     def apply(self):
         try:
-            s1 = time.time()
             self.state.updateMntGrp()
-            s2 = time.time()
 #            self.resetAll()
-            s3 = time.time()
             self.setDirty(False)
-#            print "APPLY: UPDATE, RESETALL", s2-s1,s3-s2
         except PyTango.DevFailed as e:
-            exctype , value = sys.exc_info()[:2]
+            value = sys.exc_info()[1]
             QMessageBox.warning(
                 self, 
                 "Error in updating Measurement Group",

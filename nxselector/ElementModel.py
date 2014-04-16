@@ -21,19 +21,13 @@
 
 """ device Model """
 
-import os
-import PyTango
-import json
-
 from PyQt4.QtCore import (
-    SIGNAL, QSettings, Qt, QVariant, QAbstractTableModel,
+    SIGNAL, Qt, QVariant, QAbstractTableModel,
     QModelIndex)
-from PyQt4.QtGui import (QHBoxLayout,QVBoxLayout,
-    QDialog, QGroupBox,QGridLayout,QSpacerItem,QSizePolicy,
-    QMessageBox, QIcon, QTableView, QCheckBox,
-    QLabel, QFrame,QStyledItemDelegate)
+from PyQt4.QtGui import (
+    QCheckBox,
+    QItemDelegate, QStyledItemDelegate)
 
-from .Frames import Frames
 from .Element import DS, CP
 
 import logging
@@ -54,16 +48,15 @@ class ElementModel(QAbstractTableModel):
 
         if group:
             self.group = sorted(group, key=lambda x: x.name, reverse=False)
-        pass
 
-    def rowCount(self, index=QModelIndex()):
+    def rowCount(self, _=QModelIndex()):
         return len(self.group)
         
 
-    def columnCount(self, index=QModelIndex()):
+    def columnCount(self, _=QModelIndex()):
         return 2
 
-    def index(self, row, column, parent=QModelIndex()):
+    def index(self, row, column, _=QModelIndex()):
         return self.createIndex(row, column)
 
     def data(self, index, role=Qt.DisplayRole):
@@ -76,7 +69,8 @@ class ElementModel(QAbstractTableModel):
             if role == Qt.DisplayRole:
                 return QVariant(device.name)
             if role == Qt.CheckStateRole: 
-                if (not (self.flags(index) & Qt.ItemIsEnabled) and self.enable) \
+                if (not (self.flags(index) & Qt.ItemIsEnabled) \
+                        and self.enable) \
                         or device.checked:
                     return Qt.Checked
                 else:
@@ -94,7 +88,7 @@ class ElementModel(QAbstractTableModel):
 
         return QVariant()
 
-    def headerData(self, section, orientation, role=Qt.DisplayRole):
+    def headerData(self, section, _, role=Qt.DisplayRole):
         if role != Qt.DisplayRole:
             return QVariant()
         if section == 0:
@@ -176,7 +170,7 @@ class ElementDelegate(QStyledItemDelegate):
         super(ElementDelegate, self).__init__(parent)
 
     def createEditor(self, parent, option, index):
-        if index.column() == CHECKED:
+        if index.column() == 0:
             editor = QCheckBox(parent)
             return editor
         else:
