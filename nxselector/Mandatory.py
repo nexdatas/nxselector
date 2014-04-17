@@ -54,7 +54,7 @@ class Mandatory(object):
         mcpgroup = {}
         for cp in self.state.mcplist:
             mcpgroup[cp] = True
-        for cp, in mcpgroup.keys():
+        for cp in mcpgroup.keys():
             self.mgroup.append(
                 CPElement(cp, self.state, group = mcpgroup))
 
