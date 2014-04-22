@@ -128,7 +128,6 @@ class ServerState(object):
                   "ScanFile":"scanFile",
 #                  "ScanID":"scanID"],
                   "ActiveMntGrp":"mntgrp"}
-
         dp = self.openProxy(self.macroServer)
         if not self.__dp:
             self.setServer()
@@ -146,10 +145,11 @@ class ServerState(object):
             if 'new' in dc.keys():
                 for var, attr in params.items():
                     dc['new'][var] = getattr(self, attr)
-                    pk = pickle.dumps(dc)    
+                    pk = pickle.dumps(dc) 
+                if 'ScanID' in dc['new'].keys():
+                    self.scanID = int(dc['new']["ScanID"])
                 dp.Environment = ['pickle', pk]
-
-
+                
         
 #        self.storeData("ScanDir", self.scanDir)
 #        self.storeData("ScanFile", self.scanFile)

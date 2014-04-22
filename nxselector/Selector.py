@@ -327,6 +327,7 @@ class Selector(QDialog):
         try:
             self.state.updateMntGrp()
 #            self.resetAll()
+            self.ui.fileScanIDSpinBox.setValue(self.state.scanID)
             self.setDirty(False)
         except PyTango.DevFailed as e:
             value = sys.exc_info()[1]
