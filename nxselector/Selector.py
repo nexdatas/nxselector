@@ -81,7 +81,7 @@ class Selector(QDialog):
             settings, 'Preferences/UserView', 'CheckBoxes')
 
         self.rowMax = self.restoreInt(
-            settings, 'Preferences/RowMax', 0)
+            settings, 'Preferences/RowMax', 20)
 
 
         ## user interface
