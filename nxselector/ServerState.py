@@ -24,7 +24,6 @@
 import PyTango
 import json
 import time 
-import pickle
 
 import logging
 logger = logging.getLogger(__name__)
@@ -87,26 +86,6 @@ class ServerState(object):
         self.fetchFileData()
         self.fetchEnvData()
 
-    def fetchEnvData(self):
-        params = {"ScanDir":"scanDir",
-                  "ScanFile":"scanFile",
-                  "ScanID":"scanID",
-                  "ActiveMntGrp":"mntgrp"}
-
-        dp = self.openProxy(self.macroServer)
-        rec = dp.Environment
-        if rec[0] == 'pickle':
-            dc = pickle.loads(rec[1])
-            if 'new' in dc.keys() :
-                for var, attr in params.items():
-                    if var in dc['new'].keys():
-                        setattr(self, attr, dc['new'][var])
-    
-#        self.scanDir = self.loadData("ScanDir")
-#        self.scanFile = self.loadData("ScanFile")
-#        self.scanID = self.loadData("ScanID")
-#        self.mntgrp = str(self.loadData("ActiveMntGrp"))
-
     def fetchFileData(self):
         self.timer = self.loadData("Timer")
         self.macroServer = self.loadData("MacroServer")
@@ -122,39 +101,43 @@ class ServerState(object):
         self.dynamicPath = self.loadData("DynamicPath")
         self.cnfFile = self.loadData("ConfigFile")
 
+    def fetchEnvData(self):
+        params = {"ScanDir":"scanDir",
+                  "ScanFile":"scanFile",
+                  "ScanID":"scanID",
+                  "ActiveMntGrp":"mntgrp"}
+
+
+        if not self.__dp:
+            self.setServer()
+
+        jvalue = self.__dp.FetchEnvData()
+        value = json.loads(jvalue)    
+ 
+        for var, attr in params.items():
+            if var in value.keys():
+                setattr(self, attr, value[var])
+        logger.debug("fetch Env: %s" % ( jvalue) )
+
+
+
 
     def storeEnvData(self):
         params = {"ScanDir":"scanDir",
                   "ScanFile":"scanFile",
 #                  "ScanID":"scanID"],
                   "ActiveMntGrp":"mntgrp"}
-        dp = self.openProxy(self.macroServer)
+
         if not self.__dp:
             self.setServer()
-        full = self.__dp.FindMntGrp(self.mntgrp)    
-        if not full:
-            pn = dp.get_property("PoolNames")["PoolNames"]
-            if len(pn)>0:
-                pool = self.openProxy(pn[0])
-            if pool:
-                pool.CreateMeasurementGroup([self.mntgrp, self.timer])
 
-        rec = dp.Environment
-        if rec[0] == 'pickle':
-            dc = pickle.loads(rec[1])
-            if 'new' in dc.keys():
-                for var, attr in params.items():
-                    dc['new'][var] = getattr(self, attr)
-                    pk = pickle.dumps(dc) 
-                if 'ScanID' in dc['new'].keys():
-                    self.scanID = int(dc['new']["ScanID"])
-                dp.Environment = ['pickle', pk]
-                
-        
-#        self.storeData("ScanDir", self.scanDir)
-#        self.storeData("ScanFile", self.scanFile)
-#        self.storeData("ScanID", self.scanID)
-#        self.storeData("ActiveMntGrp", self.mntgrp)
+        value = {}    
+        for var, attr in params.items():
+            value[var] = getattr(self, attr)
+        jvalue = json.dumps(value)    
+
+        self.scanID = self.__dp.StoreEnvData(jvalue)
+        logger.debug("Store Env: %s" % ( jvalue) )
 
     def storeFileData(self):
 
