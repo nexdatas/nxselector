@@ -22,7 +22,7 @@
 """ selactable tab """
 
 import json
-
+import fnmatch
 
 from PyQt4.QtCore import (SIGNAL)
 from PyQt4.QtGui import (QHBoxLayout, QVBoxLayout,
@@ -31,6 +31,7 @@ from PyQt4.QtGui import (QHBoxLayout, QVBoxLayout,
 
 from .Element import DSElement, CPElement, CP, DS
 from .ElementModel import ElementModel
+from .Frames import Frames
 
 from .Views import CheckerView
 
@@ -53,10 +54,7 @@ class Selectable(object):
         self.frames = None
         self.mgroups = None
         self.groups = {}
-        self.availableGroups = set()
         self.views = {} 
-
-
 
 
     def updateGroups(self):
@@ -68,17 +66,30 @@ class Selectable(object):
         except:
             mgroups = {}
         for k, gr in mgroups.items():
-            if int(k) in self.availableGroups:
-                self.groups[int(k)] = []
+            if int(k) in self.__availableGroups():
+                group = []
                 for elem in gr:
                     if elem[1] == DS:
-                        self.groups[int(k)].append(
-                            DSElement(elem[0], self.state))
-                        uds.add(elem[0])
+                        filtered = fnmatch.filter(
+                            self.state.dsgroup.keys(),
+                            elem[0])
+                        for felem in filtered:
+                            group.append(
+                                DSElement(felem, self.state))
+                            uds.add(felem)
                     elif elem[1] == CP: 
-                        self.groups[int(k)].append(
-                            CPElement(elem[0], self.state))
-                        ucp.add(elem[0])
+                        filtered = fnmatch.filter(
+                            self.state.cpgroup.keys(),
+                            elem[0])
+                        for felem in filtered:
+                            group.append(
+                                CPElement(felem, self.state))
+                            ucp.add(felem)
+                if group:
+                    if int(k) not in self.groups:
+                        self.groups[int(k)] = []
+                    self.groups[int(k)].extend(group)
+                    
         
         for ds in self.state.dsgroup.keys():
             if ds not in uds:
@@ -94,6 +105,18 @@ class Selectable(object):
 #        for k in self.groups.keys():
 #            self.groups[k] = sorted(self.groups[k])
             
+                
+    def __availableGroups(self):
+        res = set()
+        try:
+            frames = Frames(self.frames)
+            for frame in frames:
+                for column in frame: 
+                    for group in column:
+                        res.add(group[1])
+        except:
+            pass
+        return res
 
 
     def createGUI(self):
@@ -113,7 +136,8 @@ class Selectable(object):
             
         self.views = {} 
 
-        for frame in self.frames:
+        frames = Frames(self.frames, DS in self.groups, CP in self.groups)
+        for frame in frames:
             mframe = QFrame(self.ui.selectable)
             mframe.setFrameShape(QFrame.StyledPanel)
             mframe.setFrameShadow(QFrame.Raised)
@@ -132,7 +156,6 @@ class Selectable(object):
                     layout_auto.addWidget(mview, 0, 0, 1, 1)
                     layout_groups.addWidget(mgroup)
 
-                    self.availableGroups.add(group[1])
                     self.views[group[1]] = mview
 
                 layout_columns.addLayout(layout_groups)
@@ -161,9 +184,9 @@ class Selectable(object):
         self.ui.selectable.emit(SIGNAL("dirty"))
 
     def reset(self):
-        logger.debug("reset views")
-        self.createGUI()
+        logger.debug("reset views") 
         self.updateGroups()
+        self.createGUI()
         self.setModels()
         self.updateViews()
         logger.debug("reset views end")

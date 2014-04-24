@@ -102,8 +102,8 @@ class Automatic(object):
         self.aview.reset()
 
     def reset(self):
-        self.createGUI()
         self.updateGroups()
+        self.createGUI()
         self.setModels()
         self.updateViews()
         

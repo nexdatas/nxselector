@@ -54,6 +54,8 @@ class Preferences(object):
 
         # frames/columns/groups
         self.frameshelp = [\
+            QString('[[[["Counters", 4]],[["Channels",0]]],' \
+                        + '[[["MCAs", 2],["Misc",1]]],[[["ADC",3]]]]'),
             QString('[[[["Devices", 0]]],[[["MCAs", 2],["Misc",1]]]]'),
             QString(
                 '[[[["Counters1", 0], ["Counters2", 2]], [["VCounters", 3]]],'
@@ -61,7 +63,8 @@ class Preferences(object):
             QString('[[[["My Controllers", 0]]],[[["My Components", 1]]]]'), 
             QString('')]
         self.mgroupshelp = [
-            QString('[[[["Counters", 0]]],[[["MCAs", 2],["Misc",1]]]]'),
+            QString('{"2":[["mca8701*", 1]] , "3":[["exp_adc*", 0]],' \
+                        + ' "4":[["exp_c*",0]]}'),
             QString('{"2":[["ct01", 0], ["ct02",0]], "5":[["appscan", 1]]}'), 
             QString('')]
         self.serverhelp = [
@@ -102,12 +105,12 @@ class Preferences(object):
         self.ui.preferences.disconnect(
             self.ui.groupLineEdit,
             SIGNAL("editingFinished()"), 
-            self.on_groupLineEdit_editingFinished)
+            self.on_layoutLineEdits_editingFinished)
 
         self.ui.preferences.disconnect(
             self.ui.frameLineEdit,
             SIGNAL("editingFinished()"), 
-            self.on_frameLineEdit_editingFinished)
+            self.on_layoutLineEdits_editingFinished)
 
         self.ui.preferences.disconnect(
             self.ui.profLoadPushButton, 
@@ -121,12 +124,12 @@ class Preferences(object):
         self.ui.preferences.connect(
             self.ui.frameLineEdit,
             SIGNAL("editingFinished()"), 
-            self.on_frameLineEdit_editingFinished)
+            self.on_layoutLineEdits_editingFinished)
 
         self.ui.preferences.connect(
             self.ui.groupLineEdit,
             SIGNAL("editingFinished()"), 
-            self.on_groupLineEdit_editingFinished)
+            self.on_layoutLineEdits_editingFinished)
 
         self.ui.preferences.connect(
             self.ui.devSettingsLineEdit,
@@ -184,25 +187,6 @@ class Preferences(object):
         self.connectSignals()
         logger.debug("server changed")
 
-    def on_groupLineEdit_editingFinished(self):
-        logger.debug("on_groupLineEdit_editingFinished")
-        self.disconnectSignals()
-        string = str(self.ui.groupLineEdit.text())
-        try:
-            if not string:
-                string = '{}'
-            mgroups =  json.loads(string)
-            if isinstance(mgroups, dict):
-                self.mgroups = string
-                self.addHint(string, self.mgroupshelp)
-                self.connectSignals()
-                self.ui.preferences.emit(
-                    SIGNAL("groupsChanged(QString)"),
-                    QString(string)) 
-        except Exception as e :    
-            logger.debug(str(e))
-            self.reset()
-        self.connectSignals()
 
     def addHint(self, string, hints):
         qstring = QString(string)
@@ -211,22 +195,47 @@ class Preferences(object):
         if self.maxHelp < len(hints):
             hints.pop(0)
 
-    def on_frameLineEdit_editingFinished(self):
-        logger.debug("on_frameLineEdit_editingFinished")
+    def on_layoutLineEdits_editingFinished(self):
+        logger.debug("on_groupLineEdit_editingFinished")
         self.disconnectSignals()
-        string = str(self.ui.frameLineEdit.text())
+
+        groups = str(self.ui.groupLineEdit.text())
+        frames = str(self.ui.frameLineEdit.text())
         try:
-            if not string:
-                string = '[]'
-            mframes =  json.loads(string)
-            
+            if not frames:
+                frames = '[]'
+            mframes =  json.loads(frames)
             if isinstance(mframes, list):
-                self.frames = string
-                self.addHint(string, self.frameshelp)
-                self.connectSignals()
-                self.ui.preferences.emit(
-                    SIGNAL("framesChanged(QString)"),
-                    QString(string)) 
+                self.frames = frames
+                self.addHint(frames, self.frameshelp)
+
+            if not groups:
+                groups = '{}'
+            mgroups =  json.loads(groups)
+
+            if isinstance(mgroups, dict):
+                self.mgroups = groups
+                self.addHint(groups, self.mgroupshelp)
+
+                if isinstance(mframes, list):
+                    self.connectSignals()
+                    self.ui.preferences.emit(
+                        SIGNAL("layoutChanged(QString,QString)"),
+                        QString(frames),QString(groups)) 
+        except Exception as e :    
+            logger.debug(str(e))
+            self.reset()
+        self.connectSignals()
+
+    def on_frameLineEdit_editingFinished(self):
+        loggers.debug("on_frameLineEdit_editingFinished")
+        self.disconnectSignals()
+        frames = str(self.ui.frameLineEdit.text())
+        try:
+            if not frames:
+                frames = '[]'
+            mframes =  json.loads(frames)
+            
         except:
             self.reset()
 

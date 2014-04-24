@@ -26,47 +26,54 @@ import json
 import logging
 logger = logging.getLogger(__name__)
 
+from .Element import CP, DS
 
 ## main window class
 class Frames(object):
 
     ## constructor
     # \param settings frame settings
-    def __init__(self, settings=None):
-
-        self.dslabel = "Controllers"
-        self.cplabel = "Components"
+    def __init__(self, settings=None, ds = False, cp = False):
 
         self.dsid = None
         self.cpid = None
         self.__dct = None
         self.__settings = None
-        self.set(settings)
-   
+        self.defaultds = [[["Controllers", 0]]]
+        self.defaultcp = [[["Components", 1]]]
+        self.set(settings, ds, cp)
 
-    def set(self, settings):
+
+    def set(self, settings, ds = False, cp = False):
         if settings:
             mysettings = json.loads(settings)
         else:
             mysettings = None
         self.__dct = {}    
-        self.__settings = [
-            [[[self.dslabel, 0]]],[[[self.cplabel, 1]]]]
+        self.__settings = [self.defaultds, self.defaultcp]
         try:
             if mysettings:
+                groups = set()
+                if ds or cp:
+                    for frame in mysettings:
+                        for column in frame: 
+                            for group in column:
+                                groups.add(group[1])
+                if cp and CP not in groups:
+                    mysettings.insert(0, self.defaultcp)
+                if ds and DS not in groups:
+                    mysettings.insert(0, self.defaultds)
                 self.__settings = list(mysettings)
             self.__makedict()
 
             ids = set(self.ids())
             if len(ids) < 2:
-                self.__settings = [
-                    [[[self.dslabel, 0]]],[[[self.cplabel, 1]]]]
+                self.__settings = [self.defaultds, self.defaultcp]
                 self.__makedict()
                 
                 
         except:
-            self.__settings = [
-                [[[self.dslabel, 0]]],[[[self.cplabel, 1]]]]
+            self.__settings = [self.defaultds, self.defaultcp]
             self.__makedict()
 
         ids = list(set(self.ids()))

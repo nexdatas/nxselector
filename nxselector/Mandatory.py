@@ -106,8 +106,8 @@ class Mandatory(object):
         self.mview.reset()
 
     def reset(self):
-        self.createGUI()
         self.updateGroups()
+        self.createGUI()
         self.setModels()
         self.updateViews()
         

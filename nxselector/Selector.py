@@ -30,7 +30,6 @@ from PyQt4.QtCore import (
 from PyQt4.QtGui import (
     QDialog, QMessageBox, QDialogButtonBox, QFileDialog)
 
-from .Frames import Frames
 from .ServerState import ServerState
 
 from .Selectable import Selectable
@@ -114,7 +113,7 @@ class Selector(QDialog):
             self.preferences.frameshelp)
 
         self.selectable.mgroups = str(self.preferences.mgroups)
-        self.selectable.frames = Frames(self.preferences.frames)
+        self.selectable.frames = str(self.preferences.frames)
         self.automatic = Automatic(
             self.ui, self.state, 
             self.preferences.views[self.userView],
@@ -201,10 +200,10 @@ class Selector(QDialog):
                      SIGNAL("serverChanged()"), self.resetServer)
 
         self.connect(self.ui.preferences, 
-                     SIGNAL("groupsChanged(QString)"), self.resetGroups)
+                     SIGNAL("layoutChanged(QString,QString)"), self.resetLayout)
 
         self.connect(self.ui.preferences, 
-                     SIGNAL("framesChanged(QString)"), self.resetFrames)
+                     SIGNAL("layoutChanged(QString,QString)"), self.resetLayout)
 
         self.connect(self.ui.viewComboBox, 
                      SIGNAL("currentIndexChanged(int)"), self.resetViews)
@@ -258,18 +257,12 @@ class Selector(QDialog):
         self.reset()
         logger.debug("reset server ended")
 
-    def resetGroups(self, groups):
-        logger.debug("reset groups")
+    def resetLayout(self, frames, groups):
+        logger.debug("reset layout")
+        self.selectable.frames = str(frames)
         self.selectable.mgroups = str(groups)
         self.resetViews()
-        logger.debug("reset groups ended")
-
-
-    def resetFrames(self, frames):
-        logger.debug("reset famces")
-        self.selectable.frames = Frames(str(frames))
-        self.resetViews()
-        logger.debug("reset famces ended")
+        logger.debug("reset layout ended")
 
 
     def resetRows(self, rowMax):
