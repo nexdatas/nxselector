@@ -25,7 +25,6 @@ import os
 import PyTango
 import json
 
-
 from PyQt4.QtCore import (SIGNAL, QString)
 
 from PyQt4.QtGui import (QMessageBox, QCompleter, QFileDialog)
@@ -228,7 +227,7 @@ class Preferences(object):
         self.connectSignals()
 
     def on_frameLineEdit_editingFinished(self):
-        loggers.debug("on_frameLineEdit_editingFinished")
+        logger.debug("on_frameLineEdit_editingFinished")
         self.disconnectSignals()
         frames = str(self.ui.frameLineEdit.text())
         try:
@@ -273,14 +272,14 @@ class Preferences(object):
                     if "frames" in profile.keys():
                         self.ui.frameLineEdit.setText(
                             QString(profile["frames"]))
-                        self.on_frameLineEdit_editingFinished()
+                        self.on_layoutLineEdits_editingFinished()
                     if "groups" in profile.keys():
                         self.ui.groupLineEdit.setText(
                             QString(profile["groups"]))
                         self.ui.groupLineEdit.emit(
                             SIGNAL("groupsChanged(QString)"),
                             self.ui.groupLineEdit.text()) 
-                        self.on_groupLineEdit_editingFinished()
+                        self.on_layoutLineEdits_editingFinished()
                     if "rowMax" in profile.keys():
                         self.ui.rowMaxSpinBox.setValue(
                             int(profile["rowMax"]))

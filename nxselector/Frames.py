@@ -52,7 +52,7 @@ class Frames(object):
         self.__dct = {}    
         self.__settings = [self.defaultds, self.defaultcp]
         try:
-            if mysettings:
+            if mysettings is not None:
                 groups = set()
                 if ds or cp:
                     for frame in mysettings:
@@ -67,8 +67,8 @@ class Frames(object):
             self.__makedict()
 
             ids = set(self.ids())
-            if len(ids) < 2:
-                self.__settings = [self.defaultds, self.defaultcp]
+            if len(ids) < 1:
+                self.__settings = [self.defaultds]
                 self.__makedict()
                 
                 
@@ -78,7 +78,10 @@ class Frames(object):
 
         ids = list(set(self.ids()))
         self.dsid = ids[0]
-        self.cpid = ids[1]
+        if len(ids)>1:
+            self.cpid = ids[1]
+        else:
+            self.cpid = ids[0]
         logger.debug("DSid = %s, CPid = %s " % ( self.dsid, self.cpid))
         logger.debug(self.__dct)            
         logger.debug(self.ids())            

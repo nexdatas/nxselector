@@ -128,7 +128,8 @@ class Storage(object):
     def updateForm(self):
         logger.debug("updateForm storage")
         # file group
-        self.ui.fileScanDirLineEdit.setText(self.state.scanDir)
+        if self.state.scanDir is not None:
+            self.ui.fileScanDirLineEdit.setText(self.state.scanDir)
         self.ui.fileScanIDSpinBox.setValue(self.state.scanID)
         self.ui.fileScanIDSpinBox.setEnabled(False)
 
@@ -148,7 +149,8 @@ class Storage(object):
             cid = 0
         self.ui.mntTimerComboBox.setCurrentIndex(cid)
 
-        self.ui.mntGrpLineEdit.setText(self.state.mntgrp)
+        if self.state.mntgrp is not None:
+            self.ui.mntGrpLineEdit.setText(self.state.mntgrp)
         self.ui.mntServerLineEdit.setText(self.state.macroServer)
 
         # device group    

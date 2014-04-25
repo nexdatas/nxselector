@@ -319,7 +319,7 @@ class Selector(QDialog):
     def apply(self):
         try:
             self.state.updateMntGrp()
-#            self.resetAll()
+            self.resetAll()
             self.ui.fileScanIDSpinBox.setValue(self.state.scanID)
             self.setDirty(False)
         except PyTango.DevFailed as e:

@@ -135,7 +135,6 @@ class Selectable(object):
             self.layout = QHBoxLayout(self.ui.selectable)
             
         self.views = {} 
-
         frames = Frames(self.frames, DS in self.groups, CP in self.groups)
         for frame in frames:
             mframe = QFrame(self.ui.selectable)

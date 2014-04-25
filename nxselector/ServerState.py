@@ -35,7 +35,8 @@ class ServerState(object):
     ## constructor
     # \param settings frame settings
     def __init__(self, server=None):
-        self.server = server
+        
+        self.server = str(server) if server else None
         self.__dp = None
         ## tango database
         self.__db = PyTango.Database()
@@ -125,6 +126,7 @@ class ServerState(object):
     def storeEnvData(self):
         params = {"ScanDir":"scanDir",
                   "ScanFile":"scanFile",
+                  "NeXusSelectorDevice":"server",
 #                  "ScanID":"scanID"],
                   "ActiveMntGrp":"mntgrp"}
 
@@ -135,7 +137,6 @@ class ServerState(object):
         for var, attr in params.items():
             value[var] = getattr(self, attr)
         jvalue = json.dumps(value)    
-
         self.scanID = self.__dp.StoreEnvData(jvalue)
         logger.debug("Store Env: %s" % ( jvalue) )
 
@@ -162,6 +163,12 @@ class ServerState(object):
         self.storeEnvData()
 
     def updateMntGrp(self):
+        if not self.mntgrp:
+            raise Exception("ActiveMntGrp not defined")
+        if not self.scanFile:
+            raise Exception("ScanFile not defined")
+        if not self.scanDir:
+            raise Exception("ScanDir not defined")
         self.storeSettings()
         self.__dp.UpdateMntGrp()
             
@@ -183,7 +190,7 @@ class ServerState(object):
             servers = self.__db.get_device_exported_for_class(
                 "NXSRecSelector").value_string
             if len(servers):
-                self.server = servers[0]                
+                self.server = str(servers[0])
 
         self.__dp = self.openProxy(self.server)    
 
