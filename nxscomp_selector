@@ -89,7 +89,7 @@ def main():
     app.setWindowIcon(QIcon(":/configtools.png"))
     app.setOrganizationName("DESY")
     app.setOrganizationDomain("desy.de")
-    app.setApplicationName("NXS Component Designer")
+    app.setApplicationName("NXS Component Selector")
     form = Selector(options.server)
 
     form.show()
