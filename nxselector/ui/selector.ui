@@ -419,7 +419,7 @@
                    <item>
                     <widget class="QCheckBox" name="othersEntryCheckBox">
                      <property name="text">
-                      <string>Append Entry</string>
+                      <string>Append Scans</string>
                      </property>
                     </widget>
                    </item>
