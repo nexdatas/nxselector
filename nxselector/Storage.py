@@ -151,7 +151,7 @@ class Storage(object):
 
         if self.state.mntgrp is not None:
             self.ui.mntGrpLineEdit.setText(self.state.mntgrp)
-        self.ui.mntServerLineEdit.setText(self.state.macroServer)
+        self.ui.mntServerLineEdit.setText(self.state.door)
 
         # device group    
         self.ui.devWriterLineEdit.setText(self.state.writerDevice)
@@ -178,7 +178,7 @@ class Storage(object):
             return
         self.state.mntgrp = str(self.ui.mntGrpLineEdit.text())
         self.state.timer = str(self.ui.mntTimerComboBox.currentText())
-        self.state.macroServer = str(self.ui.mntServerLineEdit.text())
+        self.state.door = str(self.ui.mntServerLineEdit.text())
 
         self.state.scanDir = str(self.ui.fileScanDirLineEdit.text())
 #        self.state.scanID = int(self.ui.fileScanIDSpinBox.value())

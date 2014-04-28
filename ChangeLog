@@ -1,5 +1,9 @@
+2014-XX-XX Jan Kotanski <jankotan@gmail.com>
+	* changing MacroServer to Door
+	* taggeg as 1.3.0
+
 2014-04-28 Jan Kotanski <jankotan@gmail.com>
-	* moving store/fetchEnvData into server 
+	* moving store/fetchEnvData into server
 	* (NXSRecSelector server v1.2.0 required)
 	* taggeg as 1.2.0
 
