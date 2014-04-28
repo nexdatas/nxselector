@@ -52,7 +52,7 @@ class ServerState(object):
 
         self.timer = None
         self.mntgrp = None
-        self.macroServer = None 
+        self.door = None 
 
         self.configDevice = None
         self.writerDevice = None
@@ -89,7 +89,7 @@ class ServerState(object):
 
     def fetchFileData(self):
         self.timer = self.loadData("Timer")
-        self.macroServer = self.loadData("MacroServer")
+        self.door = self.loadData("Door")
 
         self.configDevice = self.loadData("ConfigDevice")
         self.writerDevice = self.loadData("WriterDevice")
@@ -143,7 +143,7 @@ class ServerState(object):
     def storeFileData(self):
 
         self.storeData("Timer", self.timer)
-        self.storeData("MacroServer", self.macroServer)
+        self.storeData("Door", self.door)
 
         self.storeData("ConfigDevice", self.configDevice)
         self.storeData("WriterDevice", self.writerDevice)
