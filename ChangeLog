@@ -1,5 +1,6 @@
-2014-04-XX Jan Kotanski <jankotan@gmail.com>
-	* moving store/fetchEnvData into server
+2014-04-28 Jan Kotanski <jankotan@gmail.com>
+	* moving store/fetchEnvData into server 
+	* (NXSRecSelector server v1.2.0 required)
 	* taggeg as 1.2.0
 
 2014-04-23 Jan Kotanski <jankotan@gmail.com>
