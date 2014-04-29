@@ -58,6 +58,28 @@ class Element(object):
 
     checked = property(__getChecked, __setChecked,
                        doc = 'check status')
+    
+    
+
+
+        
+    def __getDisplay(self):
+        return self._getDisplay()
+
+    def __setDisplay(self, status):
+        self._setDisplay(status)
+
+    def _getDisplay(self):
+        pass
+
+    def _setDisplay(self, _):
+        pass
+
+    display = property(__getDisplay, __setDisplay,
+                       doc = 'check status')
+    
+    
+
 
     def __str__(self):
         return (self.name, self.eltype, self.state, self.params)
@@ -82,8 +104,35 @@ class DSElement(Element):
     def _setChecked(self, status):
         dc = self.state.dsgroup
         dc[self.name] = status
-#        self.state.dsgroup = dc
+        if not status:
+            nd = self.state.nodisplay
+            if self.name in nd:
+                nd.remove(self.name)
+            
 
+
+    def _getDisplay(self):
+        res = self.state.dsgroup
+        nd = self.state.nodisplay
+        if self.name not in nd:
+            if self.name in res.keys():
+                return res[self.name]
+        return False
+
+
+    def _setDisplay(self, status):
+        dc = self.state.dsgroup
+        nd = self.state.nodisplay
+        if self.name in dc.keys():
+            if self.name in nd:
+                if status:
+                   nd.remove(self.name)
+            else:
+                if not status:
+                    nd.append(self.name)
+        else:
+            if self.name in nd:
+                nd.remove(self.name)
 
 ## datasource element class
 class CPElement(Element):
@@ -111,5 +160,34 @@ class CPElement(Element):
         else:
             dc = self.group
         dc[self.name] = status
-#        self.state.cpgroup = dc
+        if not status:
+            nd = self.state.nodisplay
+            if self.name in nd:
+                nd.remove(self.name)
+
+
+
+
+    def _getDisplay(self):
+        res = self.state.cpgroup
+        nd = self.state.nodisplay
+        if self.name not in nd:
+            if self.name in res.keys():
+                return res[self.name]
+        return False
+
+
+    def _setDisplay(self, status):
+        dc = self.state.cpgroup
+        nd = self.state.nodisplay
+        if self.name in dc.keys():
+            if self.name in nd:
+                if status:
+                   nd.remove(self.name)
+            else:
+                if not status:
+                    nd.append(self.name)
+        else:
+            if self.name in nd:
+                nd.remove(self.name)
 

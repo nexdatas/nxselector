@@ -54,7 +54,7 @@ class ElementModel(QAbstractTableModel):
         
 
     def columnCount(self, _=QModelIndex()):
-        return 2
+        return 3
 
     def index(self, row, column, _=QModelIndex()):
         return self.createIndex(row, column)
@@ -83,6 +83,25 @@ class ElementModel(QAbstractTableModel):
                     return QVariant(device.state.dslabels[device.name])
             elif device.eltype == CP:    
                 return 
+        elif column == 2:
+            if role == Qt.CheckStateRole: 
+                if (not (self.flags(index) & Qt.ItemIsEnabled) \
+                        and self.enable) \
+                        or device.checked:
+                    if device.eltype == DS:
+                        dds = device.state.ddsdict
+                        if device.name in dds.keys():
+                            nd = device.state.nodisplay
+                            if dds[device.name] in nd:
+                                return Qt.Unchecked
+                            else:
+                                return Qt.Checked
+                    if device.display:
+                        return Qt.Checked
+                    else:
+                        return Qt.Unchecked
+                else:
+                    return Qt.Unchecked
              
 
 
@@ -95,6 +114,8 @@ class ElementModel(QAbstractTableModel):
             return QVariant("Element")
         elif section == 1:
             return QVariant("Label")
+        elif section == 2:
+            return QVariant("Display")
             
         return QVariant(int(section + 1))
 
@@ -107,10 +128,11 @@ class ElementModel(QAbstractTableModel):
         flag = QAbstractTableModel.flags(self, index)
         column = index.column()
         if device.eltype == DS:
-            dds = device.state.ddslist
-            if device.name in dds:
+            dds = device.state.ddsdict
+            if device.name in dds.keys():
                 enable = False
                 flag &= ~Qt.ItemIsEnabled
+                        
         elif device.eltype == CP:
             mcp = device.state.mcplist
             acp = device.state.acplist
@@ -128,13 +150,24 @@ class ElementModel(QAbstractTableModel):
                 return Qt.ItemFlags( flag | 
                                      Qt.ItemIsUserCheckable 
                                      )
-        else:
+        elif column == 1:
             flag &= ~Qt.ItemIsUserCheckable
             if not enable:
                 flag &= ~Qt.ItemIsEnabled
             return Qt.ItemFlags( flag | 
                                  Qt.ItemIsEditable 
                                  )
+        if column == 2:
+            if enable:        
+                return Qt.ItemFlags( flag | 
+                                     Qt.ItemIsEnabled  | 
+                                     Qt.ItemIsUserCheckable 
+                                     )
+            else:
+                flag &= ~Qt.ItemIsEnabled
+                return Qt.ItemFlags( flag | 
+                                     Qt.ItemIsUserCheckable 
+                                     )
 #            flag &= ~Qt.ItemIsUserCheckable 
 #            print "row/col", index.row(), column, device.name
 #            return Qt.ItemFlags( flag | Qt.ItemIsEnabled)
@@ -146,9 +179,11 @@ class ElementModel(QAbstractTableModel):
             column = index.column()
             if column == 0:
                 if role == Qt.CheckStateRole: 
+                    index3 = self.index(index.row(),3) 
                     device.checked = value.toBool()
+
                     self.emit(SIGNAL("dataChanged(QModelIndex, QModelIndex)"), 
-                              index, index)
+                              index, index3)
                     if device.eltype == CP:
                         self.emit(SIGNAL("componentChecked"))
                     self.emit(SIGNAL("dirty"))
@@ -159,6 +194,16 @@ class ElementModel(QAbstractTableModel):
                     device.state.dslabels[device.name] = str(label)
                     self.emit(SIGNAL("dataChanged(QModelIndex, QModelIndex)"), 
                               index, index)
+                    self.emit(SIGNAL("dirty"))
+                    return True
+            elif column == 2:
+                if role == Qt.CheckStateRole: 
+                    device.display = value.toBool()
+                    
+                    self.emit(SIGNAL("dataChanged(QModelIndex, QModelIndex)"), 
+                              index, index)
+                    if device.eltype == CP:
+                        self.emit(SIGNAL("componentChecked"))
                     self.emit(SIGNAL("dirty"))
                     return True
         return False

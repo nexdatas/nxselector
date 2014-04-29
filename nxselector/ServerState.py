@@ -60,13 +60,14 @@ class ServerState(object):
         self.appendEntry = None
         self.timeZone = None
 
-        self.dynamicComponents = None
+        self.dynamicComponents = True
         self.dynamicLinks = None
         self.dynamicPath = None
 
 
         self.dsgroup = {}
         self.dslabels = {}
+        self.nodisplay = []
         self.cpgroup = {}
         self.acpgroup = {}
         self.acplist = []
@@ -78,6 +79,7 @@ class ServerState(object):
     def fetchSettings(self):
         self.dsgroup = self.loadDict("DataSourceGroup") 
         self.dslabels = self.loadDict("DataSourceLabels") 
+        self.nodisplay = self.loadList("HiddenElements", True) 
         self.cpgroup = self.loadDict("ComponentGroup") 
         self.acpgroup = self.loadDict("AutomaticComponentGroup") 
         self.acplist = self.loadList("AutomaticComponents") 
@@ -97,7 +99,7 @@ class ServerState(object):
         self.appendEntry = self.loadData("AppendEntry")
         self.timeZone = self.loadData("TimeZone")
 
-        self.dynamicComponents = self.loadData("DynamicComponents")
+#        self.dynamicComponents = self.loadData("DynamicComponents")
         self.dynamicLinks = self.loadData("DynamicLinks")
         self.dynamicPath = self.loadData("DynamicPath")
         self.cnfFile = self.loadData("ConfigFile")
@@ -158,6 +160,7 @@ class ServerState(object):
     def storeSettings(self):
         self.storeDict("DataSourceGroup", self.dsgroup) 
         self.storeDict("DataSourceLabels", self.dslabels) 
+        self.storeList("HiddenElements", self.nodisplay) 
         self.storeDict("ComponentGroup", self.cpgroup) 
         self.storeFileData()
         self.storeEnvData()
@@ -237,6 +240,17 @@ class ServerState(object):
         logger.debug(" %s = %s" % (name, jvalue) )
 
 
+
+
+    def storeList(self, name, value):    
+        if not self.__dp:
+            self.setServer()
+
+        jvalue = json.dumps(value)    
+        self.__dp.write_attribute(name, jvalue)
+        logger.debug(" %s = %s" % (name, jvalue) )
+
+
     def storeData(self, name, value):    
         if not self.__dp:
             self.setServer()
@@ -284,19 +298,19 @@ class ServerState(object):
     ## update a list of Disable DataSources
     def disableDataSources(self):
         res = self.description
-        dds = set()
+        dds = {}
 
         for cpg in res:
             for cp, dss in cpg.items():
                 if isinstance(dss, dict):
                     if cp in self.cplist or cp in self.mcplist or cp in self.acplist:
                         for ds in dss.keys():
-                            dds.add(ds)
-        return list(dds)
+                            dds[ds]  = cp
+        return dds
 
 
     ## provides disable datasources
-    ddslist = property(disableDataSources,
+    ddsdict = property(disableDataSources,
                        doc = 'provides disable datasources')
 
 

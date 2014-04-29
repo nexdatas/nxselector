@@ -64,8 +64,8 @@ class Storage(object):
         
 
         # dynamic component group
-        self.ui.storage.disconnect(self.ui.dcEnableCheckBox,
-                                SIGNAL("toggled(bool)"), self.apply)
+#        self.ui.storage.disconnect(self.ui.dcEnableCheckBox,
+#                                SIGNAL("toggled(bool)"), self.apply)
         self.ui.storage.disconnect(self.ui.dcLinksCheckBox,
                                 SIGNAL("toggled(bool)"), self.apply)
         self.ui.storage.disconnect(self.ui.dcPathLineEdit,
@@ -103,8 +103,8 @@ class Storage(object):
        
 
         # dynamic component group
-        self.ui.storage.connect(self.ui.dcEnableCheckBox,
-                                SIGNAL("clicked(bool)"), self.apply)
+#        self.ui.storage.connect(self.ui.dcEnableCheckBox,
+#                                SIGNAL("clicked(bool)"), self.apply)
         self.ui.storage.connect(self.ui.dcLinksCheckBox,
                                 SIGNAL("clicked(bool)"), self.apply)
         self.ui.storage.connect(self.ui.dcPathLineEdit,
@@ -159,7 +159,7 @@ class Storage(object):
 
 
         # dynamic component group
-        self.ui.dcEnableCheckBox.setChecked(self.state.dynamicComponents)
+#        self.ui.dcEnableCheckBox.setChecked(self.state.dynamicComponents)
         self.ui.dcLinksCheckBox.setChecked(self.state.dynamicLinks)
         self.ui.dcPathLineEdit.setText(self.state.dynamicPath)
 

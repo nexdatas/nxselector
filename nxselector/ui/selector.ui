@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>778</width>
+    <width>798</width>
     <height>502</height>
    </rect>
   </property>
@@ -334,17 +334,6 @@
                  <item row="0" column="0">
                   <layout class="QVBoxLayout" name="verticalLayout_2">
                    <item>
-                    <layout class="QHBoxLayout" name="horizontalLayout_4">
-                     <item>
-                      <widget class="QCheckBox" name="dcEnableCheckBox">
-                       <property name="text">
-                        <string>Enable</string>
-                       </property>
-                      </widget>
-                     </item>
-                    </layout>
-                   </item>
-                   <item>
                     <widget class="QCheckBox" name="dcLinksCheckBox">
                      <property name="text">
                       <string>Links </string>
@@ -354,7 +343,7 @@
                    <item>
                     <widget class="QLabel" name="dcPathLabel">
                      <property name="text">
-                      <string>Default NeXus Path for Dynamic Components:</string>
+                      <string>Default NeXus Path:</string>
                      </property>
                      <property name="buddy">
                       <cstring>dcPathLineEdit</cstring>
@@ -362,11 +351,7 @@
                     </widget>
                    </item>
                    <item>
-                    <layout class="QHBoxLayout" name="dcHorizontalLayout">
-                     <item>
-                      <widget class="QLineEdit" name="dcPathLineEdit"/>
-                     </item>
-                    </layout>
+                    <widget class="QLineEdit" name="dcPathLineEdit"/>
                    </item>
                   </layout>
                  </item>
