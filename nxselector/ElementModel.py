@@ -78,11 +78,8 @@ class ElementModel(QAbstractTableModel):
         elif column == 1:
             if role == Qt.CheckStateRole: 
                 return
-            if device.eltype == DS:
-                if device.name in device.state.labels.keys():
-                    return QVariant(device.state.labels[device.name])
-            elif device.eltype == CP:    
-                return 
+            if device.name in device.state.labels.keys():
+                return QVariant(device.state.labels[device.name])
         elif column == 2:
             if role == Qt.CheckStateRole: 
                 if (not (self.flags(index) & Qt.ItemIsEnabled) \
