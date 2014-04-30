@@ -79,8 +79,8 @@ class ElementModel(QAbstractTableModel):
             if role == Qt.CheckStateRole: 
                 return
             if device.eltype == DS:
-                if device.name in device.state.dslabels.keys():
-                    return QVariant(device.state.dslabels[device.name])
+                if device.name in device.state.labels.keys():
+                    return QVariant(device.state.labels[device.name])
             elif device.eltype == CP:    
                 return 
         elif column == 2:
@@ -191,7 +191,7 @@ class ElementModel(QAbstractTableModel):
             elif column == 1:
                 if role == Qt.EditRole: 
                     label = value.toString()
-                    device.state.dslabels[device.name] = str(label)
+                    device.state.labels[device.name] = str(label)
                     self.emit(SIGNAL("dataChanged(QModelIndex, QModelIndex)"), 
                               index, index)
                     self.emit(SIGNAL("dirty"))

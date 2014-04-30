@@ -66,7 +66,7 @@ class ServerState(object):
 
 
         self.dsgroup = {}
-        self.dslabels = {}
+        self.labels = {}
         self.nodisplay = []
         self.cpgroup = {}
         self.acpgroup = {}
@@ -78,7 +78,7 @@ class ServerState(object):
 
     def fetchSettings(self):
         self.dsgroup = self.loadDict("DataSourceGroup") 
-        self.dslabels = self.loadDict("DataSourceLabels") 
+        self.labels = self.loadDict("Labels") 
         self.nodisplay = self.loadList("HiddenElements", True) 
         self.cpgroup = self.loadDict("ComponentGroup") 
         self.acpgroup = self.loadDict("AutomaticComponentGroup") 
@@ -159,7 +159,7 @@ class ServerState(object):
 
     def storeSettings(self):
         self.storeDict("DataSourceGroup", self.dsgroup) 
-        self.storeDict("DataSourceLabels", self.dslabels) 
+        self.storeDict("Labels", self.labels) 
         self.storeList("HiddenElements", self.nodisplay) 
         self.storeDict("ComponentGroup", self.cpgroup) 
         self.storeFileData()
