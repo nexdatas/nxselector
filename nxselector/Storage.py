@@ -191,7 +191,7 @@ class Storage(object):
         self.state.configDevice = str(self.ui.devConfigLineEdit.text())
 
         # dynamic component group
-        self.state.dynamicComponents = self.ui.dcEnableCheckBox.isChecked()
+        self.state.dynamicComponents = True
         self.state.dynamicLinks = self.ui.dcLinksCheckBox.isChecked()
         self.state.dynamicPath = str(self.ui.dcPathLineEdit.text())
 
