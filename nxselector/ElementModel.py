@@ -195,10 +195,11 @@ class ElementModel(QAbstractTableModel):
                     return True
             elif column == 2:
                 if role == Qt.CheckStateRole: 
+                    index3 = self.index(index.row(),3) 
                     device.display = value.toBool()
                     
                     self.emit(SIGNAL("dataChanged(QModelIndex, QModelIndex)"), 
-                              index, index)
+                              index, index3)
                     if device.eltype == CP:
                         self.emit(SIGNAL("componentChecked"))
                     self.emit(SIGNAL("dirty"))

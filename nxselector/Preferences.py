@@ -29,14 +29,16 @@ from PyQt4.QtCore import (SIGNAL, QString)
 
 from PyQt4.QtGui import (QMessageBox, QCompleter, QFileDialog)
 
-from .Views import (TableView, OneTableView, CheckerView, RadioView, 
-                    ButtonView, 
+from .Views import (TableView, OneTableView, 
+                    CheckerView, RadioView, ButtonView, 
                     LeftCheckerView, LeftRadioView, 
                     CheckerViewNL, RadioViewNL, ButtonViewNL, 
                     LeftCheckerViewNL, LeftRadioViewNL,
                     CheckerViewNN, RadioViewNN, ButtonViewNN, 
                     LeftCheckerViewNN, LeftRadioViewNN,
-                    CheckDisView
+                    CheckDisView, RadioDisView, ButtonDisView, 
+                    CheckDisViewNL, RadioDisViewNL, ButtonDisViewNL, 
+                    CheckDisViewNN, RadioDisViewNN, ButtonDisViewNN
                     )
 
 import logging
@@ -91,7 +93,16 @@ class Preferences(object):
             "CentralRadioButtons (NN)":RadioViewNN,
             "RadioButtons (NN)":LeftRadioViewNN,
             "Buttons (NN)":ButtonViewNN,
-            "CheckBox Dis":CheckDisView
+
+            "CheckBoxes Dis":CheckDisView, 
+            "RadioButtons Dis":RadioDisView,
+            "Buttons":ButtonDisView,
+            "CheckBoxes Dis (NL)":CheckDisViewNL, 
+            "RadioButtons Dis (NL)":RadioDisViewNL,
+            "Buttons Dis (NL)":ButtonDisViewNL,
+            "CheckBoxes Dis (NN)":CheckDisViewNN, 
+            "RadioButtons Dis (NN)":RadioDisViewNN,
+            "Buttons Dis (NN)":ButtonDisViewNN
             }
 
         self.maxHelp = 10

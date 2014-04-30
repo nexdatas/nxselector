@@ -196,6 +196,8 @@ class CheckDisView(CheckerView):
         self.connect(self.dmapper, SIGNAL("mapped(QWidget*)"),
                      self.dchecked)
         self.center = False
+        self.dlabel = 'Dis.'
+        self.slabel = 'Sel.'
 
     def dchecked(self, widget):
         row = self.displays.index(widget)        
@@ -289,8 +291,11 @@ class CheckDisView(CheckerView):
                         lrow = row +1
                         lcol = 0
                     if lrow == 1:    
-                        self.layout.addWidget(QLabel("Sel."), 0, 2*lcol, 1, 1)
-                        self.layout.addWidget(QLabel("Dis."), 0, 2*lcol+1, 1, 1, Qt.AlignRight)
+                        self.layout.addWidget(
+                            QLabel(self.slabel), 0, 2*lcol, 1, 1)
+                        self.layout.addWidget(
+                            QLabel(self.dlabel), 0, 2*lcol+1, 1, 1, 
+                            Qt.AlignRight)
                     self.layout.addWidget(cb, lrow, 2*lcol, 1, 1)
                     self.layout.addWidget(ds, lrow, 2*lcol+1, 1, 1, Qt.AlignRight)
                     self.widgets.append(cb)
@@ -300,7 +305,7 @@ class CheckDisView(CheckerView):
                     self.mapper.setMapping(cb, cb)
                     self.connect(ds, SIGNAL("clicked()"),
                                  self.dmapper, SLOT("map()"))
-                    self.mapper.setMapping(ds, ds)
+                    self.dmapper.setMapping(ds, ds)
             if not self.spacer:
                 self.spacer = QSpacerItem(10, 10, 
                                           QSizePolicy.Minimum,
@@ -311,6 +316,7 @@ class CheckDisView(CheckerView):
             
         self.update()
         self.updateGeometry()
+
 
 class RadioView(CheckerView):
 
@@ -403,3 +409,63 @@ class LeftRadioViewNN(LeftRadioView):
     def __init__(self, parent=None):
         super(LeftRadioViewNN, self).__init__(parent)
         self.showNames = False
+
+
+
+
+class RadioDisView(CheckDisView):
+
+    def __init__(self, parent=None):
+        super(RadioDisView, self).__init__(parent)
+        self.widget = QRadioButton
+
+class ButtonDisView(CheckDisView):
+
+    def __init__(self, parent=None):
+        super(ButtonDisView, self).__init__(parent)
+        self.widget = QPushButton
+        self.center = False
+
+
+class CheckDisViewNL(CheckDisView):
+
+    def __init__(self, parent=None):
+        super(CheckDisViewNL, self).__init__(parent)
+        self.showLabels = False
+
+
+
+class ButtonDisViewNL(ButtonDisView):
+
+    def __init__(self, parent=None):
+        super(ButtonDisViewNL, self).__init__(parent)
+        self.showLabels = False
+
+
+class RadioDisViewNL(RadioDisView):
+
+    def __init__(self, parent=None):
+        super(RadioDisViewNL, self).__init__(parent)
+        self.showLabels = False
+
+
+class CheckDisViewNN(CheckDisView):
+
+    def __init__(self, parent=None):
+        super(CheckDisViewNN, self).__init__(parent)
+        self.showNames = False
+
+
+class ButtonDisViewNN(ButtonDisView):
+
+    def __init__(self, parent=None):
+        super(ButtonDisViewNN, self).__init__(parent)
+        self.showNames = False
+
+
+class RadioDisViewNN(RadioDisView):
+
+    def __init__(self, parent=None):
+        super(RadioDisViewNN, self).__init__(parent)
+        self.showNames = False
+
