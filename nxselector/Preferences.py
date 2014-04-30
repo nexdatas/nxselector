@@ -35,7 +35,8 @@ from .Views import (TableView, OneTableView, CheckerView, RadioView,
                     CheckerViewNL, RadioViewNL, ButtonViewNL, 
                     LeftCheckerViewNL, LeftRadioViewNL,
                     CheckerViewNN, RadioViewNN, ButtonViewNN, 
-                    LeftCheckerViewNN, LeftRadioViewNN
+                    LeftCheckerViewNN, LeftRadioViewNN,
+                    CheckDisView
                     )
 
 import logging
@@ -89,7 +90,8 @@ class Preferences(object):
             "CheckBoxes (NN)":LeftCheckerViewNN, 
             "CentralRadioButtons (NN)":RadioViewNN,
             "RadioButtons (NN)":LeftRadioViewNN,
-            "Buttons (NN)":ButtonViewNN
+            "Buttons (NN)":ButtonViewNN,
+            "CheckBox Dis":CheckDisView
             }
 
         self.maxHelp = 10

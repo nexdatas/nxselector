@@ -29,7 +29,7 @@ from PyQt4.QtCore import (
 from PyQt4.QtGui import (QTableView, QHeaderView, QWidget, QGridLayout, 
                          QCheckBox, QSpacerItem,
                          QRadioButton, QPushButton, QWidgetItem,
-                         QSizePolicy)
+                         QSizePolicy, QLabel, QFrame)
 
 
 
@@ -164,11 +164,12 @@ class CheckerView(QWidget):
                     cb.setChecked(bool(status))
                 if row >= len(self.widgets):
                     if self.rowMax:
-                        lrow = row % self.rowMax
+                        lrow = row % self.rowMax 
                         lcol = row / self.rowMax
                     else :
-                        lrow = row
+                        lrow = row 
                         lcol = 0
+                        
                     self.layout.addWidget(cb, lrow, lcol, 1, 1)
                     self.widgets.append(cb)
                     self.connect(cb, SIGNAL("clicked()"),
@@ -185,7 +186,140 @@ class CheckerView(QWidget):
         self.update()
         self.updateGeometry()
         
+
+class CheckDisView(CheckerView):
+
+    def __init__(self, parent=None):
+        super(CheckDisView, self).__init__(parent)
+        self.displays = []
+        self.dmapper = QSignalMapper(self)
+        self.connect(self.dmapper, SIGNAL("mapped(QWidget*)"),
+                     self.dchecked)
+        self.center = False
+
+    def dchecked(self, widget):
+        row = self.displays.index(widget)        
+        self.selectedWidgetRow = row
+        ind = self.model.index(row, 2)
+        value = QVariant(self.displays[row].isChecked())
+        self.model.setData(ind, value, Qt.CheckStateRole)
+
+
+    def reset(self):
+        self.hide()
+        if self.layout:
+            self.widgets = []
+            self.displays = []
+            self.spacer = None
+            child = self.layout.takeAt(0)
+            while child:
+                self.layout.removeItem(child)
+                if isinstance(child, QWidgetItem):
+                    child.widget().hide()
+                    child.widget().close()
+                    self.layout.removeWidget(child.widget())
+                child = self.layout.takeAt(0)
+            self.mapper = QSignalMapper(self)
+            self.connect(self.mapper, SIGNAL("mapped(QWidget*)"),
+                         self.checked)
+            self.dmapper = QSignalMapper(self)
+            self.connect(self.dmapper, SIGNAL("mapped(QWidget*)"),
+                         self.dchecked)
+        self.updateState()
+        if self.selectedWidgetRow is not None:
+            if len(self.widgets) > self.selectedWidgetRow:
+                self.widgets[self.selectedWidgetRow].setFocus()
+            self.selectedWidgetRow = None
+        self.show()
+
             
+    def updateState(self):
+        if not self.model is None:
+            for row in range(self.model.rowCount()):
+                ind = self.model.index(row, 0)
+                ind1 = self.model.index(row, 1)
+                ind2 = self.model.index(row, 2)
+                name = self.model.data(ind, role = Qt.DisplayRole)
+                label = self.model.data(ind1, role = Qt.DisplayRole)
+                status = self.model.data(ind, role = Qt.CheckStateRole)
+                dstatus = self.model.data(ind2, role = Qt.CheckStateRole)
+                flags = self.model.flags(ind)
+                if row < len(self.widgets):
+                    cb = self.widgets[row]
+                    ds = self.displays[row]
+                else:
+                    cb = self.widget()
+                    ds = self.widget()
+                    if hasattr(cb, "setCheckable"):
+                        cb.setCheckable(True)
+                    if hasattr(ds, "setCheckable"):
+                        ds.setCheckable(True)
+                    if hasattr(cb, "setSizePolicy") and self.center: 
+                        sizePolicy = QSizePolicy(
+                            QSizePolicy.Fixed, QSizePolicy.Fixed)
+                        sizePolicy.setHorizontalStretch(10)
+                        sizePolicy.setVerticalStretch(0)
+                        sizePolicy.setHeightForWidth(
+                            cb.sizePolicy().hasHeightForWidth())
+                        cb.setSizePolicy(sizePolicy)
+
+                cb.setEnabled(bool(Qt.ItemIsEnabled & flags))
+                ds.setEnabled(bool(Qt.ItemIsEnabled & flags))
+                if name:
+                    if self.showLabels and label and \
+                            str(label.toString()).strip():
+                        if self.showNames:
+                            cb.setText("%s [%s]" % (
+                                    str(label.toString()),
+                                    str(name.toString())))
+                        else:
+                            cb.setText("%s" % (str(label.toString())))
+                    
+                    else:
+                        cb.setText(str(name.toString()))
+                if status is not None:    
+                    cb.setChecked(bool(status))
+                if dstatus is not None:    
+                    ds.setChecked(bool(dstatus))
+                if row >= len(self.widgets):
+                    if self.rowMax:
+                        lrow = row % self.rowMax + 1
+                        lcol = row / self.rowMax
+                    else :
+                        lrow = row +1
+                        lcol = 0
+                    if lrow == 1:    
+                        self.layout.addWidget(QLabel("Sel."), 0, 3*lcol, 1, 1)
+                        self.layout.addWidget(QLabel("Dis."), 0, 3*lcol+1, 1, 1, Qt.AlignRight)
+                        if lcol:
+                            line = QFrame()
+#                            line.setGeometry(QRect(320, 150, 118, 3))
+                            line.setFrameShape(QFrame.VLine)
+                            line.setFrameShadow(QFrame.Plain)
+#                            line.setFrameShadow(QFrame.Raised)
+#                            line.setFrameShadow(QFrame.Sunken)
+#                            self.layout.addWidget(line, 1, 3*lcol-1, self.rowMax, 1)
+#                            self.layout.setHorizontalSpacing(40)
+                    self.layout.addWidget(cb, lrow, 3*lcol, 1, 1)
+                    self.layout.addWidget(ds, lrow, 3*lcol+1, 1, 1, Qt.AlignRight)
+                    self.widgets.append(cb)
+                    self.displays.append(ds)
+                    self.connect(cb, SIGNAL("clicked()"),
+                                 self.mapper, SLOT("map()"))
+                    self.mapper.setMapping(cb, cb)
+                    self.connect(ds, SIGNAL("clicked()"),
+                                 self.dmapper, SLOT("map()"))
+                    self.mapper.setMapping(ds, ds)
+            if not self.spacer:
+                self.spacer = QSpacerItem(10, 10, 
+                                          QSizePolicy.Minimum,
+#                                         QSizePolicy.Expanding, 
+                                          QSizePolicy.Expanding)
+                self.layout.addItem(self.spacer)
+                
+            
+        self.update()
+        self.updateGeometry()
 
 class RadioView(CheckerView):
 
