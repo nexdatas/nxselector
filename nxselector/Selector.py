@@ -181,6 +181,8 @@ class Selector(QDialog):
         for tab in self.tabs:
             tab.reset()
             
+
+    
         cid = self.ui.viewComboBox.findText(QString(self.userView))
         if cid >= 0:
             self.ui.viewComboBox.setCurrentIndex(cid) 

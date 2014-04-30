@@ -29,7 +29,7 @@ from PyQt4.QtCore import (
 from PyQt4.QtGui import (QTableView, QHeaderView, QWidget, QGridLayout, 
                          QCheckBox, QSpacerItem,
                          QRadioButton, QPushButton, QWidgetItem,
-                         QSizePolicy, QLabel)
+                         QSizePolicy, QLabel, QToolTip)
 
 
 
@@ -156,9 +156,13 @@ class CheckerView(QWidget):
                                     str(name.toString())))
                         else:
                             cb.setText("%s" % (str(label.toString())))
+                            cb.setToolTip(cb, str(name.toString()))
                     
                     else:
                         cb.setText(str(name.toString()))
+                        cb.setToolTip(
+                            str(label.toString()) \
+                                if str(label.toString()) else str(name.toString()))
                 if status is not None:    
 #                    cb.setCheckState(status)
                     cb.setChecked(bool(status))
@@ -276,9 +280,12 @@ class CheckDisView(CheckerView):
                                     str(name.toString())))
                         else:
                             cb.setText("%s" % (str(label.toString())))
-                    
+                            cb.setToolTip(cb, str(name.toString()))
                     else:
                         cb.setText(str(name.toString()))
+                        cb.setToolTip(
+                            str(label.toString()) \
+                                if str(label.toString()) else str(name.toString()))
                 if status is not None:    
                     cb.setChecked(bool(status))
                 if dstatus is not None:    
