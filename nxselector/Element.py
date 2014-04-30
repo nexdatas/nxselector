@@ -126,7 +126,7 @@ class DSElement(Element):
         if self.name in dc.keys():
             if self.name in nd:
                 if status:
-                   nd.remove(self.name)
+                    nd.remove(self.name)
             else:
                 if not status:
                     nd.append(self.name)
@@ -183,7 +183,7 @@ class CPElement(Element):
         if self.name in dc.keys():
             if self.name in nd:
                 if status:
-                   nd.remove(self.name)
+                    nd.remove(self.name)
             else:
                 if not status:
                     nd.append(self.name)

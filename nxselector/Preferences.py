@@ -95,13 +95,13 @@ class Preferences(object):
             "Buttons (NN)":ButtonViewNN,
             "CheckBoxes Dis":CheckDisView, 
             "RadioButtons Dis":RadioDisView,
-            "Buttons Dis":ButtonDisView,
+#            "Buttons Dis":ButtonDisView,
             "CheckBoxes Dis (NL)":CheckDisViewNL, 
             "RadioButtons Dis (NL)":RadioDisViewNL,
-            "Buttons Dis (NL)":ButtonDisViewNL,
+#            "Buttons Dis (NL)":ButtonDisViewNL,
             "CheckBoxes Dis (NN)":CheckDisViewNN, 
             "RadioButtons Dis (NN)":RadioDisViewNN,
-            "Buttons Dis (NN)":ButtonDisViewNN
+#            "Buttons Dis (NN)":ButtonDisViewNN
             }
 
         self.maxHelp = 10
@@ -236,20 +236,6 @@ class Preferences(object):
         except Exception as e :    
             logger.debug(str(e))
             self.reset()
-        self.connectSignals()
-
-    def on_frameLineEdit_editingFinished(self):
-        logger.debug("on_frameLineEdit_editingFinished")
-        self.disconnectSignals()
-        frames = str(self.ui.frameLineEdit.text())
-        try:
-            if not frames:
-                frames = '[]'
-            mframes =  json.loads(frames)
-            
-        except:
-            self.reset()
-
         self.connectSignals()
 
 

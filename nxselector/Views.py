@@ -29,7 +29,7 @@ from PyQt4.QtCore import (
 from PyQt4.QtGui import (QTableView, QHeaderView, QWidget, QGridLayout, 
                          QCheckBox, QSpacerItem,
                          QRadioButton, QPushButton, QWidgetItem,
-                         QSizePolicy, QLabel, QFrame)
+                         QSizePolicy, QLabel)
 
 
 
@@ -297,7 +297,8 @@ class CheckDisView(CheckerView):
                             QLabel(self.dlabel), 0, 2*lcol+1, 1, 1, 
                             Qt.AlignRight)
                     self.layout.addWidget(cb, lrow, 2*lcol, 1, 1)
-                    self.layout.addWidget(ds, lrow, 2*lcol+1, 1, 1, Qt.AlignRight)
+                    self.layout.addWidget(ds, lrow, 2*lcol+1, 1, 1, 
+                                          Qt.AlignRight)
                     self.widgets.append(cb)
                     self.displays.append(ds)
                     self.connect(cb, SIGNAL("clicked()"),

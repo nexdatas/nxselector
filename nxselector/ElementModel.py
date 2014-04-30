@@ -176,7 +176,7 @@ class ElementModel(QAbstractTableModel):
             column = index.column()
             if column == 0:
                 if role == Qt.CheckStateRole: 
-                    index3 = self.index(index.row(),3) 
+                    index3 = self.index(index.row(), 2) 
                     device.checked = value.toBool()
 
                     self.emit(SIGNAL("dataChanged(QModelIndex, QModelIndex)"), 
@@ -195,7 +195,7 @@ class ElementModel(QAbstractTableModel):
                     return True
             elif column == 2:
                 if role == Qt.CheckStateRole: 
-                    index3 = self.index(index.row(),3) 
+                    index3 = self.index(index.row(), 2) 
                     device.display = value.toBool()
                     
                     self.emit(SIGNAL("dataChanged(QModelIndex, QModelIndex)"), 
