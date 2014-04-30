@@ -289,19 +289,10 @@ class CheckDisView(CheckerView):
                         lrow = row +1
                         lcol = 0
                     if lrow == 1:    
-                        self.layout.addWidget(QLabel("Sel."), 0, 3*lcol, 1, 1)
-                        self.layout.addWidget(QLabel("Dis."), 0, 3*lcol+1, 1, 1, Qt.AlignRight)
-                        if lcol:
-                            line = QFrame()
-#                            line.setGeometry(QRect(320, 150, 118, 3))
-                            line.setFrameShape(QFrame.VLine)
-                            line.setFrameShadow(QFrame.Plain)
-#                            line.setFrameShadow(QFrame.Raised)
-#                            line.setFrameShadow(QFrame.Sunken)
-#                            self.layout.addWidget(line, 1, 3*lcol-1, self.rowMax, 1)
-#                            self.layout.setHorizontalSpacing(40)
-                    self.layout.addWidget(cb, lrow, 3*lcol, 1, 1)
-                    self.layout.addWidget(ds, lrow, 3*lcol+1, 1, 1, Qt.AlignRight)
+                        self.layout.addWidget(QLabel("Sel."), 0, 2*lcol, 1, 1)
+                        self.layout.addWidget(QLabel("Dis."), 0, 2*lcol+1, 1, 1, Qt.AlignRight)
+                    self.layout.addWidget(cb, lrow, 2*lcol, 1, 1)
+                    self.layout.addWidget(ds, lrow, 2*lcol+1, 1, 1, Qt.AlignRight)
                     self.widgets.append(cb)
                     self.displays.append(ds)
                     self.connect(cb, SIGNAL("clicked()"),
