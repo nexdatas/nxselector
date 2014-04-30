@@ -93,10 +93,9 @@ class Preferences(object):
             "CentralRadioButtons (NN)":RadioViewNN,
             "RadioButtons (NN)":LeftRadioViewNN,
             "Buttons (NN)":ButtonViewNN,
-
             "CheckBoxes Dis":CheckDisView, 
             "RadioButtons Dis":RadioDisView,
-            "Buttons":ButtonDisView,
+            "Buttons Dis":ButtonDisView,
             "CheckBoxes Dis (NL)":CheckDisViewNL, 
             "RadioButtons Dis (NL)":RadioDisViewNL,
             "Buttons Dis (NL)":ButtonDisViewNL,
