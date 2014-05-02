@@ -189,7 +189,7 @@ class CheckerView(QWidget):
                         else:
                             if str(depends.toString()).strip():
                                 cb.setToolTip(
-                                    "%s : %s" % (
+                                    "%s: %s" % (
                                         str(name.toString()),
                                         str(depends.toString()).replace(" ",", "))
                                     )
@@ -201,7 +201,7 @@ class CheckerView(QWidget):
                             else str(name.toString())
                         if str(depends.toString()).strip():
                             cb.setToolTip(
-                                "%s : %s" % ( 
+                                "%s: %s" % ( 
                                     ln,
                                     str(depends.toString()).replace(" ",", "))
                                 )
