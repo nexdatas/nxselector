@@ -134,114 +134,11 @@ class CheckerView(QWidget):
     def updateState(self):
         if not self.model is None:
             for row in range(self.model.rowCount()):
-                ind = self.model.index(row, 0)
-                ind1 = self.model.index(row, 1)
-                ind2 = self.model.index(row, 2)
-                ind3 = self.model.index(row, 3)
-                name = self.model.data(ind, role = Qt.DisplayRole)
-                depends = self.model.data(ind3, role = Qt.DisplayRole)
-                label = self.model.data(ind1, role = Qt.DisplayRole)
-                status = self.model.data(ind, role = Qt.CheckStateRole)
-                dstatus = self.model.data(ind2, role = Qt.CheckStateRole)
-                flags = self.model.flags(ind)
-                ds = None
-                cb = None
-                if row < len(self.widgets):
-                    cb = self.widgets[row]
-                    if self.dmapper: 
-                        ds = self.displays[row]
-                else:
-                    cb = self.widget()
-                    if hasattr(cb, "setCheckable"):
-                        cb.setCheckable(True)
-                    if self.dmapper: 
-                        ds = self.widget()
-                        if hasattr(ds, "setCheckable"):
-                            ds.setCheckable(True)
-                    if hasattr(cb, "setSizePolicy") and self.center: 
-                        sizePolicy = QSizePolicy(
-                            QSizePolicy.Fixed, QSizePolicy.Fixed)
-                        sizePolicy.setHorizontalStretch(10)
-                        sizePolicy.setVerticalStretch(0)
-                        sizePolicy.setHeightForWidth(
-                            cb.sizePolicy().hasHeightForWidth())
-                        cb.setSizePolicy(sizePolicy)
 
-                cb.setEnabled(bool(Qt.ItemIsEnabled & flags))
-                if self.dmapper: 
-                    ds.setEnabled(bool(Qt.ItemIsEnabled & flags))
-                if name:
-                    if self.showLabels and label and \
-                            str(label.toString()).strip():
-                        if self.showNames:
-                            cb.setText("%s [%s]" % (
-                                    str(label.toString()),
-                                    str(name.toString())))
-                        else:
-                            cb.setText("%s" % (str(label.toString())))
-                    else:
-                        cb.setText(str(name.toString()))
-                    if self.showLabels:
-                        if self.showNames:
-                            if str(depends.toString()).strip():
-                                cb.setToolTip(
-                                    str(depends.toString()).replace(" ",", "))
-                        else:
-                            if str(depends.toString()).strip():
-                                cb.setToolTip(
-                                    "%s: %s" % (
-                                        str(name.toString()),
-                                        str(depends.toString()).replace(" ",", "))
-                                    )
-                            else:
-                                cb.setToolTip(str(name.toString()))
-                    else:
-                        ln = str(label.toString()) \
-                            if str(label.toString()) \
-                            else str(name.toString())
-                        if str(depends.toString()).strip():
-                            cb.setToolTip(
-                                "%s: %s" % ( 
-                                    ln,
-                                    str(depends.toString()).replace(" ",", "))
-                                )
-                        else:
-                            cb.setToolTip(ln)
+                cb, ds = self.__setWidgets(row)
+                self.__setNameTips(row, cb)    
+                self.__createGrid(row, cb, ds)
 
-                            
-                if status is not None:    
-                    cb.setChecked(bool(status))
-                if self.dmapper: 
-                    if dstatus is not None:    
-                        ds.setChecked(bool(dstatus))
-                if row >= len(self.widgets):
-                    if self.rowMax:
-                        lrow = row % self.rowMax 
-                        lcol = row / self.rowMax
-                    else :
-                        lrow = row 
-                        lcol = 0
-
-                    if self.dmapper: 
-                        lrow = lrow + 1
-                        if lrow == 1:    
-                            self.layout.addWidget(
-                                QLabel(self.slabel), 0, 2*lcol, 1, 1)
-                            self.layout.addWidget(
-                                QLabel(self.dlabel), 0, 2*lcol+1, 1, 1, 
-                                Qt.AlignRight)
-                        self.layout.addWidget(ds, lrow, 2*lcol+1, 1, 1, 
-                                              Qt.AlignRight)
-                    self.layout.addWidget(cb, lrow, 2*lcol, 1, 1)
-                    self.widgets.append(cb)
-                    self.connect(cb, SIGNAL("clicked()"),
-                                 self.mapper, SLOT("map()"))
-                    self.mapper.setMapping(cb, cb)
-                    if self.dmapper: 
-                        self.displays.append(ds)
-                        self.connect(ds, SIGNAL("clicked()"),
-                                     self.dmapper, SLOT("map()"))
-                        self.dmapper.setMapping(ds, ds)
             if not self.spacer:
                 self.spacer = QSpacerItem(10, 10, 
                                           QSizePolicy.Minimum,
@@ -252,6 +149,127 @@ class CheckerView(QWidget):
             
         self.update()
         self.updateGeometry()
+
+    def __createGrid(self, row, cb, ds):
+        ind = self.model.index(row, 0)
+        ind2 = self.model.index(row, 2)
+        status = self.model.data(ind, role = Qt.CheckStateRole)
+        dstatus = self.model.data(ind2, role = Qt.CheckStateRole)
+        if status is not None:    
+            cb.setChecked(bool(status))
+        if self.dmapper: 
+            if dstatus is not None:    
+                ds.setChecked(bool(dstatus))
+        if row >= len(self.widgets):
+            if self.rowMax:
+                lrow = row % self.rowMax 
+                lcol = row / self.rowMax
+            else :
+                lrow = row 
+                lcol = 0
+
+            if self.dmapper: 
+                lrow = lrow + 1
+                if lrow == 1:    
+                    self.layout.addWidget(
+                        QLabel(self.slabel), 0, 2*lcol, 1, 1)
+                    self.layout.addWidget(
+                        QLabel(self.dlabel), 0, 2*lcol+1, 1, 1, 
+                        Qt.AlignRight)
+                self.layout.addWidget(ds, lrow, 2*lcol+1, 1, 1, 
+                                      Qt.AlignRight)
+            self.layout.addWidget(cb, lrow, 2*lcol, 1, 1)
+            self.widgets.append(cb)
+            self.connect(cb, SIGNAL("clicked()"),
+                         self.mapper, SLOT("map()"))
+            self.mapper.setMapping(cb, cb)
+            if self.dmapper: 
+                self.displays.append(ds)
+                self.connect(ds, SIGNAL("clicked()"),
+                             self.dmapper, SLOT("map()"))
+                self.dmapper.setMapping(ds, ds)
+
+
+    def __setWidgets(self, row):
+        ind = self.model.index(row, 0)
+        flags = self.model.flags(ind)
+        ds = None
+        cb = None
+        if row < len(self.widgets):
+            cb = self.widgets[row]
+            if self.dmapper: 
+                ds = self.displays[row]
+        else:
+            cb = self.widget()
+            if hasattr(cb, "setCheckable"):
+                cb.setCheckable(True)
+            if self.dmapper: 
+                ds = self.widget()
+                if hasattr(ds, "setCheckable"):
+                    ds.setCheckable(True)
+            if hasattr(cb, "setSizePolicy") and self.center: 
+                sizePolicy = QSizePolicy(
+                    QSizePolicy.Fixed, QSizePolicy.Fixed)
+                sizePolicy.setHorizontalStretch(10)
+                sizePolicy.setVerticalStretch(0)
+                sizePolicy.setHeightForWidth(
+                    cb.sizePolicy().hasHeightForWidth())
+                cb.setSizePolicy(sizePolicy)
+
+        cb.setEnabled(bool(Qt.ItemIsEnabled & flags))
+        if self.dmapper: 
+            ds.setEnabled(bool(Qt.ItemIsEnabled & flags))
+        return (cb, ds)
+
+    def __setNameTips(self, row, cb):
+        ind = self.model.index(row, 0)
+        ind1 = self.model.index(row, 1)
+        ind3 = self.model.index(row, 3)
+        ind4 = self.model.index(row, 4)
+        name = self.model.data(ind, role = Qt.DisplayRole)
+        label = self.model.data(ind1, role = Qt.DisplayRole)
+        scans = self.model.data(ind3, role = Qt.DisplayRole)
+        depends = self.model.data(ind4, role = Qt.DisplayRole)
+        if name:
+            if self.showLabels and label and \
+                    str(label.toString()).strip():
+                if self.showNames:
+                    cb.setText("%s [%s]" % (
+                            str(label.toString()),
+                            str(name.toString())))
+                else:
+                    cb.setText("%s" % (str(label.toString())))
+            else:
+                cb.setText(str(name.toString()))
+            if self.showLabels:
+                if self.showNames:
+                    if str(scans.toString()).strip():
+                        cb.setToolTip(
+                            str(scans.toString()).replace(" ",", "))
+                else:
+                    if str(scans.toString()).strip():
+                        cb.setToolTip(
+                            "%s: %s" % (
+                                str(name.toString()),
+                                str(scans.toString()).replace(" ",", "))
+                            )
+                    else:
+                        cb.setToolTip(str(name.toString()))
+            else:
+                ln = str(label.toString()) \
+                    if str(label.toString()) \
+                    else str(name.toString())
+                if str(scans.toString()).strip():
+                    cb.setToolTip(
+                        "%s: %s" % ( 
+                            ln,
+                            str(scans.toString()).replace(" ",", "))
+                        )
+                else:
+                    cb.setToolTip(ln)
+
+                            
+        
 
 
 class CheckDisView(CheckerView):

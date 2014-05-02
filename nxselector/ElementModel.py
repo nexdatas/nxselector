@@ -54,7 +54,7 @@ class ElementModel(QAbstractTableModel):
         
 
     def columnCount(self, _=QModelIndex()):
-        return 4
+        return 5
 
     def index(self, row, column, _=QModelIndex()):
         return self.createIndex(row, column)
@@ -103,12 +103,32 @@ class ElementModel(QAbstractTableModel):
             if role == Qt.CheckStateRole: 
                 return
             desc = device.state.description       
-            contains = []
+            contains =set()
             for cpg in desc:
                 for cp, dss in cpg.items():
                     if cp == device.name:
                         if isinstance(dss, dict):
-                            contains = sorted(dss.keys())
+                            for ds, values in dss.items():
+                                for vl in values:
+                                    if len(vl) > 0 and vl[0] == 'STEP':
+                                        contains.add(ds)
+                                        break
+            if contains:    
+                return QVariant(QString(" ".join([str(c) for c in contains])))
+        elif column == 4:
+            if role == Qt.CheckStateRole: 
+                return
+            desc = device.state.description       
+            contains =set()
+            for cpg in desc:
+                for cp, dss in cpg.items():
+                    if cp == device.name:
+                        if isinstance(dss, dict):
+                            for ds, values in dss.items():
+                                for vl in values:
+                                    if len(vl) == 0 or vl[0] != 'STEP':
+                                        contains.add(ds)
+                                        break
             if contains:    
                 return QVariant(QString(" ".join([str(c) for c in contains])))
              
@@ -126,6 +146,8 @@ class ElementModel(QAbstractTableModel):
         elif section == 2:
             return QVariant("Display")
         elif section == 3:
+            return QVariant("Scans")
+        elif section == 4:
             return QVariant("Contains")
             
         return QVariant(int(section + 1))
@@ -178,6 +200,12 @@ class ElementModel(QAbstractTableModel):
                 flag &= ~Qt.ItemIsEnabled
                 return Qt.ItemFlags(flag | Qt.ItemIsUserCheckable)
         elif column == 3:
+            if enable:        
+                return Qt.ItemFlags(flag | Qt.ItemIsEnabled)
+            else:
+                flag &= ~Qt.ItemIsEnabled
+                return Qt.ItemFlags(flag)
+        elif column == 4:
             if enable:        
                 return Qt.ItemFlags(flag | Qt.ItemIsEnabled)
             else:
