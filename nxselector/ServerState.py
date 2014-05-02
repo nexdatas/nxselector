@@ -303,9 +303,15 @@ class ServerState(object):
         for cpg in res:
             for cp, dss in cpg.items():
                 if isinstance(dss, dict):
-                    if cp in self.cplist or cp in self.mcplist or cp in self.acplist:
-                        for ds in dss.keys():
-                            dds[ds]  = cp
+                    if cp in self.cplist or cp in self.mcplist \
+                            or cp in self.acplist:
+                        for ds, values in dss.items():
+                            for vl in values:
+                                if len(vl) > 0 and vl[0] == 'STEP':
+                                    dds[ds]  = cp
+                                    break
+                                   
+                                    
         return dds
 
 
