@@ -143,7 +143,8 @@ class Storage(object):
 
         # measurement group    
         self.ui.mntTimerComboBox.clear()
-        self.ui.mntTimerComboBox.addItems([QString(tm) for tm in self.state.atlist])
+        self.ui.mntTimerComboBox.addItems(
+            [QString(tm) for tm in self.state.atlist])
         cid = self.ui.mntTimerComboBox.findText(QString(self.state.timer))
         if cid < 0:
             cid = 0
