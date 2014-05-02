@@ -61,6 +61,7 @@ class OneTableView(QTableView):
         super(OneTableView, self).reset()
         self.hideColumn(1)
         self.hideColumn(2)
+        self.hideColumn(3)
 
 class CheckerView(QWidget):
 
@@ -136,7 +137,9 @@ class CheckerView(QWidget):
                 ind = self.model.index(row, 0)
                 ind1 = self.model.index(row, 1)
                 ind2 = self.model.index(row, 2)
+                ind3 = self.model.index(row, 3)
                 name = self.model.data(ind, role = Qt.DisplayRole)
+                depends = self.model.data(ind3, role = Qt.DisplayRole)
                 label = self.model.data(ind1, role = Qt.DisplayRole)
                 status = self.model.data(ind, role = Qt.CheckStateRole)
                 dstatus = self.model.data(ind2, role = Qt.CheckStateRole)
@@ -176,13 +179,36 @@ class CheckerView(QWidget):
                                     str(name.toString())))
                         else:
                             cb.setText("%s" % (str(label.toString())))
-                            cb.setToolTip(cb, str(name.toString()))
                     else:
                         cb.setText(str(name.toString()))
-                        cb.setToolTip(
-                            str(label.toString()) \
-                                if str(label.toString()) \
-                                else str(name.toString()))
+                    if self.showLabels:
+                        if self.showNames:
+                            if str(depends.toString()).strip():
+                                cb.setToolTip(
+                                    str(depends.toString()).replace(" ",", "))
+                        else:
+                            if str(depends.toString()).strip():
+                                cb.setToolTip(
+                                    "%s : %s" % (
+                                        str(name.toString()),
+                                        str(depends.toString()).replace(" ",", "))
+                                    )
+                            else:
+                                cb.setToolTip(str(name.toString()))
+                    else:
+                        ln = str(label.toString()) \
+                            if str(label.toString()) \
+                            else str(name.toString())
+                        if str(depends.toString()).strip():
+                            cb.setToolTip(
+                                "%s : %s" % ( 
+                                    ln,
+                                    str(depends.toString()).replace(" ",", "))
+                                )
+                        else:
+                            cb.setToolTip(ln)
+
+                            
                 if status is not None:    
                     cb.setChecked(bool(status))
                 if self.dmapper: 

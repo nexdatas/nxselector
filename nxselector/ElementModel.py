@@ -26,7 +26,7 @@ from PyQt4.QtGui import (
     QItemDelegate, QStyledItemDelegate)
 from PyQt4.QtCore import (
     SIGNAL, Qt, QVariant, QAbstractTableModel,
-    QModelIndex)
+    QModelIndex, QString)
 
 from .Element import DS, CP
 
@@ -54,7 +54,7 @@ class ElementModel(QAbstractTableModel):
         
 
     def columnCount(self, _=QModelIndex()):
-        return 3
+        return 4
 
     def index(self, row, column, _=QModelIndex()):
         return self.createIndex(row, column)
@@ -99,6 +99,18 @@ class ElementModel(QAbstractTableModel):
                         return Qt.Unchecked
                 else:
                     return Qt.Unchecked
+        elif column == 3:
+            if role == Qt.CheckStateRole: 
+                return
+            desc = device.state.description       
+            contains = []
+            for cpg in desc:
+                for cp, dss in cpg.items():
+                    if cp == device.name:
+                        if isinstance(dss, dict):
+                            contains = sorted(dss.keys())
+            if contains:    
+                return QVariant(QString(" ".join([str(c) for c in contains])))
              
 
 
@@ -113,6 +125,8 @@ class ElementModel(QAbstractTableModel):
             return QVariant("Label")
         elif section == 2:
             return QVariant("Display")
+        elif section == 3:
+            return QVariant("Contains")
             
         return QVariant(int(section + 1))
 
@@ -138,36 +152,37 @@ class ElementModel(QAbstractTableModel):
                 flag &= ~Qt.ItemIsEnabled
         if column == 0:
             if enable:        
-                return Qt.ItemFlags( flag | 
-                                     Qt.ItemIsEnabled  | 
-                                     Qt.ItemIsUserCheckable 
-                                     )
+                return Qt.ItemFlags(flag | 
+                                    Qt.ItemIsEnabled  | 
+                                    Qt.ItemIsUserCheckable 
+                                    )
             else:
                 flag &= ~Qt.ItemIsEnabled
-                return Qt.ItemFlags( flag | 
-                                     Qt.ItemIsUserCheckable 
-                                     )
+                return Qt.ItemFlags(flag | 
+                                    Qt.ItemIsUserCheckable 
+                                    )
         elif column == 1:
             flag &= ~Qt.ItemIsUserCheckable
             if not enable:
                 flag &= ~Qt.ItemIsEnabled
-            return Qt.ItemFlags( flag | 
-                                 Qt.ItemIsEditable 
-                                 )
+            return Qt.ItemFlags(flag | 
+                                Qt.ItemIsEditable 
+                                )
         if column == 2:
             if enable:        
-                return Qt.ItemFlags( flag | 
-                                     Qt.ItemIsEnabled  | 
-                                     Qt.ItemIsUserCheckable 
-                                     )
+                return Qt.ItemFlags(flag | 
+                                    Qt.ItemIsEnabled  | 
+                                    Qt.ItemIsUserCheckable 
+                                    )
             else:
                 flag &= ~Qt.ItemIsEnabled
-                return Qt.ItemFlags( flag | 
-                                     Qt.ItemIsUserCheckable 
-                                     )
-#            flag &= ~Qt.ItemIsUserCheckable 
-#            print "row/col", index.row(), column, device.name
-#            return Qt.ItemFlags( flag | Qt.ItemIsEnabled)
+                return Qt.ItemFlags(flag | Qt.ItemIsUserCheckable)
+        elif column == 3:
+            if enable:        
+                return Qt.ItemFlags(flag | Qt.ItemIsEnabled)
+            else:
+                flag &= ~Qt.ItemIsEnabled
+                return Qt.ItemFlags(flag)
 
 
     def setData(self, index, value, role=Qt.EditRole):
