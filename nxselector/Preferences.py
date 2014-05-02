@@ -25,9 +25,9 @@ import os
 import PyTango
 import json
 
+from PyQt4.QtGui import (QMessageBox, QCompleter, QFileDialog)
 from PyQt4.QtCore import (SIGNAL, QString)
 
-from PyQt4.QtGui import (QMessageBox, QCompleter, QFileDialog)
 
 from .Views import (TableView, OneTableView, 
                     CheckerView, RadioView, ButtonView, 
@@ -36,9 +36,10 @@ from .Views import (TableView, OneTableView,
                     LeftCheckerViewNL, LeftRadioViewNL,
                     CheckerViewNN, RadioViewNN, ButtonViewNN, 
                     LeftCheckerViewNN, LeftRadioViewNN,
-                    CheckDisView, RadioDisView, ButtonDisView, 
-                    CheckDisViewNL, RadioDisViewNL, ButtonDisViewNL, 
-                    CheckDisViewNN, RadioDisViewNN, ButtonDisViewNN
+                    CheckDisView, RadioDisView,
+                    CheckDisViewNL, RadioDisViewNL, 
+#                    ButtonDisViewNL, ButtonDisViewNN, ButtonDisView,  
+                    CheckDisViewNN, RadioDisViewNN
                     )
 
 import logging

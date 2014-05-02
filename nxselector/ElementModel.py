@@ -21,12 +21,12 @@
 
 """ device Model """
 
-from PyQt4.QtCore import (
-    SIGNAL, Qt, QVariant, QAbstractTableModel,
-    QModelIndex)
 from PyQt4.QtGui import (
     QCheckBox,
     QItemDelegate, QStyledItemDelegate)
+from PyQt4.QtCore import (
+    SIGNAL, Qt, QVariant, QAbstractTableModel,
+    QModelIndex)
 
 from .Element import DS, CP
 

@@ -24,10 +24,10 @@
 import json
 import fnmatch
 
-from PyQt4.QtCore import (SIGNAL)
 from PyQt4.QtGui import (QHBoxLayout, QVBoxLayout,
     QGroupBox, QGridLayout,
     QFrame, QWidgetItem)
+from PyQt4.QtCore import (SIGNAL)
 
 from .Element import DSElement, CPElement, CP, DS
 from .ElementModel import ElementModel

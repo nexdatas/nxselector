@@ -23,13 +23,13 @@
 
 
 
-from PyQt4.QtCore import (
-    SIGNAL, Qt, QVariant, SIGNAL, QSignalMapper, SLOT)
-
 from PyQt4.QtGui import (QTableView, QHeaderView, QWidget, QGridLayout, 
                          QCheckBox, QSpacerItem,
                          QRadioButton, QPushButton, QWidgetItem,
-                         QSizePolicy, QLabel, QToolTip)
+                         QSizePolicy, QLabel)
+from PyQt4.QtCore import (
+    SIGNAL, Qt, QVariant, SIGNAL, QSignalMapper, SLOT)
+
 
 
 
@@ -70,6 +70,8 @@ class CheckerView(QWidget):
         self.layout = QGridLayout(self)
         self.widgets = []
         self.mapper = QSignalMapper(self)
+        self.dmapper = None
+        self.displays = []
         self.connect(self.mapper, SIGNAL("mapped(QWidget*)"),
                      self.checked)
         self.spacer = None
@@ -103,7 +105,7 @@ class CheckerView(QWidget):
         self.hide()
         if self.layout:
             self.widgets = []
-            if hasattr(self, 'displays'):
+            if self.dmapper:
                 self.displays = []
             self.spacer = None
             child = self.layout.takeAt(0)
@@ -117,7 +119,7 @@ class CheckerView(QWidget):
             self.mapper = QSignalMapper(self)
             self.connect(self.mapper, SIGNAL("mapped(QWidget*)"),
                          self.checked)
-            if hasattr(self, 'displays'):
+            if self.dmapper: 
                 self.dmapper = QSignalMapper(self)
                 self.connect(self.dmapper, SIGNAL("mapped(QWidget*)"),
                              self.dchecked)
@@ -143,13 +145,13 @@ class CheckerView(QWidget):
                 cb = None
                 if row < len(self.widgets):
                     cb = self.widgets[row]
-                    if hasattr(self, 'displays'):
+                    if self.dmapper: 
                         ds = self.displays[row]
                 else:
                     cb = self.widget()
                     if hasattr(cb, "setCheckable"):
                         cb.setCheckable(True)
-                    if hasattr(self, 'displays'):
+                    if self.dmapper: 
                         ds = self.widget()
                         if hasattr(ds, "setCheckable"):
                             ds.setCheckable(True)
@@ -163,7 +165,7 @@ class CheckerView(QWidget):
                         cb.setSizePolicy(sizePolicy)
 
                 cb.setEnabled(bool(Qt.ItemIsEnabled & flags))
-                if hasattr(self, 'displays'):
+                if self.dmapper: 
                     ds.setEnabled(bool(Qt.ItemIsEnabled & flags))
                 if name:
                     if self.showLabels and label and \
@@ -179,10 +181,11 @@ class CheckerView(QWidget):
                         cb.setText(str(name.toString()))
                         cb.setToolTip(
                             str(label.toString()) \
-                                if str(label.toString()) else str(name.toString()))
+                                if str(label.toString()) \
+                                else str(name.toString()))
                 if status is not None:    
                     cb.setChecked(bool(status))
-                if hasattr(self, 'displays'):
+                if self.dmapper: 
                     if dstatus is not None:    
                         ds.setChecked(bool(dstatus))
                 if row >= len(self.widgets):
@@ -205,7 +208,7 @@ class CheckerView(QWidget):
                     self.connect(cb, SIGNAL("clicked()"),
                                  self.mapper, SLOT("map()"))
                     self.mapper.setMapping(cb, cb)
-                    if hasattr(self, 'displays'):
+                    if self.dmapper: 
                         self.displays.append(ds)
                         self.connect(ds, SIGNAL("clicked()"),
                                      self.dmapper, SLOT("map()"))
@@ -226,7 +229,6 @@ class CheckDisView(CheckerView):
 
     def __init__(self, parent=None):
         super(CheckDisView, self).__init__(parent)
-        self.displays = []
         self.dmapper = QSignalMapper(self)
         self.connect(self.dmapper, SIGNAL("mapped(QWidget*)"),
                      self.dchecked)
