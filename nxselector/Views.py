@@ -169,15 +169,17 @@ class CheckerView(QWidget):
 
             if self.dmapper: 
                 lrow = lrow + 1
+                lcol = 2*lcol
                 if lrow == 1:    
                     self.layout.addWidget(
-                        QLabel(self.slabel), 0, 2*lcol, 1, 1)
+                        QLabel(self.slabel), 0, lcol, 1, 1)
                     self.layout.addWidget(
-                        QLabel(self.dlabel), 0, 2*lcol+1, 1, 1, 
+                        QLabel(self.dlabel), 0, lcol+1, 1, 1, 
                         Qt.AlignRight)
-                self.layout.addWidget(ds, lrow, 2*lcol+1, 1, 1, 
+                self.layout.addWidget(ds, lrow, lcol+1, 1, 1, 
                                       Qt.AlignRight)
-            self.layout.addWidget(cb, lrow, 2*lcol, 1, 1)
+
+            self.layout.addWidget(cb, lrow, lcol, 1, 1)
             self.widgets.append(cb)
             self.connect(cb, SIGNAL("clicked()"),
                          self.mapper, SLOT("map()"))
