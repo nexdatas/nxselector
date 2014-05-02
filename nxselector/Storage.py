@@ -67,13 +67,13 @@ class Storage(object):
 #        self.ui.storage.disconnect(self.ui.dcEnableCheckBox,
 #                                SIGNAL("toggled(bool)"), self.apply)
         self.ui.storage.disconnect(self.ui.dcLinksCheckBox,
-                                SIGNAL("toggled(bool)"), self.apply)
+                                SIGNAL("clicked(bool)"), self.apply)
         self.ui.storage.disconnect(self.ui.dcPathLineEdit,
                                 SIGNAL("editingFinished()"), self.apply)
 
         # others group
         self.ui.storage.disconnect(self.ui.othersEntryCheckBox,
-                                SIGNAL("toggled(bool)"), self.apply)
+                                SIGNAL("clicked(bool)"), self.apply)
         self.ui.storage.disconnect(self.ui.othersTimeZoneLineEdit,
                                 SIGNAL("editingFinished()"), self.apply)
 
