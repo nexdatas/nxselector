@@ -171,6 +171,7 @@ class Storage(object):
         logger.debug("updateForm storage ended")
 
     def apply(self):
+        reset = False
         logger.debug("updateForm apply")
         self.disconnectSignals()
         if not str(self.ui.mntGrpLineEdit.text()):
@@ -178,7 +179,10 @@ class Storage(object):
             self.connectSignals()
             return
         self.state.mntgrp = str(self.ui.mntGrpLineEdit.text())
-        self.state.timer = str(self.ui.mntTimerComboBox.currentText())
+        if self.state.timer !=  str(self.ui.mntTimerComboBox.currentText()):
+            reset = True
+            self.state.timer = str(self.ui.mntTimerComboBox.currentText())
+
         self.state.door = str(self.ui.mntServerLineEdit.text())
 
         self.state.scanDir = str(self.ui.fileScanDirLineEdit.text())
@@ -202,6 +206,7 @@ class Storage(object):
         self.connectSignals()
         
         self.ui.storage.emit(SIGNAL("dirty"))
+        self.ui.storage.emit(SIGNAL("reset"))
         logger.debug("updateForm apply ended")
 
         

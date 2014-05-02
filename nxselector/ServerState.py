@@ -310,8 +310,8 @@ class ServerState(object):
                                 if len(vl) > 0 and vl[0] == 'STEP':
                                     dds[ds]  = cp
                                     break
-                                   
-                                    
+        if self.timer not in dds.keys():
+            dds[self.timer] =''
         return dds
 
 

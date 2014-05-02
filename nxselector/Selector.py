@@ -215,6 +215,7 @@ class Selector(QDialog):
 
         self.connect(self.ui.selectable, SIGNAL("dirty"), self.setDirty)
         self.connect(self.ui.storage, SIGNAL("dirty"), self.setDirty)
+        self.connect(self.ui.storage, SIGNAL("reset"), self.resetViews)
 
     def setDirty(self, flag = True):
         if flag:
