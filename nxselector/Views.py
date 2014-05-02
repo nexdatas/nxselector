@@ -59,9 +59,8 @@ class OneTableView(QTableView):
 
     def reset(self):
         super(OneTableView, self).reset()
-        self.hideColumn(1)
-        self.hideColumn(2)
-        self.hideColumn(3)
+        for i in range(1,5):
+            self.hideColumn(i)
 
 class CheckerView(QWidget):
 
@@ -221,52 +220,67 @@ class CheckerView(QWidget):
             ds.setEnabled(bool(Qt.ItemIsEnabled & flags))
         return (cb, ds)
 
+    def __createList(self, text, words = 7):
+        lst = str(text.toString()).split()
+        cnt = 0
+        st = ""
+        for sl in lst[:-1]:
+            st += sl
+            cnt += 1
+            if cnt % words:
+                st += ', '
+            else:
+                st += ',\n'
+                
+        if len(lst):
+            st += lst[-1]
+        return st
+
     def __setNameTips(self, row, cb):
         ind = self.model.index(row, 0)
         ind1 = self.model.index(row, 1)
         ind3 = self.model.index(row, 3)
         ind4 = self.model.index(row, 4)
-        name = self.model.data(ind, role = Qt.DisplayRole)
-        label = self.model.data(ind1, role = Qt.DisplayRole)
+        name = self.model.data(ind, role = Qt.DisplayRole).toString()
+        
+        label = self.model.data(ind1, role = Qt.DisplayRole).toString()
         scans = self.model.data(ind3, role = Qt.DisplayRole)
         depends = self.model.data(ind4, role = Qt.DisplayRole)
+        tscans = self.__createList(scans)
+        tdepends = self.__createList(depends)
+        text = tscans if tscans else ""
+        if tdepends:
+            text = "%s\n[%s]" % (text,tdepends)
+            
         if name:
             if self.showLabels and label and \
-                    str(label.toString()).strip():
+                    str(label).strip():
                 if self.showNames:
                     cb.setText("%s [%s]" % (
-                            str(label.toString()),
-                            str(name.toString())))
+                            str(label),
+                            str(name)))
                 else:
-                    cb.setText("%s" % (str(label.toString())))
+                    cb.setText("%s" % (str(label)))
             else:
-                cb.setText(str(name.toString()))
-            if self.showLabels:
-                if self.showNames:
-                    if str(scans.toString()).strip():
-                        cb.setToolTip(
-                            str(scans.toString()).replace(" ",", "))
-                else:
-                    if str(scans.toString()).strip():
-                        cb.setToolTip(
-                            "%s: %s" % (
-                                str(name.toString()),
-                                str(scans.toString()).replace(" ",", "))
-                            )
-                    else:
-                        cb.setToolTip(str(name.toString()))
+                cb.setText(str(name))
+        if self.showLabels:
+            if self.showNames:
+                if text.strip():
+                    cb.setToolTip(text)
             else:
-                ln = str(label.toString()) \
-                    if str(label.toString()) \
-                    else str(name.toString())
-                if str(scans.toString()).strip():
+                if text.strip():
                     cb.setToolTip(
-                        "%s: %s" % ( 
-                            ln,
-                            str(scans.toString()).replace(" ",", "))
-                        )
+                        "%s: %s" % (str(name), text))
                 else:
-                    cb.setToolTip(ln)
+                    cb.setToolTip(str(name))
+        else:
+            ln = str(label) \
+                if str(label) \
+                else str(name)
+            if text.strip():
+                cb.setToolTip("%s: %s" % (ln, text))
+            else:
+                cb.setToolTip(ln)
 
                             
         
