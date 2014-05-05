@@ -91,6 +91,7 @@ class ServerState(object):
 
     def fetchFileData(self):
         self.timer = self.loadData("Timer")
+        self.mntgrp = self.loadData("MntGrp")
         self.door = self.loadData("Door")
 
         self.configDevice = self.loadData("ConfigDevice")
@@ -107,8 +108,7 @@ class ServerState(object):
     def fetchEnvData(self):
         params = {"ScanDir":"scanDir",
                   "ScanFile":"scanFile",
-                  "ScanID":"scanID",
-                  "ActiveMntGrp":"mntgrp"}
+                  "ScanID":"scanID"}
 
 
         if not self.__dp:
@@ -129,8 +129,8 @@ class ServerState(object):
         params = {"ScanDir":"scanDir",
                   "ScanFile":"scanFile",
                   "NeXusSelectorDevice":"server",
-#                  "ScanID":"scanID"],
-                  "ActiveMntGrp":"mntgrp"}
+#                  "ScanID":"scanID"
+                  }
 
         if not self.__dp:
             self.setServer()
@@ -146,6 +146,7 @@ class ServerState(object):
 
         self.storeData("Timer", self.timer)
         self.storeData("Door", self.door)
+        self.storeData("MntGrp", self.mntgrp)
 
         self.storeData("ConfigDevice", self.configDevice)
         self.storeData("WriterDevice", self.writerDevice)

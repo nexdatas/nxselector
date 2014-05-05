@@ -161,7 +161,7 @@
                    <item row="1" column="0">
                     <widget class="QLabel" name="mntGrpLabel">
                      <property name="text">
-                      <string>ActiveMntGrp:</string>
+                      <string>MntGrp:</string>
                      </property>
                      <property name="buddy">
                       <cstring>mntGrpLineEdit</cstring>
