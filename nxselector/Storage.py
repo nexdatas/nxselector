@@ -148,6 +148,8 @@ class Storage(object):
         cid = self.ui.mntTimerComboBox.findText(QString(self.state.timer))
         if cid < 0:
             cid = 0
+            if self.state.atlist:
+                self.state.timer = self.state.atlist[0]
         self.ui.mntTimerComboBox.setCurrentIndex(cid)
 
         if self.state.mntgrp is not None:
