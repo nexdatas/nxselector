@@ -81,7 +81,7 @@ class Mandatory(object):
         layout_groups = QHBoxLayout(mframe)
 
         mgroup = QGroupBox(mframe)
-        mgroup.setTitle("Mandatory")
+        mgroup.setTitle("")
         layout_auto = QGridLayout(mgroup)
         mview = self.userView(mgroup)
         mview.rowMax = self.rowMax

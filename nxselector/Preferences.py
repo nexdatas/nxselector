@@ -57,6 +57,8 @@ class Preferences(object):
 
         # frames/columns/groups
         self.frameshelp = [\
+
+            QString('[[[["Components",1],["Timers",5]]],[[["Counters", 4]],[["ADC",3]]],[[["MCA/SCA",6],["Devices",0]]]]'),
             QString('[[[["Counters", 4]],[["Channels",0]]],' \
                         + '[[["MCAs", 2],["Misc",1]]],[[["ADC",3]]]]'),
             QString('[[[["Devices", 0]]],[[["MCAs", 2],["Misc",1]]]]'),
@@ -65,7 +67,10 @@ class Preferences(object):
                 + '[[["MCAs", 1], ["SCAs", 4]]], [[["Misc", 5] ]]]'), 
             QString('[[[["My Controllers", 0]]],[[["My Components", 1]]]]'), 
             QString('')]
-        self.mgroupshelp = [
+        self.mgroupshelp = [            
+            QString('{ "3":[["exp_adc*", 0]], "4":[["exp_c*",0]],' \
+                        + '"5":[["exp_t*",0]], "6":[["exp_mca*",0],' \
+                        + '["sca_exp_*",0]]}'),
             QString('{"2":[["mca8701*", 1]] , "3":[["exp_adc*", 0]],' \
                         + ' "4":[["exp_c*",0]]}'),
             QString('{"2":[["ct01", 0], ["ct02",0]], "5":[["appscan", 1]]}'), 

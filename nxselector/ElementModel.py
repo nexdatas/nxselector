@@ -114,7 +114,7 @@ class ElementModel(QAbstractTableModel):
                                         contains.add(ds)
                                         break
             if contains:    
-                return QVariant(QString(" ".join([str(c) for c in contains])))
+                return QVariant(QString(" ".join([str(c) for c in sorted(contains)])))
         elif column == 4:
             if role == Qt.CheckStateRole: 
                 return
@@ -130,7 +130,7 @@ class ElementModel(QAbstractTableModel):
                                         contains.add(ds)
                                         break
             if contains:    
-                return QVariant(QString(" ".join([str(c) for c in contains])))
+                return QVariant(QString(" ".join([str(c) for c in sorted(contains)])))
              
 
 

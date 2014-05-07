@@ -71,7 +71,7 @@ class Automatic(object):
         layout_groups = QHBoxLayout(mframe)
 
         mgroup = QGroupBox(mframe)
-        mgroup.setTitle("Automatic")
+        mgroup.setTitle("")
         layout_auto = QGridLayout(mgroup)
         mview = self.userView(mgroup)
         mview.rowMax = self.rowMax
