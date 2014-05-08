@@ -621,14 +621,14 @@
              <item>
               <widget class="QPushButton" name="profLoadPushButton">
                <property name="text">
-                <string>Load</string>
+                <string>Load ...</string>
                </property>
               </widget>
              </item>
              <item>
               <widget class="QPushButton" name="profSavePushButton">
                <property name="text">
-                <string>Save</string>
+                <string>Save ...</string>
                </property>
               </widget>
              </item>

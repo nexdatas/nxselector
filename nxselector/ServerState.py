@@ -87,7 +87,7 @@ class ServerState(object):
         self.mcplist = self.getList("MandatoryComponents") 
         self.description = self.loadList("Description", True) 
         self.datarecord = self.loadDict("DataRecord") 
-        self.configvar = self.loadDict("ConfigVariables") 
+        self.configvars = self.loadDict("ConfigVariables") 
         self.fetchFileData()
         self.fetchEnvData()
 
@@ -166,7 +166,7 @@ class ServerState(object):
         self.storeList("HiddenElements", self.nodisplay) 
         self.storeDict("ComponentGroup", self.cpgroup) 
         self.storeDict("DataRecord", self.datarecord) 
-        self.storeDict("ConfigVariables", self.configvar) 
+        self.storeDict("ConfigVariables", self.configvars) 
         self.storeFileData()
         self.storeEnvData()
 

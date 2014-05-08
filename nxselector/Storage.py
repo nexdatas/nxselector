@@ -25,6 +25,8 @@
 
 from PyQt4.QtCore import (SIGNAL, QString)
 
+from .EdListDlg import EdListDlg
+
 import logging
 logger = logging.getLogger(__name__)
 
@@ -77,6 +79,14 @@ class Storage(object):
         self.ui.storage.disconnect(self.ui.othersTimeZoneLineEdit,
                                 SIGNAL("editingFinished()"), self.apply)
 
+        self.ui.storage.disconnect(self.ui.devWriterPushButton, 
+                                   SIGNAL("clicked()"), 
+                                   self.__record)
+
+        self.ui.storage.disconnect(self.ui.devConfigPushButton, 
+                                   SIGNAL("clicked()"), 
+                                   self.__variables)
+
     def connectSignals(self):
         self.disconnectSignals()
         self.ui.storage.connect(self.ui.fileScanDirLineEdit,
@@ -116,6 +126,32 @@ class Storage(object):
         self.ui.storage.connect(self.ui.othersTimeZoneLineEdit,
                                 SIGNAL("editingFinished()"), self.apply)
         
+        self.ui.storage.connect(self.ui.devWriterPushButton, 
+                                SIGNAL("clicked()"), 
+                                self.__record)
+
+        self.ui.storage.connect(self.ui.devConfigPushButton, 
+                                SIGNAL("clicked()"), 
+                                self.__variables)
+
+
+    def __record(self):    
+        dform  = EdListDlg(self.ui.storage)
+        dform.record = self.state.datarecord
+        dform.createGUI()
+        dform.exec_()
+        if dform.dirty:
+            self.ui.storage.emit(SIGNAL("dirty"))
+
+
+    def __variables(self):    
+        dform  = EdListDlg(self.ui.storage)
+        dform.record = self.state.configvars
+        dform.simple = True
+        dform.createGUI()
+        dform.exec_()
+        if dform.dirty:
+            self.ui.storage.emit(SIGNAL("dirty"))
 
     def reset(self):
         logger.debug("reset storage")
