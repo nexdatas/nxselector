@@ -87,8 +87,9 @@ class EdListDlg(QDialog):
         self.ui.tableWidget.resizeColumnsToContents()
         self.ui.tableWidget.setSelectionBehavior(QAbstractItemView.SelectRows)
         self.ui.tableWidget.setSelectionMode(QAbstractItemView.SingleSelection)
+#        self.ui.tableWidget.setVerticalScrollBarPolicy(Qt.ScrollBarAsNeeded)
         self.ui.tableWidget.horizontalHeader().setStretchLastSection(True)        
-        self.ui.tableWidget.horizontalHeader().setResizeMode(QHeaderView.Stretch)
+#        self.ui.tableWidget.horizontalHeader().setResizeMode(QHeaderView.Stretch)
         self.ui.tableWidget.setEditTriggers(QAbstractItemView.NoEditTriggers)
         if sitem is not None:
             sitem.setSelected(True)
@@ -98,7 +99,6 @@ class EdListDlg(QDialog):
         name = None
         row = self.ui.tableWidget.currentRow()
         skeys = sorted(self.record.keys())
-        print "row", row, skeys
         if len(skeys) > row:
             name = skeys[row]
         return name
@@ -108,7 +108,6 @@ class EdListDlg(QDialog):
         dform.simple = self.simple
         dform.createGUI()
         if dform.exec_():
-            print "OK" ,dform.name, dform.value
             self.record[dform.name] = dform.value
             self.__populateTable()
             self.dirty = True
@@ -121,7 +120,6 @@ class EdListDlg(QDialog):
         dform.value = self.record[name]
         dform.createGUI()
         if dform.exec_():
-            print "OK" ,dform.name, dform.value
             self.record[dform.name] = dform.value
             self.__populateTable()
             self.dirty = True
