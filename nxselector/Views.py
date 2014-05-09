@@ -194,6 +194,8 @@ class CheckerView(QWidget):
     def __setWidgets(self, row):
         ind = self.model.index(row, 0)
         flags = self.model.flags(ind)
+        ind2 = self.model.index(row, 2)
+        flags2 = self.model.flags(ind2)
         ds = None
         cb = None
         if row < len(self.widgets):
@@ -219,7 +221,7 @@ class CheckerView(QWidget):
 
         cb.setEnabled(bool(Qt.ItemIsEnabled & flags))
         if self.dmapper: 
-            ds.setEnabled(bool(Qt.ItemIsEnabled & flags))
+            ds.setEnabled(bool(Qt.ItemIsEnabled & flags2))
         return (cb, ds)
 
     def __createList(self, text, words = 7):
@@ -319,7 +321,7 @@ class RadioView(CheckerView):
 class LeftRadioView(CheckerView):
 
     def __init__(self, parent=None):
-        super(LeftRadioView, self).__init__(parent)
+        super(LeftRadioView, slef).__init__(parent)
         self.widget = QRadioButton
         self.center = False
 

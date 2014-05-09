@@ -171,14 +171,27 @@ class CPElement(Element):
     def _getDisplay(self):
         res = self.state.cpgroup
         nd = self.state.nodisplay
+        res = self.state.acpgroup
         if self.name not in nd:
             if self.name in res.keys():
-                return res[self.name]
+                if res[self.name]: 
+                    return True
+        res = self.state.cpgroup
+        if self.name not in nd:
+            if self.name in res.keys():
+                if res[self.name]: 
+                    return True
+        res = self.state.mcplist
+        if self.name not in nd:
+            if self.name in res:
+                return True
         return False
 
 
     def _setDisplay(self, status):
         dc = self.state.cpgroup
+        mc = self.state.mcplist
+        ac = self.state.acpgroup
         nd = self.state.nodisplay
         if self.name in dc.keys():
             if self.name in nd:
@@ -186,7 +199,22 @@ class CPElement(Element):
                     nd.remove(self.name)
             else:
                 if not status:
-                    nd.append(self.name)
+                    nd.append(self.name) 
+        elif self.name in ac.keys():
+            if self.name in nd:
+                if status:
+                    nd.remove(self.name)
+            else:
+                if not status:
+                    nd.append(self.name) 
+
+        elif self.name in mc:
+            if self.name in nd:
+                if status:
+                    nd.remove(self.name)
+            else:
+                if not status:
+                    nd.append(self.name) 
         else:
             if self.name in nd:
                 nd.remove(self.name)

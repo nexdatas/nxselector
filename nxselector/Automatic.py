@@ -22,6 +22,8 @@
 """ automatic tab """
 
 
+from PyQt4.QtCore import (
+    SIGNAL)
 from PyQt4.QtGui import (QHBoxLayout,
     QGroupBox, QGridLayout, QFrame, QWidgetItem)
 
@@ -97,6 +99,11 @@ class Automatic(object):
         md = ElementModel(self.agroup)
         md.enable = False
         self.aview.setModel(md)    
+        md.connect(md, SIGNAL("componentChecked"), 
+                   self.__componentChecked)
+
+    def __componentChecked(self):
+        self.ui.mandatory.emit(SIGNAL("componentChecked"))
 
     def updateViews(self):
         self.aview.reset()

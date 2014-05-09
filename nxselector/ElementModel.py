@@ -93,6 +93,7 @@ class ElementModel(QAbstractTableModel):
                                 return Qt.Unchecked
                             else:
                                 return Qt.Checked
+                            
                     if device.display:
                         return Qt.Checked
                     else:
@@ -156,7 +157,8 @@ class ElementModel(QAbstractTableModel):
         if not index.isValid():
             return Qt.ItemIsEnabled
 
-        enable = self.enable
+        enable2 = self.enable
+        enable = True
         device = self.group[index.row()]
         flag = QAbstractTableModel.flags(self, index)
         column = index.column()
@@ -165,15 +167,15 @@ class ElementModel(QAbstractTableModel):
             if device.name in dds.keys():
                 enable = False
                 flag &= ~Qt.ItemIsEnabled
-                        
         elif device.eltype == CP:
             mcp = device.state.mcplist
             acp = device.state.acplist
             if device.name in mcp or device.name in acp:
-                enable = False
+                enable2 = False
+                
                 flag &= ~Qt.ItemIsEnabled
         if column == 0:
-            if enable:        
+            if enable and enable2:        
                 return Qt.ItemFlags(flag | 
                                     Qt.ItemIsEnabled  | 
                                     Qt.ItemIsUserCheckable 
@@ -185,7 +187,7 @@ class ElementModel(QAbstractTableModel):
                                     )
         elif column == 1:
             flag &= ~Qt.ItemIsUserCheckable
-            if not enable:
+            if not enable or not enable2:
                 flag &= ~Qt.ItemIsEnabled
             return Qt.ItemFlags(flag | 
                                 Qt.ItemIsEditable 
@@ -200,13 +202,13 @@ class ElementModel(QAbstractTableModel):
                 flag &= ~Qt.ItemIsEnabled
                 return Qt.ItemFlags(flag | Qt.ItemIsUserCheckable)
         elif column == 3:
-            if enable:        
+            if enable and enable2:        
                 return Qt.ItemFlags(flag | Qt.ItemIsEnabled)
             else:
                 flag &= ~Qt.ItemIsEnabled
                 return Qt.ItemFlags(flag)
         elif column == 4:
-            if enable:        
+            if enable and enable2:        
                 return Qt.ItemFlags(flag | Qt.ItemIsEnabled)
             else:
                 flag &= ~Qt.ItemIsEnabled

@@ -22,6 +22,8 @@
 """ mandatory tab """
 
 
+from PyQt4.QtCore import (
+    SIGNAL)
 from PyQt4.QtGui import (QHBoxLayout,
     QGroupBox, QGridLayout,
     QFrame, QWidgetItem)
@@ -100,7 +102,11 @@ class Mandatory(object):
         md = ElementModel(self.mgroup)
         md.enable = False
         self.mview.setModel(md)    
+        md.connect(md, SIGNAL("componentChecked"), 
+                   self.__componentChecked)
 
+    def __componentChecked(self):
+        self.ui.mandatory.emit(SIGNAL("componentChecked"))
 
     def updateViews(self):
         self.mview.reset()

@@ -214,8 +214,16 @@ class Selector(QDialog):
                      SIGNAL("valueChanged(int)"), self.resetRows)
 
         self.connect(self.ui.selectable, SIGNAL("dirty"), self.setDirty)
+        self.connect(self.ui.automatic, SIGNAL("componentChecked"), 
+                     self.__componentChanged)
+        self.connect(self.ui.mandatory, SIGNAL("componentChecked"), 
+                     self.__componentChanged)
         self.connect(self.ui.storage, SIGNAL("dirty"), self.setDirty)
         self.connect(self.ui.storage, SIGNAL("reset"), self.resetViews)
+
+    def __componentChanged(self):
+        self.setDirty()
+        self.selectable.updateViews()
 
     def setDirty(self, flag = True):
         if flag:
