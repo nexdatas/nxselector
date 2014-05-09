@@ -86,6 +86,10 @@ class Storage(object):
                                    SIGNAL("clicked()"), 
                                    self.__props)
 
+        self.ui.storage.disconnect(self.ui.labelsPushButton, 
+                                   SIGNAL("clicked()"), 
+                                   self.__labels)
+
     def connectSignals(self):
         self.disconnectSignals()
         self.ui.storage.connect(self.ui.fileScanDirLineEdit,
@@ -132,11 +136,24 @@ class Storage(object):
                                 SIGNAL("clicked()"), 
                                 self.__props)
 
+        self.ui.storage.connect(self.ui.labelsPushButton, 
+                                SIGNAL("clicked()"), 
+                                self.__labels)
+
 
             
     def __variables(self):    
         dform  = EdListDlg(self.ui.storage)
         dform.widget.record = self.state.configvars
+        dform.simple = True
+        dform.createGUI()
+        dform.exec_()
+        if dform.dirty:
+            self.ui.storage.emit(SIGNAL("dirty"))
+
+    def __labels(self):    
+        dform  = EdListDlg(self.ui.storage)
+        dform.widget.record = self.state.labels
         dform.simple = True
         dform.createGUI()
         dform.exec_()
