@@ -1,4 +1,5 @@
 2014-05-XX Jan Kotanski <jankotan@gmail.com>
+	* adding button for labels
 	* adding support for properties of dynamic components
 	* making available component display checkboxes
 	* taggeg as 1.3.1

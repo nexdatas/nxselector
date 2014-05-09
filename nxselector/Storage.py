@@ -158,7 +158,7 @@ class Storage(object):
         dform.createGUI()
         dform.exec_()
         if dform.dirty:
-            self.ui.storage.emit(SIGNAL("dirty"))
+            self.ui.storage.emit(SIGNAL("reset"))
 
     def __props(self):    
         dform  = LabelDlg(self.ui.storage)
