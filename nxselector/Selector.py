@@ -34,8 +34,7 @@ from .ServerState import ServerState
 
 from .Selectable import Selectable
 from .Preferences import Preferences
-from .Automatic import Automatic
-from .Mandatory import Mandatory
+from .State import State
 from .Storage import Storage
 
 from .ui.ui_selector import Ui_Selector
@@ -114,17 +113,13 @@ class Selector(QDialog):
 
         self.selectable.mgroups = str(self.preferences.mgroups)
         self.selectable.frames = str(self.preferences.frames)
-        self.automatic = Automatic(
-            self.ui, self.state, 
-            self.preferences.views[self.userView],
-            self.rowMax)
-        self.mandatory = Mandatory(
+        self.state = State(
             self.ui, self.state, 
             self.preferences.views[self.userView],
             self.rowMax)
 
 
-        self.tabs = [self.selectable, self.automatic, self.mandatory,
+        self.tabs = [self.selectable, self.state, 
                      self.storage, self.preferences]
 
         self.createGUI()  
@@ -214,9 +209,7 @@ class Selector(QDialog):
                      SIGNAL("valueChanged(int)"), self.resetRows)
 
         self.connect(self.ui.selectable, SIGNAL("dirty"), self.setDirty)
-        self.connect(self.ui.automatic, SIGNAL("componentChecked"), 
-                     self.__componentChanged)
-        self.connect(self.ui.mandatory, SIGNAL("componentChecked"), 
+        self.connect(self.ui.state, SIGNAL("componentChecked"), 
                      self.__componentChanged)
         self.connect(self.ui.storage, SIGNAL("dirty"), self.setDirty)
         self.connect(self.ui.storage, SIGNAL("reset"), self.resetViews)

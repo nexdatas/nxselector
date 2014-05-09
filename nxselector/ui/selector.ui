@@ -109,14 +109,9 @@
        <string>Scan Components</string>
       </attribute>
      </widget>
-     <widget class="QWidget" name="automatic">
+     <widget class="QWidget" name="state">
       <attribute name="title">
        <string>State Components</string>
-      </attribute>
-     </widget>
-     <widget class="QWidget" name="mandatory">
-      <attribute name="title">
-       <string>Default Components</string>
       </attribute>
      </widget>
      <widget class="QWidget" name="storage">
