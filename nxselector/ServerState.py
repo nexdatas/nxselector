@@ -58,7 +58,6 @@ class ServerState(object):
         self.writerDevice = None
 
         self.appendEntry = None
-        self.timeZone = None
 
         self.dynamicComponents = True
         self.dynamicLinks = None
@@ -100,7 +99,6 @@ class ServerState(object):
         self.writerDevice = self.loadData("WriterDevice")
             
         self.appendEntry = self.loadData("AppendEntry")
-        self.timeZone = self.loadData("TimeZone")
 
 #        self.dynamicComponents = self.loadData("DynamicComponents")
         self.dynamicLinks = self.loadData("DynamicLinks")
@@ -154,7 +152,6 @@ class ServerState(object):
         self.storeData("WriterDevice", self.writerDevice)
 
         self.storeData("AppendEntry", self.appendEntry)
-        self.storeData("TimeZone", self.timeZone)
         self.storeData("DynamicComponents", self.dynamicComponents)
         self.storeData("DynamicLinks", self.dynamicLinks)
         self.storeData("DynamicPath", self.dynamicPath)

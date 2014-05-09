@@ -26,7 +26,7 @@
 from PyQt4.QtCore import (SIGNAL, QString, Qt)
 from PyQt4.QtGui import (
     QDialog, QTableWidgetItem, QMessageBox, QAbstractItemView,
-    QHeaderView)
+    QHeaderView, QWidget)
 
 from .ui.ui_edlistdlg import Ui_EdListDlg
 
@@ -35,28 +35,48 @@ from .EdDataDlg import EdDataDlg
 import logging
 logger = logging.getLogger(__name__)
 
-## main window class
 class EdListDlg(QDialog):
-
     ## constructor
     # \param parent parent widget
     def __init__(self, parent=None):
         super(EdListDlg, self).__init__(parent)
+        self.widget = EdListWg(self)
+        self.dirty = False
+        
+    def createGUI(self):
+        self.widget.createGUI()
+
+        self.connect(self.widget.ui.closePushButton, 
+                     SIGNAL("clicked()"),
+                     self.accept)
+        self.widget.ui.closePushButton.show()
+        self.connect(self.widget, SIGNAL("dirty"),self.__setDirty)
+
+    def __setDirty(self):
+        self.dirty = True
+        
+        
+
+## main window class
+class EdListWg(QWidget):
+
+    ## constructor
+    # \param parent parent widget
+    def __init__(self, parent=None):
+        super(EdListWg, self).__init__(parent)
         self.simple = False
         self.record = {}
-        self.dirty = False
         self.ui = Ui_EdListDlg()
 
     def createGUI(self):
         self.ui.setupUi(self)
+        self.ui.closePushButton.hide()
         
         if self.record:
             item = sorted(self.record.keys())[0]
         else:
             item = None
         self.__populateTable(item)
-        self.connect(self.ui.closePushButton, SIGNAL("clicked()"),
-                     self.accept)
         self.connect(self.ui.addPushButton, SIGNAL("clicked()"),
                      self.__add)
         self.connect(self.ui.editPushButton, SIGNAL("clicked()"),
@@ -110,7 +130,7 @@ class EdListDlg(QDialog):
         if dform.exec_():
             self.record[dform.name] = dform.value
             self.__populateTable()
-            self.dirty = True
+            self.emit(SIGNAL("dirty"))
         
     def __edit(self):    
         dform  = EdDataDlg(self)
@@ -122,7 +142,7 @@ class EdListDlg(QDialog):
         if dform.exec_():
             self.record[dform.name] = dform.value
             self.__populateTable()
-            self.dirty = True
+            self.emit(SIGNAL("dirty"))
 
     def __remove(self):
         name = self.__currentName()
@@ -133,5 +153,7 @@ class EdListDlg(QDialog):
             QMessageBox.Yes ) == QMessageBox.No :
             return
         self.record.pop(name)
-        self.dirty = True
+        self.emit(SIGNAL("dirty"))
         self.__populateTable()
+
+        

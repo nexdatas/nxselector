@@ -76,12 +76,6 @@ class Storage(object):
         # others group
         self.ui.storage.disconnect(self.ui.othersEntryCheckBox,
                                 SIGNAL("clicked(bool)"), self.apply)
-        self.ui.storage.disconnect(self.ui.othersTimeZoneLineEdit,
-                                SIGNAL("editingFinished()"), self.apply)
-
-        self.ui.storage.disconnect(self.ui.devWriterPushButton, 
-                                   SIGNAL("clicked()"), 
-                                   self.__record)
 
         self.ui.storage.disconnect(self.ui.devConfigPushButton, 
                                    SIGNAL("clicked()"), 
@@ -123,27 +117,14 @@ class Storage(object):
         # others group
         self.ui.storage.connect(self.ui.othersEntryCheckBox,
                                 SIGNAL("clicked(bool)"), self.apply)
-        self.ui.storage.connect(self.ui.othersTimeZoneLineEdit,
-                                SIGNAL("editingFinished()"), self.apply)
         
-        self.ui.storage.connect(self.ui.devWriterPushButton, 
-                                SIGNAL("clicked()"), 
-                                self.__record)
 
         self.ui.storage.connect(self.ui.devConfigPushButton, 
                                 SIGNAL("clicked()"), 
                                 self.__variables)
 
 
-    def __record(self):    
-        dform  = EdListDlg(self.ui.storage)
-        dform.record = self.state.datarecord
-        dform.createGUI()
-        dform.exec_()
-        if dform.dirty:
-            self.ui.storage.emit(SIGNAL("dirty"))
-
-
+            
     def __variables(self):    
         dform  = EdListDlg(self.ui.storage)
         dform.record = self.state.configvars
@@ -204,7 +185,6 @@ class Storage(object):
 
         # others group
         self.ui.othersEntryCheckBox.setChecked(self.state.appendEntry)
-        self.ui.othersTimeZoneLineEdit.setText(self.state.timeZone)
         
         logger.debug("updateForm storage ended")
 
@@ -240,7 +220,6 @@ class Storage(object):
 
         # others group
         self.state.appendEntry = self.ui.othersEntryCheckBox.isChecked()
-        self.state.timeZone = str(self.ui.othersTimeZoneLineEdit.text())
         self.connectSignals()
         
         self.ui.storage.emit(SIGNAL("dirty"))
