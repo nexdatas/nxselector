@@ -78,6 +78,10 @@ class ServerState(object):
     def fetchSettings(self):
         self.dsgroup = self.loadDict("DataSourceGroup") 
         self.labels = self.loadDict("Labels") 
+        self.labellinks = self.loadDict("LabelLinks") 
+        self.labelpaths = self.loadDict("LabelPaths") 
+        self.labelshapes = self.loadDict("LabelShapes") 
+        self.labeltypes = self.loadDict("LabelTypes") 
         self.nodisplay = self.loadList("HiddenElements", True) 
         self.cpgroup = self.loadDict("ComponentGroup") 
         self.acpgroup = self.loadDict("AutomaticComponentGroup") 
@@ -160,6 +164,10 @@ class ServerState(object):
     def storeSettings(self):
         self.storeDict("DataSourceGroup", self.dsgroup) 
         self.storeDict("Labels", self.labels) 
+        self.storeDict("LabelLinks", self.labellinks) 
+        self.storeDict("LabelPaths", self.labelpaths) 
+        self.storeDict("LabelShapes", self.labelshapes) 
+        self.storeDict("LabelTypes", self.labeltypes) 
         self.storeList("HiddenElements", self.nodisplay) 
         self.storeDict("ComponentGroup", self.cpgroup) 
         self.storeDict("DataRecord", self.datarecord) 

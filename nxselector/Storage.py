@@ -26,6 +26,7 @@
 from PyQt4.QtCore import (SIGNAL, QString)
 
 from .EdListDlg import EdListDlg
+from .LabelDlg import LabelDlg
 
 import logging
 logger = logging.getLogger(__name__)
@@ -81,6 +82,10 @@ class Storage(object):
                                    SIGNAL("clicked()"), 
                                    self.__variables)
 
+        self.ui.storage.disconnect(self.ui.propPushButton, 
+                                   SIGNAL("clicked()"), 
+                                   self.__props)
+
     def connectSignals(self):
         self.disconnectSignals()
         self.ui.storage.connect(self.ui.fileScanDirLineEdit,
@@ -123,12 +128,28 @@ class Storage(object):
                                 SIGNAL("clicked()"), 
                                 self.__variables)
 
+        self.ui.storage.connect(self.ui.propPushButton, 
+                                SIGNAL("clicked()"), 
+                                self.__props)
+
 
             
     def __variables(self):    
         dform  = EdListDlg(self.ui.storage)
-        dform.record = self.state.configvars
+        dform.widget.record = self.state.configvars
         dform.simple = True
+        dform.createGUI()
+        dform.exec_()
+        if dform.dirty:
+            self.ui.storage.emit(SIGNAL("dirty"))
+
+    def __props(self):    
+        dform  = LabelDlg(self.ui.storage)
+#        dform.widget.labels = self.state.labels
+        dform.widget.paths = self.state.labelpaths
+        dform.widget.shapes = self.state.labelshapes
+        dform.widget.links = self.state.labellinks
+        dform.widget.types = self.state.labeltypes
         dform.createGUI()
         dform.exec_()
         if dform.dirty:

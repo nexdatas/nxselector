@@ -16,11 +16,10 @@
 #    You should have received a copy of the GNU General Public License
 #    along with nexdatas.  If not, see <http://www.gnu.org/licenses/>.
 ## \package nxselector nexdatas
-## \file EdListDlg.py
-# editable list dialog
+## \file LabelDlg.py
+# label dialog
 
-"""  editable list dialog """
-
+"""  label dialog """
 
 
 from PyQt4.QtCore import (SIGNAL, QString, Qt)
@@ -30,17 +29,17 @@ from PyQt4.QtGui import (
 
 from .ui.ui_edlistdlg import Ui_EdListDlg
 
-from .EdDataDlg import EdDataDlg
+from .LDataDlg import LDataDlg
 
 import logging
 logger = logging.getLogger(__name__)
 
-class EdListDlg(QDialog):
+class LabelDlg(QDialog):
     ## constructor
     # \param parent parent widget
     def __init__(self, parent=None):
-        super(EdListDlg, self).__init__(parent)
-        self.widget = EdListWg(self)
+        super(LabelDlg, self).__init__(parent)
+        self.widget = LabelWg(self)
         self.dirty = False
         
     def createGUI(self):
@@ -61,22 +60,26 @@ class EdListDlg(QDialog):
         
 
 ## main window class
-class EdListWg(QWidget):
+class LabelWg(QWidget):
 
     ## constructor
     # \param parent parent widget
     def __init__(self, parent=None):
-        super(EdListWg, self).__init__(parent)
+        super(LabelWg, self).__init__(parent)
         self.simple = False
-        self.record = {}
+        self.paths = {}
+        self.shapes = {}
+        self.links = {}
+        self.types = {}
         self.ui = Ui_EdListDlg()
 
     def createGUI(self):
         self.ui.setupUi(self)
         self.ui.closePushButton.hide()
-        
-        if self.record:
-            item = sorted(self.record.keys())[0]
+
+        names = self.__names()
+        if names:
+            item = names[0]
         else:
             item = None
         self.__populateTable(item)
@@ -90,23 +93,42 @@ class EdListWg(QWidget):
         self.connect(self.ui.removePushButton, SIGNAL("clicked()"),
                      self.__remove)
 
+
+    def __names(self):
+        return sorted(set(self.paths.keys()) |
+                       set(self.shapes.keys()) | 
+                       set(self.links.keys()) |
+                       set(self.types.keys()))
+    
+
     def __populateTable(self, selected = None):
         self.ui.tableWidget.clear()
         sitem = None
         self.ui.tableWidget.setSortingEnabled(False)
-        names = sorted(self.record.keys())
+        names = self.__names()
         self.ui.tableWidget.setRowCount(len(names))
-        headers = ["Name", "Value"]
+        headers = ["Name", "Type", "Shape", "Link", "Path"]
         self.ui.tableWidget.setColumnCount(len(headers))
         self.ui.tableWidget.setHorizontalHeaderLabels(headers)
         for row, name in enumerate(names):
-            value = self.record[name]
-#            isString = isinstance(vl, (str, unicode, QString))
             item = QTableWidgetItem(name)
             if selected is not None and selected == name:
                 sitem = item
             self.ui.tableWidget.setItem(row, 0, item)
-            self.ui.tableWidget.setItem(row, 1, QTableWidgetItem(str(value))) 
+
+            
+            value = str(self.types[name]) \
+                if name in self.types.keys() else ''
+            self.ui.tableWidget.setItem(row, 1, QTableWidgetItem(value)) 
+            value = str(self.shapes[name]) \
+                if name in self.shapes.keys() else ''
+            self.ui.tableWidget.setItem(row, 2, QTableWidgetItem(value)) 
+            value = str(self.links[name]) \
+                if name in self.links.keys() else ''
+            self.ui.tableWidget.setItem(row, 3, QTableWidgetItem(value))
+            value = str(self.paths[name]) \
+                if name in self.paths.keys() else ''
+            self.ui.tableWidget.setItem(row, 4, QTableWidgetItem(value))
         self.ui.tableWidget.resizeColumnsToContents()
         self.ui.tableWidget.setSelectionBehavior(QAbstractItemView.SelectRows)
         self.ui.tableWidget.setSelectionMode(QAbstractItemView.SingleSelection)
@@ -121,32 +143,60 @@ class EdListWg(QWidget):
     def __currentName(self):
         name = None
         row = self.ui.tableWidget.currentRow()
-        skeys = sorted(self.record.keys())
+        skeys = self.__names()
         if len(skeys) > row:
             name = skeys[row]
         return name
 
-    def __add(self):    
-        dform  = EdDataDlg(self)
-        dform.simple = self.simple
-        dform.createGUI()
-        if dform.exec_():
-            self.record[dform.name] = dform.value
+    def __updateItem(self, name, value, dct):
+            if not value:    
+                if name in dct.keys():
+                    dct.pop(name)
+            elif name:
+                dct[name] = value
+        
+
+    def __updateTable(self, form):
+        if form.label:
+            name = form.label
+
+            self.__updateItem(name, form.path, self.paths)    
+            self.__updateItem(name, form.dtype, self.types)    
+            self.__updateItem(name, form.shape, self.shapes)    
+
+            if form.link is None:    
+                if name in self.links.keys():
+                    self.links.pop(name)
+            elif name:
+                self.links[name] = form.link
+            print name , form.link
+                
             self.__populateTable()
             self.emit(SIGNAL("dirty"))
+
+    def __add(self):    
+        dform  = LDataDlg(self)
+        dform.createGUI()
+        if dform.exec_():
+            self.__updateTable(dform)
         
     def __edit(self):    
-        dform  = EdDataDlg(self)
-        dform.simple = self.simple
+        dform  = LDataDlg(self)
         name = self.__currentName()
-        dform.name = name
-        dform.value = self.record[name]
+        dform.label = name
+        if name in self.types.keys():
+            dform.dtype = self.types[name]
+        if name in self.shapes.keys():
+            dform.shape = self.shapes[name]
+        if name in self.links.keys():
+            dform.link = self.links[name]
+        if name in self.paths.keys():
+            dform.path = self.paths[name]
+                
         dform.createGUI()
-        dform.ui.nameLineEdit.setEnabled(False)
+        dform.ui.labelLineEdit.setEnabled(False)
         if dform.exec_():
-            self.record[dform.name] = dform.value
-            self.__populateTable()
-            self.emit(SIGNAL("dirty"))
+            self.__updateTable(dform)
 
     def __remove(self):
         name = self.__currentName()
@@ -156,7 +206,7 @@ class EdListWg(QWidget):
             QMessageBox.Yes | QMessageBox.No,
             QMessageBox.Yes ) == QMessageBox.No :
             return
-        self.record.pop(name)
+        self.labels.pop(name)
         self.emit(SIGNAL("dirty"))
         self.__populateTable()
 

@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>792</width>
+    <width>793</width>
     <height>539</height>
    </rect>
   </property>
@@ -180,19 +180,6 @@
             </widget>
            </item>
            <item>
-            <spacer name="verticalSpacer_4">
-             <property name="orientation">
-              <enum>Qt::Vertical</enum>
-             </property>
-             <property name="sizeHint" stdset="0">
-              <size>
-               <width>332</width>
-               <height>38</height>
-              </size>
-             </property>
-            </spacer>
-           </item>
-           <item>
             <widget class="QFrame" name="frame_3">
              <property name="frameShape">
               <enum>QFrame::StyledPanel</enum>
@@ -249,6 +236,19 @@
               </item>
              </layout>
             </widget>
+           </item>
+           <item>
+            <spacer name="verticalSpacer_4">
+             <property name="orientation">
+              <enum>Qt::Vertical</enum>
+             </property>
+             <property name="sizeHint" stdset="0">
+              <size>
+               <width>332</width>
+               <height>38</height>
+              </size>
+             </property>
+            </spacer>
            </item>
           </layout>
          </item>
@@ -320,9 +320,9 @@
                     <widget class="QLineEdit" name="dcPathLineEdit"/>
                    </item>
                    <item>
-                    <widget class="QPushButton" name="pushButton_4">
+                    <widget class="QPushButton" name="propPushButton">
                      <property name="text">
-                      <string>Device Labels ...</string>
+                      <string>Properties ...</string>
                      </property>
                     </widget>
                    </item>
@@ -333,6 +333,19 @@
               </item>
              </layout>
             </widget>
+           </item>
+           <item>
+            <spacer name="verticalSpacer_2">
+             <property name="orientation">
+              <enum>Qt::Vertical</enum>
+             </property>
+             <property name="sizeHint" stdset="0">
+              <size>
+               <width>20</width>
+               <height>40</height>
+              </size>
+             </property>
+            </spacer>
            </item>
           </layout>
          </item>
