@@ -1,4 +1,5 @@
-2014-05-XX Jan Kotanski <jankotan@gmail.com>
+2014-05-12 Jan Kotanski <jankotan@gmail.com>
+	* adding user data to separate tab
 	* adding button for labels
 	* adding support for properties of dynamic components
 	* making available component display checkboxes
