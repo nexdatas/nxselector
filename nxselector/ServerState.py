@@ -324,7 +324,19 @@ class ServerState(object):
             dds[self.timer] =''
         return dds
 
+    def clientRecords(self):
+        res = self.description
+        dds = {}
 
+        for cpg in res:
+            for cp, dss in cpg.items():
+                if isinstance(dss, dict):
+                    for ds, values in dss.items():
+                        for vl in values:
+                            if len(vl) > 1 and vl[1] == 'CLIENT':
+                                dds[ds]  = vl[2]
+        return dds                       
+                                
     ## provides disable datasources
     ddsdict = property(disableDataSources,
                        doc = 'provides disable datasources')

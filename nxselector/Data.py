@@ -65,6 +65,8 @@ class Data(object):
 
         self.form  = EdListWg(self.ui.data)
         self.form.record = self.state.datarecord
+        self.form.available_records = self.state.clientRecords().values()
+        print "RECORDS",   self.form.available_records
         self.form.createGUI()
 #        gb = QGroupBox(self.ui.data)
 #        gb.setTitle("Data")

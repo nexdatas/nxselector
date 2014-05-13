@@ -69,6 +69,7 @@ class EdListWg(QWidget):
         super(EdListWg, self).__init__(parent)
         self.simple = False
         self.record = {}
+        self.available_records = None
         self.ui = Ui_EdListDlg()
 
     def createGUI(self):
@@ -100,13 +101,32 @@ class EdListWg(QWidget):
         self.ui.tableWidget.setColumnCount(len(headers))
         self.ui.tableWidget.setHorizontalHeaderLabels(headers)
         for row, name in enumerate(names):
+            enable = True
+            if self.available_records is not None and\
+                    name not in self.available_records:
+                enable = False
+            print "NAME",  name,  enable
+
             value = self.record[name]
 #            isString = isinstance(vl, (str, unicode, QString))
             item = QTableWidgetItem(name)
+            if self.available_records is not None:
+                if enable is False:
+                    flags = item.flags()
+                    flags &= ~Qt.ItemIsEnabled
+                    item.setFlags(flags)
+                    print "DISABLE", name
             if selected is not None and selected == name:
                 sitem = item
             self.ui.tableWidget.setItem(row, 0, item)
-            self.ui.tableWidget.setItem(row, 1, QTableWidgetItem(str(value))) 
+
+            item = QTableWidgetItem(str(value))
+            if self.available_records is not None:
+                if enable is False:
+                    flags = item.flags()
+                    flags &= ~Qt.ItemIsEnabled
+                    item.setFlags(flags)
+            self.ui.tableWidget.setItem(row, 1, item) 
         self.ui.tableWidget.resizeColumnsToContents()
         self.ui.tableWidget.setSelectionBehavior(QAbstractItemView.SelectRows)
         self.ui.tableWidget.setSelectionMode(QAbstractItemView.SingleSelection)
