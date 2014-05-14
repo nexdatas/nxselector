@@ -43,9 +43,13 @@ class EdListDlg(QDialog):
         self.widget = EdListWg(self)
         self.simple = False
         self.dirty = False
+        self.available_names = None
+        self.available_values = None
         
     def createGUI(self):
         self.widget.simple = self.simple
+        self.widget.available_names = self.available_names
+        self.widget.available_values = self.available_values
         self.widget.createGUI()
         layout = QHBoxLayout()
         layout.addWidget(self.widget)
@@ -71,7 +75,8 @@ class EdListWg(QWidget):
         super(EdListWg, self).__init__(parent)
         self.simple = False
         self.record = {}
-        self.available_records = None
+        self.available_names = None
+        self.available_values = None
         self.ui = Ui_EdListDlg()
 
     def createGUI(self):
@@ -104,13 +109,11 @@ class EdListWg(QWidget):
         self.ui.tableWidget.setHorizontalHeaderLabels(headers)
         for row, name in enumerate(names):
             enable = True
-            if self.available_records is not None and\
-                    name not in self.available_records:
+            if self.available_names is not None and\
+                    name not in self.available_names:
                 enable = False
-
-            value = self.record[name]
             item = QTableWidgetItem(name)
-            if self.available_records is not None:
+            if self.available_names is not None:
                 if enable is False:
                     flags = item.flags()
                     flags &= ~Qt.ItemIsEnabled
@@ -118,7 +121,20 @@ class EdListWg(QWidget):
             if selected is not None and selected == name:
                 sitem = item
             self.ui.tableWidget.setItem(row, 0, item)
-            self.ui.tableWidget.setItem(row, 1, QTableWidgetItem(str(value))) 
+
+            value = self.record[name]
+            venable = True
+            if self.available_values is not None and\
+                    str(value).strip() not in self.available_values:
+                venable = False
+
+            item = QTableWidgetItem(str(value))
+            if self.available_values is not None:
+                if venable is False:
+                    flags = item.flags()
+                    flags &= ~Qt.ItemIsEnabled
+                    item.setFlags(flags)
+            self.ui.tableWidget.setItem(row, 1, item)
         self.ui.tableWidget.resizeColumnsToContents()
         self.ui.tableWidget.setSelectionBehavior(QAbstractItemView.SelectRows)
         self.ui.tableWidget.setSelectionMode(QAbstractItemView.SingleSelection)

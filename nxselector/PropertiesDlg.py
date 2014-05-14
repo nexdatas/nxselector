@@ -16,7 +16,7 @@
 #    You should have received a copy of the GNU General Public License
 #    along with nexdatas.  If not, see <http://www.gnu.org/licenses/>.
 ## \package nxselector nexdatas
-## \file LabelDlg.py
+## \file PropertiesDlg.py
 # label dialog
 
 """  label dialog """
@@ -34,11 +34,11 @@ from .LDataDlg import LDataDlg
 import logging
 logger = logging.getLogger(__name__)
 
-class LabelDlg(QDialog):
+class PropertiesDlg(QDialog):
     ## constructor
     # \param parent parent widget
     def __init__(self, parent=None):
-        super(LabelDlg, self).__init__(parent)
+        super(PropertiesDlg, self).__init__(parent)
         self.widget = LabelWg(self)
         self.dirty = False
         

@@ -26,7 +26,7 @@
 from PyQt4.QtCore import (SIGNAL, QString)
 
 from .EdListDlg import EdListDlg
-from .LabelDlg import LabelDlg
+from .PropertiesDlg import PropertiesDlg
 
 import logging
 logger = logging.getLogger(__name__)
@@ -161,7 +161,7 @@ class Storage(object):
             self.ui.storage.emit(SIGNAL("reset"))
 
     def __props(self):    
-        dform  = LabelDlg(self.ui.storage)
+        dform  = PropertiesDlg(self.ui.storage)
 #        dform.widget.labels = self.state.labels
         dform.widget.paths = self.state.labelpaths
         dform.widget.shapes = self.state.labelshapes
