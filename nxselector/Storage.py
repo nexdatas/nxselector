@@ -155,6 +155,9 @@ class Storage(object):
         dform  = EdListDlg(self.ui.storage)
         dform.widget.record = self.state.labels
         dform.simple = True
+        dform.available_values = list( 
+            set(self.state.avcplist) | set(self.state.avdslist))
+
         dform.createGUI()
         dform.exec_()
         if dform.dirty:
@@ -170,7 +173,6 @@ class Storage(object):
         
         
         dform.available_names = list((set(self.state.labels.keys()) 
-                                      | set(self.state.avcplist)
                                       | set(self.state.avdslist)
                                       ))
         dform.createGUI()
