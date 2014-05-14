@@ -44,10 +44,15 @@ class EdDataDlg(QDialog):
         self.value = ''
         self.isString = True
         self.ui = Ui_EdDataDlg()
+        self.headers = []
 
     def createGUI(self):
 
         self.ui.setupUi(self) 
+        if len(self.headers)> 0:
+            self.ui.nameLabel.setText(str(self.headers[0]))
+            if len(self.headers)> 1:
+                self.ui.valueLabel.setText(str(self.headers[1]))
         if self.simple:
             self.ui.stringCheckBox.hide()
         else:    

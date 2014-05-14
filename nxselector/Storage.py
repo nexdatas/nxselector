@@ -155,6 +155,7 @@ class Storage(object):
         dform  = EdListDlg(self.ui.storage)
         dform.widget.record = self.state.labels
         dform.simple = True
+        dform.headers = ["Element", "Label"]
         dform.available_names = list( 
             set(self.state.avcplist) | set(self.state.avdslist))
 
@@ -172,7 +173,7 @@ class Storage(object):
         dform.widget.types = self.state.labeltypes
         
         
-        dform.available_names = list((set(self.state.labels.keys()) 
+        dform.available_names = list((set(self.state.labels.values()) 
                                       | set(self.state.avdslist)
                                       ))
         dform.createGUI()

@@ -44,10 +44,12 @@ class EdListDlg(QDialog):
         self.simple = False
         self.dirty = False
         self.available_names = None
+        self.headers = ["Name", "Value"]
         
     def createGUI(self):
         self.widget.simple = self.simple
         self.widget.available_names = self.available_names
+        self.widget.headers = self.headers
         self.widget.createGUI()
         layout = QHBoxLayout()
         layout.addWidget(self.widget)
@@ -74,6 +76,7 @@ class EdListWg(QWidget):
         self.simple = False
         self.record = {}
         self.available_names = None
+        self.headers = ["Name", "Value"]
         self.ui = Ui_EdListDlg()
 
     def createGUI(self):
@@ -101,9 +104,8 @@ class EdListWg(QWidget):
         self.ui.tableWidget.setSortingEnabled(False)
         names = sorted(self.record.keys())
         self.ui.tableWidget.setRowCount(len(names))
-        headers = ["Name", "Value"]
-        self.ui.tableWidget.setColumnCount(len(headers))
-        self.ui.tableWidget.setHorizontalHeaderLabels(headers)
+        self.ui.tableWidget.setColumnCount(len(self.headers))
+        self.ui.tableWidget.setHorizontalHeaderLabels(self.headers)
         for row, name in enumerate(names):
             enable = True
             if self.available_names is not None and\
@@ -142,6 +144,7 @@ class EdListWg(QWidget):
     def __add(self):    
         dform  = EdDataDlg(self)
         dform.simple = self.simple
+        dform.headers = self.headers
         dform.createGUI()
         if dform.exec_():
             self.record[dform.name] = dform.value
@@ -155,6 +158,7 @@ class EdListWg(QWidget):
         if name:
             dform.name = name
             dform.value = self.record[name]
+        dform.headers = self.headers
         dform.createGUI()
         if name:
             dform.ui.nameLineEdit.setEnabled(False)
