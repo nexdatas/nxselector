@@ -44,12 +44,10 @@ class EdListDlg(QDialog):
         self.simple = False
         self.dirty = False
         self.available_names = None
-        self.available_values = None
         
     def createGUI(self):
         self.widget.simple = self.simple
         self.widget.available_names = self.available_names
-        self.widget.available_values = self.available_values
         self.widget.createGUI()
         layout = QHBoxLayout()
         layout.addWidget(self.widget)
@@ -76,7 +74,6 @@ class EdListWg(QWidget):
         self.simple = False
         self.record = {}
         self.available_names = None
-        self.available_values = None
         self.ui = Ui_EdListDlg()
 
     def createGUI(self):
@@ -123,17 +120,7 @@ class EdListWg(QWidget):
             self.ui.tableWidget.setItem(row, 0, item)
 
             value = self.record[name]
-            venable = True
-            if self.available_values is not None and\
-                    str(value).strip() not in self.available_values:
-                venable = False
-
             item = QTableWidgetItem(str(value))
-            if self.available_values is not None:
-                if venable is False:
-                    flags = item.flags()
-                    flags &= ~Qt.ItemIsEnabled
-                    item.setFlags(flags)
             self.ui.tableWidget.setItem(row, 1, item)
         self.ui.tableWidget.resizeColumnsToContents()
         self.ui.tableWidget.setSelectionBehavior(QAbstractItemView.SelectRows)
