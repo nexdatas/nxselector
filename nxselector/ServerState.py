@@ -73,7 +73,9 @@ class ServerState(object):
         self.atlist = []
         self.mcplist = []
         self.description = []
-
+        self.avcplist = []
+        self.avdslist = []
+        self.vrcpdict = {}
 
     def fetchSettings(self):
         self.dsgroup = self.loadDict("DataSourceGroup") 
@@ -91,6 +93,7 @@ class ServerState(object):
         self.atlist = list(self.loadList("AvailableTimers"))
         self.mcplist = self.getList("MandatoryComponents") 
         self.description = self.loadList("Description", True) 
+        self.vrcpdict = self.loadDict("VariableComponents") 
         self.datarecord = self.loadDict("DataRecord") 
         self.configvars = self.loadDict("ConfigVariables") 
         self.fetchFileData()
@@ -343,7 +346,7 @@ class ServerState(object):
     ddsdict = property(disableDataSources,
                        doc = 'provides disable datasources')
 
-
+        
     ## update a list of Components
     def Components(self):
         if isinstance(self.cpgroup, dict):

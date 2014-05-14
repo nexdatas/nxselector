@@ -146,6 +146,7 @@ class Storage(object):
         dform  = EdListDlg(self.ui.storage)
         dform.widget.record = self.state.configvars
         dform.simple = True
+        dform.available_names = self.state.vrcpdict.keys()
         dform.createGUI()
         dform.exec_()
         if dform.dirty:

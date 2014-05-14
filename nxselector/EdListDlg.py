@@ -168,8 +168,10 @@ class EdListWg(QWidget):
             self.emit(SIGNAL("dirty"))
 
     def __remove(self):
-        name = self.__currentName()
-        
+        name = self.__currentName() 
+        if name not in self.record:
+            return
+       
         if QMessageBox.question(
             self, "Removing Data", "Would you like  to remove '%s'?" % name,
             QMessageBox.Yes | QMessageBox.No,
