@@ -167,6 +167,12 @@ class Storage(object):
         dform.widget.shapes = self.state.labelshapes
         dform.widget.links = self.state.labellinks
         dform.widget.types = self.state.labeltypes
+        
+        
+        dform.available_names = list((set(self.state.labels.keys()) 
+                                      | set(self.state.avcplist)
+                                      | set(self.state.avdslist)
+                                      ))
         dform.createGUI()
         dform.exec_()
         if dform.dirty:

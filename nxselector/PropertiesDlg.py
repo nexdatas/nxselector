@@ -39,10 +39,12 @@ class PropertiesDlg(QDialog):
     # \param parent parent widget
     def __init__(self, parent=None):
         super(PropertiesDlg, self).__init__(parent)
-        self.widget = LabelWg(self)
+        self.widget = PropertiesWg(self)
         self.dirty = False
+        self.available_names = None
         
     def createGUI(self):
+        self.widget.available_names = self.available_names
         self.widget.createGUI()
         layout = QHBoxLayout()
         layout.addWidget(self.widget)
@@ -60,17 +62,18 @@ class PropertiesDlg(QDialog):
         
 
 ## main window class
-class LabelWg(QWidget):
+class PropertiesWg(QWidget):
 
     ## constructor
     # \param parent parent widget
     def __init__(self, parent=None):
-        super(LabelWg, self).__init__(parent)
+        super(PropertiesWg, self).__init__(parent)
         self.simple = False
         self.paths = {}
         self.shapes = {}
         self.links = {}
         self.types = {}
+        self.available_names = None
         self.ui = Ui_EdListDlg()
 
     def createGUI(self):
@@ -111,7 +114,16 @@ class LabelWg(QWidget):
         self.ui.tableWidget.setColumnCount(len(headers))
         self.ui.tableWidget.setHorizontalHeaderLabels(headers)
         for row, name in enumerate(names):
+            enable = True
+            if self.available_names is not None and\
+                    name not in self.available_names:
+                enable = False
             item = QTableWidgetItem(name)
+            if self.available_names is not None:
+                if enable is False:
+                    flags = item.flags()
+                    flags &= ~Qt.ItemIsEnabled
+                    item.setFlags(flags)
             if selected is not None and selected == name:
                 sitem = item
             self.ui.tableWidget.setItem(row, 0, item)
@@ -169,7 +181,6 @@ class LabelWg(QWidget):
                     self.links.pop(name)
             elif name:
                 self.links[name] = form.link
-            print name , form.link
                 
             self.__populateTable()
             self.emit(SIGNAL("dirty"))
@@ -207,7 +218,15 @@ class LabelWg(QWidget):
             QMessageBox.Yes | QMessageBox.No,
             QMessageBox.Yes ) == QMessageBox.No :
             return
-        self.labels.pop(name)
+        if name in self.types.keys():
+            self.types.pop(name)
+        if name in self.shapes.keys():
+            self.shapes.pop(name)
+        if name in self.links.keys():
+            self.links.pop(name)
+        if name in self.paths.keys():
+            self.paths.pop(name)
+
         self.emit(SIGNAL("dirty"))
         self.__populateTable()
 

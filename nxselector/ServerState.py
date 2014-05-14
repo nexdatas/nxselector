@@ -84,6 +84,8 @@ class ServerState(object):
         self.labeltypes = self.loadDict("LabelTypes") 
         self.nodisplay = self.loadList("HiddenElements", True) 
         self.cpgroup = self.loadDict("ComponentGroup") 
+        self.avcplist = self.getList("AvailableComponents") 
+        self.avdslist = self.getList("AvailableDataSources") 
         self.acpgroup = self.loadDict("AutomaticComponentGroup") 
         self.acplist = self.loadList("AutomaticComponents") 
         self.atlist = list(self.loadList("AvailableTimers"))
