@@ -25,7 +25,7 @@ import json
 
 from PyQt4.QtCore import (SIGNAL, QString, Qt)
 from PyQt4.QtGui import ( QMessageBox,
-                          QDialog)
+                          QDialog, QCompleter)
 
 from .ui.ui_ldatadlg import Ui_LDataDlg
 
@@ -44,6 +44,7 @@ class LDataDlg(QDialog):
         self.shape = None
         self.dtype = ''
         self.link = None
+        self.available_names = None
         self.ui = Ui_LDataDlg()
      
     def __linkText(self, value):
@@ -70,6 +71,10 @@ class LDataDlg(QDialog):
         if cid < 0:
             cid = 0
         self.ui.linkComboBox.setCurrentIndex(cid) 
+
+        if self.available_names:
+            completer = QCompleter(self.available_names, self)
+            self.ui.labelLineEdit.setCompleter(completer)
 
     def accept(self):
         link = str(self.ui.linkComboBox.currentText())

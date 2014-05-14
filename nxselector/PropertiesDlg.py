@@ -187,6 +187,7 @@ class PropertiesWg(QWidget):
 
     def __add(self):    
         dform  = LDataDlg(self)
+        dform.available_names = self.available_names
         dform.createGUI()
         if dform.exec_():
             self.__updateTable(dform)
@@ -204,6 +205,7 @@ class PropertiesWg(QWidget):
         if name in self.paths.keys():
             dform.path = self.paths[name]
                 
+        dform.available_names = self.available_names
         dform.createGUI()
         if name:
             dform.ui.labelLineEdit.setEnabled(False)

@@ -25,7 +25,7 @@ import json
 
 from PyQt4.QtCore import (SIGNAL, QString, Qt)
 from PyQt4.QtGui import ( QMessageBox,
-                          QDialog)
+                          QDialog, QCompleter)
 
 from .ui.ui_eddatadlg import Ui_EdDataDlg
 
@@ -45,6 +45,7 @@ class EdDataDlg(QDialog):
         self.isString = True
         self.ui = Ui_EdDataDlg()
         self.headers = []
+        self.available_names = None
 
     def createGUI(self):
 
@@ -61,6 +62,10 @@ class EdDataDlg(QDialog):
         self.ui.stringCheckBox.setChecked(self.isString)
         self.ui.nameLineEdit.setText(QString(self.name))
         self.ui.valueTextEdit.setText(QString(str(self.value)))
+
+        if self.available_names:
+            completer = QCompleter(self.available_names, self)
+            self.ui.nameLineEdit.setCompleter(completer)
 
         self.connect(self.ui.buttonBox, SIGNAL("accepted()"), 
                      self.accept)

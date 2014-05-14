@@ -145,6 +145,7 @@ class EdListWg(QWidget):
         dform  = EdDataDlg(self)
         dform.simple = self.simple
         dform.headers = self.headers
+        dform.available_names = self.available_names 
         dform.createGUI()
         if dform.exec_():
             self.record[dform.name] = dform.value
@@ -154,6 +155,7 @@ class EdListWg(QWidget):
     def __edit(self):    
         dform  = EdDataDlg(self)
         dform.simple = self.simple
+        dform.available_names = self.available_names 
         name = self.__currentName()
         if name:
             dform.name = name
