@@ -22,10 +22,10 @@
 """  label dialog """
 
 
-from PyQt4.QtCore import (SIGNAL, QString, Qt)
 from PyQt4.QtGui import (
     QDialog, QTableWidgetItem, QMessageBox, QAbstractItemView,
-    QHeaderView, QWidget, QHBoxLayout)
+    QWidget, QHBoxLayout)
+from PyQt4.QtCore import (SIGNAL, Qt)
 
 from .ui.ui_edlistdlg import Ui_EdListDlg
 
@@ -54,7 +54,7 @@ class PropertiesDlg(QDialog):
                      SIGNAL("clicked()"),
                      self.accept)
         self.widget.ui.closePushButton.show()
-        self.connect(self.widget, SIGNAL("dirty"),self.__setDirty)
+        self.connect(self.widget, SIGNAL("dirty"), self.__setDirty)
 
     def __setDirty(self):
         self.dirty = True
@@ -143,10 +143,10 @@ class PropertiesWg(QWidget):
             self.ui.tableWidget.setItem(row, 4, QTableWidgetItem(value))
         self.ui.tableWidget.resizeColumnsToContents()
         self.ui.tableWidget.setSelectionBehavior(QAbstractItemView.SelectRows)
-        self.ui.tableWidget.setSelectionMode(QAbstractItemView.SingleSelection)
-#        self.ui.tableWidget.setVerticalScrollBarPolicy(Qt.ScrollBarAsNeeded)
-        self.ui.tableWidget.horizontalHeader().setStretchLastSection(True)        
-#        self.ui.tableWidget.horizontalHeader().setResizeMode(QHeaderView.Stretch)
+        self.ui.tableWidget.setSelectionMode(
+            QAbstractItemView.SingleSelection)
+        self.ui.tableWidget.horizontalHeader(
+            ).setStretchLastSection(True)        
         self.ui.tableWidget.setEditTriggers(QAbstractItemView.NoEditTriggers)
         if sitem is not None:
             sitem.setSelected(True)
@@ -160,12 +160,13 @@ class PropertiesWg(QWidget):
             name = skeys[row]
         return name
 
-    def __updateItem(self, name, value, dct):
-            if not value:    
-                if name in dct.keys():
-                    dct.pop(name)
-            elif name:
-                dct[name] = value
+    @classmethod
+    def __updateItem(cls, name, value, dct):
+        if not value:    
+            if name in dct.keys():
+                dct.pop(name)
+        elif name:
+            dct[name] = value
         
 
     def __updateTable(self, form):

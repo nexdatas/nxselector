@@ -25,10 +25,10 @@ import sys
 import PyTango
  
  
-from PyQt4.QtCore import (
-    SIGNAL, QSettings, QVariant, SIGNAL, QString)
 from PyQt4.QtGui import (
     QDialog, QMessageBox, QDialogButtonBox, QFileDialog)
+from PyQt4.QtCore import (
+    SIGNAL, QSettings, QVariant, SIGNAL, QString)
 
 from .ServerState import ServerState
 

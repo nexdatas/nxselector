@@ -38,7 +38,6 @@ from .Views import (TableView, OneTableView,
                     LeftCheckerViewNN, LeftRadioViewNN,
                     CheckDisView, RadioDisView,
                     CheckDisViewNL, RadioDisViewNL, 
-#                    ButtonDisViewNL, ButtonDisViewNN, ButtonDisView,  
                     CheckDisViewNN, RadioDisViewNN
                     )
 
@@ -58,7 +57,8 @@ class Preferences(object):
         # frames/columns/groups
         self.frameshelp = [\
 
-            QString('[[[["Components",1],["Timers",5]]],[[["Counters", 4]],[["ADC",3]]],[[["MCA/SCA",6],["Devices",0]]]]'),
+            QString('[[[["Components",1],["Timers",5]]],[[["Counters", 4]],' \
+                        + '[["ADC",3]]],[[["MCA/SCA",6],["Devices",0]]]]'),
             QString('[[[["Counters", 4]],[["Channels",0]]],' \
                         + '[[["MCAs", 2],["Misc",1]]],[[["ADC",3]]]]'),
             QString('[[[["Devices", 0]]],[[["MCAs", 2],["Misc",1]]]]'),

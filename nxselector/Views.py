@@ -59,7 +59,7 @@ class OneTableView(QTableView):
 
     def reset(self):
         super(OneTableView, self).reset()
-        for i in range(1,5):
+        for i in range(1, 5):
             self.hideColumn(i)
 
 class CheckerView(QWidget):
@@ -224,7 +224,8 @@ class CheckerView(QWidget):
             ds.setEnabled(bool(Qt.ItemIsEnabled & flags2))
         return (cb, ds)
 
-    def __createList(self, text, words = 7):
+    @classmethod
+    def __createList(cls, text, words = 7):
         lst = str(text.toString()).split()
         cnt = 0
         st = ""
@@ -254,7 +255,7 @@ class CheckerView(QWidget):
         tdepends = self.__createList(depends)
         text = tscans if tscans else ""
         if tdepends:
-            text = "%s\n[%s]" % (text,tdepends)
+            text = "%s\n[%s]" % (text, tdepends)
             
         if name:
             if self.showLabels and label and \
@@ -321,7 +322,7 @@ class RadioView(CheckerView):
 class LeftRadioView(CheckerView):
 
     def __init__(self, parent=None):
-        super(LeftRadioView, slef).__init__(parent)
+        super(LeftRadioView, self).__init__(parent)
         self.widget = QRadioButton
         self.center = False
 

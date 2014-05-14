@@ -23,9 +23,9 @@
 
 import json
 
-from PyQt4.QtCore import (SIGNAL, QString, Qt)
 from PyQt4.QtGui import ( QMessageBox,
                           QDialog, QCompleter)
+from PyQt4.QtCore import (QString)
 
 from .ui.ui_ldatadlg import Ui_LDataDlg
 
@@ -46,8 +46,9 @@ class LDataDlg(QDialog):
         self.link = None
         self.available_names = None
         self.ui = Ui_LDataDlg()
-     
-    def __linkText(self, value):
+
+    @classmethod    
+    def __linkText(cls, value):
         if value == True:
             return "True"
         if value == False:
@@ -63,7 +64,7 @@ class LDataDlg(QDialog):
         if self.shape is None:
             shape = ''
         else:
-            shake = self.shape
+            shape = self.shape
         self.ui.shapeLineEdit.setText(QString(str(shape)))
         self.ui.typeLineEdit.setText(QString(str(self.dtype)))
    

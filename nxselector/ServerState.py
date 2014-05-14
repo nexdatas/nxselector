@@ -77,6 +77,14 @@ class ServerState(object):
         self.avdslist = []
         self.vrcpdict = {}
 
+        self.configvars = {}
+        self.datarecord = {}
+
+        self.labellinks = {}
+        self.labelpaths = {}
+        self.labelshapes = {}
+        self.labeltypes = {}
+
     def fetchSettings(self):
         self.dsgroup = self.loadDict("DataSourceGroup") 
         self.labels = self.loadDict("Labels") 
@@ -326,7 +334,7 @@ class ServerState(object):
                                     dds[ds]  = cp
                                     break
         if self.timer not in dds.keys():
-            dds[self.timer] =''
+            dds[self.timer] = ''
         return dds
 
     def clientRecords(self):
@@ -334,7 +342,7 @@ class ServerState(object):
         dds = {}
 
         for cpg in res:
-            for cp, dss in cpg.items():
+            for dss in cpg.values():
                 if isinstance(dss, dict):
                     for ds, values in dss.items():
                         for vl in values:

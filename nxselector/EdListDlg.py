@@ -23,10 +23,10 @@
 
 
 
-from PyQt4.QtCore import (SIGNAL, QString, Qt)
+from PyQt4.QtCore import (SIGNAL, Qt)
 from PyQt4.QtGui import (
     QDialog, QTableWidgetItem, QMessageBox, QAbstractItemView,
-    QHeaderView, QWidget, QHBoxLayout)
+    QWidget, QHBoxLayout)
 
 from .ui.ui_edlistdlg import Ui_EdListDlg
 
@@ -59,7 +59,7 @@ class EdListDlg(QDialog):
                      SIGNAL("clicked()"),
                      self.accept)
         self.widget.ui.closePushButton.show()
-        self.connect(self.widget, SIGNAL("dirty"),self.__setDirty)
+        self.connect(self.widget, SIGNAL("dirty"), self.__setDirty)
 
     def __setDirty(self):
         self.dirty = True
@@ -126,8 +126,10 @@ class EdListWg(QWidget):
             self.ui.tableWidget.setItem(row, 1, item)
         self.ui.tableWidget.resizeColumnsToContents()
         self.ui.tableWidget.setSelectionBehavior(QAbstractItemView.SelectRows)
-        self.ui.tableWidget.setSelectionMode(QAbstractItemView.SingleSelection)
-        self.ui.tableWidget.horizontalHeader().setStretchLastSection(True)        
+        self.ui.tableWidget.setSelectionMode(
+            QAbstractItemView.SingleSelection)
+        self.ui.tableWidget.horizontalHeader(
+            ).setStretchLastSection(True)        
         self.ui.tableWidget.setEditTriggers(QAbstractItemView.NoEditTriggers)
         if sitem is not None:
             sitem.setSelected(True)

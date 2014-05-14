@@ -24,12 +24,9 @@
 
 from PyQt4.QtCore import (
     SIGNAL)
-from PyQt4.QtGui import (QHBoxLayout,
-    QGroupBox, QGridLayout, QFrame, QWidgetItem)
+from PyQt4.QtGui import (
+    QHBoxLayout, QWidgetItem)
 
-from .Element import CPElement
-from .ElementModel import ElementModel
-from .Views import CheckerView
 from .EdListDlg import EdListWg
 
 import logging
@@ -79,7 +76,7 @@ class Data(object):
         self.ui.data.update()
         if self.ui.tabWidget.currentWidget() == self.ui.data:
             self.ui.data.show()
-        self.ui.data.connect(self.form, SIGNAL("dirty"),self.__setDirty)
+        self.ui.data.connect(self.form, SIGNAL("dirty"), self.__setDirty)
 
 
     def reset(self):

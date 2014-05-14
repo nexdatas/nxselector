@@ -104,7 +104,7 @@ class ElementModel(QAbstractTableModel):
             if role == Qt.CheckStateRole: 
                 return
             desc = device.state.description       
-            contains =set()
+            contains = set()
             for cpg in desc:
                 for cp, dss in cpg.items():
                     if cp == device.name:
@@ -115,12 +115,13 @@ class ElementModel(QAbstractTableModel):
                                         contains.add(ds)
                                         break
             if contains:    
-                return QVariant(QString(" ".join([str(c) for c in sorted(contains)])))
+                return QVariant(QString(
+                        " ".join([str(c) for c in sorted(contains)])))
         elif column == 4:
             if role == Qt.CheckStateRole: 
                 return
             desc = device.state.description       
-            contains =set()
+            contains = set()
             for cpg in desc:
                 for cp, dss in cpg.items():
                     if cp == device.name:
@@ -131,7 +132,8 @@ class ElementModel(QAbstractTableModel):
                                         contains.add(ds)
                                         break
             if contains:    
-                return QVariant(QString(" ".join([str(c) for c in sorted(contains)])))
+                return QVariant(QString(
+                        " ".join([str(c) for c in sorted(contains)])))
              
 
 
