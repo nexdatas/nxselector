@@ -1,5 +1,6 @@
 2014-05-XX Jan Kotanski <jankotan@gmail.com>
-	* deselecting not available user data
+	* adding hints for form names
+	* deselecting not available user data, labels, ...
 	* adding required user data
 	* taggeg as 1.4.0
 
