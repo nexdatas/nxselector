@@ -144,7 +144,7 @@ class LabelWg(QWidget):
         name = None
         row = self.ui.tableWidget.currentRow()
         skeys = self.__names()
-        if len(skeys) > row:
+        if len(skeys) > row and row >=0:
             name = skeys[row]
         return name
 
@@ -194,7 +194,8 @@ class LabelWg(QWidget):
             dform.path = self.paths[name]
                 
         dform.createGUI()
-        dform.ui.labelLineEdit.setEnabled(False)
+        if name:
+            dform.ui.labelLineEdit.setEnabled(False)
         if dform.exec_():
             self.__updateTable(dform)
 

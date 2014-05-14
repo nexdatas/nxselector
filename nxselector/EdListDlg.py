@@ -41,9 +41,11 @@ class EdListDlg(QDialog):
     def __init__(self, parent=None):
         super(EdListDlg, self).__init__(parent)
         self.widget = EdListWg(self)
+        self.simple = False
         self.dirty = False
         
     def createGUI(self):
+        self.widget.simple = self.simple
         self.widget.createGUI()
         layout = QHBoxLayout()
         layout.addWidget(self.widget)
@@ -130,7 +132,7 @@ class EdListWg(QWidget):
         name = None
         row = self.ui.tableWidget.currentRow()
         skeys = sorted(self.record.keys())
-        if len(skeys) > row:
+        if len(skeys) > row and row >= 0:
             name = skeys[row]
         return name
 
@@ -147,10 +149,12 @@ class EdListWg(QWidget):
         dform  = EdDataDlg(self)
         dform.simple = self.simple
         name = self.__currentName()
-        dform.name = name
-        dform.value = self.record[name]
+        if name:
+            dform.name = name
+            dform.value = self.record[name]
         dform.createGUI()
-        dform.ui.nameLineEdit.setEnabled(False)
+        if name:
+            dform.ui.nameLineEdit.setEnabled(False)
         if dform.exec_():
             self.record[dform.name] = dform.value
             self.__populateTable()
