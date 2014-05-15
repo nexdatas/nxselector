@@ -293,6 +293,7 @@ class Selector(QDialog):
         logger.debug("reset selector ended")
 
     def resetAll(self):
+        self.ui.buttonBox.repaint()
         logger.debug("reset ALL")
         self.state.updateControllers()
         self.reset()
@@ -325,6 +326,7 @@ class Selector(QDialog):
 
     def apply(self):
         try:
+            self.ui.buttonBox.repaint()
             self.state.updateMntGrp()
             self.resetAll()
             self.ui.fileScanIDSpinBox.setValue(self.state.scanID)
