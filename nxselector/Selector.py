@@ -217,17 +217,17 @@ class Selector(QDialog):
         self.connect(self.ui.storage, SIGNAL("dirty"), self.setDirty)
         self.connect(self.ui.storage, SIGNAL("reset"), self.resetViews)
 
+
     def __componentChanged(self):
         self.setDirty()
         self.selectable.updateViews()
+
 
     def setDirty(self, flag = True):
         if flag:
             self.setWindowTitle(self.title + ' **[NOT APPLIED]**' )
         else:
-            self.setWindowTitle(self.title)
-    
-       
+            self.setWindowTitle(self.title)       
         
 
     def __saveSettings(self):
