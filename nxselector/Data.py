@@ -65,7 +65,7 @@ class Data(object):
         self.form  = EdListWg(self.ui.data)
         self.form.record = self.state.datarecord
         names = list(
-            set(self.state.clientRecords().values()) 
+            set(self.state.clientRecords(True).values()) 
             - set(self.state.fullnames.values()) - set(self.recorder_names))
         logger.debug("NAMES: %s " % names)
         self.form.available_names = names

@@ -338,17 +338,20 @@ class ServerState(object):
             dds[self.timer] = ''
         return dds
 
-    def clientRecords(self):
+    def clientRecords(self, selected = False):
         res = self.description
         dds = {}
 
         for cpg in res:
-            for dss in cpg.values():
+            for cp, dss in cpg.items():
                 if isinstance(dss, dict):
-                    for ds, values in dss.items():
-                        for vl in values:
-                            if len(vl) > 1 and vl[1] == 'CLIENT':
-                                dds[ds]  = vl[2]
+                    if not selected or cp in self.cplist \
+                            or cp in self.mcplist \
+                            or cp in self.acplist:
+                        for ds, values in dss.items():
+                            for vl in values:
+                                if len(vl) > 1 and vl[1] == 'CLIENT':
+                                    dds[ds]  = vl[2]
         return dds                       
                                 
     ## provides disable datasources
