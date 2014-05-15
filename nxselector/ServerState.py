@@ -102,6 +102,7 @@ class ServerState(object):
         self.mcplist = self.getList("MandatoryComponents") 
         self.description = self.loadList("Description", True) 
         self.vrcpdict = self.loadDict("VariableComponents") 
+        self.fullnames = self.loadDict("FullDeviceNames") 
         self.datarecord = self.loadDict("DataRecord") 
         self.configvars = self.loadDict("ConfigVariables") 
         self.fetchFileData()
