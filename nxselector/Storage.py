@@ -200,19 +200,11 @@ class Storage(object):
 
 
     def __addTimer(self):
-        cb = QComboBox(self.ui.storage)
-        self.__tWidgets.append(cb)
-        if self.__layout is None:
-            self.__layout = QHBoxLayout(self.ui.timerFrame)
-        self.__layout.addWidget(cb)
-        self.state.timers.append("")
-        self.reset()
-
-
-    def __addTimer(self):
-        self.__appendTimer()
-        self.state.timers.append("")
-        self.reset()
+        if len(self.state.atlist) >  len(self.__tWidgets)+1 :
+            self.__appendTimer()
+            self.state.timers.append("")
+            self.reset()
+            self.apply()
         
 
     def __appendTimer(self):
@@ -226,7 +218,8 @@ class Storage(object):
         if self.__tWidgets:
             self.__removeTimer()
             self.state.timers.pop()
-        self.reset()
+            self.reset()
+            self.apply()
 
     def __removeTimer(self):     
         cb = self.__tWidgets.pop()
@@ -247,12 +240,15 @@ class Storage(object):
 
     def __updateTimer(self, widget, nid):
         widget.clear()
-        widget.addItems(
-            [QString(tm) for tm in self.state.atlist])
+        mtimers = set(self.state.atlist)
         if len(self.state.timers)>nid:
             timer = self.state.timers[nid]
+            if nid:
+                mtimers = set(mtimers) - set(self.state.timers[:nid])    
         else:
             timer = ''
+        widget.addItems(
+            [QString(tm) for tm in mtimers])
         cid = widget.findText(QString(timer))
         if cid < 0:
             cid = 0
