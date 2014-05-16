@@ -139,7 +139,7 @@
                <enum>QFrame::NoFrame</enum>
               </property>
               <property name="frameShadow">
-               <enum>QFrame::Plain</enum>
+               <enum>QFrame::Raised</enum>
               </property>
               <property name="lineWidth">
                <number>0</number>
