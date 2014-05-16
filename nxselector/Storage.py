@@ -114,10 +114,10 @@ class Storage(object):
         for cb in self.__tWidgets:
             self.ui.storage.connect(
                 cb, SIGNAL("currentIndexChanged(int)"), self.apply)
-        self.ui.storage.connect(self.ui.timerAddPushButton,
-                                SIGNAL("clicked()"), self.__addTimer)
         self.ui.storage.connect(self.ui.timerDelPushButton,
                                 SIGNAL("clicked()"), self.__delTimer)
+        self.ui.storage.connect(self.ui.timerAddPushButton,
+                                SIGNAL("clicked()"), self.__addTimer)
         self.ui.storage.connect(self.ui.mntGrpLineEdit,
                                 SIGNAL("editingFinished()"), 
                                 self.apply)
@@ -200,11 +200,13 @@ class Storage(object):
 
 
     def __addTimer(self):
+        logger.debug("ADD Timer")
         if len(self.state.atlist) >  len(self.__tWidgets)+1 :
             self.__appendTimer()
             self.state.timers.append("")
             self.reset()
             self.apply()
+        logger.debug("ADD Timer end")
         
 
     def __appendTimer(self):
@@ -215,11 +217,13 @@ class Storage(object):
         self.__layout.addWidget(cb)
 
     def __delTimer(self):
+        logger.debug("delTimer")
         if self.__tWidgets:
             self.__removeTimer()
             self.state.timers.pop()
             self.reset()
             self.apply()
+        logger.debug("delTimer end")
 
     def __removeTimer(self):     
         cb = self.__tWidgets.pop()
@@ -280,8 +284,10 @@ class Storage(object):
             
         self.__updateTimer(self.ui.mntTimerComboBox, 0)    
         while len(self.state.timers) > len(self.__tWidgets) + 1:
+            logger.debug("ADDING timer")
             self.__appendTimer()
         while len(self.state.timers) < len(self.__tWidgets) + 1:
+            logger.debug("removing timer")
             self.__removeTimer()
         for nid, widget in enumerate(self.__tWidgets):
             self.__updateTimer(widget, nid + 1)    

@@ -71,34 +71,12 @@
          </widget>
         </item>
         <item>
-         <widget class="QPushButton" name="timerAddPushButton">
-          <property name="sizePolicy">
-           <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
-            <horstretch>0</horstretch>
-            <verstretch>0</verstretch>
-           </sizepolicy>
+         <widget class="QFrame" name="timerButtonFrame">
+          <property name="frameShape">
+           <enum>QFrame::NoFrame</enum>
           </property>
-          <property name="maximumSize">
-           <size>
-            <width>30</width>
-            <height>16777215</height>
-           </size>
-          </property>
-          <property name="text">
-           <string>+</string>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <widget class="QPushButton" name="timerDelPushButton">
-          <property name="maximumSize">
-           <size>
-            <width>30</width>
-            <height>16777215</height>
-           </size>
-          </property>
-          <property name="text">
-           <string>-</string>
+          <property name="frameShadow">
+           <enum>QFrame::Raised</enum>
           </property>
          </widget>
         </item>
@@ -703,6 +681,33 @@
    </item>
   </layout>
  </widget>
+ <tabstops>
+  <tabstop>tabWidget</tabstop>
+  <tabstop>mntTimerComboBox</tabstop>
+  <tabstop>buttonBox</tabstop>
+  <tabstop>fileScanLineEdit</tabstop>
+  <tabstop>fileScanDirLineEdit</tabstop>
+  <tabstop>fileScanIDSpinBox</tabstop>
+  <tabstop>mntServerLineEdit</tabstop>
+  <tabstop>mntGrpLineEdit</tabstop>
+  <tabstop>devConfigLineEdit</tabstop>
+  <tabstop>devWriterLineEdit</tabstop>
+  <tabstop>devConfigPushButton</tabstop>
+  <tabstop>othersEntryCheckBox</tabstop>
+  <tabstop>labelsPushButton</tabstop>
+  <tabstop>dcLinksCheckBox</tabstop>
+  <tabstop>dcPathLineEdit</tabstop>
+  <tabstop>propPushButton</tabstop>
+  <tabstop>cnfLoadPushButton</tabstop>
+  <tabstop>cnfSavePushButton</tabstop>
+  <tabstop>frameLineEdit</tabstop>
+  <tabstop>groupLineEdit</tabstop>
+  <tabstop>viewComboBox</tabstop>
+  <tabstop>rowMaxSpinBox</tabstop>
+  <tabstop>devSettingsLineEdit</tabstop>
+  <tabstop>profLoadPushButton</tabstop>
+  <tabstop>profSavePushButton</tabstop>
+ </tabstops>
  <resources/>
  <connections>
   <connection>

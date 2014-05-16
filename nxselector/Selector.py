@@ -26,7 +26,8 @@ import PyTango
  
  
 from PyQt4.QtGui import (
-    QDialog, QMessageBox, QDialogButtonBox, QFileDialog)
+    QDialog, QMessageBox, QDialogButtonBox, QFileDialog, 
+    QPushButton,QHBoxLayout)
 from PyQt4.QtCore import (
     SIGNAL, QSettings, QVariant, SIGNAL, QString)
 
@@ -175,9 +176,15 @@ class Selector(QDialog):
         self.ui.buttonBox.setStandardButtons(
            QDialogButtonBox.Reset | QDialogButtonBox.Apply \
                 | QDialogButtonBox.Close)
+
+        flayout = QHBoxLayout(self.ui.timerButtonFrame)
+        self.ui.timerAddPushButton = QPushButton("+")
+        flayout.addWidget(self.ui.timerAddPushButton)
+        self.ui.timerDelPushButton = QPushButton("-")
+        flayout.addWidget(self.ui.timerDelPushButton)
+        
         for tab in self.tabs:
             tab.reset()
-            
 
     
         cid = self.ui.viewComboBox.findText(QString(self.userView))
