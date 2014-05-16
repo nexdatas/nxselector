@@ -78,13 +78,6 @@
           </property>
          </widget>
         </item>
-        <item>
-         <widget class="QCheckBox" name="othersEntryCheckBox">
-          <property name="text">
-           <string>Append Entries</string>
-          </property>
-         </widget>
-        </item>
        </layout>
       </item>
      </layout>
@@ -168,6 +161,13 @@
          </size>
         </property>
        </spacer>
+      </item>
+      <item>
+       <widget class="QCheckBox" name="othersEntryCheckBox">
+        <property name="text">
+         <string>Append Entries</string>
+        </property>
+       </widget>
       </item>
      </layout>
     </widget>
