@@ -23,6 +23,7 @@
 
 
 
+from PyQt4.QtGui import (QComboBox, QHBoxLayout)
 from PyQt4.QtCore import (SIGNAL, QString)
 
 from .EdListDlg import EdListDlg
@@ -39,7 +40,8 @@ class Storage(object):
     def __init__(self, ui, state = None):
         self.ui = ui
         self.state = state
-
+        self.__layout = None
+        self.__tWidgets = []
 
 
     def disconnectSignals(self):
@@ -53,6 +55,13 @@ class Storage(object):
 
         self.ui.storage.disconnect(self.ui.mntTimerComboBox,
                                 SIGNAL("currentIndexChanged(int)"), self.apply)
+        for cb in self.__tWidgets:
+            self.ui.storage.disconnect(
+                cb, SIGNAL("currentIndexChanged(int)"), self.apply)
+        self.ui.storage.disconnect(self.ui.timerAddPushButton,
+                                SIGNAL("clicked()"), self.__addTimer)
+        self.ui.storage.disconnect(self.ui.timerDelPushButton,
+                                SIGNAL("clicked()"), self.__delTimer)
         self.ui.storage.disconnect(self.ui.mntGrpLineEdit,
                                 SIGNAL("editingFinished()"), 
                                    self.apply)
@@ -102,6 +111,13 @@ class Storage(object):
 
         self.ui.storage.connect(self.ui.mntTimerComboBox,
                                 SIGNAL("currentIndexChanged(int)"), self.apply)
+        for cb in self.__tWidgets:
+            self.ui.storage.connect(
+                cb, SIGNAL("currentIndexChanged(int)"), self.apply)
+        self.ui.storage.connect(self.ui.timerAddPushButton,
+                                SIGNAL("clicked()"), self.__addTimer)
+        self.ui.storage.connect(self.ui.timerDelPushButton,
+                                SIGNAL("clicked()"), self.__delTimer)
         self.ui.storage.connect(self.ui.mntGrpLineEdit,
                                 SIGNAL("editingFinished()"), 
                                 self.apply)
@@ -182,6 +198,45 @@ class Storage(object):
         if dform.dirty:
             self.ui.storage.emit(SIGNAL("dirty"))
 
+
+    def __addTimer(self):
+        cb = QComboBox(self.ui.storage)
+        self.__tWidgets.append(cb)
+        if self.__layout is None:
+            self.__layout = QHBoxLayout(self.ui.timerFrame)
+        self.__layout.addWidget(cb)
+        self.state.timers.append("")
+        self.reset()
+
+
+    def __addTimer(self):
+        self.__appendTimer()
+        self.state.timers.append("")
+        self.reset()
+        
+
+    def __appendTimer(self):
+        cb = QComboBox(self.ui.storage)
+        self.__tWidgets.append(cb)
+        if self.__layout is None:
+            self.__layout = QHBoxLayout(self.ui.timerFrame)
+        self.__layout.addWidget(cb)
+
+    def __delTimer(self):
+        if self.__tWidgets:
+            self.__removeTimer()
+            self.state.timers.pop()
+        self.reset()
+
+    def __removeTimer(self):     
+        cb = self.__tWidgets.pop()
+        cb.hide()
+        self.__layout.removeWidget(cb)
+        self.ui.storage.disconnect(
+            cb, SIGNAL("currentIndexChanged(int)"), self.apply)
+        cb.close()
+
+
     def reset(self):
         logger.debug("reset storage")
         self.disconnectSignals()
@@ -189,6 +244,27 @@ class Storage(object):
         self.connectSignals()
         logger.debug("reset storage ended")
 
+
+    def __updateTimer(self, widget, nid):
+        widget.clear()
+        widget.addItems(
+            [QString(tm) for tm in self.state.atlist])
+        if len(self.state.timers)>nid:
+            timer = self.state.timers[nid]
+        else:
+            timer = ''
+        cid = widget.findText(QString(timer))
+        if cid < 0:
+            cid = 0
+            if self.state.atlist:
+                timer = self.state.atlist[nid]
+                if len(self.state.timers)>nid:
+                    self.state.timers[nid] = timer
+                elif nid == 0:
+                    self.state.timers.append(timer)
+                   
+        widget.setCurrentIndex(cid)
+        
 
     def updateForm(self):
         logger.debug("updateForm storage")
@@ -205,27 +281,17 @@ class Storage(object):
             else:
                 sfile = self.state.scanFile    
             self.ui.fileScanLineEdit.setText(sfile)
+            
+        self.__updateTimer(self.ui.mntTimerComboBox, 0)    
+        while len(self.state.timers) > len(self.__tWidgets) + 1:
+            self.__appendTimer()
+        while len(self.state.timers) < len(self.__tWidgets) + 1:
+            self.__removeTimer()
+        for nid, widget in enumerate(self.__tWidgets):
+            self.__updateTimer(widget, nid + 1)    
+            
 
         # measurement group    
-        self.ui.mntTimerComboBox.clear()
-        self.ui.mntTimerComboBox.addItems(
-            [QString(tm) for tm in self.state.atlist])
-        if len(self.state.timers)>0:
-            timer = self.state.timers[0]
-        else:
-            timer = ''
-        cid = self.ui.mntTimerComboBox.findText(QString(timer))
-        if cid < 0:
-            cid = 0
-            if self.state.atlist:
-                timer = self.state.atlist[0]
-                if len(self.state.timers)>0:
-                    self.state.timers[0] = timer
-                else:
-                    self.state.timers.append(timer)
-                   
-        self.ui.mntTimerComboBox.setCurrentIndex(cid)
-
         if self.state.mntgrp is not None:
             self.ui.mntGrpLineEdit.setText(self.state.mntgrp)
         self.ui.mntServerLineEdit.setText(self.state.door)
@@ -245,6 +311,14 @@ class Storage(object):
         
         logger.debug("updateForm storage ended")
 
+    def __applyTimer(self, widget, nid): 
+        timer = str(widget.currentText())
+        if len(self.state.timers) <=  nid:
+            self.state.timers.append(timer)
+        elif self.state.timers[nid] !=  timer:
+            self.state.timers[nid] = timer
+       
+
     def apply(self):
         logger.debug("updateForm apply")
         self.disconnectSignals()
@@ -253,12 +327,11 @@ class Storage(object):
             self.connectSignals()
             return
         self.state.mntgrp = str(self.ui.mntGrpLineEdit.text())
-        timer = str(self.ui.mntTimerComboBox.currentText())
-        if len(self.state.timers) == 0:
-            self.state.timers.append(timer)
-        elif self.state.timers[0] !=  timer:
-            self.state.timers[0] = timer
 
+        self.__applyTimer(self.ui.mntTimerComboBox, 0)
+        for nid, widget in enumerate(self.__tWidgets):
+            self.__applyTimer(widget, nid + 1)
+        
         self.state.door = str(self.ui.mntServerLineEdit.text())
 
         self.state.scanDir = str(self.ui.fileScanDirLineEdit.text())
