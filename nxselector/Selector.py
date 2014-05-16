@@ -186,9 +186,9 @@ class Selector(QDialog):
         self.ui.rowMaxSpinBox.setValue(self.rowMax)    
             
         self.connect(self.ui.buttonBox.button(QDialogButtonBox.Apply), 
-                     SIGNAL("pressed()"), self.apply)
+                     SIGNAL("pressed()"), self.__applyClicked)
         self.connect(self.ui.buttonBox.button(QDialogButtonBox.Reset), 
-                     SIGNAL("pressed()"), self.resetAll)
+                     SIGNAL("pressed()"), self.__resetClicked)
 
         self.connect(self.ui.cnfLoadPushButton, 
                      SIGNAL("pressed()"), self.cnfLoad)
@@ -293,14 +293,16 @@ class Selector(QDialog):
         logger.debug("reset selector ended")
 
     def resetAll(self):
-        self.ui.buttonBox.button(QDialogButtonBox.Reset).hide()
-        self.ui.buttonBox.button(QDialogButtonBox.Reset).show()
-        self.ui.buttonBox.repaint()
         logger.debug("reset ALL")
         self.state.updateControllers()
         self.reset()
         logger.debug("reset ENDED")
         
+    def __resetClicked(self):
+        self.ui.buttonBox.button(QDialogButtonBox.Reset).hide()
+        self.ui.buttonBox.button(QDialogButtonBox.Reset).show()
+        self.ui.buttonBox.button(QDialogButtonBox.Reset).setFocus()
+        self.resetAll()
 
     def cnfLoad(self):    
         filename = str(QFileDialog.getOpenFileName(
@@ -325,11 +327,15 @@ class Selector(QDialog):
             self.state.save(filename)
             self.resetAll()
 
+    def __applyClicked(self):
+        self.ui.buttonBox.button(QDialogButtonBox.Apply).hide()
+        self.ui.buttonBox.button(QDialogButtonBox.Apply).show()
+        self.ui.buttonBox.button(QDialogButtonBox.Apply).setFocus()
+        self.apply()
+
 
     def apply(self):
         try:
-            self.ui.buttonBox.button(QDialogButtonBox.Apply).hide()
-            self.ui.buttonBox.button(QDialogButtonBox.Apply).show()
             self.state.updateMntGrp()
             self.resetAll()
             self.ui.fileScanIDSpinBox.setValue(self.state.scanID)
