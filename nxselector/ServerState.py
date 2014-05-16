@@ -50,7 +50,7 @@ class ServerState(object):
 
         self.cnfFile = "/"
 
-        self.timer = None
+        self.timers = None
         self.mntgrp = None
         self.door = None 
 
@@ -105,11 +105,12 @@ class ServerState(object):
         self.fullnames = self.loadDict("FullDeviceNames") 
         self.datarecord = self.loadDict("DataRecord") 
         self.configvars = self.loadDict("ConfigVariables") 
+        
         self.fetchFileData()
         self.fetchEnvData()
 
     def fetchFileData(self):
-        self.timer = self.loadData("Timer")
+        self.timers = self.loadList("Timer", True)
         self.mntgrp = self.loadData("MntGrp")
         self.door = self.loadData("Door")
 
@@ -162,7 +163,7 @@ class ServerState(object):
 
     def storeFileData(self):
 
-        self.storeData("Timer", self.timer)
+        self.storeList("Timer", self.timers)
         self.storeData("Door", self.door)
         self.storeData("MntGrp", self.mntgrp)
 
@@ -334,8 +335,9 @@ class ServerState(object):
                                 if len(vl) > 0 and vl[0] == 'STEP':
                                     dds[ds]  = cp
                                     break
-        if self.timer not in dds.keys():
-            dds[self.timer] = ''
+        for timer in self.timers:                        
+            if timer not in dds.keys():
+                dds[timer] = ''
         return dds
 
     def clientRecords(self, selected = False):

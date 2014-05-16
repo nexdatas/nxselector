@@ -210,11 +210,20 @@ class Storage(object):
         self.ui.mntTimerComboBox.clear()
         self.ui.mntTimerComboBox.addItems(
             [QString(tm) for tm in self.state.atlist])
-        cid = self.ui.mntTimerComboBox.findText(QString(self.state.timer))
+        if len(self.state.timers)>0:
+            timer = self.state.timers[0]
+        else:
+            timer = ''
+        cid = self.ui.mntTimerComboBox.findText(QString(timer))
         if cid < 0:
             cid = 0
             if self.state.atlist:
-                self.state.timer = self.state.atlist[0]
+                timer = self.state.atlist[0]
+                if len(self.state.timers)>0:
+                    self.state.timers[0] = timer
+                else:
+                    self.state.timers.append(timer)
+                   
         self.ui.mntTimerComboBox.setCurrentIndex(cid)
 
         if self.state.mntgrp is not None:
@@ -244,8 +253,11 @@ class Storage(object):
             self.connectSignals()
             return
         self.state.mntgrp = str(self.ui.mntGrpLineEdit.text())
-        if self.state.timer !=  str(self.ui.mntTimerComboBox.currentText()):
-            self.state.timer = str(self.ui.mntTimerComboBox.currentText())
+        timer = str(self.ui.mntTimerComboBox.currentText())
+        if len(self.state.timers) == 0:
+            self.state.timers.append(timer)
+        elif self.state.timers[0] !=  timer:
+            self.state.timers[0] = timer
 
         self.state.door = str(self.ui.mntServerLineEdit.text())
 
