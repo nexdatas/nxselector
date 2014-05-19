@@ -178,13 +178,14 @@ class Selector(QDialog):
                 | QDialogButtonBox.Close)
 
         flayout = QHBoxLayout(self.ui.timerButtonFrame)
+        flayout.setContentsMargins(0,0,0,0)
         self.ui.timerAddPushButton = QPushButton("+") 
         self.ui.timerAddPushButton.setMaximumWidth(30)
         flayout.addWidget(self.ui.timerAddPushButton)
         self.ui.timerDelPushButton = QPushButton("-")
         self.ui.timerDelPushButton.setMaximumWidth(30)
         flayout.addWidget(self.ui.timerDelPushButton)
-        
+    
         for tab in self.tabs:
             tab.reset()
 
