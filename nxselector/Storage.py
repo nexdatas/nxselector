@@ -244,11 +244,11 @@ class Storage(object):
 
     def __updateTimer(self, widget, nid):
         widget.clear()
-        mtimers = set(self.state.atlist)
+        mtimers = sorted(set(self.state.atlist))
         if len(self.state.timers)>nid:
             timer = self.state.timers[nid]
             if nid:
-                mtimers = set(mtimers) - set(self.state.timers[:nid])    
+                mtimers = sorted(set(mtimers) - set(self.state.timers[:nid])    )
         else:
             timer = ''
         widget.addItems(
