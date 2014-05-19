@@ -23,7 +23,7 @@
 
 
 
-from PyQt4.QtGui import (QComboBox, QHBoxLayout)
+from PyQt4.QtGui import (QComboBox, QHBoxLayout, QMessageBox)
 from PyQt4.QtCore import (SIGNAL, QString)
 
 from .EdListDlg import EdListDlg
@@ -339,7 +339,20 @@ class Storage(object):
         self.state.scanDir = str(self.ui.fileScanDirLineEdit.text())
 #        self.state.scanID = int(self.ui.fileScanIDSpinBox.value())
         files = str(self.ui.fileScanLineEdit.text())
-        self.state.scanFile = files.replace(';',' ').replace(',',' ').split()
+        sfiles = files.replace(';',' ').replace(',',' ').split()
+        nxsfiles = []
+        for idx, f in enumerate(sfiles):
+            if f.split(".")[-1] == 'nxs':
+                nxsfiles.append(idx)
+        if len(nxsfiles) > 1:
+            QMessageBox.warning(
+                self.ui.storage, 
+                "To many 'nxs' scan files",
+                "Only %s will be used." % (sfiles[nxsfiles[0]]))
+
+            for f in reversed(nxsfiles[1:]):
+                sfiles.pop(f)
+        self.state.scanFile = sfiles
 
 
         # device group    
