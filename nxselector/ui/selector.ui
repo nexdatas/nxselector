@@ -225,6 +225,34 @@
            <item>
             <layout class="QVBoxLayout" name="verticalLayout_6">
              <item>
+              <widget class="QFrame" name="frame_2">
+               <property name="frameShape">
+                <enum>QFrame::StyledPanel</enum>
+               </property>
+               <property name="frameShadow">
+                <enum>QFrame::Raised</enum>
+               </property>
+               <layout class="QGridLayout" name="gridLayout_20">
+                <item row="0" column="0">
+                 <widget class="QGroupBox" name="groupBox_7">
+                  <property name="title">
+                   <string>Elements:</string>
+                  </property>
+                  <layout class="QGridLayout" name="gridLayout_16">
+                   <item row="1" column="0">
+                    <widget class="QPushButton" name="labelsPushButton">
+                     <property name="text">
+                      <string>Labels ...</string>
+                     </property>
+                    </widget>
+                   </item>
+                  </layout>
+                 </widget>
+                </item>
+               </layout>
+              </widget>
+             </item>
+             <item>
               <widget class="QFrame" name="frame_4">
                <property name="frameShape">
                 <enum>QFrame::StyledPanel</enum>
@@ -269,34 +297,6 @@
                       </widget>
                      </item>
                     </layout>
-                   </item>
-                  </layout>
-                 </widget>
-                </item>
-               </layout>
-              </widget>
-             </item>
-             <item>
-              <widget class="QFrame" name="frame_2">
-               <property name="frameShape">
-                <enum>QFrame::StyledPanel</enum>
-               </property>
-               <property name="frameShadow">
-                <enum>QFrame::Raised</enum>
-               </property>
-               <layout class="QGridLayout" name="gridLayout_20">
-                <item row="0" column="0">
-                 <widget class="QGroupBox" name="groupBox_7">
-                  <property name="title">
-                   <string>Names:</string>
-                  </property>
-                  <layout class="QGridLayout" name="gridLayout_16">
-                   <item row="1" column="0">
-                    <widget class="QPushButton" name="labelsPushButton">
-                     <property name="text">
-                      <string>Labels ...</string>
-                     </property>
-                    </widget>
                    </item>
                   </layout>
                  </widget>
