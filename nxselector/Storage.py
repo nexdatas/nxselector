@@ -339,7 +339,7 @@ class Storage(object):
         self.state.scanDir = str(self.ui.fileScanDirLineEdit.text())
 #        self.state.scanID = int(self.ui.fileScanIDSpinBox.value())
         files = str(self.ui.fileScanLineEdit.text())
-        self.state.scanFile = files.split()
+        self.state.scanFile = files.replace(';',' ').replace(',',' ').split()
 
 
         # device group    
