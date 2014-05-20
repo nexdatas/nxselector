@@ -214,6 +214,7 @@ class Storage(object):
         self.__tWidgets.append(cb)
         if self.__layout is None:
             self.__layout = QHBoxLayout(self.ui.timerFrame)
+            self.__layout.setContentsMargins(0,0,0,0)
         self.__layout.addWidget(cb)
 
     def __delTimer(self):
