@@ -19,7 +19,7 @@
 ## \file nxselector/__init__.py
 # package constructor
 
-""" --- NXS Scan -- 
+""" --- NXS Selector -- 
 GUI for setting Sardana NeXus Recorder
 """
 
