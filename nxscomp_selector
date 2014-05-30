@@ -25,8 +25,8 @@ import logging
 import sys
 from optparse import OptionParser
 
-from PyQt4.QtGui import (QApplication, QIcon)
-
+#from PyQt4.QtGui import (QApplication, QIcon)
+from taurus.qt import Qt
 
 from nxselector.Selector import Selector
 from nxselector.qrc import qrc_resources
@@ -80,20 +80,33 @@ def main():
 #    import gc
 #    gc.set_debug(gc.DEBUG_LEAK | gc.DEBUG_STATS)
 #    gc.set_debug(gc.DEBUG_LEAK )
-    app = QApplication([])
+        
+#    app = QApplication([])
+    import taurus.qt.qtgui.application
+    Application = taurus.qt.qtgui.application.TaurusApplication
+    
+    app = Application.instance()
+    standalone = app is None
+    if standalone:
+        app = Application()
+
     if options.style:
         app.setStyle(options.style)
     if options.stylesheet:
         app.setStyle(options.stylesheet)
 #    app.setWindowIcon(QIcon(":/icon.png"))
-    app.setWindowIcon(QIcon(":/configtools.png"))
+    app.setWindowIcon(Qt.QIcon(":/configtools.png"))
     app.setOrganizationName("DESY")
     app.setOrganizationDomain("desy.de")
     app.setApplicationName("NXS Component Selector")
     form = Selector(options.server)
 
     form.show()
-    sys.exit(app.exec_())
+
+    if standalone:
+        sys.exit(app.exec_())
+    else:
+        return form
 
 
 

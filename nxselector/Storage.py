@@ -23,8 +23,10 @@
 
 
 
-from PyQt4.QtGui import (QComboBox, QHBoxLayout, QMessageBox)
-from PyQt4.QtCore import (SIGNAL, QString)
+#from PyQt4.QtGui import (QComboBox, QHBoxLayout, QMessageBox)
+#from PyQt4.QtCore import (SIGNAL, QString)
+
+from taurus.qt import Qt
 
 from .EdListDlg import EdListDlg
 from .PropertiesDlg import PropertiesDlg

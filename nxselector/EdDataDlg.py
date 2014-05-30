@@ -23,9 +23,11 @@
 
 import json
 
-from PyQt4.QtGui import ( QMessageBox,
-                          QDialog, QCompleter)
-from PyQt4.QtCore import (SIGNAL, QString)
+#from PyQt4.QtGui import ( QMessageBox,
+#                          QDialog, QCompleter)
+#from PyQt4.QtCore import (SIGNAL, QString)
+
+from taurus.qt import Qt
 
 from .ui.ui_eddatadlg import Ui_EdDataDlg
 
@@ -33,7 +35,7 @@ import logging
 logger = logging.getLogger(__name__)
 
 ## main window class
-class EdDataDlg(QDialog):
+class EdDataDlg(Qt.QDialog):
 
     ## constructor
     # \param parent parent widget
@@ -58,18 +60,18 @@ class EdDataDlg(QDialog):
             self.ui.stringCheckBox.hide()
         else:    
             self.isString = isinstance(self.value, 
-                                       (str, unicode, QString))
+                                       (str, unicode, Qt.QString))
         self.ui.stringCheckBox.setChecked(self.isString)
-        self.ui.nameLineEdit.setText(QString(self.name))
-        self.ui.valueTextEdit.setText(QString(str(self.value)))
+        self.ui.nameLineEdit.setText(Qt.QString(self.name))
+        self.ui.valueTextEdit.setText(Qt.QString(str(self.value)))
 
         if self.available_names:
-            completer = QCompleter(self.available_names, self)
+            completer = Qt.QCompleter(self.available_names, self)
             self.ui.nameLineEdit.setCompleter(completer)
 
-        self.connect(self.ui.buttonBox, SIGNAL("accepted()"), 
+        self.connect(self.ui.buttonBox, Qt.SIGNAL("accepted()"), 
                      self.accept)
-        self.connect(self.ui.buttonBox, SIGNAL("rejected()"), 
+        self.connect(self.ui.buttonBox, Qt.SIGNAL("rejected()"), 
                      self.reject)
 
     def accept(self):
@@ -83,7 +85,7 @@ class EdDataDlg(QDialog):
                 pass
             
         if not self.name:
-            QMessageBox.warning(self, "Wrong Data", "Empty data name" )
+            Qt.QMessageBox.warning(self, "Wrong Data", "Empty data name" )
             self.ui.nameLineEdit.setFocus()
             return
-        QDialog.accept(self)
+        Qt.QDialog.accept(self)

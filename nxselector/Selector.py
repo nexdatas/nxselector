@@ -25,12 +25,13 @@ import sys
 import PyTango
  
  
-from PyQt4.QtGui import (
-    QDialog, QMessageBox, QDialogButtonBox, QFileDialog, 
-    QPushButton,QHBoxLayout)
-from PyQt4.QtCore import (
-    SIGNAL, QSettings, QVariant, SIGNAL, QString)
-
+from taurus.qt import Qt
+#from PyQt4.QtGui import (
+#    QDialog, QMessageBox, QDialogButtonBox, QFileDialog, 
+#    QPushButton,QHBoxLayout)
+#from PyQt4.QtCore import (
+#    SIGNAL, QSettings, QVariant,  QString)
+from taurus.qt.qtgui.base import TaurusBaseWidget
 from .ServerState import ServerState
 
 from .Selectable import Selectable
@@ -48,7 +49,7 @@ logger = logging.getLogger(__name__)
     
 
 ## main window class
-class Selector(QDialog):
+class Selector(Qt.QDialog, TaurusBaseWidget):
 
     ## constructor
     # \param parent parent widget
@@ -62,13 +63,13 @@ class Selector(QDialog):
             self.state = ServerState(server)
         except PyTango.DevFailed as e:
             value = sys.exc_info()[1]
-            QMessageBox.warning(
+            Qt.QMessageBox.warning(
                 self, 
                 "Error in Setting Server",
                 "%s" % str("\n".join(["%s " % (err.desc) for err in value])))
             sys.exit(-1)
         except Exception as e:
-            QMessageBox.warning(
+            Qt.QMessageBox.warning(
                 self, 
                 "Error in Setting Server",
                 str(e))
@@ -76,7 +77,7 @@ class Selector(QDialog):
 
         self.state.fetchSettings()
 
-        settings = QSettings()
+        settings = Qt.QSettings()
 
         self.userView = self.restoreString(
             settings, 'Preferences/UserView', 'CheckBoxes')
@@ -174,15 +175,15 @@ class Selector(QDialog):
     def createGUI(self):
         self.ui.setupUi(self)
         self.ui.buttonBox.setStandardButtons(
-           QDialogButtonBox.Reset | QDialogButtonBox.Apply \
-                | QDialogButtonBox.Close)
+           Qt.QDialogButtonBox.Reset | Qt.QDialogButtonBox.Apply \
+                | Qt.QDialogButtonBox.Close)
 
-        flayout = QHBoxLayout(self.ui.timerButtonFrame)
+        flayout = Qt.QHBoxLayout(self.ui.timerButtonFrame)
         flayout.setContentsMargins(0,0,0,0)
-        self.ui.timerAddPushButton = QPushButton("+") 
+        self.ui.timerAddPushButton = Qt.QPushButton("+") 
         self.ui.timerAddPushButton.setMaximumWidth(30)
         flayout.addWidget(self.ui.timerAddPushButton)
-        self.ui.timerDelPushButton = QPushButton("-")
+        self.ui.timerDelPushButton = Qt.QPushButton("-")
         self.ui.timerDelPushButton.setMaximumWidth(30)
         flayout.addWidget(self.ui.timerDelPushButton)
     
@@ -190,42 +191,42 @@ class Selector(QDialog):
             tab.reset()
 
     
-        cid = self.ui.viewComboBox.findText(QString(self.userView))
+        cid = self.ui.viewComboBox.findText(Qt.QString(self.userView))
         if cid >= 0:
             self.ui.viewComboBox.setCurrentIndex(cid) 
         self.ui.rowMaxSpinBox.setValue(self.rowMax)    
             
-        self.connect(self.ui.buttonBox.button(QDialogButtonBox.Apply), 
-                     SIGNAL("pressed()"), self.__applyClicked)
-        self.connect(self.ui.buttonBox.button(QDialogButtonBox.Reset), 
-                     SIGNAL("pressed()"), self.__resetClicked)
+        self.connect(self.ui.buttonBox.button(Qt.QDialogButtonBox.Apply), 
+                     Qt.SIGNAL("pressed()"), self.__applyClicked)
+        self.connect(self.ui.buttonBox.button(Qt.QDialogButtonBox.Reset), 
+                     Qt.SIGNAL("pressed()"), self.__resetClicked)
 
         self.connect(self.ui.cnfLoadPushButton, 
-                     SIGNAL("pressed()"), self.cnfLoad)
+                     Qt.SIGNAL("pressed()"), self.cnfLoad)
         self.connect(self.ui.cnfSavePushButton, 
-                     SIGNAL("pressed()"), self.cnfSave)
+                     Qt.SIGNAL("pressed()"), self.cnfSave)
 
         self.connect(self.ui.preferences, 
-                     SIGNAL("serverChanged()"), self.resetServer)
+                     Qt.SIGNAL("serverChanged()"), self.resetServer)
 
         self.connect(self.ui.preferences, 
-                     SIGNAL("layoutChanged(QString,QString)"), self.resetLayout)
+                     Qt.SIGNAL("layoutChanged(QString,QString)"), self.resetLayout)
 
         self.connect(self.ui.preferences, 
-                     SIGNAL("layoutChanged(QString,QString)"), self.resetLayout)
+                     Qt.SIGNAL("layoutChanged(QString,QString)"), self.resetLayout)
 
         self.connect(self.ui.viewComboBox, 
-                     SIGNAL("currentIndexChanged(int)"), self.resetViews)
+                     Qt.SIGNAL("currentIndexChanged(int)"), self.resetViews)
 
         self.connect(self.ui.rowMaxSpinBox, 
-                     SIGNAL("valueChanged(int)"), self.resetRows)
+                     Qt.SIGNAL("valueChanged(int)"), self.resetRows)
 
-        self.connect(self.ui.selectable, SIGNAL("dirty"), self.setDirty)
-        self.connect(self.ui.state, SIGNAL("componentChecked"), 
+        self.connect(self.ui.selectable, Qt.SIGNAL("dirty"), self.setDirty)
+        self.connect(self.ui.state, Qt.SIGNAL("componentChecked"), 
                      self.__componentChanged)
-        self.connect(self.ui.data, SIGNAL("dirty"), self.setDirty)
-        self.connect(self.ui.storage, SIGNAL("dirty"), self.setDirty)
-        self.connect(self.ui.storage, SIGNAL("reset"), self.resetViews)
+        self.connect(self.ui.data, Qt.SIGNAL("dirty"), self.setDirty)
+        self.connect(self.ui.storage, Qt.SIGNAL("dirty"), self.setDirty)
+        self.connect(self.ui.storage, Qt.SIGNAL("reset"), self.resetViews)
 
 
     def __componentChanged(self):
@@ -241,28 +242,28 @@ class Selector(QDialog):
         
 
     def __saveSettings(self):
-        settings = QSettings()
+        settings = Qt.QSettings()
         settings.setValue(
             "Selector/Geometry",
-            QVariant(self.saveGeometry()))
+            Qt.QVariant(self.saveGeometry()))
         settings.setValue(
             "Preferences/UserView",
-            QVariant(str(self.ui.viewComboBox.currentText())))
+            Qt.QVariant(str(self.ui.viewComboBox.currentText())))
         settings.setValue(
             "Preferences/RowMax",
-            QVariant(self.ui.rowMaxSpinBox.value()))
+            Qt.QVariant(self.ui.rowMaxSpinBox.value()))
         settings.setValue(
             "Preferences/Groups",
-            QVariant(str(self.preferences.mgroups)))
+            Qt.QVariant(str(self.preferences.mgroups)))
         settings.setValue(
             "Preferences/Frames",
-            QVariant(str(self.preferences.frames)))
+            Qt.QVariant(str(self.preferences.frames)))
         settings.setValue(
             "Preferences/FramesHints",
-            QVariant(str(self.preferences.frameshelp)))
+            Qt.QVariant(str(self.preferences.frameshelp)))
         settings.setValue(
             "Preferences/GroupsHints",
-            QVariant(str(self.preferences.mgroupshelp)))
+            Qt.QVariant(str(self.preferences.mgroupshelp)))
 
                     
     def closeEvent(self, _):
@@ -309,13 +310,13 @@ class Selector(QDialog):
         logger.debug("reset ENDED")
         
     def __resetClicked(self):
-        self.ui.buttonBox.button(QDialogButtonBox.Reset).hide()
-        self.ui.buttonBox.button(QDialogButtonBox.Reset).show()
-        self.ui.buttonBox.button(QDialogButtonBox.Reset).setFocus()
+        self.ui.buttonBox.button(Qt.QDialogButtonBox.Reset).hide()
+        self.ui.buttonBox.button(Qt.QDialogButtonBox.Reset).show()
+        self.ui.buttonBox.button(Qt.QDialogButtonBox.Reset).setFocus()
         self.resetAll()
 
     def cnfLoad(self):    
-        filename = str(QFileDialog.getOpenFileName(
+        filename = str(Qt.QFileDialog.getOpenFileName(
                 self.ui.storage,
                 "Load Configuration",        
                 self.state.cnfFile,
@@ -327,7 +328,7 @@ class Selector(QDialog):
             self.setDirty()
 
     def cnfSave(self):
-        filename = str(QFileDialog.getSaveFileName(
+        filename = str(Qt.QFileDialog.getSaveFileName(
                 self.ui.storage,
                 "Save Configuration",
                 self.state.cnfFile,
@@ -352,12 +353,12 @@ class Selector(QDialog):
             self.setDirty(False)
         except PyTango.DevFailed as e:
             value = sys.exc_info()[1]
-            QMessageBox.warning(
+            Qt.QMessageBox.warning(
                 self, 
                 "Error in updating Measurement Group",
                 "%s" % str("\n".join(["%s " % (err.desc) for err in value])))
         except Exception as e:
-            QMessageBox.warning(
+            Qt.QMessageBox.warning(
                 self, 
                 "Error in updating Measurement Group",
                 str(e))

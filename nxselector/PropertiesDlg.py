@@ -22,10 +22,11 @@
 """  label dialog """
 
 
-from PyQt4.QtGui import (
-    QDialog, QTableWidgetItem, QMessageBox, QAbstractItemView,
-    QWidget, QHBoxLayout)
-from PyQt4.QtCore import (SIGNAL, Qt)
+#from PyQt4.QtGui import (
+#    QDialog, QTableWidgetItem, QMessageBox, QAbstractItemView,
+#    QWidget, QHBoxLayout)
+# from PyQt4.QtCore import (SIGNAL, Qt)
+from taurus.qt import Qt
 
 from .ui.ui_edlistdlg import Ui_EdListDlg
 
@@ -34,7 +35,7 @@ from .LDataDlg import LDataDlg
 import logging
 logger = logging.getLogger(__name__)
 
-class PropertiesDlg(QDialog):
+class PropertiesDlg(Qt.QDialog):
     ## constructor
     # \param parent parent widget
     def __init__(self, parent=None):
@@ -46,15 +47,15 @@ class PropertiesDlg(QDialog):
     def createGUI(self):
         self.widget.available_names = self.available_names
         self.widget.createGUI()
-        layout = QHBoxLayout()
+        layout = Qt.QHBoxLayout()
         layout.addWidget(self.widget)
         self.setLayout(layout)
 
         self.connect(self.widget.ui.closePushButton, 
-                     SIGNAL("clicked()"),
+                     Qt.SIGNAL("clicked()"),
                      self.accept)
         self.widget.ui.closePushButton.show()
-        self.connect(self.widget, SIGNAL("dirty"), self.__setDirty)
+        self.connect(self.widget, Qt.SIGNAL("dirty"), self.__setDirty)
 
     def __setDirty(self):
         self.dirty = True
@@ -62,7 +63,7 @@ class PropertiesDlg(QDialog):
         
 
 ## main window class
-class PropertiesWg(QWidget):
+class PropertiesWg(Qt.QWidget):
 
     ## constructor
     # \param parent parent widget
@@ -86,14 +87,14 @@ class PropertiesWg(QWidget):
         else:
             item = None
         self.__populateTable(item)
-        self.connect(self.ui.addPushButton, SIGNAL("clicked()"),
+        self.connect(self.ui.addPushButton, Qt.SIGNAL("clicked()"),
                      self.__add)
-        self.connect(self.ui.editPushButton, SIGNAL("clicked()"),
+        self.connect(self.ui.editPushButton, Qt.SIGNAL("clicked()"),
                      self.__edit)
         self.connect(self.ui.tableWidget, 
-                     SIGNAL("itemDoubleClicked(QTableWidgetItem*)"),
+                     Qt.SIGNAL("itemDoubleClicked(QTableWidgetItem*)"),
                      self.__edit)
-        self.connect(self.ui.removePushButton, SIGNAL("clicked()"),
+        self.connect(self.ui.removePushButton, Qt.SIGNAL("clicked()"),
                      self.__remove)
 
 
@@ -118,11 +119,11 @@ class PropertiesWg(QWidget):
             if self.available_names is not None and\
                     name not in self.available_names:
                 enable = False
-            item = QTableWidgetItem(name)
+            item = Qt.QTableWidgetItem(name)
             if self.available_names is not None:
                 if enable is False:
                     flags = item.flags()
-                    flags &= ~Qt.ItemIsEnabled
+                    flags &= ~Qt.Qt.ItemIsEnabled
                     item.setFlags(flags)
             if selected is not None and selected == name:
                 sitem = item
@@ -131,16 +132,16 @@ class PropertiesWg(QWidget):
             
             value = str(self.types[name]) \
                 if name in self.types.keys() else ''
-            self.ui.tableWidget.setItem(row, 1, QTableWidgetItem(value)) 
+            self.ui.tableWidget.setItem(row, 1, Qt.QTableWidgetItem(value)) 
             value = str(self.shapes[name]) \
                 if name in self.shapes.keys() else ''
-            self.ui.tableWidget.setItem(row, 2, QTableWidgetItem(value)) 
+            self.ui.tableWidget.setItem(row, 2, Qt.QTableWidgetItem(value)) 
             value = str(self.links[name]) \
                 if name in self.links.keys() else ''
-            self.ui.tableWidget.setItem(row, 3, QTableWidgetItem(value))
+            self.ui.tableWidget.setItem(row, 3, Qt.QTableWidgetItem(value))
             value = str(self.paths[name]) \
                 if name in self.paths.keys() else ''
-            self.ui.tableWidget.setItem(row, 4, QTableWidgetItem(value))
+            self.ui.tableWidget.setItem(row, 4, Qt.QTableWidgetItem(value))
         self.ui.tableWidget.resizeColumnsToContents()
         self.ui.tableWidget.setSelectionBehavior(QAbstractItemView.SelectRows)
         self.ui.tableWidget.setSelectionMode(
@@ -184,7 +185,7 @@ class PropertiesWg(QWidget):
                 self.links[name] = form.link
                 
             self.__populateTable()
-            self.emit(SIGNAL("dirty"))
+            self.emit(Qt.SIGNAL("dirty"))
 
     def __add(self):    
         dform  = LDataDlg(self)
@@ -216,10 +217,10 @@ class PropertiesWg(QWidget):
     def __remove(self):
         name = self.__currentName()
         
-        if QMessageBox.question(
+        if Qt.QMessageBox.question(
             self, "Removing Data", "Would you like  to remove '%s'?" % name,
-            QMessageBox.Yes | QMessageBox.No,
-            QMessageBox.Yes ) == QMessageBox.No :
+            Qt.QMessageBox.Yes | Qt.QMessageBox.No,
+            Qt.QMessageBox.Yes ) == Qt.QMessageBox.No :
             return
         if name in self.types.keys():
             self.types.pop(name)
@@ -230,7 +231,7 @@ class PropertiesWg(QWidget):
         if name in self.paths.keys():
             self.paths.pop(name)
 
-        self.emit(SIGNAL("dirty"))
+        self.emit(Qt.SIGNAL("dirty"))
         self.__populateTable()
 
         

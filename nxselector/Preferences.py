@@ -25,8 +25,10 @@ import os
 import PyTango
 import json
 
-from PyQt4.QtGui import (QMessageBox, QCompleter, QFileDialog)
-from PyQt4.QtCore import (SIGNAL, QString)
+#from PyQt4.QtGui import (QMessageBox, QCompleter, QFileDialog)
+#from PyQt4.QtCore import (SIGNAL, QString)
+
+from taurus.qt import Qt
 
 
 from .Views import (TableView, OneTableView, 
@@ -57,26 +59,26 @@ class Preferences(object):
         # frames/columns/groups
         self.frameshelp = [\
 
-            QString('[[[["Components",1],["Timers",5]]],[[["Counters", 4]],' \
+            Qt.QString('[[[["Components",1],["Timers",5]]],[[["Counters", 4]],' \
                         + '[["ADC",3]]],[[["MCA/SCA",6],["Devices",0]]]]'),
-            QString('[[[["Counters", 4]],[["Channels",0]]],' \
+            Qt.QString('[[[["Counters", 4]],[["Channels",0]]],' \
                         + '[[["MCAs", 2],["Misc",1]]],[[["ADC",3]]]]'),
-            QString('[[[["Devices", 0]]],[[["MCAs", 2],["Misc",1]]]]'),
-            QString(
+            Qt.QString('[[[["Devices", 0]]],[[["MCAs", 2],["Misc",1]]]]'),
+            Qt.QString(
                 '[[[["Counters1", 0], ["Counters2", 2]], [["VCounters", 3]]],'
                 + '[[["MCAs", 1], ["SCAs", 4]]], [[["Misc", 5] ]]]'), 
-            QString('[[[["My Controllers", 0]]],[[["My Components", 1]]]]'), 
-            QString('')]
+            Qt.QString('[[[["My Controllers", 0]]],[[["My Components", 1]]]]'), 
+            Qt.QString('')]
         self.mgroupshelp = [            
-            QString('{ "3":[["exp_adc*", 0]], "4":[["exp_c*",0]],' \
+            Qt.QString('{ "3":[["exp_adc*", 0]], "4":[["exp_c*",0]],' \
                         + '"5":[["exp_t*",0]], "6":[["exp_mca*",0],' \
                         + '["sca_exp_*",0]]}'),
-            QString('{"2":[["mca8701*", 1]] , "3":[["exp_adc*", 0]],' \
+            Qt.QString('{"2":[["mca8701*", 1]] , "3":[["exp_adc*", 0]],' \
                         + ' "4":[["exp_c*",0]]}'),
-            QString('{"2":[["ct01", 0], ["ct02",0]], "5":[["appscan", 1]]}'), 
-            QString('')]
+            Qt.QString('{"2":[["ct01", 0], ["ct02",0]], "5":[["appscan", 1]]}'), 
+            Qt.QString('')]
         self.serverhelp = [
-            QString(self.state.server)]
+            Qt.QString(self.state.server)]
         
         self.mgroups = str(self.mgroupshelp[0])
         self.frames = str(self.frameshelp[0])
@@ -116,49 +118,49 @@ class Preferences(object):
     def disconnectSignals(self):
         self.ui.preferences.disconnect(
             self.ui.devSettingsLineEdit,
-            SIGNAL("editingFinished()"), 
+            Qt.SIGNAL("editingFinished()"), 
             self.on_devSettingsLineEdit_editingFinished)
 
         self.ui.preferences.disconnect(
             self.ui.groupLineEdit,
-            SIGNAL("editingFinished()"), 
+            Qt.SIGNAL("editingFinished()"), 
             self.on_layoutLineEdits_editingFinished)
 
         self.ui.preferences.disconnect(
             self.ui.frameLineEdit,
-            SIGNAL("editingFinished()"), 
+            Qt.SIGNAL("editingFinished()"), 
             self.on_layoutLineEdits_editingFinished)
 
         self.ui.preferences.disconnect(
             self.ui.profLoadPushButton, 
-            SIGNAL("pressed()"), self.profileLoad)
+            Qt.SIGNAL("pressed()"), self.profileLoad)
         self.ui.preferences.disconnect(
             self.ui.profSavePushButton, 
-            SIGNAL("pressed()"), self.profileSave)
+            Qt.SIGNAL("pressed()"), self.profileSave)
 
     def connectSignals(self):
         self.disconnectSignals()
         self.ui.preferences.connect(
             self.ui.frameLineEdit,
-            SIGNAL("editingFinished()"), 
+            Qt.SIGNAL("editingFinished()"), 
             self.on_layoutLineEdits_editingFinished)
 
         self.ui.preferences.connect(
             self.ui.groupLineEdit,
-            SIGNAL("editingFinished()"), 
+            Qt.SIGNAL("editingFinished()"), 
             self.on_layoutLineEdits_editingFinished)
 
         self.ui.preferences.connect(
             self.ui.devSettingsLineEdit,
-            SIGNAL("editingFinished()"), 
+            Qt.SIGNAL("editingFinished()"), 
             self.on_devSettingsLineEdit_editingFinished)
 
         self.ui.preferences.connect(
             self.ui.profLoadPushButton, 
-            SIGNAL("pressed()"), self.profileLoad)
+            Qt.SIGNAL("pressed()"), self.profileLoad)
         self.ui.preferences.connect(
             self.ui.profSavePushButton, 
-            SIGNAL("pressed()"), self.profileSave)
+            Qt.SIGNAL("pressed()"), self.profileSave)
        
     def reset(self):
         logger.debug("reset preferences")
@@ -166,11 +168,11 @@ class Preferences(object):
         if self.ui.viewComboBox.count() != len(self.views.keys()):
             self.ui.viewComboBox.clear()
             self.ui.viewComboBox.addItems(sorted(self.views.keys()))
-        completer = QCompleter(self.mgroupshelp, self.ui.preferences)
+        completer = Qt.QCompleter(self.mgroupshelp, self.ui.preferences)
         self.ui.groupLineEdit.setCompleter(completer)
-        completer = QCompleter(self.serverhelp, self.ui.preferences)
+        completer = Qt.QCompleter(self.serverhelp, self.ui.preferences)
         self.ui.devSettingsLineEdit.setCompleter(completer) 
-        completer = QCompleter(self.frameshelp, self.ui.preferences)
+        completer = Qt.QCompleter(self.frameshelp, self.ui.preferences)
         self.ui.frameLineEdit.setCompleter(completer)
         self.updateForm()
         self.connectSignals()
@@ -183,13 +185,13 @@ class Preferences(object):
         server = str(self.ui.devSettingsLineEdit.text())
         logger.debug("from %s to  %s" % (self.state.server, server))
         if server != self.state.server:
-            replay = QMessageBox.question(
+            replay = Qt.QMessageBox.question(
                 self.ui.preferences, 
                 "Setting server has changed.", 
                 "Changing server will cause loosing the current data. " \
                     + " Are you sure?",
-                QMessageBox.Yes|QMessageBox.No)
-            if replay == QMessageBox.Yes:
+                Qt.QMessageBox.Yes|Qt.QMessageBox.No)
+            if replay == Qt.QMessageBox.Yes:
                 try:
                     dp = PyTango.DeviceProxy(server)
                     if dp.info().dev_class == 'NXSRecSelector':
@@ -198,15 +200,15 @@ class Preferences(object):
                 except:
                     self.reset()
                 self.connectSignals()
-                self.ui.preferences.emit(SIGNAL("serverChanged()"))
+                self.ui.preferences.emit(Qt.SIGNAL("serverChanged()"))
             else:
-                self.ui.devSettingsLineEdit.setText(QString(self.state.server))
+                self.ui.devSettingsLineEdit.setText(Qt.QString(self.state.server))
         self.connectSignals()
         logger.debug("server changed")
 
 
     def addHint(self, string, hints):
-        qstring = QString(string)
+        qstring = Qt.QString(string)
         if qstring not in hints:
             hints.append(string)
         if self.maxHelp < len(hints):
@@ -237,8 +239,8 @@ class Preferences(object):
                 if isinstance(mframes, list):
                     self.connectSignals()
                     self.ui.preferences.emit(
-                        SIGNAL("layoutChanged(QString,QString)"),
-                        QString(frames),QString(groups)) 
+                        Qt.SIGNAL("layoutChanged(QString,QString)"),
+                        Qt.QString(frames),Qt.QString(groups)) 
         except Exception as e :    
             logger.debug(str(e))
             self.reset()
@@ -257,7 +259,7 @@ class Preferences(object):
 
     def profileLoad(self):    
         filename = str(
-            QFileDialog.getOpenFileName(
+            Qt.QFileDialog.getOpenFileName(
                 self.ui.preferences,
                 "Load Profile",        
                 self.profFile,
@@ -271,17 +273,17 @@ class Preferences(object):
                 if isinstance(profile, dict):
                     if "server" in profile.keys():
                         self.ui.devSettingsLineEdit.setText(
-                            QString(profile["server"]))
+                            Qt.QString(profile["server"]))
                         self.on_devSettingsLineEdit_editingFinished()
                     if "frames" in profile.keys():
                         self.ui.frameLineEdit.setText(
-                            QString(profile["frames"]))
+                            Qt.QString(profile["frames"]))
                         self.on_layoutLineEdits_editingFinished()
                     if "groups" in profile.keys():
                         self.ui.groupLineEdit.setText(
-                            QString(profile["groups"]))
+                            Qt.QString(profile["groups"]))
                         self.ui.groupLineEdit.emit(
-                            SIGNAL("groupsChanged(QString)"),
+                            Qt.SIGNAL("groupsChanged(QString)"),
                             self.ui.groupLineEdit.text()) 
                         self.on_layoutLineEdits_editingFinished()
                     if "rowMax" in profile.keys():
@@ -289,14 +291,14 @@ class Preferences(object):
                             int(profile["rowMax"]))
                         
             except Exception as e:
-                QMessageBox.warning(
+                Qt.QMessageBox.warning(
                     self.ui.preferences, 
                     "Error during reading the file",
                     str(e))
                 
 
     def profileSave(self):
-        filename = str(QFileDialog.getSaveFileName(
+        filename = str(Qt.QFileDialog.getSaveFileName(
                 self.ui.storage,
                 "Save Profile",
                 self.profFile,

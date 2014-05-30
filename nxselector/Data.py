@@ -22,10 +22,11 @@
 """ automatic tab """
 
 
-from PyQt4.QtCore import (
-    SIGNAL)
-from PyQt4.QtGui import (
-    QHBoxLayout, QWidgetItem)
+#from PyQt4.QtCore import (
+#    SIGNAL)
+#from PyQt4.QtGui import (
+#    QHBoxLayout, QWidgetItem)
+from taurus.qt import Qt
 
 from .EdListDlg import EdListWg
 

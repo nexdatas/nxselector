@@ -24,10 +24,12 @@
 import json
 import fnmatch
 
-from PyQt4.QtGui import (QHBoxLayout, QVBoxLayout,
-    QGroupBox, QGridLayout,
-    QFrame, QWidgetItem)
-from PyQt4.QtCore import (SIGNAL)
+#from PyQt4.QtGui import (QHBoxLayout, QVBoxLayout,
+#    QGroupBox, QGridLayout,
+#    QFrame, QWidgetItem)
+#from PyQt4.QtCore import (SIGNAL)
+
+from taurus.qt import Qt
 
 from .Element import DSElement, CPElement, CP, DS
 from .ElementModel import ElementModel
@@ -126,29 +128,29 @@ class Selectable(object):
             child = self.layout.takeAt(0)
             while child:
                 self.layout.removeItem(child)
-                if isinstance(child, QWidgetItem):
+                if isinstance(child, Qt.QWidgetItem):
                     child.widget().hide()
                     child.widget().close()
                     self.layout.removeWidget(child.widget())
                 child = self.layout.takeAt(0)
         else:
-            self.layout = QHBoxLayout(self.ui.selectable)
+            self.layout = Qt.QHBoxLayout(self.ui.selectable)
             
         self.views = {} 
         frames = Frames(self.frames, DS in self.groups, CP in self.groups)
         for frame in frames:
-            mframe = QFrame(self.ui.selectable)
-            mframe.setFrameShape(QFrame.StyledPanel)
-            mframe.setFrameShadow(QFrame.Raised)
-            layout_columns = QHBoxLayout(mframe)
+            mframe = Qt.QFrame(self.ui.selectable)
+            mframe.setFrameShape(Qt.QFrame.StyledPanel)
+            mframe.setFrameShadow(Qt.QFrame.Raised)
+            layout_columns = Qt.QHBoxLayout(mframe)
 
             for column in frame: 
-                layout_groups = QVBoxLayout()
+                layout_groups = Qt.QVBoxLayout()
 
                 for group in column:
-                    mgroup = QGroupBox(mframe)
+                    mgroup = Qt.QGroupBox(mframe)
                     mgroup.setTitle(group[0])
-                    layout_auto = QGridLayout(mgroup)
+                    layout_auto = Qt.QGridLayout(mgroup)
                     mview = self.userView(mgroup)
                     mview.rowMax = self.rowMax
 
@@ -173,14 +175,14 @@ class Selectable(object):
                 md = ElementModel([])
                 
             self.views[k].setModel(md)
-            md.connect(md, SIGNAL("componentChecked"), 
+            md.connect(md, Qt.SIGNAL("componentChecked"), 
                        self.updateViews)
-            md.connect(md, SIGNAL("dirty"), 
+            md.connect(md, Qt.SIGNAL("dirty"), 
                        self.dirty)
 #            self.views[k].setItemDelegate(ElementDelegate(self))
 
     def dirty(self):
-        self.ui.selectable.emit(SIGNAL("dirty"))
+        self.ui.selectable.emit(Qt.SIGNAL("dirty"))
 
     def reset(self):
         logger.debug("reset views") 

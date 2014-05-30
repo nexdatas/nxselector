@@ -23,10 +23,12 @@
 
 
 
-from PyQt4.QtCore import (SIGNAL, Qt)
-from PyQt4.QtGui import (
-    QDialog, QTableWidgetItem, QMessageBox, QAbstractItemView,
-    QWidget, QHBoxLayout)
+#from PyQt4.QtCore import (SIGNAL, Qt)
+#from PyQt4.QtGui import (
+#    QDialog, QTableWidgetItem, QMessageBox, QAbstractItemView,
+#    QWidget, QHBoxLayout)
+
+from taurus.qt import Qt
 
 from .ui.ui_edlistdlg import Ui_EdListDlg
 
@@ -35,7 +37,7 @@ from .EdDataDlg import EdDataDlg
 import logging
 logger = logging.getLogger(__name__)
 
-class EdListDlg(QDialog):
+class EdListDlg(Qt.QDialog):
     ## constructor
     # \param parent parent widget
     def __init__(self, parent=None):
@@ -51,15 +53,15 @@ class EdListDlg(QDialog):
         self.widget.available_names = self.available_names
         self.widget.headers = self.headers
         self.widget.createGUI()
-        layout = QHBoxLayout()
+        layout = Qt.QHBoxLayout()
         layout.addWidget(self.widget)
         self.setLayout(layout)
 
         self.connect(self.widget.ui.closePushButton, 
-                     SIGNAL("clicked()"),
+                     Qt.SIGNAL("clicked()"),
                      self.accept)
         self.widget.ui.closePushButton.show()
-        self.connect(self.widget, SIGNAL("dirty"), self.__setDirty)
+        self.connect(self.widget, Qt.SIGNAL("dirty"), self.__setDirty)
 
     def __setDirty(self):
         self.dirty = True
@@ -67,7 +69,7 @@ class EdListDlg(QDialog):
         
 
 ## main window class
-class EdListWg(QWidget):
+class EdListWg(Qt.QWidget):
 
     ## constructor
     # \param parent parent widget
@@ -88,14 +90,14 @@ class EdListWg(QWidget):
         else:
             item = None
         self.__populateTable(item)
-        self.connect(self.ui.addPushButton, SIGNAL("clicked()"),
+        self.connect(self.ui.addPushButton, Qt.SIGNAL("clicked()"),
                      self.__add)
-        self.connect(self.ui.editPushButton, SIGNAL("clicked()"),
+        self.connect(self.ui.editPushButton, Qt.SIGNAL("clicked()"),
                      self.__edit)
         self.connect(self.ui.tableWidget, 
-                     SIGNAL("itemDoubleClicked(QTableWidgetItem*)"),
+                     Qt.SIGNAL("itemDoubleClicked(QTableWidgetItem*)"),
                      self.__edit)
-        self.connect(self.ui.removePushButton, SIGNAL("clicked()"),
+        self.connect(self.ui.removePushButton, Qt.SIGNAL("clicked()"),
                      self.__remove)
 
     def __populateTable(self, selected = None):
@@ -111,18 +113,18 @@ class EdListWg(QWidget):
             if self.available_names is not None and\
                     name not in self.available_names:
                 enable = False
-            item = QTableWidgetItem(name)
+            item = Qt.QTableWidgetItem(name)
             if self.available_names is not None:
                 if enable is False:
                     flags = item.flags()
-                    flags &= ~Qt.ItemIsEnabled
+                    flags &= ~Qt.Qt.ItemIsEnabled
                     item.setFlags(flags)
             if selected is not None and selected == name:
                 sitem = item
             self.ui.tableWidget.setItem(row, 0, item)
 
             value = self.record[name]
-            item = QTableWidgetItem(str(value))
+            item = Qt.QTableWidgetItem(str(value))
             self.ui.tableWidget.setItem(row, 1, item)
         self.ui.tableWidget.resizeColumnsToContents()
         self.ui.tableWidget.setSelectionBehavior(QAbstractItemView.SelectRows)
@@ -152,7 +154,7 @@ class EdListWg(QWidget):
         if dform.exec_():
             self.record[dform.name] = dform.value
             self.__populateTable()
-            self.emit(SIGNAL("dirty"))
+            self.emit(Qt.SIGNAL("dirty"))
         
     def __edit(self):    
         dform  = EdDataDlg(self)
@@ -169,20 +171,20 @@ class EdListWg(QWidget):
         if dform.exec_():
             self.record[dform.name] = dform.value
             self.__populateTable()
-            self.emit(SIGNAL("dirty"))
+            self.emit(Qt.SIGNAL("dirty"))
 
     def __remove(self):
         name = self.__currentName() 
         if name not in self.record:
             return
        
-        if QMessageBox.question(
+        if Qt.QMessageBox.question(
             self, "Removing Data", "Would you like  to remove '%s'?" % name,
-            QMessageBox.Yes | QMessageBox.No,
-            QMessageBox.Yes ) == QMessageBox.No :
+            Qt.QMessageBox.Yes | Qt.QMessageBox.No,
+            Qt.QMessageBox.Yes ) == Qt.QMessageBox.No :
             return
         self.record.pop(name)
-        self.emit(SIGNAL("dirty"))
+        self.emit(Qt.SIGNAL("dirty"))
         self.__populateTable()
 
         

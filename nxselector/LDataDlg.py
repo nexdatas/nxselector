@@ -23,9 +23,10 @@
 
 import json
 
-from PyQt4.QtGui import ( QMessageBox,
-                          QDialog, QCompleter)
-from PyQt4.QtCore import (QString)
+#from PyQt4.QtGui import ( QMessageBox,
+#                          QDialog, QCompleter)
+#from PyQt4.QtCore import (QString)
+from taurus.qt import Qt
 
 from .ui.ui_ldatadlg import Ui_LDataDlg
 
@@ -33,7 +34,7 @@ import logging
 logger = logging.getLogger(__name__)
 
 ## main window class
-class LDataDlg(QDialog):
+class LDataDlg(Qt.QDialog):
 
     ## constructor
     # \param parent parent widget
@@ -59,22 +60,22 @@ class LDataDlg(QDialog):
     def createGUI(self):
 
         self.ui.setupUi(self) 
-        self.ui.labelLineEdit.setText(QString(str(self.label)))
-        self.ui.pathLineEdit.setText(QString(str(self.path)))
+        self.ui.labelLineEdit.setText(Qt.QString(str(self.label)))
+        self.ui.pathLineEdit.setText(Qt.QString(str(self.path)))
         if self.shape is None:
             shape = ''
         else:
             shape = self.shape
-        self.ui.shapeLineEdit.setText(QString(str(shape)))
-        self.ui.typeLineEdit.setText(QString(str(self.dtype)))
+        self.ui.shapeLineEdit.setText(Qt.QString(str(shape)))
+        self.ui.typeLineEdit.setText(Qt.QString(str(self.dtype)))
    
-        cid = self.ui.linkComboBox.findText(QString(self.__linkText(self.link)))
+        cid = self.ui.linkComboBox.findText(Qt.QString(self.__linkText(self.link)))
         if cid < 0:
             cid = 0
         self.ui.linkComboBox.setCurrentIndex(cid) 
 
         if self.available_names:
-            completer = QCompleter(self.available_names, self)
+            completer = Qt.QCompleter(self.available_names, self)
             self.ui.labelLineEdit.setCompleter(completer)
 
     def accept(self):
@@ -98,7 +99,7 @@ class LDataDlg(QDialog):
                 assert isinstance(shape, list)
                 self.shape = shape
         except:
-            QMessageBox.warning(self, "Wrong Data", "Wrong structure of Shape" )
+            Qt.QMessageBox.warning(self, "Wrong Data", "Wrong structure of Shape" )
             self.ui.shapeLineEdit.setFocus()
             return
             
@@ -106,7 +107,7 @@ class LDataDlg(QDialog):
 
            
         if not self.label:
-            QMessageBox.warning(self, "Wrong Data", "Empty data label" )
+            Qt.QMessageBox.warning(self, "Wrong Data", "Empty data label" )
             self.ui.labelLineEdit.setFocus()
             return
 
