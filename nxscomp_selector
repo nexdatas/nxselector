@@ -42,7 +42,7 @@ def main():
               'error': logging.ERROR,
               'critical': logging.CRITICAL}
 
-    usage = "usage: nxselector [-s server] [-l logging_level] [-v] [-n]"
+    usage = "usage: nxselector [-s server] [-l logging_level] [-v]"
 
     parser = OptionParser(usage=usage)
 
