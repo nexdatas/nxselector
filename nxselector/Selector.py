@@ -24,14 +24,13 @@
 import sys 
 import PyTango
  
- 
-from taurus.external.qt import Qt
-#from PyQt4.QtGui import (
-#    QDialog, QMessageBox, QDialogButtonBox, QFileDialog, 
-#    QPushButton,QHBoxLayout)
-#from PyQt4.QtCore import (
-#    SIGNAL, QSettings, QVariant,  QString)
-from taurus.qt.qtgui.base import TaurusBaseWidget
+from . import TAURUS
+if TAURUS: 
+    from taurus.external.qt import Qt
+else:
+    from . import PyQt as Qt
+
+
 from .ServerState import ServerState
 
 from .Selectable import Selectable
@@ -46,16 +45,14 @@ from .ui.ui_selector import Ui_Selector
 import logging
 logger = logging.getLogger(__name__)
 
-    
 
 ## main window class
-class Selector(Qt.QDialog, TaurusBaseWidget):
+class Selector(Qt.QDialog):
 
     ## constructor
     # \param parent parent widget
     def __init__(self, server=None, parent=None):
         Qt.QWidget.__init__(self, parent)
-        TaurusBaseWidget.__init__(self,'NXSExpDescriptionEditor')
         logger.debug("PARAMETERS: %s %s", 
                      server, parent)
 
@@ -326,3 +323,16 @@ class Selector(Qt.QDialog, TaurusBaseWidget):
                 self, 
                 "Error in updating Measurement Group",
                 str(e))
+
+from . import TAURUS
+if TAURUS: 
+    
+    from taurus.qt.qtgui.base import TaurusBaseWidget
+    class TSelector(Selector, TaurusBaseWidget):
+
+    ## constructor
+        # \param parent parent widget
+        def __init__(self, server=None, parent=None):
+            Selector.__init__(self, server, parent)
+            TaurusBaseWidget.__init__(self,'NXSExpDescriptionEditor')
+    

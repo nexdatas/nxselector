@@ -24,12 +24,11 @@
 import json
 import fnmatch
 
-#from PyQt4.QtGui import (QHBoxLayout, QVBoxLayout,
-#    QGroupBox, QGridLayout,
-#    QFrame, QWidgetItem)
-#from PyQt4.QtCore import (SIGNAL)
-
-from taurus.external.qt import Qt
+from . import TAURUS
+if TAURUS: 
+    from taurus.external.qt import Qt
+else:
+    from . import PyQt as Qt
 
 from .Element import DSElement, CPElement, CP, DS
 from .ElementModel import ElementModel

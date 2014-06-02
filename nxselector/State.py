@@ -21,13 +21,7 @@
 
 """ automatic tab """
 
-
-#from PyQt4.QtCore import (
-#    SIGNAL)
-#from PyQt4.QtGui import (QHBoxLayout,
-#    QGroupBox, QGridLayout, QFrame, QWidgetItem)
-
-from taurus.external.qt import Qt
+from . import PyQt as Qt
 
 from .Element import CPElement
 from .ElementModel import ElementModel

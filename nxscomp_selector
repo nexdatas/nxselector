@@ -28,11 +28,11 @@ from optparse import OptionParser
 #from PyQt4.QtGui import (QApplication, QIcon)
 
 import nxselector 
-from nxselector.Selector import Selector
 from nxselector.qrc import qrc_resources
 from nxselector import __version__
 
 logger = logging.getLogger(__name__)
+
 
 ## the main function
 def main():
@@ -87,9 +87,8 @@ def main():
 #    gc.set_debug(gc.DEBUG_LEAK | gc.DEBUG_STATS)
 #    gc.set_debug(gc.DEBUG_LEAK )
 
-        
-#    app = QApplication([])
 
+    app = None
     if nxselector.TAURUS:
         from taurus.external.qt import Qt
         import taurus.qt.qtgui.application
@@ -97,22 +96,32 @@ def main():
         
         app = Application.instance()
         standalone = app is None
+        
+        if standalone:
+            app = Application()
+    else:
+        from nxselector import PyQt as Qt
+        standalone = True
+        
+        app = Qt.QApplication([])
+        
 
+        if options.style:
+            app.setStyle(options.style)
+        if options.stylesheet:
+            app.setStyle(options.stylesheet)
 
-    if standalone:
-        app = Application()
-
-    if options.style:
-        app.setStyle(options.style)
-    if options.stylesheet:
-        app.setStyle(options.stylesheet)
-#    app.setWindowIcon(QIcon(":/icon.png"))
     app.setWindowIcon(Qt.QIcon(":/configtools.png"))
     app.setOrganizationName("DESY")
     app.setOrganizationDomain("desy.de")
     app.setApplicationName("NXS Component Selector")
-    form = Selector(options.server)
-
+    if nxselector.TAURUS:
+        from nxselector.Selector import TSelector
+        form = TSelector(options.server)
+    else:
+        from nxselector.Selector import Selector
+        form = Selector(options.server)
+    
     form.show()
 
     if standalone:

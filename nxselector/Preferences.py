@@ -25,10 +25,11 @@ import os
 import PyTango
 import json
 
-#from PyQt4.QtGui import (QMessageBox, QCompleter, QFileDialog)
-#from PyQt4.QtCore import (SIGNAL, QString)
-
-from taurus.external.qt import Qt
+from . import TAURUS
+if TAURUS: 
+    from taurus.external.qt import Qt
+else:
+    from . import PyQt as Qt
 
 
 from .Views import (TableView, OneTableView, 

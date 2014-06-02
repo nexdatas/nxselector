@@ -22,16 +22,11 @@
 """ main window application dialog """
 
 
-
-#from PyQt4.QtGui import (QTableView, QHeaderView, QWidget, QGridLayout, 
-#                         QCheckBox, QSpacerItem,
-#                         QRadioButton, QPushButton, QWidgetItem,
-#                         QSizePolicy, QLabel)
-#from PyQt4.QtCore import (
-#    SIGNAL, Qt, QVariant, SIGNAL, QSignalMapper, SLOT)
-
-from taurus.external.qt import Qt
-
+from . import TAURUS
+if TAURUS: 
+    from taurus.external.qt import Qt
+else:
+    from . import PyQt as Qt
 
 
 import logging

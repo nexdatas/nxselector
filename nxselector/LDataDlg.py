@@ -23,10 +23,11 @@
 
 import json
 
-#from PyQt4.QtGui import ( QMessageBox,
-#                          QDialog, QCompleter)
-#from PyQt4.QtCore import (QString)
-from taurus.external.qt import Qt
+from . import TAURUS
+if TAURUS: 
+    from taurus.external.qt import Qt
+else:
+    from . import PyQt as Qt
 
 from .ui.ui_ldatadlg import Ui_LDataDlg
 
