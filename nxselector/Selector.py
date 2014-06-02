@@ -125,9 +125,10 @@ class Selector(Qt.QDialog, TaurusBaseWidget):
                      self.storage, self.preferences]
 
         self.createGUI()  
-        
-        self.restoreGeometry(
-            settings.value("Selector/Geometry"))
+       
+        sg = settings.value("Selector/Geometry")
+        if sg:
+            self.restoreGeometry(sg)
 
         self.title = 'NeXus Component Selector'
         self.setDirty()

@@ -21,11 +21,15 @@
 
 """ NXS Scan - GUI for setting sardana scans with NeXus Recorder"""
 
+import taurus.external.qt
+from taurus.external.qt import Qt
+
 import logging
 import sys
 from optparse import OptionParser
 
 #from PyQt4.QtGui import (QApplication, QIcon)
+
 
 import nxselector 
 from nxselector.Selector import Selector

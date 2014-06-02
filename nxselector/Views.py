@@ -416,7 +416,7 @@ class RadioDisView(CheckDisView):
 
     def __init__(self, parent=None):
         super(RadioDisView, self).__init__(parent)
-        self.widget = QRadioButton
+        self.widget = Qt.QRadioButton
 
 class ButtonDisView(CheckDisView):
 
