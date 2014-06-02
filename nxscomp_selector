@@ -53,12 +53,6 @@ def main():
         dest="version", 
         help="program version")
     parser.add_option(
-        "-n","--no-taurus", 
-        action="store_true",
-        default=False,
-        dest="notaurus", 
-        help="ignore taurus package")
-    parser.add_option(
         "-s","--server", dest="server", 
         help="configuration server")
     parser.add_option(
@@ -80,8 +74,6 @@ def main():
     if options.version:
         print (__version__)
         sys.exit(0)
-    if options.notaurus:
-        nxselector.TAURUS = False
 
 #    import gc
 #    gc.set_debug(gc.DEBUG_LEAK | gc.DEBUG_STATS)
@@ -90,13 +82,12 @@ def main():
         
 #    app = QApplication([])
 
-    if nxselector.TAURUS:
-        from taurus.external.qt import Qt
-        import taurus.qt.qtgui.application
-        Application = taurus.qt.qtgui.application.TaurusApplication
-        
-        app = Application.instance()
-        standalone = app is None
+    from taurus.external.qt import Qt
+    import taurus.qt.qtgui.application
+    Application = taurus.qt.qtgui.application.TaurusApplication
+    
+    app = Application.instance()
+    standalone = app is None
 
 
     if standalone:

@@ -25,6 +25,3 @@ GUI for setting Sardana NeXus Recorder
 
 ## version of the application
 __version__ = "1.4.1"
-
-##  taurus is used
-TAURUS = True
