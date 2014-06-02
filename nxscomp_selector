@@ -26,8 +26,8 @@ import sys
 from optparse import OptionParser
 
 #from PyQt4.QtGui import (QApplication, QIcon)
-from taurus.qt import Qt
 
+import nxselector 
 from nxselector.Selector import Selector
 from nxselector.qrc import qrc_resources
 from nxselector import __version__
@@ -42,7 +42,7 @@ def main():
               'error': logging.ERROR,
               'critical': logging.CRITICAL}
 
-    usage = "usage: nxselector [-s server] [-l logging_level] [-v]"
+    usage = "usage: nxselector [-s server] [-l logging_level] [-v] [-n]"
 
     parser = OptionParser(usage=usage)
 
@@ -52,6 +52,12 @@ def main():
         default=False,
         dest="version", 
         help="program version")
+    parser.add_option(
+        "-n","--no-taurus", 
+        action="store_true",
+        default=False,
+        dest="notaurus", 
+        help="ignore taurus package")
     parser.add_option(
         "-s","--server", dest="server", 
         help="configuration server")
@@ -66,8 +72,6 @@ def main():
         help="logging level, i.e. debug, info, warning, error, critical")
 
     (options, _) = parser.parse_args()
-
-
     if options.log:
         level_name = options.log
         level = levels.get(level_name, logging.NOTSET)
@@ -76,17 +80,25 @@ def main():
     if options.version:
         print (__version__)
         sys.exit(0)
+    if options.notaurus:
+        nxselector.TAURUS = False
 
 #    import gc
 #    gc.set_debug(gc.DEBUG_LEAK | gc.DEBUG_STATS)
 #    gc.set_debug(gc.DEBUG_LEAK )
+
         
 #    app = QApplication([])
-    import taurus.qt.qtgui.application
-    Application = taurus.qt.qtgui.application.TaurusApplication
-    
-    app = Application.instance()
-    standalone = app is None
+
+    if nxselector.TAURUS:
+        from taurus.external.qt import Qt
+        import taurus.qt.qtgui.application
+        Application = taurus.qt.qtgui.application.TaurusApplication
+        
+        app = Application.instance()
+        standalone = app is None
+
+
     if standalone:
         app = Application()
 

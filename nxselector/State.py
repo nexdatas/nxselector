@@ -27,7 +27,7 @@
 #from PyQt4.QtGui import (QHBoxLayout,
 #    QGroupBox, QGridLayout, QFrame, QWidgetItem)
 
-from taurus.qt import Qt
+from taurus.external.qt import Qt
 
 from .Element import CPElement
 from .ElementModel import ElementModel
@@ -64,23 +64,23 @@ class State(object):
             child = self.layout.takeAt(0)
             while child:
                 self.layout.removeItem(child)
-                if isinstance(child, QWidgetItem):
+                if isinstance(child, Qt.QWidgetItem):
                     child.widget().hide()
                     child.widget().close()
                     self.layout.removeWidget(child.widget())
                 child = self.layout.takeAt(0)
         else: 
-            self.layout = QHBoxLayout(self.ui.state)
+            self.layout = Qt.QHBoxLayout(self.ui.state)
 
 
-        mframe = QFrame(self.ui.state)
-        mframe.setFrameShape(QFrame.StyledPanel)
-        mframe.setFrameShadow(QFrame.Raised)
-        layout_groups = QHBoxLayout(mframe)
+        mframe = Qt.QFrame(self.ui.state)
+        mframe.setFrameShape(Qt.QFrame.StyledPanel)
+        mframe.setFrameShadow(Qt.QFrame.Raised)
+        layout_groups = Qt.QHBoxLayout(mframe)
 
-        mgroup = QGroupBox(mframe)
+        mgroup = Qt.QGroupBox(mframe)
         mgroup.setTitle("Automatic")
-        layout_auto = QGridLayout(mgroup)
+        layout_auto = Qt.QGridLayout(mgroup)
         mview = self.userView(mgroup)
         mview.rowMax = self.rowMax
 
@@ -90,14 +90,14 @@ class State(object):
         self.aview = mview
         self.layout.addWidget(mframe)
 
-        mframe = QFrame(self.ui.state)
-        mframe.setFrameShape(QFrame.StyledPanel)
-        mframe.setFrameShadow(QFrame.Raised)
-        layout_groups = QHBoxLayout(mframe)
+        mframe = Qt.QFrame(self.ui.state)
+        mframe.setFrameShape(Qt.QFrame.StyledPanel)
+        mframe.setFrameShadow(Qt.QFrame.Raised)
+        layout_groups = Qt.QHBoxLayout(mframe)
 
-        mgroup = QGroupBox(mframe)
+        mgroup = Qt.QGroupBox(mframe)
         mgroup.setTitle("Default")
-        layout_auto = QGridLayout(mgroup)
+        layout_auto = Qt.QGridLayout(mgroup)
         mview = self.userView(mgroup)
         mview.rowMax = self.rowMax
 
@@ -133,18 +133,18 @@ class State(object):
         md = ElementModel(self.agroup)
         md.enable = False
         self.aview.setModel(md)    
-        md.connect(md, SIGNAL("componentChecked"), 
+        md.connect(md, Qt.SIGNAL("componentChecked"), 
                    self.__componentChecked)
 
         md = ElementModel(self.mgroup)
         md.enable = False
         self.mview.setModel(md)    
-        md.connect(md, SIGNAL("componentChecked"), 
+        md.connect(md, Qt.SIGNAL("componentChecked"), 
                    self.__componentChecked)
 
 
     def __componentChecked(self):
-        self.ui.state.emit(SIGNAL("componentChecked"))
+        self.ui.state.emit(Qt.SIGNAL("componentChecked"))
 
     def updateViews(self):
         self.aview.reset()

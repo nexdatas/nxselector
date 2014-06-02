@@ -28,7 +28,7 @@
 #    QDialog, QTableWidgetItem, QMessageBox, QAbstractItemView,
 #    QWidget, QHBoxLayout)
 
-from taurus.qt import Qt
+from taurus.external.qt import Qt
 
 from .ui.ui_edlistdlg import Ui_EdListDlg
 
@@ -127,12 +127,12 @@ class EdListWg(Qt.QWidget):
             item = Qt.QTableWidgetItem(str(value))
             self.ui.tableWidget.setItem(row, 1, item)
         self.ui.tableWidget.resizeColumnsToContents()
-        self.ui.tableWidget.setSelectionBehavior(QAbstractItemView.SelectRows)
+        self.ui.tableWidget.setSelectionBehavior(Qt.QAbstractItemView.SelectRows)
         self.ui.tableWidget.setSelectionMode(
-            QAbstractItemView.SingleSelection)
+            Qt.QAbstractItemView.SingleSelection)
         self.ui.tableWidget.horizontalHeader(
             ).setStretchLastSection(True)        
-        self.ui.tableWidget.setEditTriggers(QAbstractItemView.NoEditTriggers)
+        self.ui.tableWidget.setEditTriggers(Qt.QAbstractItemView.NoEditTriggers)
         if sitem is not None:
             sitem.setSelected(True)
             self.ui.tableWidget.setCurrentItem(sitem)
@@ -188,3 +188,5 @@ class EdListWg(Qt.QWidget):
         self.__populateTable()
 
         
+
+#  LocalWords:  resizeColumnsToContents

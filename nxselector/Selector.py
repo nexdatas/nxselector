@@ -25,7 +25,7 @@ import sys
 import PyTango
  
  
-from taurus.qt import Qt
+from taurus.external.qt import Qt
 #from PyQt4.QtGui import (
 #    QDialog, QMessageBox, QDialogButtonBox, QFileDialog, 
 #    QPushButton,QHBoxLayout)
@@ -54,7 +54,8 @@ class Selector(Qt.QDialog, TaurusBaseWidget):
     ## constructor
     # \param parent parent widget
     def __init__(self, server=None, parent=None):
-        super(Selector, self).__init__(parent)
+        Qt.QWidget.__init__(self, parent)
+        TaurusBaseWidget.__init__(self,'NXSExpDescriptionEditor')
         logger.debug("PARAMETERS: %s %s", 
                      server, parent)
 
@@ -79,11 +80,8 @@ class Selector(Qt.QDialog, TaurusBaseWidget):
 
         settings = Qt.QSettings()
 
-        self.userView = self.restoreString(
-            settings, 'Preferences/UserView', 'CheckBoxes')
-
-        self.rowMax = self.restoreInt(
-            settings, 'Preferences/RowMax', 20)
+        self.userView = settings.value('Preferences/UserView', 'CheckBoxes')
+        self.rowMax = int(settings.value('Preferences/RowMax', 20))
 
 
         ## user interface
@@ -95,17 +93,17 @@ class Selector(Qt.QDialog, TaurusBaseWidget):
             self.preferences.views[self.userView],
             self.rowMax)
 
-        self.preferences.mgroups = str(self.restoreString(
-                settings, 'Preferences/Groups', '{}'))
-        self.preferences.frames = self.restoreString(
-                settings, 'Preferences/Frames', '[]')
-
-        self.preferences.mgroupshelp = self.restoreList(
-                settings, 'Preferences/GroupsHints', 
-                self.preferences.mgroupshelp)
-        self.preferences.frameshelp = self.restoreList(
-                settings, 'Preferences/FramesHints',
-                self.preferences.frameshelp)
+        self.preferences.mgroups = settings.value(
+            'Preferences/Groups', '{}')
+        self.preferences.frames = settings.value(
+            'Preferences/Frames', 
+            '[]')
+        self.preferences.mgroupshelp = settings.value(
+            'Preferences/GroupsHints', 
+            self.preferences.mgroupshelp)
+        self.preferences.frameshelp = settings.value(
+            'Preferences/FramesHints',
+            self.preferences.frameshelp)
         
         self.preferences.addHint(
             self.preferences.mgroups,
@@ -129,44 +127,10 @@ class Selector(Qt.QDialog, TaurusBaseWidget):
         self.createGUI()  
         
         self.restoreGeometry(
-            settings.value("Selector/Geometry").toByteArray())
+            settings.value("Selector/Geometry"))
 
         self.title = 'NeXus Component Selector'
         self.setDirty()
-
-
-    @classmethod    
-    def restoreInt(cls, settings, name, default):
-        res = default
-        try:
-            res = int(settings.value(name).toInt()[0])  
-            if not res:
-                res = default
-        except:
-            res = default
-        return res
-
-    @classmethod    
-    def restoreString(cls, settings, name, default):
-        res = default
-        try:
-            res = unicode(settings.value(name).toString())  
-            if not res:
-                res = default
-        except:
-            res = default
-        return res
-
-    @classmethod    
-    def restoreList(cls, settings, name, default):
-        res = default
-        try:
-            res = settings.value(name).toList()
-            if not res:
-                res = default
-        except:
-            res = default
-        return res
 
 
 
@@ -260,10 +224,10 @@ class Selector(Qt.QDialog, TaurusBaseWidget):
             Qt.QVariant(str(self.preferences.frames)))
         settings.setValue(
             "Preferences/FramesHints",
-            Qt.QVariant(str(self.preferences.frameshelp)))
+            Qt.QVariant(self.preferences.frameshelp))
         settings.setValue(
             "Preferences/GroupsHints",
-            Qt.QVariant(str(self.preferences.mgroupshelp)))
+            Qt.QVariant(self.preferences.mgroupshelp))
 
                     
     def closeEvent(self, _):
@@ -339,9 +303,9 @@ class Selector(Qt.QDialog, TaurusBaseWidget):
             self.resetAll()
 
     def __applyClicked(self):
-        self.ui.buttonBox.button(QDialogButtonBox.Apply).hide()
-        self.ui.buttonBox.button(QDialogButtonBox.Apply).show()
-        self.ui.buttonBox.button(QDialogButtonBox.Apply).setFocus()
+        self.ui.buttonBox.button(Qt.QDialogButtonBox.Apply).hide()
+        self.ui.buttonBox.button(Qt.QDialogButtonBox.Apply).show()
+        self.ui.buttonBox.button(Qt.QDialogButtonBox.Apply).setFocus()
         self.apply()
 
 

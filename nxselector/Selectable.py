@@ -29,7 +29,7 @@ import fnmatch
 #    QFrame, QWidgetItem)
 #from PyQt4.QtCore import (SIGNAL)
 
-from taurus.qt import Qt
+from taurus.external.qt import Qt
 
 from .Element import DSElement, CPElement, CP, DS
 from .ElementModel import ElementModel

@@ -27,7 +27,7 @@ import json
 #                          QDialog, QCompleter)
 #from PyQt4.QtCore import (SIGNAL, QString)
 
-from taurus.qt import Qt
+from taurus.external.qt import Qt
 
 from .ui.ui_eddatadlg import Ui_EdDataDlg
 

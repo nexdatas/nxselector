@@ -26,7 +26,7 @@
 #    SIGNAL)
 #from PyQt4.QtGui import (
 #    QHBoxLayout, QWidgetItem)
-from taurus.qt import Qt
+from taurus.external.qt import Qt
 
 from .EdListDlg import EdListWg
 
@@ -54,13 +54,13 @@ class Data(object):
             child = self.layout.takeAt(0)
             while child:
                 self.layout.removeItem(child)
-                if isinstance(child, QWidgetItem):
+                if isinstance(child, Qt.QWidgetItem):
                     child.widget().hide()
                     child.widget().close()
                     self.layout.removeWidget(child.widget())
                 child = self.layout.takeAt(0)
         else: 
-            self.layout = QHBoxLayout(self.ui.data)
+            self.layout = Qt.QHBoxLayout(self.ui.data)
 
 
         self.form  = EdListWg(self.ui.data)
@@ -83,7 +83,7 @@ class Data(object):
         self.ui.data.update()
         if self.ui.tabWidget.currentWidget() == self.ui.data:
             self.ui.data.show()
-        self.ui.data.connect(self.form, SIGNAL("dirty"), self.__setDirty)
+        self.ui.data.connect(self.form, Qt.SIGNAL("dirty"), self.__setDirty)
 
 
     def reset(self):
@@ -91,5 +91,5 @@ class Data(object):
 
 
     def __setDirty(self):
-        self.ui.data.emit(SIGNAL("dirty"))
+        self.ui.data.emit(Qt.SIGNAL("dirty"))
         

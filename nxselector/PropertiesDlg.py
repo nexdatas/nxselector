@@ -26,7 +26,7 @@
 #    QDialog, QTableWidgetItem, QMessageBox, QAbstractItemView,
 #    QWidget, QHBoxLayout)
 # from PyQt4.QtCore import (SIGNAL, Qt)
-from taurus.qt import Qt
+from taurus.external.qt import Qt
 
 from .ui.ui_edlistdlg import Ui_EdListDlg
 

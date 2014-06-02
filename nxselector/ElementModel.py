@@ -28,7 +28,7 @@
 #    SIGNAL, Qt, QVariant, QAbstractTableModel,
 #    QModelIndex, QString)
 
-from taurus.qt import Qt
+from taurus.external.qt import Qt
 
 from .Element import DS, CP
 
@@ -226,7 +226,7 @@ class ElementModel(Qt.QAbstractTableModel):
             if column == 0:
                 if role == Qt.Qt.CheckStateRole: 
                     index3 = self.index(index.row(), 2) 
-                    device.checked = value.toBool()
+                    device.checked = value
 
                     self.emit(Qt.SIGNAL("dataChanged(QModelIndex, QModelIndex)"), 
                               index, index3)
@@ -245,7 +245,7 @@ class ElementModel(Qt.QAbstractTableModel):
             elif column == 2:
                 if role == Qt.Qt.CheckStateRole: 
                     index3 = self.index(index.row(), 2) 
-                    device.display = value.toBool()
+                    device.display = value
                     
                     self.emit(Qt.SIGNAL("dataChanged(QModelIndex, QModelIndex)"), 
                               index, index3)

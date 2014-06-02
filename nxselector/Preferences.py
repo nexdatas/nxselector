@@ -28,7 +28,7 @@ import json
 #from PyQt4.QtGui import (QMessageBox, QCompleter, QFileDialog)
 #from PyQt4.QtCore import (SIGNAL, QString)
 
-from taurus.qt import Qt
+from taurus.external.qt import Qt
 
 
 from .Views import (TableView, OneTableView, 

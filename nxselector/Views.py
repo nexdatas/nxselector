@@ -30,7 +30,7 @@
 #from PyQt4.QtCore import (
 #    SIGNAL, Qt, QVariant, SIGNAL, QSignalMapper, SLOT)
 
-from taurus.qt import Qt
+from taurus.external.qt import Qt
 
 
 
@@ -227,7 +227,8 @@ class CheckerView(Qt.QWidget):
 
     @classmethod
     def __createList(cls, text, words = 7):
-        lst = str(text.toString()).split()
+#        lst = str(text.toString()).split()
+        lst = str(text).split()
         cnt = 0
         st = ""
         for sl in lst[:-1]:
@@ -247,9 +248,11 @@ class CheckerView(Qt.QWidget):
         ind1 = self.model.index(row, 1)
         ind3 = self.model.index(row, 3)
         ind4 = self.model.index(row, 4)
-        name = self.model.data(ind, role = Qt.Qt.DisplayRole).toString()
+        name = self.model.data(ind, role = Qt.Qt.DisplayRole)
+#        name = self.model.data(ind, role = Qt.Qt.DisplayRole).toString()
         
-        label = self.model.data(ind1, role = Qt.Qt.DisplayRole).toString()
+        label = self.model.data(ind1, role = Qt.Qt.DisplayRole)
+ #       label = self.model.data(ind1, role = Qt.Qt.DisplayRole).toString()
         scans = self.model.data(ind3, role = Qt.Qt.DisplayRole)
         depends = self.model.data(ind4, role = Qt.Qt.DisplayRole)
         tscans = self.__createList(scans)
