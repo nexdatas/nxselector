@@ -198,7 +198,12 @@ class ServerState(object):
         if not self.scanDir:
             raise Exception("ScanDir not defined")
         self.storeSettings()
-        self.__dp.UpdateMntGrp()
+        mgconf = self.__dp.UpdateMntGrp()
+        conf = {}
+        conf['MntGrpConfigs'] = {}
+        conf['ActiveMntGrp'] = self.mntgrp
+        conf['MntGrpConfigs'][self.mntgrp] = json.loads(mgconf)
+        return conf
             
     def save(self, filename):
         self.storeSettings()
