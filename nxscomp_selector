@@ -106,7 +106,7 @@ def main():
     app.setOrganizationName("DESY")
     app.setOrganizationDomain("desy.de")
     app.setApplicationName("NXS Component Selector")
-    form = Selector(options.server)
+    form = Selector(options.server, standalone = True)
 
     form.show()
 

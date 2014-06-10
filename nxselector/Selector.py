@@ -53,13 +53,13 @@ class Selector(Qt.QDialog, TaurusBaseWidget):
 
     ## constructor
     # \param parent parent widget
-    def __init__(self, server=None, parent=None):
+    def __init__(self, server=None, standalone=False, parent=None):
         Qt.QWidget.__init__(self, parent)
         TaurusBaseWidget.__init__(self,'NXSExpDescriptionEditor')
         logger.debug("PARAMETERS: %s %s", 
                      server, parent)
 
-
+        self.__standalone = standalone
         try:
             self.state = ServerState(server)
         except PyTango.DevFailed as e:
@@ -142,6 +142,8 @@ class Selector(Qt.QDialog, TaurusBaseWidget):
         self.ui.buttonBox.setStandardButtons(
            Qt.QDialogButtonBox.Reset | Qt.QDialogButtonBox.Apply \
                 | Qt.QDialogButtonBox.Close)
+        if not self.__standalone:
+            self.ui.buttonBox.button(Qt.QDialogButtonBox.Close).hide()
 
         flayout = Qt.QHBoxLayout(self.ui.timerButtonFrame)
         flayout.setContentsMargins(0,0,0,0)
