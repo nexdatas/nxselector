@@ -67,7 +67,7 @@ class Preferences(object):
             Qt.QString(
                 '[[[["Counters1", 0], ["Counters2", 2]], [["VCounters", 3]]],'
                 + '[[["MCAs", 1], ["SCAs", 4]]], [[["Misc", 5] ]]]'), 
-            Qt.QString('[[[["My Controllers", 0]]],[[["My Components", 1]]]]'), 
+            Qt.QString('[[[["My Channels", 0]]],[[["My Components", 1]]]]'), 
             Qt.QString('')]
         self.mgroupshelp = [            
             Qt.QString('{ "3":[["exp_adc*", 0]], "4":[["exp_c*",0]],' \

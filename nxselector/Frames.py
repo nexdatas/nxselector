@@ -39,7 +39,7 @@ class Frames(object):
         self.cpid = None
         self.__dct = None
         self.__settings = None
-        self.defaultds = [[["Controllers", 0]]]
+        self.defaultds = [[["Channels", 0]]]
         self.defaultcp = [[["Components", 1]]]
         self.set(settings, ds, cp)
 
