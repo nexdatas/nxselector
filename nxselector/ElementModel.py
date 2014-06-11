@@ -21,13 +21,6 @@
 
 """ device Model """
 
-#from PyQt4.QtGui import (
-#    QCheckBox,
-#    QItemDelegate, QStyledItemDelegate)
-#from PyQt4.QtCore import (
-#    SIGNAL, Qt, QVariant, QAbstractTableModel,
-#    QModelIndex, QString)
-
 from taurus.external.qt import Qt
 
 from .Element import DS, CP

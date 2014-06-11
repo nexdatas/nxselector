@@ -22,10 +22,6 @@
 """ automatic tab """
 
 
-#from PyQt4.QtCore import (
-#    SIGNAL)
-#from PyQt4.QtGui import (
-#    QHBoxLayout, QWidgetItem)
 from taurus.external.qt import Qt
 
 from .EdListDlg import EdListWg

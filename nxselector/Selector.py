@@ -26,11 +26,6 @@ import PyTango
  
  
 from taurus.external.qt import Qt
-#from PyQt4.QtGui import (
-#    QDialog, QMessageBox, QDialogButtonBox, QFileDialog, 
-#    QPushButton,QHBoxLayout)
-#from PyQt4.QtCore import (
-#    SIGNAL, QSettings, QVariant,  QString)
 from taurus.qt.qtgui.base import TaurusBaseWidget
 from .ServerState import ServerState
 

@@ -22,10 +22,6 @@
 """  label dialog """
 
 
-#from PyQt4.QtGui import (
-#    QDialog, QTableWidgetItem, QMessageBox, QAbstractItemView,
-#    QWidget, QHBoxLayout)
-# from PyQt4.QtCore import (SIGNAL, Qt)
 from taurus.external.qt import Qt
 
 from .ui.ui_edlistdlg import Ui_EdListDlg

@@ -23,10 +23,6 @@
 
 import json
 
-#from PyQt4.QtGui import ( QMessageBox,
-#                          QDialog, QCompleter)
-#from PyQt4.QtCore import (SIGNAL, QString)
-
 from taurus.external.qt import Qt
 
 from .ui.ui_eddatadlg import Ui_EdDataDlg
