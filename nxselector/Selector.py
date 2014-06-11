@@ -282,8 +282,6 @@ class Selector(Qt.QDialog, TaurusBaseWidget):
     def resetConfiguration(self, expconf):
         logger.debug("reset Configuration")
         conf = self.state.getConfiguration()
-        print "CONF:", conf
-        print "EXPCONF:", expconf
         if conf != expconf:
             replay = Qt.QMessageBox.question(
                 self.ui.preferences, 
