@@ -48,13 +48,18 @@ class Selector(Qt.QDialog, TaurusBaseWidget):
 
     ## constructor
     # \param parent parent widget
-    def __init__(self, server=None, standalone=False, parent=None):
+    def __init__(self, server=None, standalone=False, 
+                 organization = 'DESY', application = 'NXS Component Selector',
+                 parent=None):
         Qt.QWidget.__init__(self, parent)
         TaurusBaseWidget.__init__(self,'NXSExpDescriptionEditor')
         logger.debug("PARAMETERS: %s %s", 
                      server, parent)
+        self.__organization = organization
+        self.__application = application
 
         self.__standalone = standalone
+
         try:
             self.state = ServerState(server)
         except PyTango.DevFailed as e:
@@ -73,7 +78,7 @@ class Selector(Qt.QDialog, TaurusBaseWidget):
 
         self.state.fetchSettings()
 
-        settings = Qt.QSettings()
+        settings = Qt.QSettings(self.__organization, self.__application, self)
 
         self.userView = settings.value('Preferences/UserView', 'CheckBoxes')
         self.rowMax = int(settings.value('Preferences/RowMax', 20))
@@ -213,7 +218,7 @@ class Selector(Qt.QDialog, TaurusBaseWidget):
         
 
     def __saveSettings(self):
-        settings = Qt.QSettings()
+        settings = Qt.QSettings(self.__organization, self.__application, self)
         settings.setValue(
             "Selector/Geometry",
             Qt.QVariant(self.saveGeometry()))
@@ -237,8 +242,9 @@ class Selector(Qt.QDialog, TaurusBaseWidget):
             Qt.QVariant(self.preferences.mgroupshelp))
 
                     
-    def closeEvent(self, _):
+    def close(self):
         self.__saveSettings()
+        Qt.QWidget.close(self)
 
     def resetServer(self):
         logger.debug("reset server")
