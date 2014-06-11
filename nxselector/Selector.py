@@ -144,9 +144,9 @@ class Selector(Qt.QDialog, TaurusBaseWidget):
             self.ui.mntServerLineEdit.hide()
             self.ui.mntServerLabel.hide()
 
-        self.effect = Qt.QGraphicsDropShadowEffect(self)
-        self.effect.setBlurRadius(0)
-        self.effect.setOffset(1,1)
+#        self.effect = Qt.QGraphicsDropShadowEffect(self)
+#        self.effect.setBlurRadius(0)
+#        self.effect.setOffset(1,1)
 
 
         flayout = Qt.QHBoxLayout(self.ui.timerButtonFrame)
@@ -214,7 +214,7 @@ class Selector(Qt.QDialog, TaurusBaseWidget):
         else:
             self.setWindowTitle(self.title)
             self.ui.statusLabel.setText('<font color=green size=6><b>APPLIED</b></font>' )
-        self.ui.statusLabel.setGraphicsEffect(self.effect)
+#        self.ui.statusLabel.setGraphicsEffect(self.effect)
         
 
     def __saveSettings(self):
@@ -242,9 +242,11 @@ class Selector(Qt.QDialog, TaurusBaseWidget):
             Qt.QVariant(self.preferences.mgroupshelp))
 
                     
-    def close(self):
+    def closeEvent(self, event):
+        logger.debug("close event")
         self.__saveSettings()
-        Qt.QWidget.close(self)
+        Qt.QWidget.close(self, event)
+        logger.debug("close event ended")
 
     def resetServer(self):
         logger.debug("reset server")
