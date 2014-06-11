@@ -139,6 +139,11 @@ class Selector(Qt.QDialog, TaurusBaseWidget):
             self.ui.mntServerLineEdit.hide()
             self.ui.mntServerLabel.hide()
 
+        self.effect = Qt.QGraphicsDropShadowEffect(self)
+        self.effect.setBlurRadius(0)
+        self.effect.setOffset(1,1)
+
+
         flayout = Qt.QHBoxLayout(self.ui.timerButtonFrame)
         flayout.setContentsMargins(0,0,0,0)
         self.ui.timerAddPushButton = Qt.QPushButton("+") 
@@ -204,6 +209,7 @@ class Selector(Qt.QDialog, TaurusBaseWidget):
         else:
             self.setWindowTitle(self.title)
             self.ui.statusLabel.setText('<font color=green size=64><b>APPLIED</b></font>' )
+        self.ui.statusLabel.setGraphicsEffect(self.effect)
         
 
     def __saveSettings(self):
