@@ -134,11 +134,8 @@ class Selector(Qt.QDialog, TaurusBaseWidget):
     # \brief It create dialogs for the main window application
     def createGUI(self):
         self.ui.setupUi(self)
-        self.ui.buttonBox.setStandardButtons(
-           Qt.QDialogButtonBox.Reset | Qt.QDialogButtonBox.Apply \
-                | Qt.QDialogButtonBox.Close)
         if not self.__standalone:
-            self.ui.buttonBox.button(Qt.QDialogButtonBox.Close).hide()
+            self.ui.closePushButton.hide()
             self.ui.mntServerLineEdit.hide()
             self.ui.mntServerLabel.hide()
 
@@ -160,9 +157,11 @@ class Selector(Qt.QDialog, TaurusBaseWidget):
             self.ui.viewComboBox.setCurrentIndex(cid) 
         self.ui.rowMaxSpinBox.setValue(self.rowMax)    
             
-        self.connect(self.ui.buttonBox.button(Qt.QDialogButtonBox.Apply), 
+        self.connect(self.ui.closePushButton, 
+                     Qt.SIGNAL("pressed()"), self.close)
+        self.connect(self.ui.applyPushButton,
                      Qt.SIGNAL("pressed()"), self.__applyClicked)
-        self.connect(self.ui.buttonBox.button(Qt.QDialogButtonBox.Reset), 
+        self.connect(self.ui.resetPushButton,
                      Qt.SIGNAL("pressed()"), self.__resetClicked)
 
         self.connect(self.ui.cnfLoadPushButton, 
@@ -200,9 +199,11 @@ class Selector(Qt.QDialog, TaurusBaseWidget):
 
     def setDirty(self, flag = True):
         if flag:
-            self.setWindowTitle(self.title + ' **[NOT APPLIED]**' )
+            self.ui.statusLabel.setText('<font color=red size=64><b>NOT APPLIED</b></font>' )
+            self.setWindowTitle(self.title + ' * ' )
         else:
-            self.setWindowTitle(self.title)       
+            self.setWindowTitle(self.title)
+            self.ui.statusLabel.setText('<font color=green size=64><b>APPLIED</b></font>' )
         
 
     def __saveSettings(self):
@@ -298,9 +299,9 @@ class Selector(Qt.QDialog, TaurusBaseWidget):
 
         
     def __resetClicked(self):
-        self.ui.buttonBox.button(Qt.QDialogButtonBox.Reset).hide()
-        self.ui.buttonBox.button(Qt.QDialogButtonBox.Reset).show()
-        self.ui.buttonBox.button(Qt.QDialogButtonBox.Reset).setFocus()
+        self.ui.resetPushButton.hide()
+        self.ui.resetPushButton.show()
+        self.ui.resetPushButton.setFocus()
         self.resetAll()
 
     def cnfLoad(self):    
@@ -327,9 +328,9 @@ class Selector(Qt.QDialog, TaurusBaseWidget):
             self.resetAll()
 
     def __applyClicked(self):
-        self.ui.buttonBox.button(Qt.QDialogButtonBox.Apply).hide()
-        self.ui.buttonBox.button(Qt.QDialogButtonBox.Apply).show()
-        self.ui.buttonBox.button(Qt.QDialogButtonBox.Apply).setFocus()
+        self.ui.applyPushButton.hide()
+        self.ui.applyPushButton.show()
+        self.ui.applyPushButton.setFocus()
         self.apply()
 
 

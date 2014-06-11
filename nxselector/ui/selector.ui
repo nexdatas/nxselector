@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>679</width>
-    <height>604</height>
+    <width>714</width>
+    <height>643</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -1016,13 +1016,61 @@
        </widget>
       </widget>
      </item>
+    </layout>
+   </item>
+   <item row="1" column="0">
+    <layout class="QHBoxLayout" name="horizontalLayout_12">
      <item>
-      <widget class="QDialogButtonBox" name="buttonBox">
-       <property name="toolTip">
+      <widget class="QPushButton" name="resetPushButton">
+       <property name="text">
+        <string>&amp;Reset</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <spacer name="horizontalSpacer_3">
+       <property name="orientation">
+        <enum>Qt::Horizontal</enum>
+       </property>
+       <property name="sizeHint" stdset="0">
+        <size>
+         <width>40</width>
+         <height>20</height>
+        </size>
+       </property>
+      </spacer>
+     </item>
+     <item>
+      <widget class="QLabel" name="statusLabel">
+       <property name="text">
         <string/>
        </property>
-       <property name="standardButtons">
-        <set>QDialogButtonBox::NoButton</set>
+      </widget>
+     </item>
+     <item>
+      <spacer name="horizontalSpacer_6">
+       <property name="orientation">
+        <enum>Qt::Horizontal</enum>
+       </property>
+       <property name="sizeHint" stdset="0">
+        <size>
+         <width>40</width>
+         <height>20</height>
+        </size>
+       </property>
+      </spacer>
+     </item>
+     <item>
+      <widget class="QPushButton" name="applyPushButton">
+       <property name="text">
+        <string>&amp;Apply</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="closePushButton">
+       <property name="text">
+        <string>&amp;Close</string>
        </property>
       </widget>
      </item>
@@ -1032,7 +1080,6 @@
  </widget>
  <tabstops>
   <tabstop>tabWidget</tabstop>
-  <tabstop>buttonBox</tabstop>
   <tabstop>fileScanLineEdit</tabstop>
   <tabstop>fileScanDirLineEdit</tabstop>
   <tabstop>fileScanIDSpinBox</tabstop>
@@ -1052,22 +1099,5 @@
   <tabstop>profSavePushButton</tabstop>
  </tabstops>
  <resources/>
- <connections>
-  <connection>
-   <sender>buttonBox</sender>
-   <signal>rejected()</signal>
-   <receiver>Selector</receiver>
-   <slot>close()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>380</x>
-     <y>625</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>380</x>
-     <y>324</y>
-    </hint>
-   </hints>
-  </connection>
- </connections>
+ <connections/>
 </ui>
