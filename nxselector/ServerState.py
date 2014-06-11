@@ -204,7 +204,16 @@ class ServerState(object):
         conf['ActiveMntGrp'] = self.mntgrp
         conf['MntGrpConfigs'][self.mntgrp] = json.loads(mgconf)
         return conf
-            
+
+    def getConfiguration(self):
+        mgconf = self.__dp.GetConfiguration()
+        conf = {}
+        conf['MntGrpConfigs'] = {}
+        conf['ActiveMntGrp'] = self.mntgrp
+        conf['MntGrpConfigs'][self.mntgrp] = json.loads(mgconf)
+        return json.dumps(conf)
+        
+
     def save(self, filename):
         self.storeSettings()
         self.storeData("ConfigFile", filename)

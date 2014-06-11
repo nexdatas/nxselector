@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>699</width>
+    <width>679</width>
     <height>604</height>
    </rect>
   </property>
@@ -236,7 +236,7 @@
                 <item row="0" column="0">
                  <widget class="QGroupBox" name="groupBox_7">
                   <property name="title">
-                   <string>Elements:</string>
+                   <string>Channels:</string>
                   </property>
                   <layout class="QGridLayout" name="gridLayout_16">
                    <item row="2" column="0">
@@ -407,12 +407,12 @@
                 <item>
                  <widget class="QGroupBox" name="fileGroupBox">
                   <property name="title">
-                   <string>Devices:</string>
+                   <string>Measurement and Writing:</string>
                   </property>
                   <layout class="QGridLayout" name="gridLayout_5">
                    <item row="1" column="0">
                     <layout class="QGridLayout" name="gridLayout_2">
-                     <item row="3" column="0">
+                     <item row="4" column="0">
                       <widget class="QLabel" name="devConfigLabel">
                        <property name="text">
                         <string>Config Server:</string>
@@ -422,49 +422,7 @@
                        </property>
                       </widget>
                      </item>
-                     <item row="0" column="1">
-                      <widget class="QLineEdit" name="mntServerLineEdit"/>
-                     </item>
-                     <item row="0" column="0">
-                      <widget class="QLabel" name="mntServerLabel">
-                       <property name="text">
-                        <string>Door:</string>
-                       </property>
-                       <property name="buddy">
-                        <cstring>mntServerLineEdit</cstring>
-                       </property>
-                      </widget>
-                     </item>
-                     <item row="1" column="0">
-                      <widget class="QLabel" name="mntGrpLabel">
-                       <property name="text">
-                        <string>MntGrp:</string>
-                       </property>
-                       <property name="buddy">
-                        <cstring>mntGrpLineEdit</cstring>
-                       </property>
-                      </widget>
-                     </item>
-                     <item row="1" column="1">
-                      <widget class="QLineEdit" name="mntGrpLineEdit"/>
-                     </item>
-                     <item row="3" column="1">
-                      <widget class="QLineEdit" name="devConfigLineEdit"/>
-                     </item>
-                     <item row="4" column="0">
-                      <widget class="QLabel" name="devWriterLabel">
-                       <property name="text">
-                        <string>Data Writer:</string>
-                       </property>
-                       <property name="buddy">
-                        <cstring>devWriterLineEdit</cstring>
-                       </property>
-                      </widget>
-                     </item>
-                     <item row="4" column="1">
-                      <widget class="QLineEdit" name="devWriterLineEdit"/>
-                     </item>
-                     <item row="2" column="1">
+                     <item row="2" column="2">
                       <spacer name="verticalSpacer_5">
                        <property name="orientation">
                         <enum>Qt::Vertical</enum>
@@ -479,6 +437,48 @@
                         </size>
                        </property>
                       </spacer>
+                     </item>
+                     <item row="1" column="0">
+                      <widget class="QLabel" name="mntGrpLabel">
+                       <property name="text">
+                        <string>MntGrp:</string>
+                       </property>
+                       <property name="buddy">
+                        <cstring>mntGrpLineEdit</cstring>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="1" column="2">
+                      <widget class="QLineEdit" name="mntGrpLineEdit"/>
+                     </item>
+                     <item row="4" column="2">
+                      <widget class="QLineEdit" name="devConfigLineEdit"/>
+                     </item>
+                     <item row="5" column="0">
+                      <widget class="QLabel" name="devWriterLabel">
+                       <property name="text">
+                        <string>Data Writer:</string>
+                       </property>
+                       <property name="buddy">
+                        <cstring>devWriterLineEdit</cstring>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="5" column="2">
+                      <widget class="QLineEdit" name="devWriterLineEdit"/>
+                     </item>
+                     <item row="3" column="0">
+                      <widget class="QLabel" name="mntServerLabel">
+                       <property name="text">
+                        <string>Door:</string>
+                       </property>
+                       <property name="buddy">
+                        <cstring>mntServerLineEdit</cstring>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="3" column="2">
+                      <widget class="QLineEdit" name="mntServerLineEdit"/>
                      </item>
                     </layout>
                    </item>
@@ -1036,7 +1036,6 @@
   <tabstop>fileScanLineEdit</tabstop>
   <tabstop>fileScanDirLineEdit</tabstop>
   <tabstop>fileScanIDSpinBox</tabstop>
-  <tabstop>mntServerLineEdit</tabstop>
   <tabstop>mntGrpLineEdit</tabstop>
   <tabstop>labelsPushButton</tabstop>
   <tabstop>dcLinksCheckBox</tabstop>

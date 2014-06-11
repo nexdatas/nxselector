@@ -66,13 +66,13 @@ class Selector(Qt.QDialog, TaurusBaseWidget):
             value = sys.exc_info()[1]
             Qt.QMessageBox.warning(
                 self, 
-                "Error in Setting Server",
+                "NXSSelector: Error in Setting Server",
                 "%s" % str("\n".join(["%s " % (err.desc) for err in value])))
             sys.exit(-1)
         except Exception as e:
             Qt.QMessageBox.warning(
                 self, 
-                "Error in Setting Server",
+                "NXSSelector: Error in Setting Server",
                 str(e))
             sys.exit(-1)
 
@@ -144,6 +144,8 @@ class Selector(Qt.QDialog, TaurusBaseWidget):
                 | Qt.QDialogButtonBox.Close)
         if not self.__standalone:
             self.ui.buttonBox.button(Qt.QDialogButtonBox.Close).hide()
+            self.ui.mntServerLineEdit.hide()
+            self.ui.mntServerLabel.hide()
 
         flayout = Qt.QHBoxLayout(self.ui.timerButtonFrame)
         flayout.setContentsMargins(0,0,0,0)
@@ -275,6 +277,32 @@ class Selector(Qt.QDialog, TaurusBaseWidget):
         self.state.updateControllers()
         self.reset()
         logger.debug("reset ENDED")
+
+
+    def resetConfiguration(self, expconf):
+        logger.debug("reset Configuration")
+        conf = self.state.getConfiguration()
+        print "CONF:", conf
+        print "EXPCONF:", expconf
+        if conf != expconf:
+            replay = Qt.QMessageBox.question(
+                self.ui.preferences, 
+                "NXSSelector: Configuration of Measument Group has been changed.", 
+                "Would you like to update the changes? " ,
+                Qt.QMessageBox.Yes|Qt.QMessageBox.No)
+            if replay == Qt.QMessageBox.Yes:
+                self.resetAll()
+        logger.debug("reset Configuration END")
+
+
+    def updateDoorName(self, door):
+        if str(door) != str(self.state.door):
+            self.ui.mntServerLineEdit.setText(door)
+            self.storate.apply()
+            logger.debug("change DoorName %s " % door)
+           
+        logger.debug("update DoorName")
+
         
     def __resetClicked(self):
         self.ui.buttonBox.button(Qt.QDialogButtonBox.Reset).hide()
@@ -318,15 +346,15 @@ class Selector(Qt.QDialog, TaurusBaseWidget):
             self.resetAll()
             self.ui.fileScanIDSpinBox.setValue(self.state.scanID)
             self.setDirty(False)
-            self.emit(Qt.SIGNAL('experimentConfigurationChanged'), conf)
+            self.emit(Qt.SIGNAL('experimentConfigurationChanged(QString)'), conf)
         except PyTango.DevFailed as e:
             value = sys.exc_info()[1]
             Qt.QMessageBox.warning(
                 self, 
-                "Error in updating Measurement Group",
+                "NXSSelector: Error in updating Measurement Group",
                 "%s" % str("\n".join(["%s " % (err.desc) for err in value])))
         except Exception as e:
             Qt.QMessageBox.warning(
                 self, 
-                "Error in updating Measurement Group",
+                "NXSSelector: Error in updating Measurement Group",
                 str(e))
