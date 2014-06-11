@@ -204,11 +204,11 @@ class Selector(Qt.QDialog, TaurusBaseWidget):
 
     def setDirty(self, flag = True):
         if flag:
-            self.ui.statusLabel.setText('<font color=red size=64><b>NOT APPLIED</b></font>' )
+            self.ui.statusLabel.setText('<font color=red size=6><b>NOT APPLIED</b></font>' )
             self.setWindowTitle(self.title + ' * ' )
         else:
             self.setWindowTitle(self.title)
-            self.ui.statusLabel.setText('<font color=green size=64><b>APPLIED</b></font>' )
+            self.ui.statusLabel.setText('<font color=green size=6><b>APPLIED</b></font>' )
         self.ui.statusLabel.setGraphicsEffect(self.effect)
         
 
