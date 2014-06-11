@@ -21,15 +21,10 @@
 
 """ NXS Scan - GUI for setting sardana scans with NeXus Recorder"""
 
-import taurus.external.qt
-from taurus.external.qt import Qt
 
 import logging
 import sys
 from optparse import OptionParser
-
-#from PyQt4.QtGui import (QApplication, QIcon)
-
 
 import nxselector 
 from nxselector.Selector import Selector
@@ -40,51 +35,7 @@ logger = logging.getLogger(__name__)
 
 ## the main function
 def main():
-    levels = {'debug': logging.DEBUG,
-              'info': logging.INFO,
-              'warning': logging.WARNING,
-              'error': logging.ERROR,
-              'critical': logging.CRITICAL}
 
-    usage = "usage: nxselector [-s server] [-l logging_level] [-v]"
-
-    parser = OptionParser(usage=usage)
-
-    parser.add_option(
-        "-v","--version", 
-        action="store_true",
-        default=False,
-        dest="version", 
-        help="program version")
-    parser.add_option(
-        "-s","--server", dest="server", 
-        help="configuration server")
-    parser.add_option(
-        "-t","--style", dest="style", 
-        help="Qt style")
-    parser.add_option(
-        "-y","--stylesheet", dest="stylesheet", 
-        help="Qt stylesheet")
-    parser.add_option(
-        "-l","--log", dest="log", 
-        help="logging level, i.e. debug, info, warning, error, critical")
-
-    (options, _) = parser.parse_args()
-    if options.log:
-        level_name = options.log
-        level = levels.get(level_name, logging.NOTSET)
-        logging.basicConfig(level=level)     
-
-    if options.version:
-        print (__version__)
-        sys.exit(0)
-
-#    import gc
-#    gc.set_debug(gc.DEBUG_LEAK | gc.DEBUG_STATS)
-#    gc.set_debug(gc.DEBUG_LEAK )
-
-        
-#    app = QApplication([])
 
     from taurus.external.qt import Qt
     import taurus.qt.qtgui.application
@@ -92,22 +43,55 @@ def main():
     
     app = Application.instance()
     standalone = app is None
-
+    server = None   
 
     if standalone:
-        app = Application()
+        import taurus.core.util.argparse
+        parser = taurus.core.util.argparse.get_taurus_parser()
+#        usage = "usage: %prog [-s server]"
+#        parser.usage = usage
 
-    if options.style:
-        app.setStyle(options.style)
-    if options.stylesheet:
-        app.setStyle(options.stylesheet)
-#    app.setWindowIcon(QIcon(":/icon.png"))
-    app.setWindowIcon(Qt.QIcon(":/configtools.png"))
-    app.setOrganizationName("DESY")
-    app.setOrganizationDomain("desy.de")
-    app.setApplicationName("NXS Component Selector")
-    form = Selector(options.server, standalone = True)
+        parser.add_option(
+            "-s","--server", dest="server", 
+            help="selector server")
+        parser.add_option(
+            "-t","--style", dest="style", 
+            help="Qt style")
+        parser.add_option(
+            "-y","--stylesheet", dest="stylesheet", 
+            help="Qt stylesheet")
+#        parser.add_option(
+#            "-l","--log", dest="log", 
+#            help="logging level, i.e. debug, info, warning, error, critical")
 
+
+
+        app = Application(
+            sys.argv, 
+            cmd_line_parser=parser, 
+            app_name="NXS Component Selector", 
+            app_version=nxselector.__version__,
+            org_domain="desy.de", 
+            org_name="DESY")
+        
+        app.setWindowIcon(Qt.QIcon(":/configtools.png"))
+
+
+#    levels = {'debug': logging.DEBUG,
+#              'info': logging.INFO,
+#              'warning': logging.WARNING,
+#              'error': logging.ERROR,
+#              'critical': logging.CRITICAL}
+        
+        (options, _) = parser.parse_args()
+        if options.style:
+            app.setStyle(options.style)
+        if options.server:
+            server = options.server
+        if options.stylesheet:
+            app.setStyle(options.stylesheet)
+
+    form = Selector(server, standalone = True)
     form.show()
 
     if standalone:
