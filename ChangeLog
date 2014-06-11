@@ -1,4 +1,5 @@
 2014-05-XX Jan Kotanski <jankotan@gmail.com>
+	* switching to taurus package
 	* emmitting signals on configuration change
 	* tagged as 1.5.0
 
