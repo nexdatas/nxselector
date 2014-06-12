@@ -245,7 +245,7 @@ class Selector(Qt.QDialog, TaurusBaseWidget):
     def closeEvent(self, event):
         logger.debug("close event")
         self.__saveSettings()
-        Qt.QWidget.close(self, event)
+        Qt.QWidget.closeEvent(self, event)
         logger.debug("close event ended")
 
     def resetServer(self):
