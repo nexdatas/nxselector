@@ -300,7 +300,7 @@ class Selector(Qt.QDialog, TaurusBaseWidget):
     def updateDoorName(self, door):
         if str(door) != str(self.state.door):
             self.ui.mntServerLineEdit.setText(door)
-            self.storate.apply()
+            self.storage.apply()
             logger.debug("change DoorName %s " % door)
            
         logger.debug("update DoorName")
