@@ -38,7 +38,9 @@ class ElementModel(Qt.QAbstractTableModel):
     # \param parent parent widget
     def __init__(self, group = None):
         super(ElementModel, self).__init__()
+        ## if enable selection for user 
         self.enable = True
+        ## list of device elements
         self.group = []
 
         if group:
@@ -46,7 +48,6 @@ class ElementModel(Qt.QAbstractTableModel):
 
     def rowCount(self, _=Qt.QModelIndex()):
         return len(self.group)
-        
 
     def columnCount(self, _=Qt.QModelIndex()):
         return 5
@@ -84,9 +85,7 @@ class ElementModel(Qt.QAbstractTableModel):
                         dds = device.state.ddsdict
                         if device.name in dds.keys():
                             nd = device.state.nodisplay
-                            if dds[device.name] in nd:
-                                return Qt.Qt.Unchecked
-                            else:
+                            if not dds[device.name] in nd:
                                 return Qt.Qt.Checked
                             
                     if device.display:
@@ -156,6 +155,7 @@ class ElementModel(Qt.QAbstractTableModel):
 
         enable2 = self.enable
         enable = True
+        comp = ''
         device = self.group[index.row()]
         flag = Qt.QAbstractTableModel.flags(self, index)
         column = index.column()
@@ -164,12 +164,12 @@ class ElementModel(Qt.QAbstractTableModel):
             if device.name in dds.keys():
                 enable = False
                 flag &= ~Qt.Qt.ItemIsEnabled
+                comp = dds[device.name]
         elif device.eltype == CP:
             mcp = device.state.mcplist
             acp = device.state.acplist
             if device.name in mcp or device.name in acp:
                 enable2 = False
-                
                 flag &= ~Qt.Qt.ItemIsEnabled
         if column == 0:
             if enable and enable2:        
@@ -190,7 +190,21 @@ class ElementModel(Qt.QAbstractTableModel):
                                 Qt.Qt.ItemIsEditable 
                                 )
         if column == 2:
-            if enable:        
+            cpncheck = False
+            if comp:
+                if comp in device.state.mcplist:
+                    cpncheck = False
+                    if not cpncheck and comp in device.state.nodisplay:
+                        cpncheck = True
+                elif comp in device.state.acpgroup:
+                    cpncheck = not device.state.acpgroup[comp]
+                    if not cpncheck and comp in device.state.nodisplay:
+                        cpncheck = True
+                elif comp in device.state.cpgroup:
+                    cpncheck = not device.state.cpgroup[comp]
+                    if not cpncheck and comp in device.state.nodisplay:
+                        cpncheck = True
+            if enable or cpncheck:
                 return Qt.Qt.ItemFlags(flag | 
                                     Qt.Qt.ItemIsEnabled  | 
                                     Qt.Qt.ItemIsUserCheckable 

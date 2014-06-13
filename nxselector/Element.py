@@ -130,6 +130,9 @@ class DSElement(Element):
             else:
                 if not status:
                     nd.append(self.name)
+                else:
+                    dc[self.name] = True
+                    
         else:
             if self.name in nd:
                 nd.remove(self.name)
@@ -200,6 +203,8 @@ class CPElement(Element):
             else:
                 if not status:
                     nd.append(self.name) 
+                else:
+                    dc[self.name] = True
         elif self.name in ac.keys():
             if self.name in nd:
                 if status:
@@ -207,7 +212,8 @@ class CPElement(Element):
             else:
                 if not status:
                     nd.append(self.name) 
-
+                else:
+                    ac[self.name] = True
         elif self.name in mc:
             if self.name in nd:
                 if status:
