@@ -23,7 +23,7 @@
 
 import sys 
 import PyTango
- 
+import json 
  
 from taurus.external.qt import Qt
 from taurus.qt.qtgui.base import TaurusBaseWidget
@@ -286,7 +286,8 @@ class Selector(Qt.QDialog, TaurusBaseWidget):
     def resetConfiguration(self, expconf):
         logger.debug("reset Configuration")
         conf = self.state.getConfiguration()
-        if conf != expconf:
+        econf = json.dumps(expconf)
+        if conf != econf:
             replay = Qt.QMessageBox.question(
                 self.ui.preferences, 
                 "NXSSelector: Configuration of Measument Group has been changed.", 
@@ -348,7 +349,7 @@ class Selector(Qt.QDialog, TaurusBaseWidget):
             self.resetAll()
             self.ui.fileScanIDSpinBox.setValue(self.state.scanID)
             self.setDirty(False)
-            self.emit(Qt.SIGNAL('experimentConfigurationChanged(QString)'), conf)
+            self.emit(Qt.SIGNAL('experimentConfigurationChanged'), conf)
         except PyTango.DevFailed as e:
             value = sys.exc_info()[1]
             Qt.QMessageBox.warning(
