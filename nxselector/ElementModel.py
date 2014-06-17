@@ -85,7 +85,8 @@ class ElementModel(Qt.QAbstractTableModel):
                         dds = device.state.ddsdict
                         if device.name in dds.keys():
                             nd = device.state.nodisplay
-                            if not dds[device.name] in nd:
+                            if not dds[device.name] in nd \
+                                    and dds[device.name]:
                                 return Qt.Qt.Checked
                             
                     if device.display:
@@ -155,7 +156,7 @@ class ElementModel(Qt.QAbstractTableModel):
 
         enable2 = self.enable
         enable = True
-        comp = ''
+        comp = None
         device = self.group[index.row()]
         flag = Qt.QAbstractTableModel.flags(self, index)
         column = index.column()
@@ -204,6 +205,8 @@ class ElementModel(Qt.QAbstractTableModel):
                     cpncheck = not device.state.cpgroup[comp]
                     if not cpncheck and comp in device.state.nodisplay:
                         cpncheck = True
+            elif comp is not None:
+                cpncheck = True
             if enable or cpncheck:
                 return Qt.Qt.ItemFlags(flag | 
                                     Qt.Qt.ItemIsEnabled  | 
