@@ -1,4 +1,4 @@
-2014-05-XX Jan Kotanski <jankotan@gmail.com>
+2014-06-17 Jan Kotanski <jankotan@gmail.com>
 	* switching to taurus package
 	* emmitting signals on configuration change
 	* enabling switching display checkbox for component datasources
