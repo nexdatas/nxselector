@@ -1,4 +1,8 @@
 2014-06-17 Jan Kotanski <jankotan@gmail.com>
+	* fixing timer displays
+	* tagged as 1.5.1
+
+2014-06-17 Jan Kotanski <jankotan@gmail.com>
 	* switching to taurus package
 	* emmitting signals on configuration change
 	* enabling switching display checkbox for component datasources
