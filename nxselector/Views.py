@@ -219,8 +219,7 @@ class CheckerView(Qt.QWidget):
 
     @classmethod
     def __createList(cls, text, words = 7):
-#        lst = str(text.toString()).split()
-        lst = str(text).split()
+        lst = str(text).split() if text else ''
         cnt = 0
         st = ""
         for sl in lst[:-1]:
