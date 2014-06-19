@@ -276,9 +276,19 @@ class Selector(Qt.QDialog, TaurusBaseWidget):
             tab.reset()
         logger.debug("reset selector ended")
 
-    def resetAll(self):
+    def resetAll(self, ask = True):
         logger.debug("reset ALL")
         self.state.updateControllers()
+        if self.state.isMntGrpChanged():
+            replay = Qt.QMessageBox.Yes
+            if ask:
+                replay = Qt.QMessageBox.question(
+                    self.ui.preferences, 
+                    "NXSSelector: Configuration of Measument Group has been changed.", 
+                    "Would you like to update the changes? " ,
+                    Qt.QMessageBox.Yes|Qt.QMessageBox.No)
+            if replay == Qt.QMessageBox.Yes:
+                self.state.importMntGrp()
         self.reset()
         logger.debug("reset ENDED")
 
@@ -294,7 +304,7 @@ class Selector(Qt.QDialog, TaurusBaseWidget):
                 "Would you like to update the changes? " ,
                 Qt.QMessageBox.Yes|Qt.QMessageBox.No)
             if replay == Qt.QMessageBox.Yes:
-                self.resetAll()
+                self.resetAll(False)
         logger.debug("reset Configuration END")
 
 
@@ -311,6 +321,7 @@ class Selector(Qt.QDialog, TaurusBaseWidget):
         self.ui.resetPushButton.hide()
         self.ui.resetPushButton.show()
         self.ui.resetPushButton.setFocus()
+        
         self.resetAll()
 
     def cnfLoad(self):    

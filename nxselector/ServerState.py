@@ -206,6 +206,13 @@ class ServerState(object):
         conf['MntGrpConfigs'][self.mntgrp] = json.loads(mgconf)
         return conf
 
+    def isMntGrpChanged(self):
+        return self.__dp.isMntGrpChanged()
+
+    def importMntGrp(self):
+        return self.__dp.importMntGrp()
+    
+
     def getConfiguration(self):
         mgconf = self.__dp.GetConfiguration()
         conf = {}
