@@ -41,6 +41,7 @@ class ServerState(object):
         ## tango database
         self.__db = PyTango.Database()
         self.setServer()
+        self.__dp.ping()
         self.fetchSettings()
             
 
@@ -260,6 +261,7 @@ class ServerState(object):
     def loadDict(self, name):    
         if not self.__dp:
             self.setServer()
+        self.__dp.ping()
         dsg = self.__dp.read_attribute(name).value
         res = {}
         if dsg:
@@ -273,6 +275,7 @@ class ServerState(object):
     def storeDict(self, name, value):    
         if not self.__dp:
             self.setServer()
+        self.__dp.ping()
 
         jvalue = json.dumps(value)    
         self.__dp.write_attribute(name, jvalue)
@@ -284,6 +287,7 @@ class ServerState(object):
     def storeList(self, name, value):    
         if not self.__dp:
             self.setServer()
+        self.__dp.ping()
 
         jvalue = json.dumps(value)    
         self.__dp.write_attribute(name, jvalue)
@@ -293,6 +297,7 @@ class ServerState(object):
     def storeData(self, name, value):    
         if not self.__dp:
             self.setServer()
+        self.__dp.ping()
 
         self.__dp.write_attribute(name, value)
         logger.debug(" %s = %s" % (name, value) )
@@ -301,6 +306,8 @@ class ServerState(object):
     def loadList(self, name, encoded = False):    
         if not self.__dp:
             self.setServer()
+        self.__dp.ping()
+
         dc = self.__dp.read_attribute(name).value
         logger.debug(dc)
         res = []
@@ -316,6 +323,7 @@ class ServerState(object):
     def loadData(self, name):    
         if not self.__dp:
             self.setServer()
+        self.__dp.ping()
         dc = self.__dp.read_attribute(name).value
         logger.debug(dc)
         return dc
@@ -324,6 +332,7 @@ class ServerState(object):
     def getList(self, name):    
         if not self.__dp:
             self.setServer()
+        self.__dp.ping()
         dc = self.__dp.command_inout(name)
         logger.debug(dc)
         res = []
