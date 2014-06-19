@@ -139,12 +139,12 @@ class PropertiesWg(Qt.QWidget):
                 if name in self.paths.keys() else ''
             self.ui.tableWidget.setItem(row, 4, Qt.QTableWidgetItem(value))
         self.ui.tableWidget.resizeColumnsToContents()
-        self.ui.tableWidget.setSelectionBehavior(QAbstractItemView.SelectRows)
+        self.ui.tableWidget.setSelectionBehavior(Qt.QAbstractItemView.SelectRows)
         self.ui.tableWidget.setSelectionMode(
-            QAbstractItemView.SingleSelection)
+            Qt.QAbstractItemView.SingleSelection)
         self.ui.tableWidget.horizontalHeader(
             ).setStretchLastSection(True)        
-        self.ui.tableWidget.setEditTriggers(QAbstractItemView.NoEditTriggers)
+        self.ui.tableWidget.setEditTriggers(Qt.QAbstractItemView.NoEditTriggers)
         if sitem is not None:
             sitem.setSelected(True)
             self.ui.tableWidget.setCurrentItem(sitem)
