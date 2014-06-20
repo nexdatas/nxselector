@@ -280,16 +280,7 @@ class Selector(Qt.QDialog, TaurusBaseWidget):
     def resetAll(self, ask = True):
         logger.debug("reset ALL")
         self.state.updateControllers()
-        if self.state.isMntGrpChanged():
-            replay = Qt.QMessageBox.Yes
-            if ask and self.__ask:
-                replay = Qt.QMessageBox.question(
-                    self.ui.preferences, 
-                    "NXSSelector: Configuration of Measument Group has been changed.", 
-                    "Would you like to update the changes? " ,
-                    Qt.QMessageBox.Yes|Qt.QMessageBox.No)
-            if replay == Qt.QMessageBox.Yes:
-                self.state.importMntGrp()
+        self.state.importMntGrp()
         self.reset()
         logger.debug("reset ENDED")
 
