@@ -59,6 +59,7 @@ class Selector(Qt.QDialog, TaurusBaseWidget):
         self.__application = application
 
         self.__standalone = standalone
+        self.__ask = False
 
         try:
             self.state = ServerState(server)
@@ -281,7 +282,7 @@ class Selector(Qt.QDialog, TaurusBaseWidget):
         self.state.updateControllers()
         if self.state.isMntGrpChanged():
             replay = Qt.QMessageBox.Yes
-            if ask:
+            if ask and self.__ask:
                 replay = Qt.QMessageBox.question(
                     self.ui.preferences, 
                     "NXSSelector: Configuration of Measument Group has been changed.", 
