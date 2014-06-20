@@ -282,6 +282,7 @@ class Selector(Qt.QDialog, TaurusBaseWidget):
         self.state.updateControllers()
         self.state.importMntGrp()
         self.reset()
+        self.setDirty(False)
         logger.debug("reset ENDED")
 
 
