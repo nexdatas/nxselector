@@ -22,11 +22,6 @@
 """ automatic tab """
 
 
-#from PyQt4.QtCore import (
-#    SIGNAL)
-#from PyQt4.QtGui import (QHBoxLayout,
-#    QGroupBox, QGridLayout, QFrame, QWidgetItem)
-
 from taurus.external.qt import Qt
 
 from .Element import CPElement
@@ -79,7 +74,24 @@ class State(object):
         layout_groups = Qt.QHBoxLayout(mframe)
 
         mgroup = Qt.QGroupBox(mframe)
-        mgroup.setTitle("Automatic")
+        mgroup.setTitle("Mandatory")
+        layout_auto = Qt.QGridLayout(mgroup)
+        mview = self.userView(mgroup)
+        mview.rowMax = self.rowMax
+
+        layout_auto.addWidget(mview, 0, 0, 1, 1)
+        layout_groups.addWidget(mgroup)
+            
+        self.mview = mview
+        self.layout.addWidget(mframe)
+
+        mframe = Qt.QFrame(self.ui.state)
+        mframe.setFrameShape(Qt.QFrame.StyledPanel)
+        mframe.setFrameShadow(Qt.QFrame.Raised)
+        layout_groups = Qt.QHBoxLayout(mframe)
+
+        mgroup = Qt.QGroupBox(mframe)
+        mgroup.setTitle("State")
         layout_auto = Qt.QGridLayout(mgroup)
         mview = self.userView(mgroup)
         mview.rowMax = self.rowMax
@@ -90,22 +102,6 @@ class State(object):
         self.aview = mview
         self.layout.addWidget(mframe)
 
-        mframe = Qt.QFrame(self.ui.state)
-        mframe.setFrameShape(Qt.QFrame.StyledPanel)
-        mframe.setFrameShadow(Qt.QFrame.Raised)
-        layout_groups = Qt.QHBoxLayout(mframe)
-
-        mgroup = Qt.QGroupBox(mframe)
-        mgroup.setTitle("Default")
-        layout_auto = Qt.QGridLayout(mgroup)
-        mview = self.userView(mgroup)
-        mview.rowMax = self.rowMax
-
-        layout_auto.addWidget(mview, 0, 0, 1, 1)
-        layout_groups.addWidget(mgroup)
-            
-        self.mview = mview
-        self.layout.addWidget(mframe)
 
         self.ui.state.update()
         if self.ui.tabWidget.currentWidget() == self.ui.state:

@@ -236,6 +236,7 @@ class ServerState(object):
         self.__dp.UpdateControllers()
 
     def setServer(self):
+
         if not self.server:
             servers = self.__db.get_device_exported_for_class(
                 "NXSRecSelector").value_string
@@ -243,6 +244,10 @@ class ServerState(object):
                 self.server = str(servers[0])
 
         self.__dp = self.openProxy(self.server)    
+        logger.debug("set server: %s:%s/%s"  % (self.__dp.get_db_host(),
+                                                self.__dp.get_db_port(),
+                                                self.__dp.name()))
+
 
     @classmethod
     def openProxy(cls, server):
