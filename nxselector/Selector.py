@@ -83,7 +83,7 @@ class Selector(Qt.QDialog, TaurusBaseWidget):
 
         self.userView = settings.value('Preferences/UserView', 'CheckBoxes')
         self.rowMax = int(settings.value('Preferences/RowMax', 20))
-
+        self.displayStatus = int(settings.value('Preferences/DisplayStatus', 2))
 
         ## user interface
         self.ui = Ui_Selector()
@@ -133,8 +133,8 @@ class Selector(Qt.QDialog, TaurusBaseWidget):
 
         self.title = 'NeXus Component Selector'
         self.setDirty()
-
-
+        self.__dirty = True
+        
 
     ##  creates GUI
     # \brief It create dialogs for the main window application
@@ -190,6 +190,9 @@ class Selector(Qt.QDialog, TaurusBaseWidget):
         self.connect(self.ui.rowMaxSpinBox, 
                      Qt.SIGNAL("valueChanged(int)"), self.resetRows)
 
+        self.connect(self.ui.statusCheckBox, 
+            Qt.SIGNAL("stateChanged(int)"), self.__displayStatusChanged)
+
         self.connect(self.ui.selectable, Qt.SIGNAL("dirty"), self.setDirty)
         self.connect(self.ui.state, Qt.SIGNAL("componentChecked"), 
                      self.__componentChanged)
@@ -204,13 +207,23 @@ class Selector(Qt.QDialog, TaurusBaseWidget):
 
 
     def setDirty(self, flag = True):
-        if flag:
-            self.ui.statusLabel.setText('<font color=red size=6><b>NOT APPLIED</b></font>' )
-            self.setWindowTitle(self.title + ' * ' )
+        self.__dirty = flag
+        self.ui.statusLabel.hide()
+        self.ui.applyPushButton.setEnabled(True)
+        self.ui.resetPushButton.setEnabled(True)
+        if self.displayStatus: 
+            if flag:
+                self.ui.statusLabel.setText('<font color=red size=5><b>NOT APPLIED</b></font>' )
+                self.setWindowTitle(self.title + ' * ' )
+            else:
+                self.setWindowTitle(self.title)
+                self.ui.statusLabel.setText('<font color=green size=5><b>APPLIED</b></font>' )
+            self.ui.statusLabel.show()
         else:
-            self.setWindowTitle(self.title)
-            self.ui.statusLabel.setText('<font color=green size=6><b>APPLIED</b></font>' )
-        
+            if not flag:
+                self.ui.applyPushButton.setEnabled(False)
+                self.ui.resetPushButton.setEnabled(False)
+            
 
     def __saveSettings(self):
         settings = Qt.QSettings(self.__organization, self.__application, self)
@@ -223,6 +236,9 @@ class Selector(Qt.QDialog, TaurusBaseWidget):
         settings.setValue(
             "Preferences/RowMax",
             Qt.QVariant(self.ui.rowMaxSpinBox.value()))
+        settings.setValue(
+            "Preferences/DisplayStatus",
+            Qt.QVariant(2 if self.ui.statusCheckBox.isChecked() else 0))
         settings.setValue(
             "Preferences/Groups",
             Qt.QVariant(str(self.preferences.mgroups)))
@@ -346,6 +362,11 @@ class Selector(Qt.QDialog, TaurusBaseWidget):
         self.ui.applyPushButton.setFocus()
         self.apply()
 
+        
+    def __displayStatusChanged(self, state):
+        self.displayStatus = state
+        self.setDirty(self.__dirty)
+
 
     def apply(self):
         try:
@@ -365,3 +386,5 @@ class Selector(Qt.QDialog, TaurusBaseWidget):
                 self, 
                 "NXSSelector: Error in updating Measurement Group",
                 str(e))
+
+            
