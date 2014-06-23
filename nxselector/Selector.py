@@ -132,9 +132,8 @@ class Selector(Qt.QDialog, TaurusBaseWidget):
             self.restoreGeometry(sg)
 
         self.title = 'NeXus Component Selector'
-        self.setDirty()
         self.__dirty = True
-        
+        self.setDirty()
 
     ##  creates GUI
     # \brief It create dialogs for the main window application
@@ -162,6 +161,7 @@ class Selector(Qt.QDialog, TaurusBaseWidget):
         if cid >= 0:
             self.ui.viewComboBox.setCurrentIndex(cid) 
         self.ui.rowMaxSpinBox.setValue(self.rowMax)    
+        self.ui.statusCheckBox.setChecked(self.displayStatus != 0)    
             
         self.connect(self.ui.closePushButton, 
                      Qt.SIGNAL("pressed()"), self.close)
