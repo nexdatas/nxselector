@@ -245,7 +245,7 @@ class Storage(object):
     def __updateTimer(self, widget, nid):
         widget.clear()
         mtimers = sorted(set(self.state.atlist))
-        if len(self.state.timers)>nid:
+        if self.state.timers is not None and len(self.state.timers)>nid:
             timer = self.state.timers[nid]
             if nid:
                 mtimers = sorted(set(mtimers) - set(self.state.timers[:nid])    )
@@ -283,10 +283,12 @@ class Storage(object):
             self.ui.fileScanLineEdit.setText(sfile)
             
         self.__updateTimer(self.ui.mntTimerComboBox, 0)    
-        while len(self.state.timers) > len(self.__tWidgets) + 1:
+        while self.state.timers is not None and \
+                len(self.state.timers) > len(self.__tWidgets) + 1:
             logger.debug("ADDING timer")
             self.__appendTimer()
-        while len(self.state.timers) < len(self.__tWidgets) + 1:
+        while self.state.timers is not None and \
+                len(self.state.timers) < len(self.__tWidgets) + 1:
             logger.debug("removing timer")
             self.__removeTimer()
         for nid, widget in enumerate(self.__tWidgets):
@@ -305,11 +307,14 @@ class Storage(object):
 
         # dynamic component group
 #        self.ui.dcEnableCheckBox.setChecked(self.state.dynamicComponents)
-        self.ui.dcLinksCheckBox.setChecked(self.state.dynamicLinks)
-        self.ui.dcPathLineEdit.setText(self.state.dynamicPath)
+        if self.state.dynamicLinks is not None:
+            self.ui.dcLinksCheckBox.setChecked(self.state.dynamicLinks)
+        if self.state.dynamicPath is not None:
+            self.ui.dcPathLineEdit.setText(self.state.dynamicPath)
 
         # others group
-        self.ui.othersEntryCheckBox.setChecked(self.state.appendEntry)
+        if self.state.appendEntry is not None:
+            self.ui.othersEntryCheckBox.setChecked(self.state.appendEntry)
         
         logger.debug("updateForm storage ended")
 

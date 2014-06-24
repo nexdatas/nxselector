@@ -60,24 +60,33 @@ class Selector(Qt.QDialog, TaurusBaseWidget):
 
         self.__standalone = standalone
         self.__ask = False
-
         try:
             self.state = ServerState(server)
+            if self.state.server:
+                self.state.fetchSettings()
+            er = self.state.errors.pop()
         except PyTango.DevFailed as e:
             value = sys.exc_info()[1]
+            print "WWW"
             Qt.QMessageBox.warning(
                 self, 
-                "NXSSelector: Error in Setting Server",
+                "NXSSelector: Error in Setting Selector Server",
                 "%s" % str("\n".join(["%s " % (err.desc) for err in value])))
-            sys.exit(-1)
+#            sys.exit(-1)
         except Exception as e:
+            print "WWW2"
+            import traceback
+            value = traceback.format_exc()
             Qt.QMessageBox.warning(
                 self, 
-                "NXSSelector: Error in Setting Server",
-                str(e))
-            sys.exit(-1)
+                "NXSSelector: Error in Setting Selector Server",
+                "%s" % (value))
+#            Qt.QMessageBox.warning(
+#                self, 
+#                "NXSSelector: Error in Setting Server",
+#                str(e))
+#            sys.exit(-1)
 
-        self.state.fetchSettings()
 
         settings = Qt.QSettings(self.__organization, self.__application, self)
 

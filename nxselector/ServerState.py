@@ -28,6 +28,7 @@ import time
 import logging
 logger = logging.getLogger(__name__)
 
+from taurus.external.qt import Qt
 
 ## main window class
 class ServerState(object):
@@ -38,11 +39,16 @@ class ServerState(object):
         
         self.server = str(server) if server else None
         self.__dp = None
+        self.__db = None
         ## tango database
-        self.__db = PyTango.Database()
-        self.setServer()
-        self.__dp.ping()
-        self.fetchSettings()
+        self.errors = []
+        try:
+            self.__db = PyTango.Database()
+            self.setServer()
+            self.__dp.ping()
+            self.fetchSettings()
+        except Exception as e:
+            self.errors.append(e)
             
 
         self.scanDir = None
@@ -80,6 +86,7 @@ class ServerState(object):
 
         self.configvars = {}
         self.datarecord = {}
+        self.fullnames = {}
 
         self.labellinks = {}
         self.labelpaths = {}
