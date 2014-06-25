@@ -64,7 +64,6 @@ class Selector(Qt.QDialog, TaurusBaseWidget):
             self.state = ServerState(server)
             if self.state.server:
                 self.state.fetchSettings()
-            er = self.state.errors.pop()
         except PyTango.DevFailed as e:
             value = sys.exc_info()[1]
             print "WWW"
@@ -161,7 +160,16 @@ class Selector(Qt.QDialog, TaurusBaseWidget):
         self.ui.timerDelPushButton = Qt.QPushButton("-")
         self.ui.timerDelPushButton.setMaximumWidth(30)
         flayout.addWidget(self.ui.timerDelPushButton)
-    
+
+        self.ui.statusLabel.setAutoFillBackground(True)
+        self.ui.statusLabel.setSizePolicy (Qt.QSizePolicy.Minimum , 
+                                           Qt.QSizePolicy.Fixed)
+        self.ui.statusLabel.setFrameShape(Qt.QFrame.StyledPanel)
+        self.ui.statusLabel.setFrameShadow(Qt.QFrame.Raised);
+        self.ui.statusLabel.setAlignment(Qt.Qt.AlignHCenter);
+
+#        self.ui.statusLabel.setStyleSheet("background-color: white;border-style: outset; border-width: 1px; border-color: gray;")
+     
         for tab in self.tabs:
             tab.reset()
 
@@ -220,15 +228,30 @@ class Selector(Qt.QDialog, TaurusBaseWidget):
         self.ui.statusLabel.hide()
         self.ui.applyPushButton.setEnabled(True)
         self.ui.resetPushButton.setEnabled(True)
+        spacer = None
+        for i in range(self.ui.buttonHorizontalLayout.count()):
+            spacer = self.ui.buttonHorizontalLayout.itemAt(i)
+            if isinstance(spacer, Qt.QSpacerItem):
+                break
+            else:
+                spacer = None 
+        
         if self.displayStatus: 
+            if spacer:
+                spacer.changeSize(
+                    40, 20, Qt.QSizePolicy.Minimum)
+            
             if flag:
-                self.ui.statusLabel.setText('<font color=red size=5><b>NOT APPLIED</b></font>' )
+                self.ui.statusLabel.setText('<font color=#A02020 size=3><b>NOT APPLIED</b></font>' )
                 self.setWindowTitle(self.title + ' * ' )
             else:
                 self.setWindowTitle(self.title)
-                self.ui.statusLabel.setText('<font color=green size=5><b>APPLIED</b></font>' )
+                self.ui.statusLabel.setText('<font color=#206020 size=3><b>APPLIED</b></font>' )
             self.ui.statusLabel.show()
         else:
+            if spacer:
+                spacer.changeSize(
+                    40, 20, Qt.QSizePolicy.Expanding)
             if not flag:
                 self.ui.applyPushButton.setEnabled(False)
                 self.ui.resetPushButton.setEnabled(False)
