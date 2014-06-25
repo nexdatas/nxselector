@@ -252,7 +252,10 @@ class Selector(Qt.QDialog, TaurusBaseWidget):
             if spacer:
                 spacer.changeSize(
                     40, 20, Qt.QSizePolicy.Expanding)
-            if not flag:
+            if flag:    
+                self.setWindowTitle(self.title + ' * ' )
+            else:
+                self.setWindowTitle(self.title)
                 self.ui.applyPushButton.setEnabled(False)
                 self.ui.resetPushButton.setEnabled(False)
             
