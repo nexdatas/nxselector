@@ -401,6 +401,7 @@ class Selector(Qt.QDialog, TaurusBaseWidget):
 
 
     def apply(self):
+        logger.debug("apply")
         try:
             conf = self.state.updateMntGrp()
             self.resetAll()
@@ -419,4 +420,5 @@ class Selector(Qt.QDialog, TaurusBaseWidget):
                 "NXSSelector: Error in updating Measurement Group",
                 str(e))
 
+        logger.debug("apply END")
             
