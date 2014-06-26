@@ -147,7 +147,6 @@ class Selector(Qt.QDialog, TaurusBaseWidget):
         self.ui.setupUi(self)        
 
         if not self.__standalone:
-            self.ui.closePushButton.hide()
             self.ui.mntServerLineEdit.hide()
             self.ui.mntServerLabel.hide()
             self.ui.buttonBox.setStandardButtons(
@@ -198,13 +197,6 @@ class Selector(Qt.QDialog, TaurusBaseWidget):
         self.connect(self.ui.buttonBox.button(Qt.QDialogButtonBox.Close), 
                      Qt.SIGNAL("pressed()"), self.close)
 
-
-#        self.connect(self.ui.closePushButton, 
-#                     Qt.SIGNAL("pressed()"), self.close)
-#        self.connect(self.ui.applyPushButton,
-#                     Qt.SIGNAL("pressed()"), self.__applyClicked)
-#        self.connect(self.ui.resetPushButton,
-#                     Qt.SIGNAL("pressed()"), self.__resetClicked)
 
         self.connect(self.ui.cnfLoadPushButton, 
                      Qt.SIGNAL("pressed()"), self.cnfLoad)
