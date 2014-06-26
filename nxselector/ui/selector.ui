@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>702</width>
-    <height>637</height>
+    <width>583</width>
+    <height>604</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -195,8 +195,8 @@
      <item>
       <widget class="QTabWidget" name="tabWidget">
        <property name="sizePolicy">
-        <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
-         <horstretch>1</horstretch>
+        <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+         <horstretch>0</horstretch>
          <verstretch>0</verstretch>
         </sizepolicy>
        </property>
