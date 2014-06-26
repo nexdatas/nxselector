@@ -194,8 +194,9 @@ class Selector(Qt.QDialog, TaurusBaseWidget):
                      Qt.SIGNAL("pressed()"), self.__applyClicked)
         self.connect(self.ui.buttonBox.button(Qt.QDialogButtonBox.Reset), 
                      Qt.SIGNAL("pressed()"), self.__resetClicked)
-        self.connect(self.ui.buttonBox.button(Qt.QDialogButtonBox.Close), 
-                     Qt.SIGNAL("pressed()"), self.close)
+        if self.__standalone:
+            self.connect(self.ui.buttonBox.button(Qt.QDialogButtonBox.Close), 
+                         Qt.SIGNAL("pressed()"), self.close)
 
 
         self.connect(self.ui.cnfLoadPushButton, 
