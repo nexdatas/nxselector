@@ -66,14 +66,12 @@ class Selector(Qt.QDialog, TaurusBaseWidget):
                 self.state.fetchSettings()
         except PyTango.DevFailed as e:
             value = sys.exc_info()[1]
-            print "WWW"
             Qt.QMessageBox.warning(
                 self, 
                 "NXSSelector: Error in Setting Selector Server",
                 "%s" % str("\n".join(["%s " % (err.desc) for err in value])))
 #            sys.exit(-1)
         except Exception as e:
-            print "WWW2"
             import traceback
             value = traceback.format_exc()
             Qt.QMessageBox.warning(
@@ -251,19 +249,15 @@ class Selector(Qt.QDialog, TaurusBaseWidget):
         self.ui.buttonBox.button(Qt.QDialogButtonBox.Apply).setEnabled(True)
 #        self.ui.applyPushButton.setEnabled(True)
 #        self.ui.resetPushButton.setEnabled(True)
+        self.ui.buttonHorizontalLayout = self.ui.buttonBox.layout() 
         spacer = None
-#        for i in range(self.ui.buttonHorizontalLayout.count()):
-#            spacer = self.ui.buttonHorizontalLayout.itemAt(i)
-#            if isinstance(spacer, Qt.QSpacerItem):
-#                break
-#            else:
-#                spacer = None 
-        
         if self.displayStatus: 
-#            if spacer:
-#                spacer.changeSize(
-#                    40, 20, Qt.QSizePolicy.Minimum)
             self.ui.buttonBox.setCenterButtons(True)  
+            for i in range(self.ui.buttonHorizontalLayout.count()):
+                spacer = self.ui.buttonHorizontalLayout.itemAt(i)
+                if isinstance(spacer, Qt.QSpacerItem):
+                    spacer.changeSize(
+                        0, 0, Qt.QSizePolicy.Minimum)
             
             if flag:
                 self.ui.statusLabel.setStyleSheet("background-color: white;border-style: outset; border-width: 1px; border-color: gray; color:#A02020;font:bold;")
@@ -278,9 +272,12 @@ class Selector(Qt.QDialog, TaurusBaseWidget):
             self.ui.statusLabel.show()
         else:
             self.ui.buttonBox.setCenterButtons(False)  
-#            if spacer:
-#                spacer.changeSize(
-#                    40, 20, Qt.QSizePolicy.Expanding)
+            for i in range(self.ui.buttonHorizontalLayout.count()):
+                spacer = self.ui.buttonHorizontalLayout.itemAt(i)
+                if isinstance(spacer, Qt.QSpacerItem):
+                    spacer.changeSize(
+                        40, 20, Qt.QSizePolicy.Expanding)
+            
             if flag:    
                 self.setWindowTitle(self.title + ' * ' )
             else:
