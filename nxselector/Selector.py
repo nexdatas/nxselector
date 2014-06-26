@@ -146,12 +146,25 @@ class Selector(Qt.QDialog, TaurusBaseWidget):
     ##  creates GUI
     # \brief It create dialogs for the main window application
     def createGUI(self):
-        self.ui.setupUi(self)
+        self.ui.setupUi(self)        
+
         if not self.__standalone:
             self.ui.closePushButton.hide()
             self.ui.mntServerLineEdit.hide()
             self.ui.mntServerLabel.hide()
+            self.ui.buttonBox.setStandardButtons(
+                Qt.QDialogButtonBox.Reset | Qt.QDialogButtonBox.Apply )
+        else:
+            self.ui.buttonBox.setStandardButtons(
+                Qt.QDialogButtonBox.Reset | Qt.QDialogButtonBox.Apply \
+                    | Qt.QDialogButtonBox.Close)
+        self.ui.buttonBox.setSizePolicy (Qt.QSizePolicy.Expanding, 
+                                         Qt.QSizePolicy.Fixed)
 
+        self.ui.statusLabel = self.ui.buttonBox.addButton("", Qt.QDialogButtonBox.ActionRole)  
+        self.ui.statusLabel.setEnabled(False)  
+        self.ui.buttonBox.setCenterButtons(True)  
+        
         flayout = Qt.QHBoxLayout(self.ui.timerButtonFrame)
         flayout.setContentsMargins(0,0,0,0)
         self.ui.timerAddPushButton = Qt.QPushButton("+") 
@@ -162,13 +175,13 @@ class Selector(Qt.QDialog, TaurusBaseWidget):
         flayout.addWidget(self.ui.timerDelPushButton)
 
         self.ui.statusLabel.setAutoFillBackground(True)
-        self.ui.statusLabel.setSizePolicy (Qt.QSizePolicy.Minimum , 
+        self.ui.statusLabel.setSizePolicy (Qt.QSizePolicy.Expanding, 
                                            Qt.QSizePolicy.Fixed)
-        self.ui.statusLabel.setFrameShape(Qt.QFrame.StyledPanel)
-        self.ui.statusLabel.setFrameShadow(Qt.QFrame.Raised);
-        self.ui.statusLabel.setAlignment(Qt.Qt.AlignHCenter);
+#        self.ui.statusLabel.setFrameShape(Qt.QFrame.StyledPanel)
+#        self.ui.statusLabel.setFrameShadow(Qt.QFrame.Raised)
+#        self.ui.statusLabel.setAlignment(Qt.Qt.AlignHCenter)
 
-#        self.ui.statusLabel.setStyleSheet("background-color: white;border-style: outset; border-width: 1px; border-color: gray;")
+        self.ui.statusLabel.setStyleSheet("background-color:white;border-style: outset; border-width: 1px; border-color: gray; color:#208020;font:bold;")
      
         for tab in self.tabs:
             tab.reset()
@@ -180,12 +193,20 @@ class Selector(Qt.QDialog, TaurusBaseWidget):
         self.ui.rowMaxSpinBox.setValue(self.rowMax)    
         self.ui.statusCheckBox.setChecked(self.displayStatus != 0)    
             
-        self.connect(self.ui.closePushButton, 
-                     Qt.SIGNAL("pressed()"), self.close)
-        self.connect(self.ui.applyPushButton,
+        self.connect(self.ui.buttonBox.button(Qt.QDialogButtonBox.Apply), 
                      Qt.SIGNAL("pressed()"), self.__applyClicked)
-        self.connect(self.ui.resetPushButton,
+        self.connect(self.ui.buttonBox.button(Qt.QDialogButtonBox.Reset), 
                      Qt.SIGNAL("pressed()"), self.__resetClicked)
+        self.connect(self.ui.buttonBox.button(Qt.QDialogButtonBox.Close), 
+                     Qt.SIGNAL("pressed()"), self.close)
+
+
+#        self.connect(self.ui.closePushButton, 
+#                     Qt.SIGNAL("pressed()"), self.close)
+#        self.connect(self.ui.applyPushButton,
+#                     Qt.SIGNAL("pressed()"), self.__applyClicked)
+#        self.connect(self.ui.resetPushButton,
+#                     Qt.SIGNAL("pressed()"), self.__resetClicked)
 
         self.connect(self.ui.cnfLoadPushButton, 
                      Qt.SIGNAL("pressed()"), self.cnfLoad)
@@ -226,39 +247,52 @@ class Selector(Qt.QDialog, TaurusBaseWidget):
     def setDirty(self, flag = True):
         self.__dirty = flag
         self.ui.statusLabel.hide()
-        self.ui.applyPushButton.setEnabled(True)
-        self.ui.resetPushButton.setEnabled(True)
+        self.ui.buttonBox.button(Qt.QDialogButtonBox.Reset).setEnabled(True)
+        self.ui.buttonBox.button(Qt.QDialogButtonBox.Apply).setEnabled(True)
+#        self.ui.applyPushButton.setEnabled(True)
+#        self.ui.resetPushButton.setEnabled(True)
         spacer = None
-        for i in range(self.ui.buttonHorizontalLayout.count()):
-            spacer = self.ui.buttonHorizontalLayout.itemAt(i)
-            if isinstance(spacer, Qt.QSpacerItem):
-                break
-            else:
-                spacer = None 
+#        for i in range(self.ui.buttonHorizontalLayout.count()):
+#            spacer = self.ui.buttonHorizontalLayout.itemAt(i)
+#            if isinstance(spacer, Qt.QSpacerItem):
+#                break
+#            else:
+#                spacer = None 
         
         if self.displayStatus: 
-            if spacer:
-                spacer.changeSize(
-                    40, 20, Qt.QSizePolicy.Minimum)
+#            if spacer:
+#                spacer.changeSize(
+#                    40, 20, Qt.QSizePolicy.Minimum)
+            self.ui.buttonBox.setCenterButtons(True)  
             
             if flag:
-                self.ui.statusLabel.setText('<font color=#A02020 size=3><b>NOT APPLIED</b></font>' )
+                self.ui.statusLabel.setStyleSheet("background-color: white;border-style: outset; border-width: 1px; border-color: gray; color:#A02020;font:bold;")
+#                self.ui.statusLabel.setText('<font color=#A02020 size=3><b>NOT APPLIED</b></font>' )
+                self.ui.statusLabel.setText('NOT APPLIED')
                 self.setWindowTitle(self.title + ' * ' )
             else:
                 self.setWindowTitle(self.title)
-                self.ui.statusLabel.setText('<font color=#206020 size=3><b>APPLIED</b></font>' )
+                self.ui.statusLabel.setStyleSheet("background-color: white;border-style: outset; border-width: 1px; border-color: gray; color:#206020;font:bold;")
+#                self.ui.statusLabel.setText('<font color=#206020 size=3><b>APPLIED</b></font>' )
+                self.ui.statusLabel.setText('APPLIED' )
             self.ui.statusLabel.show()
         else:
-            if spacer:
-                spacer.changeSize(
-                    40, 20, Qt.QSizePolicy.Expanding)
+            self.ui.buttonBox.setCenterButtons(False)  
+#            if spacer:
+#                spacer.changeSize(
+#                    40, 20, Qt.QSizePolicy.Expanding)
             if flag:    
                 self.setWindowTitle(self.title + ' * ' )
             else:
                 self.setWindowTitle(self.title)
-                self.ui.applyPushButton.setEnabled(False)
-                self.ui.resetPushButton.setEnabled(False)
-            
+                self.ui.buttonBox.button(
+                    Qt.QDialogButtonBox.Reset).setEnabled(False)
+                self.ui.buttonBox.button(
+                    Qt.QDialogButtonBox.Apply).setEnabled(False)
+#                self.ui.applyPushButton.setEnabled(False)
+#                self.ui.resetPushButton.setEnabled(False)
+            self.ui.statusLabel.hide()
+           
 
     def __saveSettings(self):
         settings = Qt.QSettings(self.__organization, self.__application, self)
@@ -362,9 +396,13 @@ class Selector(Qt.QDialog, TaurusBaseWidget):
 
         
     def __resetClicked(self):
-        self.ui.resetPushButton.hide()
-        self.ui.resetPushButton.show()
-        self.ui.resetPushButton.setFocus()
+        self.ui.buttonBox.button(Qt.QDialogButtonBox.Reset).hide()
+        self.ui.buttonBox.button(Qt.QDialogButtonBox.Reset).show()
+        self.ui.buttonBox.button(Qt.QDialogButtonBox.Reset).setFocus()
+
+#        self.ui.resetPushButton.hide()
+#        self.ui.resetPushButton.show()
+#        self.ui.resetPushButton.setFocus()
         
         self.resetAll()
 
@@ -392,9 +430,12 @@ class Selector(Qt.QDialog, TaurusBaseWidget):
             self.resetAll()
 
     def __applyClicked(self):
-        self.ui.applyPushButton.hide()
-        self.ui.applyPushButton.show()
-        self.ui.applyPushButton.setFocus()
+        self.ui.buttonBox.button(Qt.QDialogButtonBox.Apply).hide()
+        self.ui.buttonBox.button(Qt.QDialogButtonBox.Apply).show()
+        self.ui.buttonBox.button(Qt.QDialogButtonBox.Apply).setFocus()
+#        self.ui.applyPushButton.hide()
+#        self.ui.applyPushButton.show()
+#        self.ui.applyPushButton.setFocus()
         self.apply()
 
         
