@@ -74,10 +74,12 @@ class State(object):
         layout_groups = Qt.QHBoxLayout(mframe)
 
         mgroup = Qt.QGroupBox(mframe)
-        mgroup.setTitle("Mandatory")
+        mgroup.setTitle("Beamline")
         layout_auto = Qt.QGridLayout(mgroup)
         mview = self.userView(mgroup)
         mview.rowMax = self.rowMax
+        if hasattr(mview, 'dmapper'):
+            mview.dmapper = None
 
         layout_auto.addWidget(mview, 0, 0, 1, 1)
         layout_groups.addWidget(mgroup)
@@ -91,10 +93,12 @@ class State(object):
         layout_groups = Qt.QHBoxLayout(mframe)
 
         mgroup = Qt.QGroupBox(mframe)
-        mgroup.setTitle("State")
+        mgroup.setTitle("Discipline")
         layout_auto = Qt.QGridLayout(mgroup)
         mview = self.userView(mgroup)
         mview.rowMax = self.rowMax
+        if hasattr(mview, 'dmapper'):
+            mview.dmapper = None
 
         layout_auto.addWidget(mview, 0, 0, 1, 1)
         layout_groups.addWidget(mgroup)

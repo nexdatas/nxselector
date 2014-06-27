@@ -213,7 +213,7 @@
        </widget>
        <widget class="QWidget" name="state">
         <attribute name="title">
-         <string>Automatic Components</string>
+         <string>Preselected Components</string>
         </attribute>
        </widget>
        <widget class="QWidget" name="data">
