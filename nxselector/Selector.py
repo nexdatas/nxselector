@@ -427,7 +427,6 @@ class Selector(Qt.QDialog, TaurusBaseWidget):
 
             self.state.setConfiguration(jconf)
             self.resetAll()
-            self.setDirty()
 
     def cnfSave(self):
         filename = str(Qt.QFileDialog.getSaveFileName(
