@@ -220,8 +220,8 @@ class ServerState(object):
         return self.__dp.importMntGrp()
     
 
-    def getConfiguration(self):
-        mgconf = self.__dp.GetConfiguration()
+    def mntGrpConfiguration(self):
+        mgconf = self.__dp.MntGrpConfiguration()
         conf = {}
         conf['MntGrpConfigs'] = {}
         conf['ActiveMntGrp'] = self.mntgrp
@@ -229,14 +229,13 @@ class ServerState(object):
         return json.dumps(conf)
         
 
-    def save(self, filename):
+    def getConfiguration(self):
         self.storeSettings()
-        self.storeData("ConfigFile", filename)
-        self.__dp.SaveConfiguration()
+        return self.__dp.Configuration 
 
-    def load(self, filename):
-        self.storeData("ConfigFile", filename)
-        self.__dp.LoadConfiguration()
+    def setConfiguration(self, conf):
+        self.__dp.Configuration = conf
+        self.__dp.UpdateMntGrp()
         self.fetchSettings()
 
     def updateControllers(self):

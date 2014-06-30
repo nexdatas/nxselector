@@ -60,6 +60,8 @@ class Selector(Qt.QDialog, TaurusBaseWidget):
 
         self.__standalone = standalone
         self.__ask = False
+        
+        self.cnfFile = ''
         try:
             self.state = ServerState(server)
             if self.state.server:
@@ -379,7 +381,7 @@ class Selector(Qt.QDialog, TaurusBaseWidget):
 
     def resetConfiguration(self, expconf):
         logger.debug("reset Configuration")
-        conf = self.state.getConfiguration()
+        conf = self.state.mntGrpConfiguration()
         econf = json.dumps(expconf)
         if conf != econf:
             replay = Qt.QMessageBox.question(
@@ -416,11 +418,14 @@ class Selector(Qt.QDialog, TaurusBaseWidget):
         filename = str(Qt.QFileDialog.getOpenFileName(
                 self.ui.storage,
                 "Load Configuration",        
-                self.state.cnfFile,
+                self.cnfFile,
                 "JSON files (*.json);;All files (*)"))
         logger.debug("loading configuration from %s" % filename)
         if filename:
-            self.state.load(filename)
+            self.cnfFile = filename
+            jconf = open(filename).read()
+
+            self.state.setConfiguration(jconf)
             self.resetAll()
             self.setDirty()
 
@@ -428,11 +433,15 @@ class Selector(Qt.QDialog, TaurusBaseWidget):
         filename = str(Qt.QFileDialog.getSaveFileName(
                 self.ui.storage,
                 "Save Configuration",
-                self.state.cnfFile,
+                self.cnfFile,
                 "JSON files (*.json);;All files (*)"))
         logger.debug("saving configuration to %s" % filename)
         if filename:
-            self.state.save(filename)
+            jconf = self.state.getConfiguration()
+            self.cnfFile = filename
+
+            with open(filename, 'w') as myfile:
+                myfile.write(jconf)
             self.resetAll()
 
     def __applyClicked(self):

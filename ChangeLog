@@ -1,6 +1,7 @@
 2014-06-XX Jan Kotanski <jankotan@gmail.com>
 	* adding switching off/on display status
-	* tagged as 1.5.4
+	* storing configuration locally
+	* tagged as 1.6.0
 
 2014-06-20 Jan Kotanski <jankotan@gmail.com>
 	* adding synchronization with active mntgrp
