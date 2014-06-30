@@ -129,10 +129,10 @@ class Preferences(object):
             self.on_layoutLineEdits_editingFinished)
 
         self.ui.preferences.disconnect(
-            self.ui.profLoadPushButton, 
+            self.ui.layoutButtonBox.button(Qt.QDialogButtonBox.Open),
             Qt.SIGNAL("pressed()"), self.profileLoad)
         self.ui.preferences.disconnect(
-            self.ui.profSavePushButton, 
+            self.ui.layoutButtonBox.button(Qt.QDialogButtonBox.Save),
             Qt.SIGNAL("pressed()"), self.profileSave)
 
     def connectSignals(self):
@@ -153,10 +153,10 @@ class Preferences(object):
             self.on_devSettingsLineEdit_editingFinished)
 
         self.ui.preferences.connect(
-            self.ui.profLoadPushButton, 
+            self.ui.layoutButtonBox.button(Qt.QDialogButtonBox.Open), 
             Qt.SIGNAL("pressed()"), self.profileLoad)
         self.ui.preferences.connect(
-            self.ui.profSavePushButton, 
+            self.ui.layoutButtonBox.button(Qt.QDialogButtonBox.Save),
             Qt.SIGNAL("pressed()"), self.profileSave)
        
     def reset(self):

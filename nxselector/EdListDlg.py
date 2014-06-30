@@ -57,9 +57,10 @@ class EdListDlg(Qt.QDialog):
         layout.addWidget(self.widget)
         self.setLayout(layout)
 
-        self.connect(self.widget.ui.closePushButton, 
-                     Qt.SIGNAL("clicked()"),
-                     self.accept)
+        self.connect(
+            self.widget.ui.closeButtonBox.button(Qt.QDialogButtonBox.Close), 
+            Qt.SIGNAL("clicked()"),
+            self.accept)
         self.widget.ui.closePushButton.show()
         self.connect(self.widget, Qt.SIGNAL("dirty"), self.__setDirty)
 
@@ -83,8 +84,17 @@ class EdListWg(Qt.QWidget):
 
     def createGUI(self):
         self.ui.setupUi(self)
-        self.ui.closePushButton.hide()
-        
+        self.ui.closePushButton = self.ui.closeButtonBox.button(
+            Qt.QDialogButtonBox.Close)
+
+        self.ui.closeButtonBox.button(Qt.QDialogButtonBox.Close).hide()
+        self.ui.addPushButton = self.ui.addEditRemoveButtonBox.addButton(
+            "&Add", Qt.QDialogButtonBox.ActionRole)
+        self.ui.editPushButton = self.ui.addEditRemoveButtonBox.addButton(
+            "&Edit", Qt.QDialogButtonBox.ActionRole)
+        self.ui.removePushButton = self.ui.addEditRemoveButtonBox.addButton(
+            "&Remove", Qt.QDialogButtonBox.ActionRole)
+
         if self.record:
             item = sorted(self.record.keys())[0]
         else:

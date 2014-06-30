@@ -158,9 +158,25 @@ class Selector(Qt.QDialog, TaurusBaseWidget):
         self.ui.buttonBox.setSizePolicy (Qt.QSizePolicy.Expanding, 
                                          Qt.QSizePolicy.Fixed)
 
-        self.ui.statusLabel = self.ui.buttonBox.addButton("", Qt.QDialogButtonBox.ActionRole)  
+        self.ui.statusLabel = self.ui.buttonBox.addButton(
+            "", Qt.QDialogButtonBox.ActionRole)  
         self.ui.statusLabel.setEnabled(False)  
         self.ui.buttonBox.setCenterButtons(True)  
+
+
+        layout = self.ui.layoutButtonBox.layout() 
+        for i in range(layout.count()):
+            spacer = layout.itemAt(i)
+            if isinstance(spacer, Qt.QSpacerItem):
+                spacer.changeSize(
+                    0, 0, Qt.QSizePolicy.Minimum)
+
+        layout = self.ui.profileButtonBox.layout() 
+        for i in range(layout.count()):
+            spacer = layout.itemAt(i)
+            if isinstance(spacer, Qt.QSpacerItem):
+                spacer.changeSize(
+                    0, 0, Qt.QSizePolicy.Minimum)
         
         flayout = Qt.QHBoxLayout(self.ui.timerButtonFrame)
         flayout.setContentsMargins(0,0,0,0)
@@ -199,9 +215,9 @@ class Selector(Qt.QDialog, TaurusBaseWidget):
                          Qt.SIGNAL("pressed()"), self.close)
 
 
-        self.connect(self.ui.cnfLoadPushButton, 
+        self.connect(self.ui.profileButtonBox.button(Qt.QDialogButtonBox.Open), 
                      Qt.SIGNAL("pressed()"), self.cnfLoad)
-        self.connect(self.ui.cnfSavePushButton, 
+        self.connect(self.ui.profileButtonBox.button(Qt.QDialogButtonBox.Save), 
                      Qt.SIGNAL("pressed()"), self.cnfSave)
 
         self.connect(self.ui.preferences, 

@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>583</width>
-    <height>604</height>
+    <height>602</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -149,7 +149,6 @@
               <property name="lineWidth">
                <number>0</number>
               </property>
-              <zorder>horizontalSpacer_3</zorder>
              </widget>
             </item>
             <item>
@@ -259,6 +258,22 @@
                    <string>Channels:</string>
                   </property>
                   <layout class="QGridLayout" name="gridLayout_16">
+                   <item row="3" column="0">
+                    <spacer name="verticalSpacer_10">
+                     <property name="orientation">
+                      <enum>Qt::Vertical</enum>
+                     </property>
+                     <property name="sizeType">
+                      <enum>QSizePolicy::Maximum</enum>
+                     </property>
+                     <property name="sizeHint" stdset="0">
+                      <size>
+                       <width>20</width>
+                       <height>40</height>
+                      </size>
+                     </property>
+                    </spacer>
+                   </item>
                    <item row="2" column="0">
                     <widget class="QPushButton" name="labelsPushButton">
                      <property name="text">
@@ -278,22 +293,6 @@
                       <size>
                        <width>20</width>
                        <height>20</height>
-                      </size>
-                     </property>
-                    </spacer>
-                   </item>
-                   <item row="3" column="0">
-                    <spacer name="verticalSpacer_10">
-                     <property name="orientation">
-                      <enum>Qt::Vertical</enum>
-                     </property>
-                     <property name="sizeType">
-                      <enum>QSizePolicy::Maximum</enum>
-                     </property>
-                     <property name="sizeHint" stdset="0">
-                      <size>
-                       <width>20</width>
-                       <height>40</height>
                       </size>
                      </property>
                     </spacer>
@@ -582,40 +581,6 @@
                <string>Profile:</string>
               </property>
               <layout class="QGridLayout" name="gridLayout_8">
-               <item row="1" column="1">
-                <spacer name="horizontalSpacer_4">
-                 <property name="orientation">
-                  <enum>Qt::Horizontal</enum>
-                 </property>
-                 <property name="sizeType">
-                  <enum>QSizePolicy::Maximum</enum>
-                 </property>
-                 <property name="sizeHint" stdset="0">
-                  <size>
-                   <width>40</width>
-                   <height>20</height>
-                  </size>
-                 </property>
-                </spacer>
-               </item>
-               <item row="1" column="0">
-                <layout class="QHBoxLayout" name="horizontalLayout_6">
-                 <item>
-                  <widget class="QPushButton" name="cnfLoadPushButton">
-                   <property name="text">
-                    <string>Load ...</string>
-                   </property>
-                  </widget>
-                 </item>
-                 <item>
-                  <widget class="QPushButton" name="cnfSavePushButton">
-                   <property name="text">
-                    <string>Save ...</string>
-                   </property>
-                  </widget>
-                 </item>
-                </layout>
-               </item>
                <item row="0" column="0">
                 <spacer name="verticalSpacer_16">
                  <property name="orientation">
@@ -647,6 +612,16 @@
                   </size>
                  </property>
                 </spacer>
+               </item>
+               <item row="1" column="0">
+                <widget class="QDialogButtonBox" name="profileButtonBox">
+                 <property name="standardButtons">
+                  <set>QDialogButtonBox::Open|QDialogButtonBox::Save</set>
+                 </property>
+                 <property name="centerButtons">
+                  <bool>true</bool>
+                 </property>
+                </widget>
                </item>
               </layout>
              </widget>
@@ -983,40 +958,6 @@
                <string>Layout:</string>
               </property>
               <layout class="QGridLayout" name="gridLayout_7">
-               <item row="1" column="0">
-                <layout class="QHBoxLayout" name="horizontalLayout_7">
-                 <item>
-                  <widget class="QPushButton" name="profLoadPushButton">
-                   <property name="text">
-                    <string>Load ...</string>
-                   </property>
-                  </widget>
-                 </item>
-                 <item>
-                  <widget class="QPushButton" name="profSavePushButton">
-                   <property name="text">
-                    <string>Save ...</string>
-                   </property>
-                  </widget>
-                 </item>
-                 <item>
-                  <spacer name="horizontalSpacer_5">
-                   <property name="orientation">
-                    <enum>Qt::Horizontal</enum>
-                   </property>
-                   <property name="sizeType">
-                    <enum>QSizePolicy::Minimum</enum>
-                   </property>
-                   <property name="sizeHint" stdset="0">
-                    <size>
-                     <width>40</width>
-                     <height>20</height>
-                    </size>
-                   </property>
-                  </spacer>
-                 </item>
-                </layout>
-               </item>
                <item row="0" column="0">
                 <spacer name="verticalSpacer_14">
                  <property name="orientation">
@@ -1048,6 +989,16 @@
                   </size>
                  </property>
                 </spacer>
+               </item>
+               <item row="1" column="0">
+                <widget class="QDialogButtonBox" name="layoutButtonBox">
+                 <property name="standardButtons">
+                  <set>QDialogButtonBox::Open|QDialogButtonBox::Save</set>
+                 </property>
+                 <property name="centerButtons">
+                  <bool>true</bool>
+                 </property>
+                </widget>
                </item>
               </layout>
              </widget>
@@ -1086,15 +1037,11 @@
   <tabstop>dcLinksCheckBox</tabstop>
   <tabstop>dcPathLineEdit</tabstop>
   <tabstop>propPushButton</tabstop>
-  <tabstop>cnfLoadPushButton</tabstop>
-  <tabstop>cnfSavePushButton</tabstop>
   <tabstop>frameLineEdit</tabstop>
   <tabstop>groupLineEdit</tabstop>
   <tabstop>viewComboBox</tabstop>
   <tabstop>rowMaxSpinBox</tabstop>
   <tabstop>devSettingsLineEdit</tabstop>
-  <tabstop>profLoadPushButton</tabstop>
-  <tabstop>profSavePushButton</tabstop>
  </tabstops>
  <resources/>
  <connections/>

@@ -108,4 +108,4 @@ class LDataDlg(Qt.QDialog):
             self.ui.labelLineEdit.setFocus()
             return
 
-        QDialog.accept(self)
+        Qt.QDialog.accept(self)

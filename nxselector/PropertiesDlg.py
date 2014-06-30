@@ -75,7 +75,15 @@ class PropertiesWg(Qt.QWidget):
 
     def createGUI(self):
         self.ui.setupUi(self)
-        self.ui.closePushButton.hide()
+        self.ui.closePushButton = self.ui.closeButtonBox.button(
+            Qt.QDialogButtonBox.Close)
+        self.ui.addPushButton = self.ui.addEditRemoveButtonBox.addButton(
+            "&Add", Qt.QDialogButtonBox.ActionRole)
+        self.ui.editPushButton = self.ui.addEditRemoveButtonBox.addButton(
+            "&Edit", Qt.QDialogButtonBox.ActionRole)
+        self.ui.removePushButton = self.ui.addEditRemoveButtonBox.addButton(
+            "&Remove", Qt.QDialogButtonBox.ActionRole)
+
 
         names = self.__names()
         if names:
