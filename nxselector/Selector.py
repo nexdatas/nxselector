@@ -89,14 +89,16 @@ class Selector(Qt.QDialog, TaurusBaseWidget):
 
         settings = Qt.QSettings(self.__organization, self.__application, self)
 
-        self.userView = settings.value('Preferences/UserView', 'CheckBoxes')
+        self.userView = settings.value('Preferences/UserView', 'CheckBoxes Dis')
         self.rowMax = int(settings.value('Preferences/RowMax', 20))
         self.displayStatus = int(settings.value('Preferences/DisplayStatus', 2))
 
         ## user interface
         self.ui = Ui_Selector()
         self.preferences = Preferences(self.ui, self.state)
-        self.storage = Storage(self.ui, self.state)
+        if self.userView not in self.preferences.views:
+            self.userView = 'CheckBoxes Dis'
+        self.storage = Storage(self.ui, self.state) 
         self.selectable = Selectable(
             self.ui, self.state, 
             self.preferences.views[self.userView],
