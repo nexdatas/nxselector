@@ -258,7 +258,7 @@ class Storage(object):
             cid = 0
             if self.state.atlist:
                 timer = self.state.atlist[nid]
-                if len(self.state.timers)>nid:
+                if self.state.timers and len(self.state.timers)>nid:
                     self.state.timers[nid] = timer
                 elif nid == 0:
                     self.state.timers.append(timer)
@@ -320,10 +320,11 @@ class Storage(object):
 
     def __applyTimer(self, widget, nid): 
         timer = str(widget.currentText())
-        if len(self.state.timers) <=  nid:
-            self.state.timers.append(timer)
-        elif self.state.timers[nid] !=  timer:
-            self.state.timers[nid] = timer
+        if self.state.timers:
+            if len(self.state.timers) <=  nid:
+                self.state.timers.append(timer)
+            elif self.state.timers[nid] !=  timer:
+                self.state.timers[nid] = timer
        
 
     def apply(self):
