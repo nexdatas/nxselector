@@ -190,6 +190,7 @@ class Preferences(object):
                     dp = PyTango.DeviceProxy(server)
                     if dp.info().dev_class == 'NXSRecSelector':
                         self.state.server = str(server)
+                        self.state.setServer()
                         self.addHint(server, self.serverhelp)
                 except:
                     self.reset()
