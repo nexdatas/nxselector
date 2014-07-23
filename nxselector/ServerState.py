@@ -215,7 +215,6 @@ class ServerState(object):
         self.storeEnvData()
         if not self.__dp:
             self.setServer()
-        print "COMPONENTS:", self.__dp.components   
         if not self.server:    
             self.__dp.exportAllEnv()
 
