@@ -42,6 +42,8 @@ class Storage(object):
         self.__layout = None
         self.__tWidgets = []
 
+        self.__moduleLabel = 'module'
+
     def disconnectSignals(self):
         self.ui.storage.disconnect(self.ui.fileScanDirLineEdit,
                                 Qt.SIGNAL("editingFinished()"), self.apply)
@@ -354,7 +356,7 @@ class Storage(object):
             if f.split(".")[-1] == 'nxs':
                 nxsfiles.append(idx)
             if len(nxsfiles) > 1 \
-                    and self.state.writerDevice:
+                    and self.state.writerDevice != str(self.__moduleLabel):
                 Qt.QMessageBox.warning(
                     self.ui.storage, 
                     "To many 'nxs' scan files",

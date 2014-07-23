@@ -38,16 +38,21 @@ class ServerState(object):
     def __init__(self, server=None):
         
         
+        self.server = None
         self.__db = PyTango.Database()
         self.__dp = None
 
-        if not server:
+        self.__timeout =  25000
+
+        if server is None:
             servers = self.__db.get_device_exported_for_class(
                 "NXSRecSelector").value_string
             if len(servers):
                 self.server = str(servers[0])
             else:
                 self.server = None
+        elif not server:         
+            self.server = None
         else:
             self.server = str(server) 
 
@@ -60,7 +65,6 @@ class ServerState(object):
         except Exception as e:
             self.errors.append(e)
         logger.debug("DP %s" % type(self.__dp) )
-        self.fetchSettings()
             
 
         self.scanDir = None
@@ -225,7 +229,9 @@ class ServerState(object):
             raise Exception("ScanFile not defined")
         if not self.scanDir:
             raise Exception("ScanDir not defined")
+        print "Settings", self.state.configDevice
         self.storeSettings()
+        print "Settings2", self.state.configDevice
         mgconf = self.__dp.updateMntGrp()
         conf = {}
         conf['MntGrpConfigs'] = {}
@@ -265,6 +271,7 @@ class ServerState(object):
 
         if self.server:
             self.__dp = self.openProxy(self.server)    
+            self.__dp.set_timeout_millis(self.__timeout)
             logger.debug("set server: %s:%s/%s"  % (self.__dp.get_db_host(),
                                                     self.__dp.get_db_port(),
                                                     self.__dp.name()))

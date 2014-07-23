@@ -62,9 +62,9 @@ class Selector(Qt.QDialog, TaurusBaseWidget):
         self.__ask = False
         
         self.cnfFile = ''
-        logger.debug("00server")
+        logger.debug("server0")
         try:
-            logger.debug("server")
+            logger.debug("server1")
             self.state = ServerState(server)
             logger.debug("server2")
             self.state.fetchSettings()
@@ -75,6 +75,8 @@ class Selector(Qt.QDialog, TaurusBaseWidget):
                 "NXSSelector: Error in Setting Selector Server",
                 "%s" % str("\n".join(["%s " % (err.desc) for err in value])))
 #            sys.exit(-1)
+            self.state = ServerState("")
+            self.state.setServer()
         except Exception as e:
             import traceback
             value = traceback.format_exc()
@@ -87,6 +89,8 @@ class Selector(Qt.QDialog, TaurusBaseWidget):
 #                "NXSSelector: Error in Setting Server",
 #                str(e))
 #            sys.exit(-1)
+            self.state = ServerState("")
+            self.state.setServer()
 
 
         settings = Qt.QSettings(self.__organization, self.__application, self)
@@ -369,7 +373,16 @@ class Selector(Qt.QDialog, TaurusBaseWidget):
         
     def reset(self):
         logger.debug("reset selector")
-        self.state.fetchSettings()
+        try:
+            self.state.fetchSettings()
+        except Exception as e:
+            import traceback
+            value = traceback.format_exc()
+            Qt.QMessageBox.warning(
+                self, 
+                "NXSSelector: Error in Setting Selector Server",
+                "%s" % (value))
+
         for tab in self.tabs:
             tab.reset()
         logger.debug("reset selector ended")
