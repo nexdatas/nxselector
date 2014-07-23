@@ -62,10 +62,12 @@ class Selector(Qt.QDialog, TaurusBaseWidget):
         self.__ask = False
         
         self.cnfFile = ''
+        logger.debug("00server")
         try:
+            logger.debug("server")
             self.state = ServerState(server)
-            if self.state.server:
-                self.state.fetchSettings()
+            logger.debug("server2")
+            self.state.fetchSettings()
         except PyTango.DevFailed as e:
             value = sys.exc_info()[1]
             Qt.QMessageBox.warning(

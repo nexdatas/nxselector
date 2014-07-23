@@ -37,18 +37,30 @@ class ServerState(object):
     # \param settings frame settings
     def __init__(self, server=None):
         
-        self.server = str(server) if server else None
+        
+        self.__db = PyTango.Database()
         self.__dp = None
-        self.__db = None
+
+        if not server:
+            servers = self.__db.get_device_exported_for_class(
+                "NXSRecSelector").value_string
+            if len(servers):
+                self.server = str(servers[0])
+            else:
+                self.server = None
+        else:
+            self.server = str(server) 
+
         ## tango database
         self.errors = []
         try:
-            self.__db = PyTango.Database()
             self.setServer()
-            self.__dp.ping()
-            self.fetchSettings()
+            if self.server:
+                self.__dp.ping()
         except Exception as e:
             self.errors.append(e)
+        logger.debug("DP %s" % type(self.__dp) )
+        self.fetchSettings()
             
 
         self.scanDir = None
@@ -94,43 +106,47 @@ class ServerState(object):
         self.labeltypes = {}
 
     def fetchSettings(self):
-        self.dsgroup = self.loadDict("DataSourceGroup") 
-        self.labels = self.loadDict("Labels") 
-        self.labellinks = self.loadDict("LabelLinks") 
-        self.labelpaths = self.loadDict("LabelPaths") 
-        self.labelshapes = self.loadDict("LabelShapes") 
-        self.labeltypes = self.loadDict("LabelTypes") 
-        self.nodisplay = self.loadList("HiddenElements", True) 
-        self.cpgroup = self.loadDict("ComponentGroup") 
-        self.avcplist = self.getList("AvailableComponents") 
-        self.avdslist = self.getList("AvailableDataSources") 
-        self.acpgroup = self.loadDict("AutomaticComponentGroup") 
-        self.acplist = self.loadList("AutomaticComponents") 
-        self.atlist = list(self.loadList("AvailableTimers"))
-        self.mcplist = self.getList("MandatoryComponents") 
-        self.description = self.loadList("Description", True) 
-        self.vrcpdict = self.loadDict("VariableComponents") 
-        self.fullnames = self.loadDict("FullDeviceNames") 
-        self.datarecord = self.loadDict("DataRecord") 
-        self.configvars = self.loadDict("ConfigVariables") 
+        if not self.__dp:
+            self.setServer()
+        if not self.server:    
+            self.__dp.importAllEnv()
+        self.dsgroup = self.loadDict("dataSourceGroup") 
+        self.labels = self.loadDict("labels") 
+        self.labellinks = self.loadDict("labelLinks") 
+        self.labelpaths = self.loadDict("labelPaths") 
+        self.labelshapes = self.loadDict("labelShapes") 
+        self.labeltypes = self.loadDict("labelTypes") 
+        self.nodisplay = self.loadList("hiddenElements", True) 
+        self.cpgroup = self.loadDict("componentGroup") 
+        self.avcplist = self.getList("availableComponents") 
+        self.avdslist = self.getList("availableDataSources") 
+        self.acpgroup = self.loadDict("automaticComponentGroup") 
+        self.acplist = self.loadList("automaticComponents") 
+        self.atlist = list(self.loadList("availableTimers"))
+        self.mcplist = self.getList("mandatoryComponents") 
+        self.description = self.loadList("description", True) 
+        self.vrcpdict = self.loadDict("variableComponents") 
+        self.fullnames = self.loadDict("fullDeviceNames") 
+        self.datarecord = self.loadDict("dataRecord") 
+        self.configvars = self.loadDict("configVariables") 
         
         self.fetchFileData()
         self.fetchEnvData()
 
     def fetchFileData(self):
-        self.timers = self.loadList("Timer", True)
-        self.mntgrp = self.loadData("MntGrp")
-        self.door = self.loadData("Door")
+        self.timers = self.loadList("timer", True)
+        self.mntgrp = self.loadData("mntGrp")
+        self.door = self.loadData("door")
 
-        self.configDevice = self.loadData("ConfigDevice")
-        self.writerDevice = self.loadData("WriterDevice")
+        self.configDevice = self.loadData("configDevice")
+        self.writerDevice = self.loadData("writerDevice")
             
-        self.appendEntry = self.loadData("AppendEntry")
+        self.appendEntry = self.loadData("appendEntry")
 
-#        self.dynamicComponents = self.loadData("DynamicComponents")
-        self.dynamicLinks = self.loadData("DynamicLinks")
-        self.dynamicPath = self.loadData("DynamicPath")
-        self.cnfFile = self.loadData("ConfigFile")
+#        self.dynamicComponents = self.loadData("dynamicComponents")
+        self.dynamicLinks = self.loadData("dynamicLinks")
+        self.dynamicPath = self.loadData("dynamicPath")
+        self.cnfFile = self.loadData("configFile")
 
     def fetchEnvData(self):
         params = {"ScanDir":"scanDir",
@@ -141,7 +157,7 @@ class ServerState(object):
         if not self.__dp:
             self.setServer()
 
-        jvalue = self.__dp.FetchEnvData()
+        jvalue = self.__dp.fetchEnvData()
         value = json.loads(jvalue)    
  
         for var, attr in params.items():
@@ -166,37 +182,42 @@ class ServerState(object):
         for var, attr in params.items():
             value[var] = getattr(self, attr)
         jvalue = json.dumps(value)    
-        self.scanID = self.__dp.StoreEnvData(jvalue)
+        self.scanID = self.__dp.storeEnvData(jvalue)
         logger.debug("Store Env: %s" % ( jvalue) )
 
     def storeFileData(self):
 
-        self.storeList("Timer", self.timers)
-        self.storeData("Door", self.door)
-        self.storeData("MntGrp", self.mntgrp)
+        self.storeList("timer", self.timers)
+        self.storeData("door", self.door)
+        self.storeData("mntGrp", self.mntgrp)
 
-        self.storeData("ConfigDevice", self.configDevice)
-        self.storeData("WriterDevice", self.writerDevice)
+        self.storeData("configDevice", self.configDevice)
+        self.storeData("writerDevice", self.writerDevice)
 
-        self.storeData("AppendEntry", self.appendEntry)
-        self.storeData("DynamicComponents", self.dynamicComponents)
-        self.storeData("DynamicLinks", self.dynamicLinks)
-        self.storeData("DynamicPath", self.dynamicPath)
+        self.storeData("appendEntry", self.appendEntry)
+        self.storeData("dynamicComponents", self.dynamicComponents)
+        self.storeData("dynamicLinks", self.dynamicLinks)
+        self.storeData("dynamicPath", self.dynamicPath)
 
 
     def storeSettings(self):
-        self.storeDict("DataSourceGroup", self.dsgroup) 
-        self.storeDict("Labels", self.labels) 
-        self.storeDict("LabelLinks", self.labellinks) 
-        self.storeDict("LabelPaths", self.labelpaths) 
-        self.storeDict("LabelShapes", self.labelshapes) 
-        self.storeDict("LabelTypes", self.labeltypes) 
-        self.storeList("HiddenElements", self.nodisplay) 
-        self.storeDict("ComponentGroup", self.cpgroup) 
-        self.storeDict("DataRecord", self.datarecord) 
-        self.storeDict("ConfigVariables", self.configvars) 
+        self.storeDict("dataSourceGroup", self.dsgroup) 
+        self.storeDict("labels", self.labels) 
+        self.storeDict("labelLinks", self.labellinks) 
+        self.storeDict("labelPaths", self.labelpaths) 
+        self.storeDict("labelShapes", self.labelshapes) 
+        self.storeDict("labelTypes", self.labeltypes) 
+        self.storeList("hiddenElements", self.nodisplay) 
+        self.storeDict("componentGroup", self.cpgroup) 
+        self.storeDict("dataRecord", self.datarecord) 
+        self.storeDict("configVariables", self.configvars) 
         self.storeFileData()
         self.storeEnvData()
+        if not self.__dp:
+            self.setServer()
+        print "COMPONENTS:", self.__dp.components   
+        if not self.server:    
+            self.__dp.exportAllEnv()
 
     def updateMntGrp(self):
         if not self.mntgrp:
@@ -206,7 +227,7 @@ class ServerState(object):
         if not self.scanDir:
             raise Exception("ScanDir not defined")
         self.storeSettings()
-        mgconf = self.__dp.UpdateMntGrp()
+        mgconf = self.__dp.updateMntGrp()
         conf = {}
         conf['MntGrpConfigs'] = {}
         conf['ActiveMntGrp'] = self.mntgrp
@@ -221,7 +242,7 @@ class ServerState(object):
     
 
     def mntGrpConfiguration(self):
-        mgconf = self.__dp.MntGrpConfiguration()
+        mgconf = self.__dp.mntGrpConfiguration()
         conf = {}
         conf['MntGrpConfigs'] = {}
         conf['ActiveMntGrp'] = self.mntgrp
@@ -231,28 +252,26 @@ class ServerState(object):
 
     def getConfiguration(self):
         self.storeSettings()
-        return self.__dp.Configuration 
+        return self.__dp.configuration 
 
     def setConfiguration(self, conf):
-        self.__dp.Configuration = conf
-        self.__dp.UpdateMntGrp()
+        self.__dp.configuration = conf
+        self.__dp.updateMntGrp()
         self.fetchSettings()
 
     def updateControllers(self):
-        self.__dp.UpdateControllers()
+        self.__dp.updateControllers()
 
     def setServer(self):
 
-        if not self.server:
-            servers = self.__db.get_device_exported_for_class(
-                "NXSRecSelector").value_string
-            if len(servers):
-                self.server = str(servers[0])
-
-        self.__dp = self.openProxy(self.server)    
-        logger.debug("set server: %s:%s/%s"  % (self.__dp.get_db_host(),
-                                                self.__dp.get_db_port(),
-                                                self.__dp.name()))
+        if self.server:
+            self.__dp = self.openProxy(self.server)    
+            logger.debug("set server: %s:%s/%s"  % (self.__dp.get_db_host(),
+                                                    self.__dp.get_db_port(),
+                                                    self.__dp.name()))
+        else:
+            from nxsrecconfig import Settings
+            self.__dp = Settings.Settings()
 
 
     @classmethod
@@ -279,8 +298,11 @@ class ServerState(object):
     def loadDict(self, name):    
         if not self.__dp:
             self.setServer()
-        self.__dp.ping()
-        dsg = self.__dp.read_attribute(name).value
+        if self.server:    
+            self.__dp.ping()
+            dsg = self.__dp.read_attribute(name).value
+        else:
+            dsg = getattr(self.__dp, name)
         res = {}
         if dsg:
             dc = json.loads(dsg)
@@ -293,10 +315,15 @@ class ServerState(object):
     def storeDict(self, name, value):    
         if not self.__dp:
             self.setServer()
-        self.__dp.ping()
+        if self.server:    
+            self.__dp.ping()
 
         jvalue = json.dumps(value)    
-        self.__dp.write_attribute(name, jvalue)
+        if self.server:
+            self.__dp.write_attribute(name, jvalue)
+        else:
+            setattr(self.__dp, name, jvalue)
+            
         logger.debug(" %s = %s" % (name, jvalue) )
 
 
@@ -305,28 +332,39 @@ class ServerState(object):
     def storeList(self, name, value):    
         if not self.__dp:
             self.setServer()
-        self.__dp.ping()
+        if self.server:    
+            self.__dp.ping()
 
         jvalue = json.dumps(value)    
-        self.__dp.write_attribute(name, jvalue)
+        if self.server:
+            self.__dp.write_attribute(name, jvalue)
+        else:
+            setattr(self.__dp, name, jvalue)
+
         logger.debug(" %s = %s" % (name, jvalue) )
 
 
     def storeData(self, name, value):    
         if not self.__dp:
             self.setServer()
-        self.__dp.ping()
+        if self.server:
+            self.__dp.ping()
 
-        self.__dp.write_attribute(name, value)
+        if self.server:
+            self.__dp.write_attribute(name, value)
+        else:
+            setattr(self.__dp, name, value)
         logger.debug(" %s = %s" % (name, value) )
 
 
     def loadList(self, name, encoded = False):    
         if not self.__dp:
             self.setServer()
-        self.__dp.ping()
-
-        dc = self.__dp.read_attribute(name).value
+        if self.server:
+            self.__dp.ping()
+            dc = self.__dp.read_attribute(name).value
+        else:
+            dc = getattr(self.__dp, name)
         logger.debug(dc)
         res = []
         if dc:
@@ -341,8 +379,12 @@ class ServerState(object):
     def loadData(self, name):    
         if not self.__dp:
             self.setServer()
-        self.__dp.ping()
-        dc = self.__dp.read_attribute(name).value
+        if self.server:
+            self.__dp.ping()
+            dc = self.__dp.read_attribute(name).value
+        else:
+            dc = getattr(self.__dp, name)
+            
         logger.debug(dc)
         return dc
 
@@ -350,8 +392,12 @@ class ServerState(object):
     def getList(self, name):    
         if not self.__dp:
             self.setServer()
-        self.__dp.ping()
-        dc = self.__dp.command_inout(name)
+        if self.server:
+            self.__dp.ping()
+            dc = self.__dp.command_inout(name)
+        else:
+            dc = getattr(self.__dp, name)()
+             
         logger.debug(dc)
         res = []
         if dc:
