@@ -42,7 +42,6 @@ class Storage(object):
         self.__layout = None
         self.__tWidgets = []
 
-
     def disconnectSignals(self):
         self.ui.storage.disconnect(self.ui.fileScanDirLineEdit,
                                 Qt.SIGNAL("editingFinished()"), self.apply)
@@ -342,6 +341,10 @@ class Storage(object):
         
         self.state.door = str(self.ui.mntServerLineEdit.text())
 
+        # device group    
+        self.state.writerDevice = str(self.ui.devWriterLineEdit.text())
+        self.state.configDevice = str(self.ui.devConfigLineEdit.text())
+
         self.state.scanDir = str(self.ui.fileScanDirLineEdit.text())
 #        self.state.scanID = int(self.ui.fileScanIDSpinBox.value())
         files = str(self.ui.fileScanLineEdit.text())
@@ -350,20 +353,18 @@ class Storage(object):
         for idx, f in enumerate(sfiles):
             if f.split(".")[-1] == 'nxs':
                 nxsfiles.append(idx)
-        if len(nxsfiles) > 1:
-            Qt.QMessageBox.warning(
-                self.ui.storage, 
-                "To many 'nxs' scan files",
-                "Only %s will be used." % (sfiles[nxsfiles[0]]))
+            if len(nxsfiles) > 1 \
+                    and self.state.writerDevice:
+                Qt.QMessageBox.warning(
+                    self.ui.storage, 
+                    "To many 'nxs' scan files",
+                    "Only %s will be used." % (sfiles[nxsfiles[0]]))
 
-            for f in reversed(nxsfiles[1:]):
-                sfiles.pop(f)
+                for f in reversed(nxsfiles[1:]):
+                    sfiles.pop(f)
         self.state.scanFile = sfiles
 
 
-        # device group    
-        self.state.writerDevice = str(self.ui.devWriterLineEdit.text())
-        self.state.configDevice = str(self.ui.devConfigLineEdit.text())
 
         # dynamic component group
         self.state.dynamicComponents = True
