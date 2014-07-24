@@ -221,12 +221,12 @@
        </property>
        <widget class="QWidget" name="selectable">
         <attribute name="title">
-         <string>Detector Components</string>
+         <string>Detectors</string>
         </attribute>
        </widget>
        <widget class="QWidget" name="state">
         <attribute name="title">
-         <string>Preselected Components</string>
+         <string>Descriptions</string>
         </attribute>
        </widget>
        <widget class="QWidget" name="data">
