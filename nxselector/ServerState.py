@@ -191,12 +191,13 @@ class ServerState(object):
 
     def storeFileData(self):
 
+        self.storeData("configDevice", self.configDevice)
+        self.storeData("writerDevice", self.writerDevice)
+
         self.storeList("timer", self.timers)
         self.storeData("door", self.door)
         self.storeData("mntGrp", self.mntgrp)
 
-        self.storeData("configDevice", self.configDevice)
-        self.storeData("writerDevice", self.writerDevice)
 
         self.storeData("appendEntry", self.appendEntry)
         self.storeData("dynamicComponents", self.dynamicComponents)
@@ -205,6 +206,7 @@ class ServerState(object):
 
 
     def storeSettings(self):
+        self.storeFileData()
         self.storeDict("dataSourceGroup", self.dsgroup) 
         self.storeDict("labels", self.labels) 
         self.storeDict("labelLinks", self.labellinks) 
@@ -215,7 +217,6 @@ class ServerState(object):
         self.storeDict("componentGroup", self.cpgroup) 
         self.storeDict("dataRecord", self.datarecord) 
         self.storeDict("configVariables", self.configvars) 
-        self.storeFileData()
         self.storeEnvData()
         if not self.__dp:
             self.setServer()

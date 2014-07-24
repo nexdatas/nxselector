@@ -355,15 +355,15 @@ class Storage(object):
         for idx, f in enumerate(sfiles):
             if f.split(".")[-1] == 'nxs':
                 nxsfiles.append(idx)
-            if len(nxsfiles) > 1 \
-                    and self.state.writerDevice != str(self.__moduleLabel):
-                Qt.QMessageBox.warning(
-                    self.ui.storage, 
-                    "To many 'nxs' scan files",
-                    "Only %s will be used." % (sfiles[nxsfiles[0]]))
+        if len(nxsfiles) > 1 \
+                and self.state.writerDevice != str(self.__moduleLabel):
+            Qt.QMessageBox.warning(
+                self.ui.storage, 
+                "To many 'nxs' scan files",
+                "Only %s will be used." % (sfiles[nxsfiles[0]]))
 
-                for f in reversed(nxsfiles[1:]):
-                    sfiles.pop(f)
+            for f in reversed(nxsfiles[1:]):
+                sfiles.pop(f)
         self.state.scanFile = sfiles
 
 
