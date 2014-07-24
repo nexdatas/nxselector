@@ -229,9 +229,7 @@ class ServerState(object):
             raise Exception("ScanFile not defined")
         if not self.scanDir:
             raise Exception("ScanDir not defined")
-        print "Settings", self.state.configDevice
         self.storeSettings()
-        print "Settings2", self.state.configDevice
         mgconf = self.__dp.updateMntGrp()
         conf = {}
         conf['MntGrpConfigs'] = {}
