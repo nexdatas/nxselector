@@ -62,11 +62,8 @@ class Selector(Qt.QDialog, TaurusBaseWidget):
         self.__ask = False
         
         self.cnfFile = ''
-        logger.debug("server0")
         try:
-            logger.debug("server1")
             self.state = ServerState(server)
-            logger.debug("server2")
             self.state.fetchSettings()
         except PyTango.DevFailed as e:
             value = sys.exc_info()[1]
@@ -346,7 +343,18 @@ class Selector(Qt.QDialog, TaurusBaseWidget):
 
     def resetServer(self):
         logger.debug("reset server")
-        self.state.setServer()
+        try:
+            self.state = ServerState(server)
+            self.state.fetchSettings()
+        except PyTango.DevFailed as e:
+            value = sys.exc_info()[1]
+            Qt.QMessageBox.warning(
+                self, 
+                "NXSSelector: Error in Setting Selector Server",
+                "%s" % str("\n".join(["%s " % (err.desc) for err in value])))
+#            sys.exit(-1)
+            self.state = ServerState("")
+            self.state.setServer()
         self.reset()
         logger.debug("reset server ended")
 

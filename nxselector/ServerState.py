@@ -61,6 +61,7 @@ class ServerState(object):
         try:
             self.setServer()
             if self.server:
+                self.__dp.init()
                 self.__dp.ping()
         except Exception as e:
             self.errors.append(e)
