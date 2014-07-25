@@ -189,14 +189,15 @@ class Preferences(object):
             if replay == Qt.QMessageBox.Yes:
                 try:
                     if server == 'module':
-                            self.state.server = ""
+                            self.state.server = ''
                             self.state.setServer()
                             self.state.fetchSettings()
                             self.addHint(server, self.serverhelp)
                     else:
                         if not server:
-                            self.state = ServerState()
-                            server = self.state.server
+                            self.state.findServer()
+                            self.state.setServer()
+                            self.state.fetchSettings()
                         dp = PyTango.DeviceProxy(server)
                         if dp.info().dev_class == 'NXSRecSelector':
                             self.state.server = str(server)

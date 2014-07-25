@@ -43,18 +43,9 @@ class ServerState(object):
         self.__dp = None
 
         self.__timeout =  25000
+        
+        self.findServer(server)
 
-        if server is None:
-            servers = self.__db.get_device_exported_for_class(
-                "NXSRecSelector").value_string
-            if len(servers):
-                self.server = str(servers[0])
-            else:
-                self.server = None
-        elif not server:         
-            self.server = None
-        else:
-            self.server = str(server) 
 
         ## tango database
         self.errors = []
@@ -109,6 +100,21 @@ class ServerState(object):
         self.labelpaths = {}
         self.labelshapes = {}
         self.labeltypes = {}
+
+
+    def findServer(self, server=None): 
+        if server is None:
+            servers = self.__db.get_device_exported_for_class(
+                "NXSRecSelector").value_string
+            if len(servers):
+                self.server = str(servers[0])
+            else:
+                self.server = None
+        elif not server:         
+            self.server = None
+        else:
+            self.server = str(server) 
+
 
     def fetchSettings(self):
         if not self.__dp:
@@ -207,6 +213,9 @@ class ServerState(object):
 
 
     def storeSettings(self):
+        if not self.__dp:
+            self.setServer()
+        self.storeEnvData()
         self.storeFileData()
         self.storeDict("dataSourceGroup", self.dsgroup) 
         self.storeDict("labels", self.labels) 
@@ -218,9 +227,6 @@ class ServerState(object):
         self.storeDict("componentGroup", self.cpgroup) 
         self.storeDict("dataRecord", self.datarecord) 
         self.storeDict("configVariables", self.configvars) 
-        self.storeEnvData()
-        if not self.__dp:
-            self.setServer()
         if not self.server:    
             self.__dp.exportAllEnv()
 

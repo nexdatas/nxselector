@@ -67,15 +67,7 @@ class Data(object):
         logger.debug("NAMES: %s " % names)
         self.form.available_names = names
         self.form.createGUI()
-#        gb = QGroupBox(self.ui.data)
-#        gb.setTitle("Data")
-#        self.layout.addWidget(gb)
-#        self.layout.addWidget(self.form)
-#        gb = QGroupBox(self.ui.data)
-#        gb.setTitle("Data2")
-#        self.layout.addWidget(gb)
         self.layout.addWidget(self.form)
-#        self.form.show()
         self.ui.data.update()
         if self.ui.tabWidget.currentWidget() == self.ui.data:
             self.ui.data.show()
