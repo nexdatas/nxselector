@@ -39,6 +39,7 @@ from .Views import (TableView, OneTableView,
                     CheckDisViewNL, RadioDisViewNL, 
                     CheckDisViewNN, RadioDisViewNN
                     )
+from .ServerState import ServerState
 
 import logging
 logger = logging.getLogger(__name__)
@@ -178,7 +179,7 @@ class Preferences(object):
         logger.debug("server changing")
         server = str(self.ui.devSettingsLineEdit.text())
         logger.debug("from %s to  %s" % (self.state.server, server))
-        if server != self.state.server:
+        if not server or server != self.state.server:
             replay = Qt.QMessageBox.question(
                 self.ui.preferences, 
                 "Setting server has changed.", 
@@ -187,17 +188,28 @@ class Preferences(object):
                 Qt.QMessageBox.Yes|Qt.QMessageBox.No)
             if replay == Qt.QMessageBox.Yes:
                 try:
-                    dp = PyTango.DeviceProxy(server)
-                    if dp.info().dev_class == 'NXSRecSelector':
-                        self.state.server = str(server)
-                        self.state.setServer()
-                        self.addHint(server, self.serverhelp)
-                except:
+                    if server == 'module':
+                            self.state.server = ""
+                            self.state.setServer()
+                            self.state.fetchSettings()
+                            self.addHint(server, self.serverhelp)
+                    else:
+                        if not server:
+                            self.state = ServerState()
+                            server = self.state.server
+                        dp = PyTango.DeviceProxy(server)
+                        if dp.info().dev_class == 'NXSRecSelector':
+                            self.state.server = str(server)
+                            self.state.setServer()
+                            self.state.fetchSettings()
+                            self.addHint(server, self.serverhelp)
+                except Exception as e:
                     self.reset()
                 self.connectSignals()
                 self.ui.preferences.emit(Qt.SIGNAL("serverChanged()"))
             else:
-                self.ui.devSettingsLineEdit.setText(Qt.QString(self.state.server))
+                self.ui.devSettingsLineEdit.setText(Qt.QString(
+                        self.state.server if self.state.server  else 'module'))
         self.connectSignals()
         logger.debug("server changed")
 
@@ -243,7 +255,7 @@ class Preferences(object):
 
 
     def updateForm(self):
-        self.ui.devSettingsLineEdit.setText(self.state.server)
+        self.ui.devSettingsLineEdit.setText(self.state.server if self.state.server else 'module')
         self.ui.groupLineEdit.setText(self.mgroups)
         self.ui.frameLineEdit.setText(self.frames)
             

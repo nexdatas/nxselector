@@ -60,34 +60,11 @@ class Selector(Qt.QDialog, TaurusBaseWidget):
 
         self.__standalone = standalone
         self.__ask = False
-        
+
+        self.state = None
+
         self.cnfFile = ''
-        try:
-            self.state = ServerState(server)
-            self.state.fetchSettings()
-        except PyTango.DevFailed as e:
-            value = sys.exc_info()[1]
-            Qt.QMessageBox.warning(
-                self, 
-                "NXSSelector: Error in Setting Selector Server",
-                "%s" % str("\n".join(["%s " % (err.desc) for err in value])))
-#            sys.exit(-1)
-            self.state = ServerState("")
-            self.state.setServer()
-        except Exception as e:
-            import traceback
-            value = traceback.format_exc()
-            Qt.QMessageBox.warning(
-                self, 
-                "NXSSelector: Error in Setting Selector Server",
-                "%s" % (value))
-#            Qt.QMessageBox.warning(
-#                self, 
-#                "NXSSelector: Error in Setting Server",
-#                str(e))
-#            sys.exit(-1)
-            self.state = ServerState("")
-            self.state.setServer()
+        self.__resetServer(server)
 
 
         settings = Qt.QSettings(self.__organization, self.__application, self)
@@ -341,8 +318,8 @@ class Selector(Qt.QDialog, TaurusBaseWidget):
         Qt.QWidget.closeEvent(self, event)
         logger.debug("close event ended")
 
-    def resetServer(self):
-        logger.debug("reset server")
+
+    def __resetServer(self, server):
         try:
             self.state = ServerState(server)
             self.state.fetchSettings()
@@ -352,10 +329,25 @@ class Selector(Qt.QDialog, TaurusBaseWidget):
                 self, 
                 "NXSSelector: Error in Setting Selector Server",
                 "%s" % str("\n".join(["%s " % (err.desc) for err in value])))
-#            sys.exit(-1)
             self.state = ServerState("")
             self.state.setServer()
-        self.reset()
+        except Exception as e:
+            import traceback
+            value = traceback.format_exc()
+            Qt.QMessageBox.warning(
+                self, 
+                "NXSSelector: Error in Setting Selector Server",
+                "%s" % (value))
+            self.state = ServerState("")
+            self.state.setServer()
+
+
+
+    def resetServer(self):
+        logger.debug("reset server")
+        self.__resetServer(self.state.server)
+        self.resetAll()
+        
         logger.debug("reset server ended")
 
     def resetLayout(self, frames, groups):
