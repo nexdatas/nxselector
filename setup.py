@@ -22,6 +22,7 @@
 """ setup.py for NXS Component Designer """
 
 import os
+import sys
 from distutils.util import get_platform
 from distutils.core import setup
 from distutils.command.build import build
