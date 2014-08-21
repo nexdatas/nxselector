@@ -1,6 +1,6 @@
-2014-07-XX Jan Kotanski <jankotan@gmail.com>
+2014-XX-XX Jan Kotanski <jankotan@gmail.com>
 	* adding import sys to setup.py
-	* tagged as 1.7.2
+	* tagged as 1.7.3
 
 2014-07-25 Jan Kotanski <jankotan@gmail.com>
 	* fixing changing selector server
