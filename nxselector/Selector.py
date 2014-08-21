@@ -342,12 +342,10 @@ class Selector(Qt.QDialog, TaurusBaseWidget):
             self.state.setServer()
 
 
-
     def resetServer(self):
         logger.debug("reset server")
-        self.__resetServer(self.state.server)
+        self.state.setServer()
         self.resetAll()
-        
         logger.debug("reset server ended")
 
     def resetLayout(self, frames, groups):
@@ -392,7 +390,7 @@ class Selector(Qt.QDialog, TaurusBaseWidget):
         self.state.updateControllers()
         self.state.importMntGrp()
         self.reset()
-        self.setDirty(False)
+        self.setDirty(True)
         logger.debug("reset ENDED")
 
 

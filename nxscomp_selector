@@ -76,8 +76,7 @@ def main():
         (options, _) = parser.parse_args()
         if options.style:
             app.setStyle(options.style)
-        if options.server:
-            server = options.server
+        server = options.server
         if options.stylesheet:
             app.setStyle(options.stylesheet)
 
