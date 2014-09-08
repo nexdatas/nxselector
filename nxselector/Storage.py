@@ -227,12 +227,14 @@ class Storage(object):
         logger.debug("delTimer end")
 
     def __removeTimer(self):     
-        cb = self.__tWidgets.pop()
-        cb.hide()
-        self.__layout.removeWidget(cb)
-        self.ui.storage.disconnect(
-            cb, Qt.SIGNAL("currentIndexChanged(int)"), self.apply)
-        cb.close()
+        if self.__tWidgets:
+            cb = self.__tWidgets.pop()
+            cb.hide()
+            self.__layout.removeWidget(cb)
+            self.ui.storage.disconnect(
+                cb, Qt.SIGNAL(
+                    "currentIndexChanged(int)"), self.apply)
+            cb.close()
 
 
     def reset(self):
@@ -288,7 +290,7 @@ class Storage(object):
                 len(self.state.timers) > len(self.__tWidgets) + 1:
             logger.debug("ADDING timer")
             self.__appendTimer()
-        while self.state.timers is not None and \
+        while self.state.timers and \
                 len(self.state.timers) < len(self.__tWidgets) + 1:
             logger.debug("removing timer")
             self.__removeTimer()

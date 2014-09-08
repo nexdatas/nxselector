@@ -1,4 +1,6 @@
-2014-XX-XX Jan Kotanski <jankotan@gmail.com>
+2014-09-08 Jan Kotanski <jankotan@gmail.com>
+	* adding fixes for removing timer
+	* update man page
 	* adding import sys to setup.py
 	* tagged as 1.7.3
 
