@@ -26,6 +26,7 @@
 from taurus.external.qt import Qt
 
 from .EdListDlg import EdListDlg
+from .GroupsDlg import GroupsDlg
 from .PropertiesDlg import PropertiesDlg
 
 import logging
@@ -98,6 +99,9 @@ class Storage(object):
         self.ui.storage.disconnect(self.ui.labelsPushButton, 
                                    Qt.SIGNAL("clicked()"), 
                                    self.__labels)
+        self.ui.storage.disconnect(self.ui.groupsPushButton, 
+                                   Qt.SIGNAL("clicked()"), 
+                                   self.__groups)
 
     def connectSignals(self):
         self.disconnectSignals()
@@ -156,6 +160,10 @@ class Storage(object):
                                 Qt.SIGNAL("clicked()"), 
                                 self.__labels)
 
+        self.ui.storage.connect(self.ui.groupsPushButton, 
+                                Qt.SIGNAL("clicked()"), 
+                                self.__groups)
+
 
             
     def __variables(self):    
@@ -175,6 +183,37 @@ class Storage(object):
         dform.headers = ["Element", "Label"]
         dform.available_names = list( 
             set(self.state.avcplist) | set(self.state.avdslist))
+
+        dform.createGUI()
+        dform.exec_()
+        if dform.dirty:
+            self.ui.storage.emit(Qt.SIGNAL("reset"))
+
+
+    def __groups(self):    
+        dform  = GroupsDlg(self.ui.storage)
+        dform.det_components = dict((cp, False) for cp in self.state.avcplist)
+        dform.det_components.update(
+            dict((cp, True) for cp in self.state.cpgroup.keys()))
+        dform.det_datasources = dict((cp, False) for cp in self.state.avdslist)
+        dform.det_datasources.update(
+            dict((cp, True) for cp in self.state.dsgroup.keys()))
+        dform.beam_components = dict((cp, False) for cp in self.state.avcplist)
+        dform.beam_components.update(
+            dict((cp, True) for cp in self.state.acpgroup.keys()))
+        dform.beam_datasources = dict((cp, False) for cp in self.state.avdslist)
+        dform.beam_datasources.update(
+            dict((cp, True) for cp in self.state.adslist))
+
+#        dform.beam_components =  list( 
+#            set(self.state.avdslist) | set(self.state.acpgroup.keys))
+#        dform.beam_datasources = list( 
+#            set(self.state.avdslist) | set(self.state.adsgroup.keys))
+#        dform.widget.record = self.state.labels
+#        dform.simple = True
+#        dform.headers = ["Element", "Label"]
+#        dform.available_names = list( 
+#            set(self.state.avcplist) | set(self.state.avdslist))
 
         dform.createGUI()
         dform.exec_()

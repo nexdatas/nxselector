@@ -133,6 +133,8 @@ class ServerState(object):
         self.avdslist = self.getList("availableDataSources") 
         self.acpgroup = self.loadDict("automaticComponentGroup") 
         self.acplist = self.loadList("automaticComponents") 
+        ## new
+        self.adslist = self.loadList("automaticDataSources", True) 
         self.atlist = list(self.loadList("availableTimers"))
         self.mcplist = self.getList("mandatoryComponents") 
         self.description = self.loadList("description", True) 
