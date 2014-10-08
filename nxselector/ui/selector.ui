@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>763</width>
+    <width>785</width>
     <height>602</height>
    </rect>
   </property>
@@ -244,7 +244,7 @@
            <item>
             <layout class="QVBoxLayout" name="verticalLayout_6">
              <item>
-              <widget class="QFrame" name="frame_2">
+              <widget class="QFrame" name="channelFrame">
                <property name="frameShape">
                 <enum>QFrame::StyledPanel</enum>
                </property>
@@ -297,6 +297,19 @@
                      </property>
                     </spacer>
                    </item>
+                   <item row="4" column="0">
+                    <spacer name="verticalSpacer_22">
+                     <property name="orientation">
+                      <enum>Qt::Vertical</enum>
+                     </property>
+                     <property name="sizeHint" stdset="0">
+                      <size>
+                       <width>20</width>
+                       <height>40</height>
+                      </size>
+                     </property>
+                    </spacer>
+                   </item>
                   </layout>
                  </widget>
                 </item>
@@ -304,7 +317,7 @@
               </widget>
              </item>
              <item>
-              <widget class="QFrame" name="frame_4">
+              <widget class="QFrame" name="dynFrame">
                <property name="frameShape">
                 <enum>QFrame::StyledPanel</enum>
                </property>
@@ -415,7 +428,7 @@
            <item>
             <layout class="QVBoxLayout" name="verticalLayout_4">
              <item>
-              <widget class="QFrame" name="frame_5">
+              <widget class="QFrame" name="measFrame">
                <property name="frameShape">
                 <enum>QFrame::StyledPanel</enum>
                </property>
@@ -652,7 +665,7 @@
         </attribute>
         <layout class="QGridLayout" name="gridLayout_14">
          <item row="1" column="0">
-          <widget class="QFrame" name="frame_6">
+          <widget class="QFrame" name="groupFrame">
            <property name="frameShape">
             <enum>QFrame::StyledPanel</enum>
            </property>
@@ -663,7 +676,7 @@
             <item row="0" column="0">
              <layout class="QVBoxLayout" name="verticalLayout_5">
               <item>
-               <widget class="QGroupBox" name="groupBox_4">
+               <widget class="QGroupBox" name="frameGroupBox">
                 <property name="title">
                  <string>Frames:</string>
                 </property>
@@ -707,7 +720,7 @@
                </widget>
               </item>
               <item>
-               <widget class="QGroupBox" name="groupBox_5">
+               <widget class="QGroupBox" name="groupGroupBox">
                 <property name="title">
                  <string>Groups:</string>
                 </property>
@@ -771,9 +784,9 @@
              <number>0</number>
             </property>
             <item row="0" column="0">
-             <layout class="QHBoxLayout" name="horizontalLayout_3">
+             <layout class="QHBoxLayout" name="viewHorizontalLayout" stretch="1,0,1">
               <item>
-               <widget class="QFrame" name="frame_7">
+               <widget class="QFrame" name="viewFrame">
                 <property name="frameShape">
                  <enum>QFrame::StyledPanel</enum>
                 </property>
@@ -819,7 +832,7 @@
                        <enum>Qt::Vertical</enum>
                       </property>
                       <property name="sizeType">
-                       <enum>QSizePolicy::Maximum</enum>
+                       <enum>QSizePolicy::Expanding</enum>
                       </property>
                       <property name="sizeHint" stdset="0">
                        <size>
@@ -845,11 +858,24 @@
                        <enum>Qt::Horizontal</enum>
                       </property>
                       <property name="sizeType">
-                       <enum>QSizePolicy::Maximum</enum>
+                       <enum>QSizePolicy::Expanding</enum>
                       </property>
                       <property name="sizeHint" stdset="0">
                        <size>
                         <width>10</width>
+                        <height>20</height>
+                       </size>
+                      </property>
+                     </spacer>
+                    </item>
+                    <item row="1" column="1">
+                     <spacer name="horizontalSpacer">
+                      <property name="orientation">
+                       <enum>Qt::Horizontal</enum>
+                      </property>
+                      <property name="sizeHint" stdset="0">
+                       <size>
+                        <width>40</width>
                         <height>20</height>
                        </size>
                       </property>
@@ -862,23 +888,20 @@
                </widget>
               </item>
               <item>
-               <spacer name="horizontalSpacer">
+               <spacer name="horizontalSpacer_4">
                 <property name="orientation">
                  <enum>Qt::Horizontal</enum>
                 </property>
-                <property name="sizeType">
-                 <enum>QSizePolicy::Minimum</enum>
-                </property>
                 <property name="sizeHint" stdset="0">
                  <size>
-                  <width>20</width>
+                  <width>5</width>
                   <height>20</height>
                  </size>
                 </property>
                </spacer>
               </item>
               <item>
-               <widget class="QFrame" name="frame_8">
+               <widget class="QFrame" name="selectorFrame">
                 <property name="frameShape">
                  <enum>QFrame::StyledPanel</enum>
                 </property>
@@ -937,7 +960,7 @@
                        <enum>Qt::Vertical</enum>
                       </property>
                       <property name="sizeType">
-                       <enum>QSizePolicy::Maximum</enum>
+                       <enum>QSizePolicy::Expanding</enum>
                       </property>
                       <property name="sizeHint" stdset="0">
                        <size>

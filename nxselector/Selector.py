@@ -132,7 +132,30 @@ class Selector(Qt.QDialog, TaurusBaseWidget):
     def createGUI(self):
         self.ui.setupUi(self)        
         if not self.expert:
+            self.ui.groupFrame.hide()
+#            self.ui.measFrame.hide()
+            self.ui.channelFrame.hide()
+            self.ui.dynFrame.hide()
+            self.ui.mntServerLabel.hide()
+            self.ui.mntServerLineEdit.hide()
+            self.ui.devConfigLabel.hide()
+            self.ui.devConfigLineEdit.hide()
+            self.ui.devWriterLabel.hide()
+            self.ui.devWriterLineEdit.hide()
+            self.ui.devConfigPushButton.hide()
             self.ui.groupsPushButton.hide()
+            self.ui.devSettingsLineEdit.setReadOnly(True)
+            self.ui.mntGrpLineEdit.setReadOnly(True)
+#            self.ui.viewFrame.hide()
+#            self.ui.selectorFrame.hide()
+#            self.ui.groupGroupBox.hide()
+#            self.ui.frameGroupBox.hide()
+#            layout = self.ui.viewHorizontalLayout 
+#            for i in range(layout.count()):
+#                spacer = layout.itemAt(i)
+#                if isinstance(spacer, Qt.QSpacerItem):
+#                    spacer.changeSize(
+#                        0, 0, Qt.QSizePolicy.Minimum)
             
 
         if not self.__standalone:
