@@ -48,7 +48,7 @@ class Selector(Qt.QDialog, TaurusBaseWidget):
 
     ## constructor
     # \param parent parent widget
-    def __init__(self, server=None, standalone=False, 
+    def __init__(self, server=None, standalone=False, expert = False,
                  organization = 'DESY', application = 'NXS Component Selector',
                  parent=None):
         Qt.QWidget.__init__(self, parent)
@@ -62,6 +62,8 @@ class Selector(Qt.QDialog, TaurusBaseWidget):
         self.__ask = False
 
         self.state = None
+        ## expert mode
+        self.expert = expert
 
         self.cnfFile = ''
         self.__resetServer(server)
@@ -129,6 +131,9 @@ class Selector(Qt.QDialog, TaurusBaseWidget):
     # \brief It create dialogs for the main window application
     def createGUI(self):
         self.ui.setupUi(self)        
+        if not self.expert:
+            self.ui.groupsPushButton.hide()
+            
 
         if not self.__standalone:
             self.ui.mntServerLineEdit.hide()

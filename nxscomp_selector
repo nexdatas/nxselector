@@ -44,6 +44,7 @@ def main():
     app = Application.instance()
     standalone = app is None
     server = None   
+    expert = False
 
     if standalone:
         import taurus.core.util.argparse
@@ -60,6 +61,13 @@ def main():
         parser.add_option(
             "-y","--stylesheet", dest="stylesheet", 
             help="Qt stylesheet")
+        parser.add_option(
+            "-e","--expert-mode", 
+            action="store_true",
+            default=False,
+            dest="expert", 
+            help="expert mode")
+        
 
 
 
@@ -78,9 +86,12 @@ def main():
             app.setStyle(options.style)
         server = options.server
         if options.stylesheet:
-            app.setStyle(options.stylesheet)
+            app.setStyle(options.stylesheet) 
+        if options.expert:
+            expert = True
+           
 
-    form = Selector(server, standalone = True)
+    form = Selector(server, standalone=True, expert=expert)
     form.show()
 
     if standalone:
