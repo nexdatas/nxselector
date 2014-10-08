@@ -30,6 +30,7 @@ from .ui.ui_ldatadlg import Ui_LDataDlg
 import logging
 logger = logging.getLogger(__name__)
 
+
 ## main window class
 class LDataDlg(Qt.QDialog):
 
@@ -45,18 +46,18 @@ class LDataDlg(Qt.QDialog):
         self.available_names = None
         self.ui = Ui_LDataDlg()
 
-    @classmethod    
+    @classmethod
     def __linkText(cls, value):
-        if value == True:
-            return "True"
-        if value == False:
-            return "False"
+        if isinstance(value, bool):
+            if value is True:
+                return "True"
+            if value is False:
+                return "False"
         return "Default"
-        
 
     def createGUI(self):
 
-        self.ui.setupUi(self) 
+        self.ui.setupUi(self)
         self.ui.labelLineEdit.setText(Qt.QString(str(self.label)))
         self.ui.pathLineEdit.setText(Qt.QString(str(self.path)))
         if self.shape is None:
@@ -65,11 +66,12 @@ class LDataDlg(Qt.QDialog):
             shape = self.shape
         self.ui.shapeLineEdit.setText(Qt.QString(str(shape)))
         self.ui.typeLineEdit.setText(Qt.QString(str(self.dtype)))
-   
-        cid = self.ui.linkComboBox.findText(Qt.QString(self.__linkText(self.link)))
+
+        cid = self.ui.linkComboBox.findText(
+            Qt.QString(self.__linkText(self.link)))
         if cid < 0:
             cid = 0
-        self.ui.linkComboBox.setCurrentIndex(cid) 
+        self.ui.linkComboBox.setCurrentIndex(cid)
 
         if self.available_names:
             completer = Qt.QCompleter(self.available_names, self)
@@ -96,15 +98,15 @@ class LDataDlg(Qt.QDialog):
                 assert isinstance(shape, list)
                 self.shape = shape
         except:
-            Qt.QMessageBox.warning(self, "Wrong Data", "Wrong structure of Shape" )
+            Qt.QMessageBox.warning(self, "Wrong Data",
+                                   "Wrong structure of Shape")
             self.ui.shapeLineEdit.setFocus()
             return
-            
+
         self.dtype = unicode(self.ui.typeLineEdit.text())
 
-           
         if not self.label:
-            Qt.QMessageBox.warning(self, "Wrong Data", "Empty data label" )
+            Qt.QMessageBox.warning(self, "Wrong Data", "Empty data label")
             self.ui.labelLineEdit.setFocus()
             return
 

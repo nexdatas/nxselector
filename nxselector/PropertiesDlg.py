@@ -31,6 +31,7 @@ from .LDataDlg import LDataDlg
 import logging
 logger = logging.getLogger(__name__)
 
+
 class PropertiesDlg(Qt.QDialog):
     ## constructor
     # \param parent parent widget
@@ -39,7 +40,7 @@ class PropertiesDlg(Qt.QDialog):
         self.widget = PropertiesWg(self)
         self.dirty = False
         self.available_names = None
-        
+
     def createGUI(self):
         self.widget.available_names = self.available_names
         self.widget.createGUI()
@@ -47,7 +48,7 @@ class PropertiesDlg(Qt.QDialog):
         layout.addWidget(self.widget)
         self.setLayout(layout)
 
-        self.connect(self.widget.ui.closePushButton, 
+        self.connect(self.widget.ui.closePushButton,
                      Qt.SIGNAL("clicked()"),
                      self.accept)
         self.widget.ui.closePushButton.show()
@@ -55,8 +56,7 @@ class PropertiesDlg(Qt.QDialog):
 
     def __setDirty(self):
         self.dirty = True
-        
-        
+
 
 ## main window class
 class PropertiesWg(Qt.QWidget):
@@ -84,7 +84,6 @@ class PropertiesWg(Qt.QWidget):
         self.ui.removePushButton = self.ui.addEditRemoveButtonBox.addButton(
             "&Remove", Qt.QDialogButtonBox.ActionRole)
 
-
         names = self.__names()
         if names:
             item = names[0]
@@ -95,21 +94,19 @@ class PropertiesWg(Qt.QWidget):
                      self.__add)
         self.connect(self.ui.editPushButton, Qt.SIGNAL("clicked()"),
                      self.__edit)
-        self.connect(self.ui.tableWidget, 
+        self.connect(self.ui.tableWidget,
                      Qt.SIGNAL("itemDoubleClicked(QTableWidgetItem*)"),
                      self.__edit)
         self.connect(self.ui.removePushButton, Qt.SIGNAL("clicked()"),
                      self.__remove)
 
-
     def __names(self):
         return sorted(set(self.paths.keys()) |
-                       set(self.shapes.keys()) | 
+                       set(self.shapes.keys()) |
                        set(self.links.keys()) |
                        set(self.types.keys()))
-    
 
-    def __populateTable(self, selected = None):
+    def __populateTable(self, selected=None):
         self.ui.tableWidget.clear()
         sitem = None
         self.ui.tableWidget.setSortingEnabled(False)
@@ -133,13 +130,12 @@ class PropertiesWg(Qt.QWidget):
                 sitem = item
             self.ui.tableWidget.setItem(row, 0, item)
 
-            
             value = str(self.types[name]) \
                 if name in self.types.keys() else ''
-            self.ui.tableWidget.setItem(row, 1, Qt.QTableWidgetItem(value)) 
+            self.ui.tableWidget.setItem(row, 1, Qt.QTableWidgetItem(value))
             value = str(self.shapes[name]) \
                 if name in self.shapes.keys() else ''
-            self.ui.tableWidget.setItem(row, 2, Qt.QTableWidgetItem(value)) 
+            self.ui.tableWidget.setItem(row, 2, Qt.QTableWidgetItem(value))
             value = str(self.links[name]) \
                 if name in self.links.keys() else ''
             self.ui.tableWidget.setItem(row, 3, Qt.QTableWidgetItem(value))
@@ -147,12 +143,14 @@ class PropertiesWg(Qt.QWidget):
                 if name in self.paths.keys() else ''
             self.ui.tableWidget.setItem(row, 4, Qt.QTableWidgetItem(value))
         self.ui.tableWidget.resizeColumnsToContents()
-        self.ui.tableWidget.setSelectionBehavior(Qt.QAbstractItemView.SelectRows)
+        self.ui.tableWidget.setSelectionBehavior(
+            Qt.QAbstractItemView.SelectRows)
         self.ui.tableWidget.setSelectionMode(
             Qt.QAbstractItemView.SingleSelection)
         self.ui.tableWidget.horizontalHeader(
-            ).setStretchLastSection(True)        
-        self.ui.tableWidget.setEditTriggers(Qt.QAbstractItemView.NoEditTriggers)
+            ).setStretchLastSection(True)
+        self.ui.tableWidget.setEditTriggers(
+            Qt.QAbstractItemView.NoEditTriggers)
         if sitem is not None:
             sitem.setSelected(True)
             self.ui.tableWidget.setCurrentItem(sitem)
@@ -161,45 +159,44 @@ class PropertiesWg(Qt.QWidget):
         name = None
         row = self.ui.tableWidget.currentRow()
         skeys = self.__names()
-        if len(skeys) > row and row >=0:
+        if len(skeys) > row and row >= 0:
             name = skeys[row]
         return name
 
     @classmethod
     def __updateItem(cls, name, value, dct):
-        if not value:    
+        if not value:
             if name in dct.keys():
                 dct.pop(name)
         elif name:
             dct[name] = value
-        
 
     def __updateTable(self, form):
         if form.label:
             name = form.label
 
-            self.__updateItem(name, form.path, self.paths)    
-            self.__updateItem(name, form.dtype, self.types)    
-            self.__updateItem(name, form.shape, self.shapes)    
+            self.__updateItem(name, form.path, self.paths)
+            self.__updateItem(name, form.dtype, self.types)
+            self.__updateItem(name, form.shape, self.shapes)
 
-            if form.link is None:    
+            if form.link is None:
                 if name in self.links.keys():
                     self.links.pop(name)
             elif name:
                 self.links[name] = form.link
-                
+
             self.__populateTable()
             self.emit(Qt.SIGNAL("dirty"))
 
-    def __add(self):    
-        dform  = LDataDlg(self)
+    def __add(self):
+        dform = LDataDlg(self)
         dform.available_names = self.available_names
         dform.createGUI()
         if dform.exec_():
             self.__updateTable(dform)
-        
-    def __edit(self):    
-        dform  = LDataDlg(self)
+
+    def __edit(self):
+        dform = LDataDlg(self)
         name = self.__currentName()
         dform.label = name
         if name in self.types.keys():
@@ -210,7 +207,7 @@ class PropertiesWg(Qt.QWidget):
             dform.link = self.links[name]
         if name in self.paths.keys():
             dform.path = self.paths[name]
-                
+
         dform.available_names = self.available_names
         dform.createGUI()
         if name:
@@ -220,11 +217,11 @@ class PropertiesWg(Qt.QWidget):
 
     def __remove(self):
         name = self.__currentName()
-        
+
         if Qt.QMessageBox.question(
             self, "Removing Data", "Would you like  to remove '%s'?" % name,
             Qt.QMessageBox.Yes | Qt.QMessageBox.No,
-            Qt.QMessageBox.Yes ) == Qt.QMessageBox.No :
+            Qt.QMessageBox.Yes) == Qt.QMessageBox.No:
             return
         if name in self.types.keys():
             self.types.pop(name)
@@ -237,5 +234,3 @@ class PropertiesWg(Qt.QWidget):
 
         self.emit(Qt.SIGNAL("dirty"))
         self.__populateTable()
-
-        

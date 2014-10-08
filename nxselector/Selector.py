@@ -21,10 +21,10 @@
 
 """ main window application dialog """
 
-import sys 
+import sys
 import PyTango
-import json 
- 
+import json
+
 from taurus.external.qt import Qt
 from taurus.qt.qtgui.base import TaurusBaseWidget
 from .ServerState import ServerState
@@ -41,19 +41,18 @@ from .ui.ui_selector import Ui_Selector
 import logging
 logger = logging.getLogger(__name__)
 
-    
 
 ## main window class
 class Selector(Qt.QDialog, TaurusBaseWidget):
 
     ## constructor
     # \param parent parent widget
-    def __init__(self, server=None, standalone=False, expert = False,
-                 organization = 'DESY', application = 'NXS Component Selector',
+    def __init__(self, server=None, standalone=False, expert=False,
+                 organization='DESY', application='NXS Component Selector',
                  parent=None):
         Qt.QWidget.__init__(self, parent)
-        TaurusBaseWidget.__init__(self,'NXSExpDescriptionEditor')
-        logger.debug("PARAMETERS: %s %s", 
+        TaurusBaseWidget.__init__(self, 'NXSExpDescriptionEditor')
+        logger.debug("PARAMETERS: %s %s",
                      server, parent)
         self.__organization = organization
         self.__application = application
@@ -68,36 +67,37 @@ class Selector(Qt.QDialog, TaurusBaseWidget):
         self.cnfFile = ''
         self.__resetServer(server)
 
-
         settings = Qt.QSettings(self.__organization, self.__application, self)
 
-        self.userView = settings.value('Preferences/UserView', 'CheckBoxes Dis')
+        self.userView = settings.value('Preferences/UserView',
+                                       'CheckBoxes Dis')
         self.rowMax = int(settings.value('Preferences/RowMax', 20))
-        self.displayStatus = int(settings.value('Preferences/DisplayStatus', 2))
+        self.displayStatus = int(settings.value('Preferences/DisplayStatus',
+                                                2))
 
         ## user interface
         self.ui = Ui_Selector()
         self.preferences = Preferences(self.ui, self.state)
         if self.userView not in self.preferences.views:
             self.userView = 'CheckBoxes Dis'
-        self.storage = Storage(self.ui, self.state) 
+        self.storage = Storage(self.ui, self.state)
         self.selectable = Selectable(
-            self.ui, self.state, 
+            self.ui, self.state,
             self.preferences.views[self.userView],
             self.rowMax)
 
         self.preferences.mgroups = settings.value(
             'Preferences/Groups', '{}')
         self.preferences.frames = settings.value(
-            'Preferences/Frames', 
+            'Preferences/Frames',
             '[]')
         self.preferences.mgroupshelp = settings.value(
-            'Preferences/GroupsHints', 
+            'Preferences/GroupsHints',
             self.preferences.mgroupshelp)
         self.preferences.frameshelp = settings.value(
             'Preferences/FramesHints',
             self.preferences.frameshelp)
-        
+
         self.preferences.addHint(
             self.preferences.mgroups,
             self.preferences.mgroupshelp)
@@ -108,7 +108,7 @@ class Selector(Qt.QDialog, TaurusBaseWidget):
         self.selectable.mgroups = str(self.preferences.mgroups)
         self.selectable.frames = str(self.preferences.frames)
         self.automatic = State(
-            self.ui, self.state, 
+            self.ui, self.state,
             self.preferences.views[self.userView],
             self.rowMax)
 
@@ -117,8 +117,8 @@ class Selector(Qt.QDialog, TaurusBaseWidget):
         self.tabs = [self.selectable, self.automatic, self.data,
                      self.storage, self.preferences]
 
-        self.createGUI()  
-       
+        self.createGUI()
+
         sg = settings.value("Selector/Geometry")
         if sg:
             self.restoreGeometry(sg)
@@ -130,10 +130,9 @@ class Selector(Qt.QDialog, TaurusBaseWidget):
     ##  creates GUI
     # \brief It create dialogs for the main window application
     def createGUI(self):
-        self.ui.setupUi(self)        
+        self.ui.setupUi(self)
         if not self.expert:
             self.ui.groupFrame.hide()
-#            self.ui.measFrame.hide()
             self.ui.channelFrame.hide()
             self.ui.dynFrame.hide()
             self.ui.mntServerLabel.hide()
@@ -146,53 +145,41 @@ class Selector(Qt.QDialog, TaurusBaseWidget):
             self.ui.groupsPushButton.hide()
             self.ui.devSettingsLineEdit.setReadOnly(True)
             self.ui.mntGrpLineEdit.setReadOnly(True)
-#            self.ui.viewFrame.hide()
-#            self.ui.selectorFrame.hide()
-#            self.ui.groupGroupBox.hide()
-#            self.ui.frameGroupBox.hide()
-#            layout = self.ui.viewHorizontalLayout 
-#            for i in range(layout.count()):
-#                spacer = layout.itemAt(i)
-#                if isinstance(spacer, Qt.QSpacerItem):
-#                    spacer.changeSize(
-#                        0, 0, Qt.QSizePolicy.Minimum)
-            
 
         if not self.__standalone:
             self.ui.mntServerLineEdit.hide()
             self.ui.mntServerLabel.hide()
             self.ui.buttonBox.setStandardButtons(
-                Qt.QDialogButtonBox.Reset | Qt.QDialogButtonBox.Apply )
+                Qt.QDialogButtonBox.Reset | Qt.QDialogButtonBox.Apply)
         else:
             self.ui.buttonBox.setStandardButtons(
-                Qt.QDialogButtonBox.Reset | Qt.QDialogButtonBox.Apply \
-                    | Qt.QDialogButtonBox.Close)
-        self.ui.buttonBox.setSizePolicy (Qt.QSizePolicy.Expanding, 
-                                         Qt.QSizePolicy.Fixed)
+                Qt.QDialogButtonBox.Reset | Qt.QDialogButtonBox.Apply
+                | Qt.QDialogButtonBox.Close)
+        self.ui.buttonBox.setSizePolicy(Qt.QSizePolicy.Expanding,
+                                        Qt.QSizePolicy.Fixed)
 
         self.ui.statusLabel = self.ui.buttonBox.addButton(
-            "", Qt.QDialogButtonBox.ActionRole)  
-        self.ui.statusLabel.setEnabled(False)  
-        self.ui.buttonBox.setCenterButtons(True)  
+            "", Qt.QDialogButtonBox.ActionRole)
+        self.ui.statusLabel.setEnabled(False)
+        self.ui.buttonBox.setCenterButtons(True)
 
-
-        layout = self.ui.layoutButtonBox.layout() 
+        layout = self.ui.layoutButtonBox.layout()
         for i in range(layout.count()):
             spacer = layout.itemAt(i)
             if isinstance(spacer, Qt.QSpacerItem):
                 spacer.changeSize(
                     0, 0, Qt.QSizePolicy.Minimum)
 
-        layout = self.ui.profileButtonBox.layout() 
+        layout = self.ui.profileButtonBox.layout()
         for i in range(layout.count()):
             spacer = layout.itemAt(i)
             if isinstance(spacer, Qt.QSpacerItem):
                 spacer.changeSize(
                     0, 0, Qt.QSizePolicy.Minimum)
-        
+
         flayout = Qt.QHBoxLayout(self.ui.timerButtonFrame)
-        flayout.setContentsMargins(0,0,0,0)
-        self.ui.timerAddPushButton = Qt.QPushButton("+") 
+        flayout.setContentsMargins(0, 0, 0, 0)
+        self.ui.timerAddPushButton = Qt.QPushButton("+")
         self.ui.timerAddPushButton.setMaximumWidth(30)
         flayout.addWidget(self.ui.timerAddPushButton)
         self.ui.timerDelPushButton = Qt.QPushButton("-")
@@ -200,108 +187,115 @@ class Selector(Qt.QDialog, TaurusBaseWidget):
         flayout.addWidget(self.ui.timerDelPushButton)
 
         self.ui.statusLabel.setAutoFillBackground(True)
-        self.ui.statusLabel.setSizePolicy (Qt.QSizePolicy.Expanding, 
-                                           Qt.QSizePolicy.Fixed)
+        self.ui.statusLabel.setSizePolicy(Qt.QSizePolicy.Expanding,
+                                          Qt.QSizePolicy.Fixed)
 #        self.ui.statusLabel.setFrameShape(Qt.QFrame.StyledPanel)
 #        self.ui.statusLabel.setFrameShadow(Qt.QFrame.Raised)
 #        self.ui.statusLabel.setAlignment(Qt.Qt.AlignHCenter)
 
-        self.ui.statusLabel.setStyleSheet("background-color:white;border-style: outset; border-width: 1px; border-color: gray; color:#208020;font:bold;")
-     
+        self.ui.statusLabel.setStyleSheet(
+            "background-color:white;border-style: outset; "
+            "border-width: 1px; border-color: gray; "
+            "color:#208020;font:bold;")
+
         for tab in self.tabs:
             tab.reset()
 
-    
         cid = self.ui.viewComboBox.findText(Qt.QString(self.userView))
         if cid >= 0:
-            self.ui.viewComboBox.setCurrentIndex(cid) 
-        self.ui.rowMaxSpinBox.setValue(self.rowMax)    
-        self.ui.statusCheckBox.setChecked(self.displayStatus != 0)    
-            
-        self.connect(self.ui.buttonBox.button(Qt.QDialogButtonBox.Apply), 
+            self.ui.viewComboBox.setCurrentIndex(cid)
+        self.ui.rowMaxSpinBox.setValue(self.rowMax)
+        self.ui.statusCheckBox.setChecked(self.displayStatus != 0)
+
+        self.connect(self.ui.buttonBox.button(Qt.QDialogButtonBox.Apply),
                      Qt.SIGNAL("pressed()"), self.__applyClicked)
-        self.connect(self.ui.buttonBox.button(Qt.QDialogButtonBox.Reset), 
+        self.connect(self.ui.buttonBox.button(Qt.QDialogButtonBox.Reset),
                      Qt.SIGNAL("pressed()"), self.__resetClicked)
         if self.__standalone:
-            self.connect(self.ui.buttonBox.button(Qt.QDialogButtonBox.Close), 
+            self.connect(self.ui.buttonBox.button(Qt.QDialogButtonBox.Close),
                          Qt.SIGNAL("pressed()"), self.close)
 
-
-        self.connect(self.ui.profileButtonBox.button(Qt.QDialogButtonBox.Open), 
+        self.connect(self.ui.profileButtonBox.button(Qt.QDialogButtonBox.Open),
                      Qt.SIGNAL("pressed()"), self.cnfLoad)
-        self.connect(self.ui.profileButtonBox.button(Qt.QDialogButtonBox.Save), 
+        self.connect(self.ui.profileButtonBox.button(Qt.QDialogButtonBox.Save),
                      Qt.SIGNAL("pressed()"), self.cnfSave)
 
-        self.connect(self.ui.preferences, 
+        self.connect(self.ui.preferences,
                      Qt.SIGNAL("serverChanged()"), self.resetServer)
 
-        self.connect(self.ui.preferences, 
-                     Qt.SIGNAL("layoutChanged(QString,QString)"), self.resetLayout)
+        self.connect(self.ui.preferences,
+                     Qt.SIGNAL("layoutChanged(QString,QString)"),
+                     self.resetLayout)
 
-        self.connect(self.ui.preferences, 
-                     Qt.SIGNAL("layoutChanged(QString,QString)"), self.resetLayout)
+        self.connect(self.ui.preferences,
+                     Qt.SIGNAL("layoutChanged(QString,QString)"),
+                     self.resetLayout)
 
-        self.connect(self.ui.viewComboBox, 
+        self.connect(self.ui.viewComboBox,
                      Qt.SIGNAL("currentIndexChanged(int)"), self.resetViews)
 
-        self.connect(self.ui.rowMaxSpinBox, 
+        self.connect(self.ui.rowMaxSpinBox,
                      Qt.SIGNAL("valueChanged(int)"), self.resetRows)
 
-        self.connect(self.ui.statusCheckBox, 
+        self.connect(self.ui.statusCheckBox,
             Qt.SIGNAL("stateChanged(int)"), self.__displayStatusChanged)
 
         self.connect(self.ui.selectable, Qt.SIGNAL("dirty"), self.setDirty)
-        self.connect(self.ui.state, Qt.SIGNAL("componentChecked"), 
+        self.connect(self.ui.state, Qt.SIGNAL("componentChecked"),
                      self.__componentChanged)
         self.connect(self.ui.data, Qt.SIGNAL("dirty"), self.setDirty)
         self.connect(self.ui.storage, Qt.SIGNAL("dirty"), self.setDirty)
-        self.connect(self.ui.storage, Qt.SIGNAL("reset"), self.resetViews)
-        self.connect(self.ui.storage, Qt.SIGNAL("updateGroups"), self.updateGroups)
-
+        self.connect(self.ui.storage, Qt.SIGNAL("reset"),
+                     self.resetViews)
+        self.connect(self.ui.storage, Qt.SIGNAL("updateGroups"),
+                     self.updateGroups)
 
     def __componentChanged(self):
         self.setDirty()
         self.selectable.updateViews()
 
-
-    def setDirty(self, flag = True):
+    def setDirty(self, flag=True):
         self.__dirty = flag
         self.ui.statusLabel.hide()
         self.ui.buttonBox.button(Qt.QDialogButtonBox.Reset).setEnabled(True)
         self.ui.buttonBox.button(Qt.QDialogButtonBox.Apply).setEnabled(True)
 #        self.ui.applyPushButton.setEnabled(True)
 #        self.ui.resetPushButton.setEnabled(True)
-        self.ui.buttonHorizontalLayout = self.ui.buttonBox.layout() 
+        self.ui.buttonHorizontalLayout = self.ui.buttonBox.layout()
         spacer = None
-        if self.displayStatus: 
-            self.ui.buttonBox.setCenterButtons(True)  
+        if self.displayStatus:
+            self.ui.buttonBox.setCenterButtons(True)
             for i in range(self.ui.buttonHorizontalLayout.count()):
                 spacer = self.ui.buttonHorizontalLayout.itemAt(i)
                 if isinstance(spacer, Qt.QSpacerItem):
                     spacer.changeSize(
                         0, 0, Qt.QSizePolicy.Minimum)
-            
+
             if flag:
-                self.ui.statusLabel.setStyleSheet("background-color: white;border-style: outset; border-width: 1px; border-color: gray; color:#A02020;font:bold;")
-#                self.ui.statusLabel.setText('<font color=#A02020 size=3><b>NOT APPLIED</b></font>' )
+                self.ui.statusLabel.setStyleSheet(
+                    "background-color: white;border-style: outset; "
+                    "border-width: 1px; border-color: gray; "
+                    "color:#A02020;font:bold;")
                 self.ui.statusLabel.setText('NOT APPLIED')
-                self.setWindowTitle(self.title + ' * ' )
+                self.setWindowTitle(self.title + ' * ')
             else:
                 self.setWindowTitle(self.title)
-                self.ui.statusLabel.setStyleSheet("background-color: white;border-style: outset; border-width: 1px; border-color: gray; color:#206020;font:bold;")
-#                self.ui.statusLabel.setText('<font color=#206020 size=3><b>APPLIED</b></font>' )
-                self.ui.statusLabel.setText('APPLIED' )
+                self.ui.statusLabel.setStyleSheet(
+                    "background-color: white;border-style: outset; "
+                    "border-width: 1px; border-color: gray; "
+                    "color:#206020;font:bold;")
+                self.ui.statusLabel.setText('APPLIED')
             self.ui.statusLabel.show()
         else:
-            self.ui.buttonBox.setCenterButtons(False)  
+            self.ui.buttonBox.setCenterButtons(False)
             for i in range(self.ui.buttonHorizontalLayout.count()):
                 spacer = self.ui.buttonHorizontalLayout.itemAt(i)
                 if isinstance(spacer, Qt.QSpacerItem):
                     spacer.changeSize(
                         40, 20, Qt.QSizePolicy.Expanding)
-            
-            if flag:    
-                self.setWindowTitle(self.title + ' * ' )
+
+            if flag:
+                self.setWindowTitle(self.title + ' * ')
             else:
                 self.setWindowTitle(self.title)
                 self.ui.buttonBox.button(
@@ -311,7 +305,6 @@ class Selector(Qt.QDialog, TaurusBaseWidget):
 #                self.ui.applyPushButton.setEnabled(False)
 #                self.ui.resetPushButton.setEnabled(False)
             self.ui.statusLabel.hide()
-           
 
     def __saveSettings(self):
         settings = Qt.QSettings(self.__organization, self.__application, self)
@@ -340,13 +333,11 @@ class Selector(Qt.QDialog, TaurusBaseWidget):
             "Preferences/GroupsHints",
             Qt.QVariant(self.preferences.mgroupshelp))
 
-                    
     def closeEvent(self, event):
         logger.debug("close event")
         self.__saveSettings()
         Qt.QWidget.closeEvent(self, event)
         logger.debug("close event ended")
-
 
     def __resetServer(self, server):
         try:
@@ -355,7 +346,7 @@ class Selector(Qt.QDialog, TaurusBaseWidget):
         except PyTango.DevFailed as e:
             value = sys.exc_info()[1]
             Qt.QMessageBox.warning(
-                self, 
+                self,
                 "NXSSelector: Error in Setting Selector Server",
                 "%s" % str("\n".join(["%s " % (err.desc) for err in value])))
             self.state = ServerState("")
@@ -364,12 +355,11 @@ class Selector(Qt.QDialog, TaurusBaseWidget):
             import traceback
             value = traceback.format_exc()
             Qt.QMessageBox.warning(
-                self, 
+                self,
                 "NXSSelector: Error in Setting Selector Server",
                 "%s" % (value))
             self.state = ServerState("")
             self.state.setServer()
-
 
     def resetServer(self):
         logger.debug("reset server")
@@ -384,25 +374,23 @@ class Selector(Qt.QDialog, TaurusBaseWidget):
         self.resetViews()
         logger.debug("reset layout ended")
 
-
     def resetRows(self, rowMax):
         logger.debug("reset rows")
         for tab in self.tabs:
             tab.rowMax = rowMax
         self.resetViews()
         logger.debug("reset rows ended")
-        
+
     def updateGroups(self):
         self.state.storeGroups()
         self.resetAll()
-
 
     def resetViews(self):
         for tab in self.tabs:
             tab.userView = self.preferences.views[
                 str(self.ui.viewComboBox.currentText())]
             tab.reset()
-        
+
     def reset(self):
         logger.debug("reset selector")
         try:
@@ -411,7 +399,7 @@ class Selector(Qt.QDialog, TaurusBaseWidget):
             import traceback
             value = traceback.format_exc()
             Qt.QMessageBox.warning(
-                self, 
+                self,
                 "NXSSelector: Error in Setting Selector Server",
                 "%s" % (value))
 
@@ -419,7 +407,7 @@ class Selector(Qt.QDialog, TaurusBaseWidget):
             tab.reset()
         logger.debug("reset selector ended")
 
-    def resetAll(self, ask = True):
+    def resetAll(self, ask=True):
         logger.debug("reset ALL")
         self.state.updateControllers()
         self.state.importMntGrp()
@@ -427,31 +415,29 @@ class Selector(Qt.QDialog, TaurusBaseWidget):
         self.setDirty(True)
         logger.debug("reset ENDED")
 
-
     def resetConfiguration(self, expconf):
         logger.debug("reset Configuration")
         conf = self.state.mntGrpConfiguration()
         econf = json.dumps(expconf)
         if conf != econf:
             replay = Qt.QMessageBox.question(
-                self.ui.preferences, 
-                "NXSSelector: Configuration of Measument Group has been changed.", 
-                "Would you like to update the changes? " ,
-                Qt.QMessageBox.Yes|Qt.QMessageBox.No)
+                self.ui.preferences,
+                "NXSSelector: Configuration "
+                "of Measument Group has been changed.",
+                "Would you like to update the changes? ",
+                Qt.QMessageBox.Yes | Qt.QMessageBox.No)
             if replay == Qt.QMessageBox.Yes:
                 self.resetAll(False)
         logger.debug("reset Configuration END")
-
 
     def updateDoorName(self, door):
         if str(door) != str(self.state.door):
             self.ui.mntServerLineEdit.setText(door)
             self.storage.apply()
             logger.debug("change DoorName %s " % door)
-           
+
         logger.debug("update DoorName")
 
-        
     def __resetClicked(self):
         self.ui.buttonBox.button(Qt.QDialogButtonBox.Reset).hide()
         self.ui.buttonBox.button(Qt.QDialogButtonBox.Reset).show()
@@ -460,13 +446,13 @@ class Selector(Qt.QDialog, TaurusBaseWidget):
 #        self.ui.resetPushButton.hide()
 #        self.ui.resetPushButton.show()
 #        self.ui.resetPushButton.setFocus()
-        
+
         self.resetAll()
 
-    def cnfLoad(self):    
+    def cnfLoad(self):
         filename = str(Qt.QFileDialog.getOpenFileName(
                 self.ui.storage,
-                "Load Configuration",        
+                "Load Configuration",
                 self.cnfFile,
                 "JSON files (*.json);;All files (*)"))
         logger.debug("loading configuration from %s" % filename)
@@ -501,11 +487,9 @@ class Selector(Qt.QDialog, TaurusBaseWidget):
 #        self.ui.applyPushButton.setFocus()
         self.apply()
 
-        
     def __displayStatusChanged(self, state):
         self.displayStatus = state
         self.setDirty(self.__dirty)
-
 
     def apply(self):
         logger.debug("apply")
@@ -518,14 +502,13 @@ class Selector(Qt.QDialog, TaurusBaseWidget):
         except PyTango.DevFailed as e:
             value = sys.exc_info()[1]
             Qt.QMessageBox.warning(
-                self, 
+                self,
                 "NXSSelector: Error in updating Measurement Group",
                 "%s" % str("\n".join(["%s " % (err.desc) for err in value])))
         except Exception as e:
             Qt.QMessageBox.warning(
-                self, 
+                self,
                 "NXSSelector: Error in updating Measurement Group",
                 str(e))
 
         logger.debug("apply END")
-            

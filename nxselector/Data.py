@@ -35,16 +35,16 @@ class Data(object):
 
     ## constructor
     # \param settings frame settings
-    def __init__(self, ui, state = None):
+    def __init__(self, ui, state=None):
         self.ui = ui
         self.state = state
         self.layout = None
         self.form = None
-        self.recorder_names = ['serialno', 'end_time', 'start_time', 
+        self.recorder_names = ['serialno', 'end_time', 'start_time',
                                'point_nb', 'timestamps']
 
     def createGUI(self):
-        self.ui.data.hide()       
+        self.ui.data.hide()
 
         if self.layout:
             child = self.layout.takeAt(0)
@@ -55,14 +55,13 @@ class Data(object):
                     child.widget().close()
                     self.layout.removeWidget(child.widget())
                 child = self.layout.takeAt(0)
-        else: 
+        else:
             self.layout = Qt.QHBoxLayout(self.ui.data)
 
-
-        self.form  = EdListWg(self.ui.data)
+        self.form = EdListWg(self.ui.data)
         self.form.record = self.state.datarecord
         names = list(
-            set(self.state.clientRecords(True).values()) 
+            set(self.state.clientRecords(True).values())
             - set(self.state.fullnames.values()) - set(self.recorder_names))
         logger.debug("NAMES: %s " % names)
         self.form.available_names = names
@@ -73,11 +72,8 @@ class Data(object):
             self.ui.data.show()
         self.ui.data.connect(self.form, Qt.SIGNAL("dirty"), self.__setDirty)
 
-
     def reset(self):
         self.createGUI()
 
-
     def __setDirty(self):
         self.ui.data.emit(Qt.SIGNAL("dirty"))
-        

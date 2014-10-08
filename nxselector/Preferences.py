@@ -17,7 +17,7 @@
 #    along with nexdatas.  If not, see <http://www.gnu.org/licenses/>.
 ## \package nxselector nexdatas
 ## \file Preferences.py
-# preferences tab 
+# preferences tab
 
 """ preferences tab """
 
@@ -28,15 +28,15 @@ import json
 from taurus.external.qt import Qt
 
 
-from .Views import (TableView, OneTableView, 
-                    CheckerView, RadioView, ButtonView, 
-                    LeftCheckerView, LeftRadioView, 
-                    CheckerViewNL, RadioViewNL, ButtonViewNL, 
+from .Views import (TableView, OneTableView,
+                    CheckerView, RadioView, ButtonView,
+                    LeftCheckerView, LeftRadioView,
+                    CheckerViewNL, RadioViewNL, ButtonViewNL,
                     LeftCheckerViewNL, LeftRadioViewNL,
-                    CheckerViewNN, RadioViewNN, ButtonViewNN, 
+                    CheckerViewNN, RadioViewNN, ButtonViewNN,
                     LeftCheckerViewNN, LeftRadioViewNN,
                     CheckDisView, RadioDisView,
-                    CheckDisViewNL, RadioDisViewNL, 
+                    CheckDisViewNL, RadioDisViewNL,
                     CheckDisViewNN, RadioDisViewNN
                     )
 from .ServerState import ServerState
@@ -44,67 +44,67 @@ from .ServerState import ServerState
 import logging
 logger = logging.getLogger(__name__)
 
+
 ## main window class
 class Preferences(object):
 
     ## constructor
     # \param settings frame settings
-    def __init__(self, ui, state = None):
+    def __init__(self, ui, state=None):
         self.ui = ui
         self.state = state
 
-
         # frames/columns/groups
-        self.frameshelp = [\
-
-            Qt.QString('[[[["Components",1],["Timers",5]]],[[["Counters", 4]],' \
-                        + '[["ADC",3]]],[[["MCA/SCA",6],["Devices",0]]]]'),
-            Qt.QString('[[[["Counters", 4]],[["Channels",0]]],' \
-                        + '[[["MCAs", 2],["Misc",1]]],[[["ADC",3]]]]'),
+        self.frameshelp = [
+            Qt.QString('[[[["Components",1],["Timers",5]]],[[["Counters", 4]],'
+                       + '[["ADC",3]]],[[["MCA/SCA",6],["Devices",0]]]]'),
+            Qt.QString('[[[["Counters", 4]],[["Channels",0]]],'
+                       + '[[["MCAs", 2],["Misc",1]]],[[["ADC",3]]]]'),
             Qt.QString('[[[["Devices", 0]]],[[["MCAs", 2],["Misc",1]]]]'),
             Qt.QString(
                 '[[[["Counters1", 0], ["Counters2", 2]], [["VCounters", 3]]],'
-                + '[[["MCAs", 1], ["SCAs", 4]]], [[["Misc", 5] ]]]'), 
-            Qt.QString('[[[["My Channels", 0]]],[[["My Components", 1]]]]'), 
+                + '[[["MCAs", 1], ["SCAs", 4]]], [[["Misc", 5] ]]]'),
+            Qt.QString('[[[["My Channels", 0]]],[[["My Components", 1]]]]'),
             Qt.QString('')]
-        self.mgroupshelp = [            
-            Qt.QString('{ "3":[["exp_adc*", 0]], "4":[["exp_c*",0]],' \
-                        + '"5":[["exp_t*",0]], "6":[["exp_mca*",0],' \
-                        + '["sca_exp_*",0]]}'),
-            Qt.QString('{"2":[["mca8701*", 1]] , "3":[["exp_adc*", 0]],' \
-                        + ' "4":[["exp_c*",0]]}'),
-            Qt.QString('{"2":[["ct01", 0], ["ct02",0]], "5":[["appscan", 1]]}'), 
+        self.mgroupshelp = [
+            Qt.QString('{ "3":[["exp_adc*", 0]], "4":[["exp_c*",0]],'
+                       + '"5":[["exp_t*",0]], "6":[["exp_mca*",0],'
+                       + '["sca_exp_*",0]]}'),
+            Qt.QString('{"2":[["mca8701*", 1]] , "3":[["exp_adc*", 0]],'
+                       + ' "4":[["exp_c*",0]]}'),
+            Qt.QString(
+                '{"2":[["ct01", 0], ["ct02",0]], "5":[["appscan", 1]]}'),
             Qt.QString('')]
         self.serverhelp = [
             Qt.QString(self.state.server)]
-        
+
         self.mgroups = str(self.mgroupshelp[0])
         self.frames = str(self.frameshelp[0])
 
         self.views = {
-            "CentralCheckBoxes (A)":CheckerView, 
-            "CheckBoxes (A)":LeftCheckerView, 
-            "Tables":TableView, 
-            "Columns":OneTableView, 
-            "CentralRadioButtons (A)":RadioView,
-            "RadioButtons (A)":LeftRadioView,
-            "Buttons (A)":ButtonView,
-            "CentralCheckBoxes (N)":CheckerViewNL, 
-            "CheckBoxes (N)":LeftCheckerViewNL, 
-            "CentralRadioButtons (N)":RadioViewNL,
-            "RadioButtons (N)":LeftRadioViewNL,
-            "Buttons (N)":ButtonViewNL,
-            "CentralCheckBoxes":CheckerViewNN, 
-            "CheckBoxes":LeftCheckerViewNN, 
-            "CentralRadioButtons":RadioViewNN,
-            "RadioButtons":LeftRadioViewNN,
-            "Buttons":ButtonViewNN,
-            "CheckBoxes Dis (A)":CheckDisView, 
-            "RadioButtons Dis (A)":RadioDisView,
-            "CheckBoxes Dis (N)":CheckDisViewNL, 
-            "RadioButtons Dis (N)":RadioDisViewNL,
-            "CheckBoxes Dis":CheckDisViewNN, 
-            "RadioButtons Dis":RadioDisViewNN,
+            "CentralCheckBoxes (A)": CheckerView,
+            "CheckBoxes (A)": LeftCheckerView,
+            "Tables": TableView,
+            "Columns": OneTableView,
+            "CentralRadioButtons (A)": RadioView,
+            "RadioButtons (A)": LeftRadioView,
+            "Buttons (A)": ButtonView,
+            "CentralCheckBoxes (N)": CheckerViewNL,
+            "CheckBoxes (N)": LeftCheckerViewNL,
+            "CentralRadioButtons (N)": RadioViewNL,
+            "RadioButtons (N)": LeftRadioViewNL,
+            "Buttons (N)": ButtonViewNL,
+            "CentralCheckBoxes": CheckerViewNN,
+            "CheckBoxes": LeftCheckerViewNN,
+            "CentralRadioButtons": RadioViewNN,
+            "RadioButtons": LeftRadioViewNN,
+            "Buttons": ButtonViewNN,
+            "CheckBoxes Dis (A)": CheckDisView,
+            "RadioButtons Dis (A)": RadioDisView,
+            "CheckBoxes Dis (N)": CheckDisViewNL,
+            "RadioButtons Dis (N)": RadioDisViewNL,
+            "CheckBoxes Dis": CheckDisViewNN,
+            "RadioButtons Dis": RadioDisViewNN,
             }
 
         self.maxHelp = 10
@@ -113,17 +113,17 @@ class Preferences(object):
     def disconnectSignals(self):
         self.ui.preferences.disconnect(
             self.ui.devSettingsLineEdit,
-            Qt.SIGNAL("editingFinished()"), 
+            Qt.SIGNAL("editingFinished()"),
             self.on_devSettingsLineEdit_editingFinished)
 
         self.ui.preferences.disconnect(
             self.ui.groupLineEdit,
-            Qt.SIGNAL("editingFinished()"), 
+            Qt.SIGNAL("editingFinished()"),
             self.on_layoutLineEdits_editingFinished)
 
         self.ui.preferences.disconnect(
             self.ui.frameLineEdit,
-            Qt.SIGNAL("editingFinished()"), 
+            Qt.SIGNAL("editingFinished()"),
             self.on_layoutLineEdits_editingFinished)
 
         self.ui.preferences.disconnect(
@@ -137,26 +137,26 @@ class Preferences(object):
         self.disconnectSignals()
         self.ui.preferences.connect(
             self.ui.frameLineEdit,
-            Qt.SIGNAL("editingFinished()"), 
+            Qt.SIGNAL("editingFinished()"),
             self.on_layoutLineEdits_editingFinished)
 
         self.ui.preferences.connect(
             self.ui.groupLineEdit,
-            Qt.SIGNAL("editingFinished()"), 
+            Qt.SIGNAL("editingFinished()"),
             self.on_layoutLineEdits_editingFinished)
 
         self.ui.preferences.connect(
             self.ui.devSettingsLineEdit,
-            Qt.SIGNAL("editingFinished()"), 
+            Qt.SIGNAL("editingFinished()"),
             self.on_devSettingsLineEdit_editingFinished)
 
         self.ui.preferences.connect(
-            self.ui.layoutButtonBox.button(Qt.QDialogButtonBox.Open), 
+            self.ui.layoutButtonBox.button(Qt.QDialogButtonBox.Open),
             Qt.SIGNAL("pressed()"), self.profileLoad)
         self.ui.preferences.connect(
             self.ui.layoutButtonBox.button(Qt.QDialogButtonBox.Save),
             Qt.SIGNAL("pressed()"), self.profileSave)
-       
+
     def reset(self):
         logger.debug("reset preferences")
         self.disconnectSignals()
@@ -166,7 +166,7 @@ class Preferences(object):
         completer = Qt.QCompleter(self.mgroupshelp, self.ui.preferences)
         self.ui.groupLineEdit.setCompleter(completer)
         completer = Qt.QCompleter(self.serverhelp, self.ui.preferences)
-        self.ui.devSettingsLineEdit.setCompleter(completer) 
+        self.ui.devSettingsLineEdit.setCompleter(completer)
         completer = Qt.QCompleter(self.frameshelp, self.ui.preferences)
         self.ui.frameLineEdit.setCompleter(completer)
         self.updateForm()
@@ -181,11 +181,11 @@ class Preferences(object):
         logger.debug("from %s to  %s" % (self.state.server, server))
         if not server or server != self.state.server:
             replay = Qt.QMessageBox.question(
-                self.ui.preferences, 
-                "Setting server has changed.", 
-                "Changing server will cause loosing the current data. " \
-                    + " Are you sure?",
-                Qt.QMessageBox.Yes|Qt.QMessageBox.No)
+                self.ui.preferences,
+                "Setting server has changed.",
+                "Changing server will cause loosing the current data. "
+                " Are you sure?",
+                Qt.QMessageBox.Yes | Qt.QMessageBox.No)
             if replay == Qt.QMessageBox.Yes:
                 try:
                     if server == 'module':
@@ -210,10 +210,9 @@ class Preferences(object):
                 self.ui.preferences.emit(Qt.SIGNAL("serverChanged()"))
             else:
                 self.ui.devSettingsLineEdit.setText(Qt.QString(
-                        self.state.server if self.state.server  else 'module'))
+                        self.state.server if self.state.server else 'module'))
         self.connectSignals()
         logger.debug("server changed")
-
 
     def addHint(self, string, hints):
         qstring = Qt.QString(string)
@@ -231,14 +230,14 @@ class Preferences(object):
         try:
             if not frames:
                 frames = '[]'
-            mframes =  json.loads(frames)
+            mframes = json.loads(frames)
             if isinstance(mframes, list):
                 self.frames = frames
                 self.addHint(frames, self.frameshelp)
 
             if not groups:
                 groups = '{}'
-            mgroups =  json.loads(groups)
+            mgroups = json.loads(groups)
 
             if isinstance(mgroups, dict):
                 self.mgroups = groups
@@ -248,28 +247,26 @@ class Preferences(object):
                     self.connectSignals()
                     self.ui.preferences.emit(
                         Qt.SIGNAL("layoutChanged(QString,QString)"),
-                        Qt.QString(frames),Qt.QString(groups)) 
-        except Exception as e :    
+                        Qt.QString(frames), Qt.QString(groups))
+        except Exception as e:
             logger.debug(str(e))
             self.reset()
         self.connectSignals()
 
-
     def updateForm(self):
-        self.ui.devSettingsLineEdit.setText(self.state.server if self.state.server else 'module')
+        self.ui.devSettingsLineEdit.setText(
+            self.state.server if self.state.server else 'module')
         self.ui.groupLineEdit.setText(self.mgroups)
         self.ui.frameLineEdit.setText(self.frames)
-            
 
     def apply(self):
         pass
 
-
-    def profileLoad(self):    
+    def profileLoad(self):
         filename = str(
             Qt.QFileDialog.getOpenFileName(
                 self.ui.preferences,
-                "Load Profile",        
+                "Load Profile",
                 self.profFile,
                 "JSON files (*.json);;All files (*)"))
         logger.debug("loading profile from %s" % filename)
@@ -292,18 +289,17 @@ class Preferences(object):
                             Qt.QString(profile["groups"]))
                         self.ui.groupLineEdit.emit(
                             Qt.SIGNAL("groupsChanged(QString)"),
-                            self.ui.groupLineEdit.text()) 
+                            self.ui.groupLineEdit.text())
                         self.on_layoutLineEdits_editingFinished()
                     if "rowMax" in profile.keys():
                         self.ui.rowMaxSpinBox.setValue(
                             int(profile["rowMax"]))
-                        
+
             except Exception as e:
                 Qt.QMessageBox.warning(
-                    self.ui.preferences, 
+                    self.ui.preferences,
                     "Error during reading the file",
                     str(e))
-                
 
     def profileSave(self):
         filename = str(Qt.QFileDialog.getSaveFileName(
@@ -322,4 +318,3 @@ class Preferences(object):
             jprof = json.dumps(profile)
             with open(filename, 'w') as myfile:
                 myfile.write(jprof)
-            

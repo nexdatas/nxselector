@@ -35,24 +35,22 @@ from .Views import CheckerView
 import logging
 logger = logging.getLogger(__name__)
 
+
 ## main window class
 class Selectable(object):
 
     ## constructor
-    def __init__(self, ui, state = None, userView = CheckerView,
-                 rowMax = 0):
+    def __init__(self, ui, state=None, userView=CheckerView, rowMax=0):
         self.ui = ui
         self.state = state
         self.userView = userView
         self.rowMax = rowMax
         self.layout = None
 
-
         self.frames = None
         self.mgroups = None
         self.groups = {}
-        self.views = {} 
-
+        self.views = {}
 
     def updateGroups(self):
         self.groups = {}
@@ -74,7 +72,7 @@ class Selectable(object):
                             group.append(
                                 DSElement(felem, self.state))
                             uds.add(felem)
-                    elif elem[1] == CP: 
+                    elif elem[1] == CP:
                         filtered = fnmatch.filter(
                             self.state.cpgroup.keys(),
                             elem[0])
@@ -86,8 +84,7 @@ class Selectable(object):
                     if int(k) not in self.groups:
                         self.groups[int(k)] = []
                     self.groups[int(k)].extend(group)
-                    
-        
+
         for ds in self.state.dsgroup.keys():
             if ds not in uds:
                 if DS not in self.groups:
@@ -101,23 +98,21 @@ class Selectable(object):
                 self.groups[CP].append(CPElement(cp, self.state))
 #        for k in self.groups.keys():
 #            self.groups[k] = sorted(self.groups[k])
-            
-                
+
     def __availableGroups(self):
         res = set()
         try:
             frames = Frames(self.frames)
             for frame in frames:
-                for column in frame: 
+                for column in frame:
                     for group in column:
                         res.add(group[1])
         except:
             pass
         return res
 
-
     def createGUI(self):
-        
+
         self.ui.selectable.hide()
         if self.layout:
             child = self.layout.takeAt(0)
@@ -130,8 +125,8 @@ class Selectable(object):
                 child = self.layout.takeAt(0)
         else:
             self.layout = Qt.QHBoxLayout(self.ui.selectable)
-            
-        self.views = {} 
+
+        self.views = {}
         frames = Frames(self.frames, DS in self.groups, CP in self.groups)
         for frame in frames:
             mframe = Qt.QFrame(self.ui.selectable)
@@ -139,7 +134,7 @@ class Selectable(object):
             mframe.setFrameShadow(Qt.QFrame.Raised)
             layout_columns = Qt.QHBoxLayout(mframe)
 
-            for column in frame: 
+            for column in frame:
                 layout_groups = Qt.QVBoxLayout()
 
                 for group in column:
@@ -161,26 +156,24 @@ class Selectable(object):
         if self.ui.tabWidget.currentWidget() == self.ui.selectable:
             self.ui.selectable.show()
 
-
     def setModels(self):
         for k in self.views.keys():
             if k in self.groups.keys():
                 md = ElementModel(self.groups[k])
             else:
                 md = ElementModel([])
-                
+
             self.views[k].setModel(md)
-            md.connect(md, Qt.SIGNAL("componentChecked"), 
+            md.connect(md, Qt.SIGNAL("componentChecked"),
                        self.updateViews)
-            md.connect(md, Qt.SIGNAL("dirty"), 
+            md.connect(md, Qt.SIGNAL("dirty"),
                        self.dirty)
-#            self.views[k].setItemDelegate(ElementDelegate(self))
 
     def dirty(self):
         self.ui.selectable.emit(Qt.SIGNAL("dirty"))
 
     def reset(self):
-        logger.debug("reset views") 
+        logger.debug("reset views")
         self.updateGroups()
         self.createGUI()
         self.setModels()
@@ -191,6 +184,5 @@ class Selectable(object):
         logger.debug("update views")
         for vw in self.views.values():
             vw.reset()
-            
+
         logger.debug("update views end")
-                

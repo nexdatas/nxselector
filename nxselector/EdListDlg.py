@@ -22,7 +22,6 @@
 """  editable list dialog """
 
 
-
 #from PyQt4.QtCore import (SIGNAL, Qt)
 #from PyQt4.QtGui import (
 #    QDialog, QTableWidgetItem, QMessageBox, QAbstractItemView,
@@ -37,6 +36,7 @@ from .EdDataDlg import EdDataDlg
 import logging
 logger = logging.getLogger(__name__)
 
+
 class EdListDlg(Qt.QDialog):
     ## constructor
     # \param parent parent widget
@@ -47,7 +47,7 @@ class EdListDlg(Qt.QDialog):
         self.dirty = False
         self.available_names = None
         self.headers = ["Name", "Value"]
-        
+
     def createGUI(self):
         self.widget.simple = self.simple
         self.widget.available_names = self.available_names
@@ -58,7 +58,7 @@ class EdListDlg(Qt.QDialog):
         self.setLayout(layout)
 
         self.connect(
-            self.widget.ui.closeButtonBox.button(Qt.QDialogButtonBox.Close), 
+            self.widget.ui.closeButtonBox.button(Qt.QDialogButtonBox.Close),
             Qt.SIGNAL("clicked()"),
             self.accept)
         self.widget.ui.closePushButton.show()
@@ -66,8 +66,7 @@ class EdListDlg(Qt.QDialog):
 
     def __setDirty(self):
         self.dirty = True
-        
-        
+
 
 ## main window class
 class EdListWg(Qt.QWidget):
@@ -104,13 +103,13 @@ class EdListWg(Qt.QWidget):
                      self.__add)
         self.connect(self.ui.editPushButton, Qt.SIGNAL("clicked()"),
                      self.__edit)
-        self.connect(self.ui.tableWidget, 
+        self.connect(self.ui.tableWidget,
                      Qt.SIGNAL("itemDoubleClicked(QTableWidgetItem*)"),
                      self.__edit)
         self.connect(self.ui.removePushButton, Qt.SIGNAL("clicked()"),
                      self.__remove)
 
-    def __populateTable(self, selected = None):
+    def __populateTable(self, selected=None):
         self.ui.tableWidget.clear()
         sitem = None
         self.ui.tableWidget.setSortingEnabled(False)
@@ -137,12 +136,14 @@ class EdListWg(Qt.QWidget):
             item = Qt.QTableWidgetItem(str(value))
             self.ui.tableWidget.setItem(row, 1, item)
         self.ui.tableWidget.resizeColumnsToContents()
-        self.ui.tableWidget.setSelectionBehavior(Qt.QAbstractItemView.SelectRows)
+        self.ui.tableWidget.setSelectionBehavior(
+            Qt.QAbstractItemView.SelectRows)
         self.ui.tableWidget.setSelectionMode(
             Qt.QAbstractItemView.SingleSelection)
         self.ui.tableWidget.horizontalHeader(
-            ).setStretchLastSection(True)        
-        self.ui.tableWidget.setEditTriggers(Qt.QAbstractItemView.NoEditTriggers)
+            ).setStretchLastSection(True)
+        self.ui.tableWidget.setEditTriggers(
+            Qt.QAbstractItemView.NoEditTriggers)
         if sitem is not None:
             sitem.setSelected(True)
             self.ui.tableWidget.setCurrentItem(sitem)
@@ -155,21 +156,21 @@ class EdListWg(Qt.QWidget):
             name = skeys[row]
         return name
 
-    def __add(self):    
-        dform  = EdDataDlg(self)
+    def __add(self):
+        dform = EdDataDlg(self)
         dform.simple = self.simple
         dform.headers = self.headers
-        dform.available_names = self.available_names 
+        dform.available_names = self.available_names
         dform.createGUI()
         if dform.exec_():
             self.record[dform.name] = dform.value
             self.__populateTable()
             self.emit(Qt.SIGNAL("dirty"))
-        
-    def __edit(self):    
-        dform  = EdDataDlg(self)
+
+    def __edit(self):
+        dform = EdDataDlg(self)
         dform.simple = self.simple
-        dform.available_names = self.available_names 
+        dform.available_names = self.available_names
         name = self.__currentName()
         if name:
             dform.name = name
@@ -184,19 +185,15 @@ class EdListWg(Qt.QWidget):
             self.emit(Qt.SIGNAL("dirty"))
 
     def __remove(self):
-        name = self.__currentName() 
+        name = self.__currentName()
         if name not in self.record:
             return
-       
+
         if Qt.QMessageBox.question(
             self, "Removing Data", "Would you like  to remove '%s'?" % name,
             Qt.QMessageBox.Yes | Qt.QMessageBox.No,
-            Qt.QMessageBox.Yes ) == Qt.QMessageBox.No :
+            Qt.QMessageBox.Yes) == Qt.QMessageBox.No:
             return
         self.record.pop(name)
         self.emit(Qt.SIGNAL("dirty"))
         self.__populateTable()
-
-        
-
-#  LocalWords:  resizeColumnsToContents

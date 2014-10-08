@@ -28,12 +28,13 @@ logger = logging.getLogger(__name__)
 
 from .Element import CP, DS
 
+
 ## main window class
 class Frames(object):
 
     ## constructor
     # \param settings frame settings
-    def __init__(self, settings=None, ds = False, cp = False):
+    def __init__(self, settings=None, ds=False, cp=False):
 
         self.dsid = None
         self.cpid = None
@@ -43,20 +44,19 @@ class Frames(object):
         self.defaultcp = [[["Components", 1]]]
         self.set(settings, ds, cp)
 
-
-    def set(self, settings, ds = False, cp = False):
+    def set(self, settings, ds=False, cp=False):
         if settings:
             mysettings = json.loads(settings)
         else:
             mysettings = None
-        self.__dct = {}    
+        self.__dct = {}
         self.__settings = [self.defaultds, self.defaultcp]
         try:
             if mysettings is not None:
                 groups = set()
                 if ds or cp:
                     for frame in mysettings:
-                        for column in frame: 
+                        for column in frame:
                             for group in column:
                                 groups.add(group[1])
                 if cp and CP not in groups:
@@ -70,21 +70,20 @@ class Frames(object):
             if len(ids) < 1:
                 self.__settings = [self.defaultds]
                 self.__makedict()
-                
-                
+
         except:
             self.__settings = [self.defaultds, self.defaultcp]
             self.__makedict()
 
         ids = list(set(self.ids()))
         self.dsid = ids[0]
-        if len(ids)>1:
+        if len(ids) > 1:
             self.cpid = ids[1]
         else:
             self.cpid = ids[0]
-        logger.debug("DSid = %s, CPid = %s " % ( self.dsid, self.cpid))
-        logger.debug(self.__dct)            
-        logger.debug(self.ids())            
+        logger.debug("DSid = %s, CPid = %s " % (self.dsid, self.cpid))
+        logger.debug(self.__dct)
+        logger.debug(self.ids())
 
     def __makedict(self):
         for frame in self.__settings:
@@ -93,16 +92,14 @@ class Frames(object):
                     if group[1] in self.__dct.keys():
                         raise Exception("Duplicated Frame ID")
                     self.__dct[group[1]] = (group[0])
-        
 
     def __iter__(self):
         return iter(self.__settings)
-               
 
     def name(self, fid):
         if fid in self.__dct.keys():
             return self.__dct[fid][0]
-        
+
     def ids(self, name=None):
         if not name:
             return self.__dct.keys()

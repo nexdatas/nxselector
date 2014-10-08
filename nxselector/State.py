@@ -37,8 +37,7 @@ class State(object):
 
     ## constructor
     # \param settings frame settings
-    def __init__(self, ui, state = None, userView = CheckerView,
-                 rowMax = 0):
+    def __init__(self, ui, state=None, userView=CheckerView, rowMax=0):
         self.ui = ui
         self.state = state
         self.userView = userView
@@ -50,7 +49,6 @@ class State(object):
 
         self.mgroup = []
         self.mview = None
-
 
     def createGUI(self):
 
@@ -64,9 +62,8 @@ class State(object):
                     child.widget().close()
                     self.layout.removeWidget(child.widget())
                 child = self.layout.takeAt(0)
-        else: 
+        else:
             self.layout = Qt.QHBoxLayout(self.ui.state)
-
 
         mframe = Qt.QFrame(self.ui.state)
         mframe.setFrameShape(Qt.QFrame.StyledPanel)
@@ -83,7 +80,7 @@ class State(object):
 
         layout_auto.addWidget(mview, 0, 0, 1, 1)
         layout_groups.addWidget(mgroup)
-            
+
         self.mview = mview
         self.layout.addWidget(mframe)
 
@@ -102,22 +99,20 @@ class State(object):
 
         layout_auto.addWidget(mview, 0, 0, 1, 1)
         layout_groups.addWidget(mgroup)
-            
+
         self.aview = mview
         self.layout.addWidget(mframe)
-
 
         self.ui.state.update()
         if self.ui.tabWidget.currentWidget() == self.ui.state:
             self.ui.state.show()
 
-
     def updateGroups(self):
         self.agroup = []
         for cp in self.state.acpgroup.keys():
             self.agroup.append(
-                CPElement(cp, self.state, 
-                          group = self.state.acpgroup))
+                CPElement(cp, self.state,
+                          group=self.state.acpgroup))
 
         self.mgroup = []
         mcpgroup = {}
@@ -125,23 +120,20 @@ class State(object):
             mcpgroup[cp] = True
         for cp in mcpgroup.keys():
             self.mgroup.append(
-                CPElement(cp, self.state, group = mcpgroup))
-
-
+                CPElement(cp, self.state, group=mcpgroup))
 
     def setModels(self):
         md = ElementModel(self.agroup)
         md.enable = False
-        self.aview.setModel(md)    
-        md.connect(md, Qt.SIGNAL("componentChecked"), 
+        self.aview.setModel(md)
+        md.connect(md, Qt.SIGNAL("componentChecked"),
                    self.__componentChecked)
 
         md = ElementModel(self.mgroup)
         md.enable = False
-        self.mview.setModel(md)    
-        md.connect(md, Qt.SIGNAL("componentChecked"), 
+        self.mview.setModel(md)
+        md.connect(md, Qt.SIGNAL("componentChecked"),
                    self.__componentChecked)
-
 
     def __componentChecked(self):
         self.ui.state.emit(Qt.SIGNAL("componentChecked"))
@@ -155,4 +147,3 @@ class State(object):
         self.createGUI()
         self.setModels()
         self.updateViews()
-        

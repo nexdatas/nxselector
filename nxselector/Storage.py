@@ -17,11 +17,9 @@
 #    along with nexdatas.  If not, see <http://www.gnu.org/licenses/>.
 ## \package nxselector nexdatas
 ## \file Storage.py
-# storage tab 
+# storage tab
 
 """ storage tab """
-
-
 
 from taurus.external.qt import Qt
 
@@ -32,12 +30,13 @@ from .PropertiesDlg import PropertiesDlg
 import logging
 logger = logging.getLogger(__name__)
 
+
 ## main window class
 class Storage(object):
 
     ## constructor
     # \param settings frame settings
-    def __init__(self, ui, state = None):
+    def __init__(self, ui, state=None):
         self.ui = ui
         self.state = state
         self.__layout = None
@@ -47,60 +46,60 @@ class Storage(object):
 
     def disconnectSignals(self):
         self.ui.storage.disconnect(self.ui.fileScanDirLineEdit,
-                                Qt.SIGNAL("editingFinished()"), self.apply)
+                                   Qt.SIGNAL("editingFinished()"), self.apply)
 #        self.ui.storage.disconnect(self.ui.fileScanIDSpinBox,
 #                                Qt.SIGNAL("valueChanged(int)"), self.apply)
         self.ui.storage.disconnect(self.ui.fileScanLineEdit,
-                                Qt.SIGNAL("editingFinished()"), self.apply)
-                                # measurement group    
+                                   Qt.SIGNAL("editingFinished()"), self.apply)
+                                # measurement group
 
         self.ui.storage.disconnect(self.ui.mntTimerComboBox,
-                                Qt.SIGNAL("currentIndexChanged(int)"), self.apply)
+                                   Qt.SIGNAL("currentIndexChanged(int)"),
+                                   self.apply)
         for cb in self.__tWidgets:
             self.ui.storage.disconnect(
                 cb, Qt.SIGNAL("currentIndexChanged(int)"), self.apply)
         self.ui.storage.disconnect(self.ui.timerAddPushButton,
-                                Qt.SIGNAL("clicked()"), self.__addTimer)
+                                   Qt.SIGNAL("clicked()"), self.__addTimer)
         self.ui.storage.disconnect(self.ui.timerDelPushButton,
-                                Qt.SIGNAL("clicked()"), self.__delTimer)
+                                   Qt.SIGNAL("clicked()"), self.__delTimer)
         self.ui.storage.disconnect(self.ui.mntGrpLineEdit,
-                                Qt.SIGNAL("editingFinished()"), 
+                                   Qt.SIGNAL("editingFinished()"),
                                    self.apply)
         self.ui.storage.disconnect(self.ui.mntServerLineEdit,
-                                Qt.SIGNAL("editingFinished()"), self.apply)
-        
-        # device group    
+                                   Qt.SIGNAL("editingFinished()"), self.apply)
+
+        # device group
         self.ui.storage.disconnect(self.ui.devWriterLineEdit,
-                                Qt.SIGNAL("editingFinished()"), self.apply)
+                                   Qt.SIGNAL("editingFinished()"), self.apply)
         self.ui.storage.disconnect(self.ui.devConfigLineEdit,
-                                Qt.SIGNAL("editingFinished()"), self.apply)
-        
+                                   Qt.SIGNAL("editingFinished()"), self.apply)
 
         # dynamic component group
 #        self.ui.storage.disconnect(self.ui.dcEnableCheckBox,
 #                                Qt.SIGNAL("toggled(bool)"), self.apply)
         self.ui.storage.disconnect(self.ui.dcLinksCheckBox,
-                                Qt.SIGNAL("clicked(bool)"), self.apply)
+                                   Qt.SIGNAL("clicked(bool)"), self.apply)
         self.ui.storage.disconnect(self.ui.dcPathLineEdit,
-                                Qt.SIGNAL("editingFinished()"), self.apply)
+                                   Qt.SIGNAL("editingFinished()"), self.apply)
 
         # others group
         self.ui.storage.disconnect(self.ui.othersEntryCheckBox,
-                                Qt.SIGNAL("clicked(bool)"), self.apply)
+                                   Qt.SIGNAL("clicked(bool)"), self.apply)
 
-        self.ui.storage.disconnect(self.ui.devConfigPushButton, 
-                                   Qt.SIGNAL("clicked()"), 
+        self.ui.storage.disconnect(self.ui.devConfigPushButton,
+                                   Qt.SIGNAL("clicked()"),
                                    self.__variables)
 
-        self.ui.storage.disconnect(self.ui.propPushButton, 
-                                   Qt.SIGNAL("clicked()"), 
+        self.ui.storage.disconnect(self.ui.propPushButton,
+                                   Qt.SIGNAL("clicked()"),
                                    self.__props)
 
-        self.ui.storage.disconnect(self.ui.labelsPushButton, 
-                                   Qt.SIGNAL("clicked()"), 
+        self.ui.storage.disconnect(self.ui.labelsPushButton,
+                                   Qt.SIGNAL("clicked()"),
                                    self.__labels)
-        self.ui.storage.disconnect(self.ui.groupsPushButton, 
-                                   Qt.SIGNAL("clicked()"), 
+        self.ui.storage.disconnect(self.ui.groupsPushButton,
+                                   Qt.SIGNAL("clicked()"),
                                    self.__groups)
 
     def connectSignals(self):
@@ -111,10 +110,11 @@ class Storage(object):
 #                                Qt.SIGNAL("valueChanged(int)"), self.apply)
         self.ui.storage.connect(self.ui.fileScanLineEdit,
                                 Qt.SIGNAL("editingFinished()"), self.apply)
-                                # measurement group    
+                                # measurement group
 
         self.ui.storage.connect(self.ui.mntTimerComboBox,
-                                Qt.SIGNAL("currentIndexChanged(int)"), self.apply)
+                                Qt.SIGNAL("currentIndexChanged(int)"),
+                                self.apply)
         for cb in self.__tWidgets:
             self.ui.storage.connect(
                 cb, Qt.SIGNAL("currentIndexChanged(int)"), self.apply)
@@ -123,17 +123,16 @@ class Storage(object):
         self.ui.storage.connect(self.ui.timerAddPushButton,
                                 Qt.SIGNAL("clicked()"), self.__addTimer)
         self.ui.storage.connect(self.ui.mntGrpLineEdit,
-                                Qt.SIGNAL("editingFinished()"), 
+                                Qt.SIGNAL("editingFinished()"),
                                 self.apply)
         self.ui.storage.connect(self.ui.mntServerLineEdit,
                                 Qt.SIGNAL("editingFinished()"), self.apply)
-        
-        # device group    
+
+        # device group
         self.ui.storage.connect(self.ui.devWriterLineEdit,
                                 Qt.SIGNAL("editingFinished()"), self.apply)
         self.ui.storage.connect(self.ui.devConfigLineEdit,
                                 Qt.SIGNAL("editingFinished()"), self.apply)
-       
 
         # dynamic component group
 #        self.ui.storage.connect(self.ui.dcEnableCheckBox,
@@ -146,28 +145,25 @@ class Storage(object):
         # others group
         self.ui.storage.connect(self.ui.othersEntryCheckBox,
                                 Qt.SIGNAL("clicked(bool)"), self.apply)
-        
 
-        self.ui.storage.connect(self.ui.devConfigPushButton, 
-                                Qt.SIGNAL("clicked()"), 
+        self.ui.storage.connect(self.ui.devConfigPushButton,
+                                Qt.SIGNAL("clicked()"),
                                 self.__variables)
 
-        self.ui.storage.connect(self.ui.propPushButton, 
-                                Qt.SIGNAL("clicked()"), 
+        self.ui.storage.connect(self.ui.propPushButton,
+                                Qt.SIGNAL("clicked()"),
                                 self.__props)
 
-        self.ui.storage.connect(self.ui.labelsPushButton, 
-                                Qt.SIGNAL("clicked()"), 
+        self.ui.storage.connect(self.ui.labelsPushButton,
+                                Qt.SIGNAL("clicked()"),
                                 self.__labels)
 
-        self.ui.storage.connect(self.ui.groupsPushButton, 
-                                Qt.SIGNAL("clicked()"), 
+        self.ui.storage.connect(self.ui.groupsPushButton,
+                                Qt.SIGNAL("clicked()"),
                                 self.__groups)
 
-
-            
-    def __variables(self):    
-        dform  = EdListDlg(self.ui.storage)
+    def __variables(self):
+        dform = EdListDlg(self.ui.storage)
         dform.widget.record = self.state.configvars
         dform.simple = True
         dform.available_names = self.state.vrcpdict.keys()
@@ -176,12 +172,12 @@ class Storage(object):
         if dform.dirty:
             self.ui.storage.emit(Qt.SIGNAL("dirty"))
 
-    def __labels(self):    
-        dform  = EdListDlg(self.ui.storage)
+    def __labels(self):
+        dform = EdListDlg(self.ui.storage)
         dform.widget.record = self.state.labels
         dform.simple = True
         dform.headers = ["Element", "Label"]
-        dform.available_names = list( 
+        dform.available_names = list(
             set(self.state.avcplist) | set(self.state.avdslist))
 
         dform.createGUI()
@@ -189,9 +185,8 @@ class Storage(object):
         if dform.dirty:
             self.ui.storage.emit(Qt.SIGNAL("reset"))
 
-
-    def __groups(self):    
-        dform  = GroupsDlg(self.ui.storage)
+    def __groups(self):
+        dform = GroupsDlg(self.ui.storage)
         dform.det_components = dict((cp, False) for cp in self.state.avcplist)
         dform.det_components.update(
             dict((cp, True) for cp in self.state.cpgroup.keys()))
@@ -201,7 +196,8 @@ class Storage(object):
         dform.beam_components = dict((cp, False) for cp in self.state.avcplist)
         dform.beam_components.update(
             dict((cp, True) for cp in self.state.acpgroup.keys()))
-        dform.beam_datasources = dict((cp, False) for cp in self.state.avdslist)
+        dform.beam_datasources = dict(
+            (cp, False) for cp in self.state.avdslist)
         dform.beam_datasources.update(
             dict((cp, True) for cp in self.state.adslist))
 
@@ -221,49 +217,45 @@ class Storage(object):
     def __updateGroup(self, group, dct):
         for k, st in dct.items():
             if k in group.keys():
-                if st == False:
+                if st is False:
                     group.pop(k)
             else:
-                if st == True:
+                if st is True:
                     group[k] = False
 
     def __createList(self, dct):
-        return [k for (k, st) in dct.items() if st ==True]
+        return [k for (k, st) in dct.items() if st is True]
 
-    def __props(self):    
-        dform  = PropertiesDlg(self.ui.storage)
+    def __props(self):
+        dform = PropertiesDlg(self.ui.storage)
 #        dform.widget.labels = self.state.labels
         dform.widget.paths = self.state.labelpaths
         dform.widget.shapes = self.state.labelshapes
         dform.widget.links = self.state.labellinks
         dform.widget.types = self.state.labeltypes
-        
-        
-        dform.available_names = list((set(self.state.labels.values()) 
-                                      | set(self.state.avdslist)
-                                      ))
+
+        dform.available_names = list((set(self.state.labels.values())
+                                      | set(self.state.avdslist)))
         dform.createGUI()
         dform.exec_()
         if dform.dirty:
             self.ui.storage.emit(Qt.SIGNAL("dirty"))
 
-
     def __addTimer(self):
         logger.debug("ADD Timer")
-        if len(self.state.atlist) >  len(self.__tWidgets)+1 :
+        if len(self.state.atlist) > len(self.__tWidgets) + 1:
             self.__appendTimer()
             self.state.timers.append("")
             self.reset()
             self.apply()
         logger.debug("ADD Timer end")
-        
 
     def __appendTimer(self):
         cb = Qt.QComboBox(self.ui.storage)
         self.__tWidgets.append(cb)
         if self.__layout is None:
             self.__layout = Qt.QHBoxLayout(self.ui.timerFrame)
-            self.__layout.setContentsMargins(0,0,0,0)
+            self.__layout.setContentsMargins(0, 0, 0, 0)
         self.__layout.addWidget(cb)
 
     def __delTimer(self):
@@ -275,7 +267,7 @@ class Storage(object):
             self.apply()
         logger.debug("delTimer end")
 
-    def __removeTimer(self):     
+    def __removeTimer(self):
         if self.__tWidgets:
             cb = self.__tWidgets.pop()
             cb.hide()
@@ -285,7 +277,6 @@ class Storage(object):
                     "currentIndexChanged(int)"), self.apply)
             cb.close()
 
-
     def reset(self):
         logger.debug("reset storage")
         self.disconnectSignals()
@@ -293,14 +284,13 @@ class Storage(object):
         self.connectSignals()
         logger.debug("reset storage ended")
 
-
     def __updateTimer(self, widget, nid):
         widget.clear()
         mtimers = sorted(set(self.state.atlist))
-        if self.state.timers is not None and len(self.state.timers)>nid:
+        if self.state.timers is not None and len(self.state.timers) > nid:
             timer = self.state.timers[nid]
             if nid:
-                mtimers = sorted(set(mtimers) - set(self.state.timers[:nid])    )
+                mtimers = sorted(set(mtimers) - set(self.state.timers[:nid]))
         else:
             timer = ''
         widget.addItems(
@@ -310,13 +300,12 @@ class Storage(object):
             cid = 0
             if self.state.atlist:
                 timer = self.state.atlist[nid]
-                if self.state.timers and len(self.state.timers)>nid:
+                if self.state.timers and len(self.state.timers) > nid:
                     self.state.timers[nid] = timer
                 elif nid == 0:
                     self.state.timers.append(timer)
-                   
+
         widget.setCurrentIndex(cid)
-        
 
     def updateForm(self):
         logger.debug("updateForm storage")
@@ -331,10 +320,10 @@ class Storage(object):
             if isinstance(self.state.scanFile, (list, tuple)):
                 sfile = ", ".join(self.state.scanFile)
             else:
-                sfile = self.state.scanFile    
+                sfile = self.state.scanFile
             self.ui.fileScanLineEdit.setText(sfile)
-            
-        self.__updateTimer(self.ui.mntTimerComboBox, 0)    
+
+        self.__updateTimer(self.ui.mntTimerComboBox, 0)
         while self.state.timers is not None and \
                 len(self.state.timers) > len(self.__tWidgets) + 1:
             logger.debug("ADDING timer")
@@ -344,18 +333,16 @@ class Storage(object):
             logger.debug("removing timer")
             self.__removeTimer()
         for nid, widget in enumerate(self.__tWidgets):
-            self.__updateTimer(widget, nid + 1)    
-            
+            self.__updateTimer(widget, nid + 1)
 
-        # measurement group    
+        # measurement group
         if self.state.mntgrp is not None:
             self.ui.mntGrpLineEdit.setText(self.state.mntgrp)
         self.ui.mntServerLineEdit.setText(self.state.door)
 
-        # device group    
+        # device group
         self.ui.devWriterLineEdit.setText(self.state.writerDevice)
         self.ui.devConfigLineEdit.setText(self.state.configDevice)
-
 
         # dynamic component group
 #        self.ui.dcEnableCheckBox.setChecked(self.state.dynamicComponents)
@@ -367,17 +354,16 @@ class Storage(object):
         # others group
         if self.state.appendEntry is not None:
             self.ui.othersEntryCheckBox.setChecked(self.state.appendEntry)
-        
+
         logger.debug("updateForm storage ended")
 
-    def __applyTimer(self, widget, nid): 
+    def __applyTimer(self, widget, nid):
         timer = str(widget.currentText())
         if self.state.timers:
-            if len(self.state.timers) <=  nid:
+            if len(self.state.timers) <= nid:
                 self.state.timers.append(timer)
-            elif self.state.timers[nid] !=  timer:
+            elif self.state.timers[nid] != timer:
                 self.state.timers[nid] = timer
-       
 
     def apply(self):
         logger.debug("updateForm apply")
@@ -391,17 +377,17 @@ class Storage(object):
         self.__applyTimer(self.ui.mntTimerComboBox, 0)
         for nid, widget in enumerate(self.__tWidgets):
             self.__applyTimer(widget, nid + 1)
-        
+
         self.state.door = str(self.ui.mntServerLineEdit.text())
 
-        # device group    
+        # device group
         self.state.writerDevice = str(self.ui.devWriterLineEdit.text())
         self.state.configDevice = str(self.ui.devConfigLineEdit.text())
 
         self.state.scanDir = str(self.ui.fileScanDirLineEdit.text())
 #        self.state.scanID = int(self.ui.fileScanIDSpinBox.value())
         files = str(self.ui.fileScanLineEdit.text())
-        sfiles = files.replace(';',' ').replace(',',' ').split()
+        sfiles = files.replace(';', ' ').replace(',', ' ').split()
         nxsfiles = []
         for idx, f in enumerate(sfiles):
             if f.split(".")[-1] == 'nxs':
@@ -409,15 +395,13 @@ class Storage(object):
         if len(nxsfiles) > 1 \
                 and self.state.writerDevice != str(self.__moduleLabel):
             Qt.QMessageBox.warning(
-                self.ui.storage, 
+                self.ui.storage,
                 "To many 'nxs' scan files",
                 "Only %s will be used." % (sfiles[nxsfiles[0]]))
 
             for f in reversed(nxsfiles[1:]):
                 sfiles.pop(f)
         self.state.scanFile = sfiles
-
-
 
         # dynamic component group
         self.state.dynamicComponents = True
@@ -427,9 +411,7 @@ class Storage(object):
         # others group
         self.state.appendEntry = self.ui.othersEntryCheckBox.isChecked()
         self.connectSignals()
-        
+
         self.ui.storage.emit(Qt.SIGNAL("dirty"))
         self.ui.storage.emit(Qt.SIGNAL("reset"))
         logger.debug("updateForm apply ended")
-
-        

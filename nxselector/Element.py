@@ -21,13 +21,11 @@
 
 """ device Model """
 
-
-
 import logging
 logger = logging.getLogger(__name__)
 
+DS, CP = range(2)
 
-DS, CP = range(2) 
 
 ## element class
 class Element(object):
@@ -37,13 +35,12 @@ class Element(object):
     # \param eltype element type, i.e. DS or CP
     # \param state recorder settings state
     # \param params parameters
-    def __init__(self, name, eltype, state, params = None):
+    def __init__(self, name, eltype, state, params=None):
         self.name = name
         self.eltype = eltype
         self.state = state
-        self.params = params 
+        self.params = params
 
-        
     def __getChecked(self):
         return self._getChecked()
 
@@ -57,12 +54,8 @@ class Element(object):
         pass
 
     checked = property(__getChecked, __setChecked,
-                       doc = 'check status')
-    
-    
+                       doc='check status')
 
-
-        
     def __getDisplay(self):
         return self._getDisplay()
 
@@ -76,24 +69,21 @@ class Element(object):
         pass
 
     display = property(__getDisplay, __setDisplay,
-                       doc = 'check status')
-    
-    
-
+                       doc='check status')
 
     def __str__(self):
         return (self.name, self.eltype, self.state, self.params)
 
+
 ## datasource element class
 class DSElement(Element):
-    
+
     ## constructor
     # \param parent parent widget
     # \param state recorder settings state
     # \param params parameters
     def __init__(self, name, state, params=None):
         super(DSElement, self).__init__(name, DS, state, params)
-
 
     def _getChecked(self):
         res = self.state.dsgroup
@@ -108,8 +98,6 @@ class DSElement(Element):
             nd = self.state.nodisplay
             if self.name in nd:
                 nd.remove(self.name)
-            
-
 
     def _getDisplay(self):
         res = self.state.dsgroup
@@ -118,7 +106,6 @@ class DSElement(Element):
             if self.name in res.keys():
                 return res[self.name]
         return False
-
 
     def _setDisplay(self, status):
         dc = self.state.dsgroup
@@ -132,14 +119,15 @@ class DSElement(Element):
                     nd.append(self.name)
                 else:
                     dc[self.name] = True
-                    
+
         else:
             if self.name in nd:
                 nd.remove(self.name)
 
+
 ## datasource element class
 class CPElement(Element):
-    
+
     ## constructor
     # \param parent parent widget
     # \param state recorder settings state
@@ -168,28 +156,24 @@ class CPElement(Element):
             if self.name in nd:
                 nd.remove(self.name)
 
-
-
-
     def _getDisplay(self):
         res = self.state.cpgroup
         nd = self.state.nodisplay
         res = self.state.acpgroup
         if self.name not in nd:
             if self.name in res.keys():
-                if res[self.name]: 
+                if res[self.name]:
                     return True
         res = self.state.cpgroup
         if self.name not in nd:
             if self.name in res.keys():
-                if res[self.name]: 
+                if res[self.name]:
                     return True
         res = self.state.mcplist
         if self.name not in nd:
             if self.name in res:
                 return True
         return False
-
 
     def _setDisplay(self, status):
         dc = self.state.cpgroup
@@ -202,7 +186,7 @@ class CPElement(Element):
                     nd.remove(self.name)
             else:
                 if not status:
-                    nd.append(self.name) 
+                    nd.append(self.name)
                 else:
                     dc[self.name] = True
         elif self.name in ac.keys():
@@ -211,7 +195,7 @@ class CPElement(Element):
                     nd.remove(self.name)
             else:
                 if not status:
-                    nd.append(self.name) 
+                    nd.append(self.name)
                 else:
                     ac[self.name] = True
         elif self.name in mc:
@@ -220,8 +204,7 @@ class CPElement(Element):
                     nd.remove(self.name)
             else:
                 if not status:
-                    nd.append(self.name) 
+                    nd.append(self.name)
         else:
             if self.name in nd:
                 nd.remove(self.name)
-

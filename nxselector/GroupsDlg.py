@@ -21,19 +21,13 @@
 
 """  editable list dialog """
 
-
-
-#from PyQt4.QtCore import (SIGNAL, Qt)
-#from PyQt4.QtGui import (
-#    QDialog, QTableWidgetItem, QMessageBox, QAbstractItemView,
-#    QWidget, QHBoxLayout)
-
 from taurus.external.qt import Qt
 
 from .ui.ui_cpgroupsdlg import Ui_CpGroupsDlg
 
 import logging
 logger = logging.getLogger(__name__)
+
 
 class GroupsDlg(Qt.QDialog):
     ## constructor
@@ -50,7 +44,6 @@ class GroupsDlg(Qt.QDialog):
         self.ddschanged = False
         self.bcpchanged = False
         self.bdschanged = False
-
 
     def createGUI(self):
         self.ui.setupUi(self)
@@ -89,7 +82,7 @@ class GroupsDlg(Qt.QDialog):
         changed = False
         for i in range(table.rowCount()):
             item = table.item(i, 0)
-            status = bool((item.checkState())/2)
+            status = bool((item.checkState()) / 2)
             name = str(item.data(Qt.Qt.DisplayRole))
 
             if dct[name] != status:
@@ -107,7 +100,7 @@ class GroupsDlg(Qt.QDialog):
             self.ddschanged = True
         if self.__updateDict(
             self.ui.bcpTableWidget, self.beam_components):
-            self.bcpchanged =  True
+            self.bcpchanged = True
         if self.__updateDict(
             self.ui.bdsTableWidget, self.beam_datasources):
             self.bdschanged = True
@@ -128,7 +121,7 @@ class GroupsDlg(Qt.QDialog):
             enable = True
 
             item = Qt.QTableWidgetItem(name)
-            item.setCheckState(int(dct[name])*2)
+            item.setCheckState(int(dct[name]) * 2)
             widget.setItem(row, 0, item)
         widget.resizeColumnsToContents()
         widget.horizontalHeader().setStretchLastSection(True)

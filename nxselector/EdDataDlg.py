@@ -30,6 +30,7 @@ from .ui.ui_eddatadlg import Ui_EdDataDlg
 import logging
 logger = logging.getLogger(__name__)
 
+
 ## main window class
 class EdDataDlg(Qt.QDialog):
 
@@ -47,15 +48,15 @@ class EdDataDlg(Qt.QDialog):
 
     def createGUI(self):
 
-        self.ui.setupUi(self) 
-        if len(self.headers)> 0:
+        self.ui.setupUi(self)
+        if len(self.headers) > 0:
             self.ui.nameLabel.setText(str(self.headers[0]))
-            if len(self.headers)> 1:
+            if len(self.headers) > 1:
                 self.ui.valueLabel.setText(str(self.headers[1]))
         if self.simple:
             self.ui.stringCheckBox.hide()
-        else:    
-            self.isString = isinstance(self.value, 
+        else:
+            self.isString = isinstance(self.value,
                                        (str, unicode, Qt.QString))
         self.ui.stringCheckBox.setChecked(self.isString)
         self.ui.nameLineEdit.setText(Qt.QString(self.name))
@@ -65,9 +66,9 @@ class EdDataDlg(Qt.QDialog):
             completer = Qt.QCompleter(self.available_names, self)
             self.ui.nameLineEdit.setCompleter(completer)
 
-        self.connect(self.ui.buttonBox, Qt.SIGNAL("accepted()"), 
+        self.connect(self.ui.buttonBox, Qt.SIGNAL("accepted()"),
                      self.accept)
-        self.connect(self.ui.buttonBox, Qt.SIGNAL("rejected()"), 
+        self.connect(self.ui.buttonBox, Qt.SIGNAL("rejected()"),
                      self.reject)
 
     def accept(self):
@@ -79,9 +80,9 @@ class EdDataDlg(Qt.QDialog):
                 self.value = json.loads(self.value)
             except:
                 pass
-            
+
         if not self.name:
-            Qt.QMessageBox.warning(self, "Wrong Data", "Empty data name" )
+            Qt.QMessageBox.warning(self, "Wrong Data", "Empty data name")
             self.ui.nameLineEdit.setFocus()
             return
         Qt.QDialog.accept(self)

@@ -24,36 +24,34 @@
 
 from taurus.external.qt import Qt
 
-
-
 import logging
 logger = logging.getLogger(__name__)
-        
+
+
 class TableView(Qt.QTableView):
 
     def __init__(self, parent=None):
         super(TableView, self).__init__(parent)
-        self.verticalHeader().setVisible(False)        
-#        self.horizontalHeader().setVisible(False)        
-        self.horizontalHeader().setStretchLastSection(True)        
+        self.verticalHeader().setVisible(False)
+#        self.horizontalHeader().setVisible(False)
+        self.horizontalHeader().setStretchLastSection(True)
         self.horizontalHeader().setResizeMode(Qt.QHeaderView.Stretch)
-        
+
 
 class OneTableView(Qt.QTableView):
 
     def __init__(self, parent=None):
         super(OneTableView, self).__init__(parent)
-        self.verticalHeader().setVisible(False)        
-        self.horizontalHeader().setVisible(False)        
-        self.horizontalHeader().setStretchLastSection(True)        
+        self.verticalHeader().setVisible(False)
+        self.horizontalHeader().setVisible(False)
+        self.horizontalHeader().setStretchLastSection(True)
         self.horizontalHeader().setResizeMode(Qt.QHeaderView.Stretch)
-
-
 
     def reset(self):
         super(OneTableView, self).reset()
         for i in range(1, 5):
             self.hideColumn(i)
+
 
 class CheckerView(Qt.QWidget):
 
@@ -75,14 +73,13 @@ class CheckerView(Qt.QWidget):
         self.showLabels = True
         self.showNames = True
 
-
     def checked(self, widget):
-        row = self.widgets.index(widget)        
+        row = self.widgets.index(widget)
         self.selectedWidgetRow = row
         ind = self.model.index(row, 0)
         value = Qt.QVariant(self.widgets[row].isChecked())
         self.model.setData(ind, value, Qt.Qt.CheckStateRole)
-            
+
     def setModel(self, model):
         self.model = model
         self.connect(self.model,
@@ -92,7 +89,6 @@ class CheckerView(Qt.QWidget):
                      Qt.SIGNAL("modelReset()"),
                      self.updateState)
         self.updateState()
-
 
     def reset(self):
         self.hide()
@@ -112,7 +108,7 @@ class CheckerView(Qt.QWidget):
             self.mapper = Qt.QSignalMapper(self)
             self.connect(self.mapper, Qt.SIGNAL("mapped(QWidget*)"),
                          self.checked)
-            if self.dmapper: 
+            if self.dmapper:
                 self.dmapper = Qt.QSignalMapper(self)
                 self.connect(self.dmapper, Qt.SIGNAL("mapped(QWidget*)"),
                              self.dchecked)
@@ -128,48 +124,47 @@ class CheckerView(Qt.QWidget):
             for row in range(self.model.rowCount()):
 
                 cb, ds = self.__setWidgets(row)
-                self.__setNameTips(row, cb)    
+                self.__setNameTips(row, cb)
                 self.__createGrid(row, cb, ds)
 
             if not self.spacer:
-                self.spacer = Qt.QSpacerItem(10, 10, 
+                self.spacer = Qt.QSpacerItem(10, 10,
                                           Qt.QSizePolicy.Minimum,
-#                                         QSizePolicy.Expanding, 
+#                                         QSizePolicy.Expanding,
                                           Qt.QSizePolicy.Expanding)
                 self.layout.addItem(self.spacer)
-                
-            
+
         self.update()
         self.updateGeometry()
 
     def __createGrid(self, row, cb, ds):
         ind = self.model.index(row, 0)
         ind2 = self.model.index(row, 2)
-        status = self.model.data(ind, role = Qt.Qt.CheckStateRole)
-        dstatus = self.model.data(ind2, role = Qt.Qt.CheckStateRole)
-        if status is not None:    
+        status = self.model.data(ind, role=Qt.Qt.CheckStateRole)
+        dstatus = self.model.data(ind2, role=Qt.Qt.CheckStateRole)
+        if status is not None:
             cb.setChecked(bool(status))
-        if self.dmapper: 
-            if dstatus is not None:    
+        if self.dmapper:
+            if dstatus is not None:
                 ds.setChecked(bool(dstatus))
         if row >= len(self.widgets):
             if self.rowMax:
-                lrow = row % self.rowMax 
+                lrow = row % self.rowMax
                 lcol = row / self.rowMax
-            else :
-                lrow = row 
+            else:
+                lrow = row
                 lcol = 0
 
-            if self.dmapper: 
+            if self.dmapper:
                 lrow = lrow + 1
-                lcol = 2*lcol
-                if lrow == 1:    
+                lcol = 2 * lcol
+                if lrow == 1:
                     self.layout.addWidget(
                         Qt.QLabel(self.slabel), 0, lcol, 1, 1)
                     self.layout.addWidget(
-                        Qt.QLabel(self.dlabel), 0, lcol+1, 1, 1, 
+                        Qt.QLabel(self.dlabel), 0, lcol + 1, 1, 1,
                         Qt.Qt.AlignRight)
-                self.layout.addWidget(ds, lrow, lcol+1, 1, 1, 
+                self.layout.addWidget(ds, lrow, lcol + 1, 1, 1,
                                       Qt.Qt.AlignRight)
 
             self.layout.addWidget(cb, lrow, lcol, 1, 1)
@@ -177,12 +172,11 @@ class CheckerView(Qt.QWidget):
             self.connect(cb, Qt.SIGNAL("clicked()"),
                          self.mapper, Qt.SLOT("map()"))
             self.mapper.setMapping(cb, cb)
-            if self.dmapper: 
+            if self.dmapper:
                 self.displays.append(ds)
                 self.connect(ds, Qt.SIGNAL("clicked()"),
                              self.dmapper, Qt.SLOT("map()"))
                 self.dmapper.setMapping(ds, ds)
-
 
     def __setWidgets(self, row):
         ind = self.model.index(row, 0)
@@ -193,17 +187,17 @@ class CheckerView(Qt.QWidget):
         cb = None
         if row < len(self.widgets):
             cb = self.widgets[row]
-            if self.dmapper: 
+            if self.dmapper:
                 ds = self.displays[row]
         else:
             cb = self.widget()
             if hasattr(cb, "setCheckable"):
                 cb.setCheckable(True)
-            if self.dmapper: 
+            if self.dmapper:
                 ds = self.widget()
                 if hasattr(ds, "setCheckable"):
                     ds.setCheckable(True)
-            if hasattr(cb, "setSizePolicy") and self.center: 
+            if hasattr(cb, "setSizePolicy") and self.center:
                 sizePolicy = Qt.QSizePolicy(
                     Qt.QSizePolicy.Fixed, Qt.QSizePolicy.Fixed)
                 sizePolicy.setHorizontalStretch(10)
@@ -213,12 +207,12 @@ class CheckerView(Qt.QWidget):
                 cb.setSizePolicy(sizePolicy)
 
         cb.setEnabled(bool(Qt.Qt.ItemIsEnabled & flags))
-        if self.dmapper: 
+        if self.dmapper:
             ds.setEnabled(bool(Qt.Qt.ItemIsEnabled & flags2))
         return (cb, ds)
 
     @classmethod
-    def __createList(cls, text, words = 7):
+    def __createList(cls, text, words=7):
         lst = str(text).split() if text else ''
         cnt = 0
         st = ""
@@ -229,7 +223,7 @@ class CheckerView(Qt.QWidget):
                 st += ', '
             else:
                 st += ',\n'
-                
+
         if len(lst):
             st += lst[-1]
         return st
@@ -239,19 +233,17 @@ class CheckerView(Qt.QWidget):
         ind1 = self.model.index(row, 1)
         ind3 = self.model.index(row, 3)
         ind4 = self.model.index(row, 4)
-        name = self.model.data(ind, role = Qt.Qt.DisplayRole)
-#        name = self.model.data(ind, role = Qt.Qt.DisplayRole).toString()
-        
-        label = self.model.data(ind1, role = Qt.Qt.DisplayRole)
- #       label = self.model.data(ind1, role = Qt.Qt.DisplayRole).toString()
-        scans = self.model.data(ind3, role = Qt.Qt.DisplayRole)
-        depends = self.model.data(ind4, role = Qt.Qt.DisplayRole)
+        name = self.model.data(ind, role=Qt.Qt.DisplayRole)
+
+        label = self.model.data(ind1, role=Qt.Qt.DisplayRole)
+        scans = self.model.data(ind3, role=Qt.Qt.DisplayRole)
+        depends = self.model.data(ind4, role=Qt.Qt.DisplayRole)
         tscans = self.__createList(scans)
         tdepends = self.__createList(depends)
         text = tscans if tscans else ""
         if tdepends:
             text = "%s\n[%s]" % (text, tdepends)
-            
+
         if name:
             if self.showLabels and label and \
                     str(label).strip():
@@ -282,9 +274,6 @@ class CheckerView(Qt.QWidget):
             else:
                 cb.setToolTip(ln)
 
-                            
-        
-
 
 class CheckDisView(CheckerView):
 
@@ -298,14 +287,11 @@ class CheckDisView(CheckerView):
         self.slabel = 'Sel.'
 
     def dchecked(self, widget):
-        row = self.displays.index(widget)        
+        row = self.displays.index(widget)
         self.selectedWidgetRow = row
         ind = self.model.index(row, 2)
         value = Qt.QVariant(self.displays[row].isChecked())
         self.model.setData(ind, value, Qt.Qt.CheckStateRole)
-
-
-            
 
 
 class RadioView(CheckerView):
@@ -314,6 +300,7 @@ class RadioView(CheckerView):
         super(RadioView, self).__init__(parent)
         self.widget = Qt.QRadioButton
 
+
 class LeftRadioView(CheckerView):
 
     def __init__(self, parent=None):
@@ -321,11 +308,13 @@ class LeftRadioView(CheckerView):
         self.widget = Qt.QRadioButton
         self.center = False
 
+
 class LeftCheckerView(CheckerView):
 
     def __init__(self, parent=None):
         super(LeftCheckerView, self).__init__(parent)
         self.center = False
+
 
 class ButtonView(CheckerView):
 
@@ -348,6 +337,7 @@ class LeftCheckerViewNL(LeftCheckerView):
         super(LeftCheckerViewNL, self).__init__(parent)
         self.showLabels = False
 
+
 class ButtonViewNL(ButtonView):
 
     def __init__(self, parent=None):
@@ -360,6 +350,7 @@ class RadioViewNL(RadioView):
     def __init__(self, parent=None):
         super(RadioViewNL, self).__init__(parent)
         self.showLabels = False
+
 
 class LeftRadioViewNL(LeftRadioView):
 
@@ -381,6 +372,7 @@ class LeftCheckerViewNN(LeftCheckerView):
         super(LeftCheckerViewNN, self).__init__(parent)
         self.showNames = False
 
+
 class ButtonViewNN(ButtonView):
 
     def __init__(self, parent=None):
@@ -394,6 +386,7 @@ class RadioViewNN(RadioView):
         super(RadioViewNN, self).__init__(parent)
         self.showNames = False
 
+
 class LeftRadioViewNN(LeftRadioView):
 
     def __init__(self, parent=None):
@@ -401,13 +394,12 @@ class LeftRadioViewNN(LeftRadioView):
         self.showNames = False
 
 
-
-
 class RadioDisView(CheckDisView):
 
     def __init__(self, parent=None):
         super(RadioDisView, self).__init__(parent)
         self.widget = Qt.QRadioButton
+
 
 class ButtonDisView(CheckDisView):
 
@@ -422,7 +414,6 @@ class CheckDisViewNL(CheckDisView):
     def __init__(self, parent=None):
         super(CheckDisViewNL, self).__init__(parent)
         self.showLabels = False
-
 
 
 class ButtonDisViewNL(ButtonDisView):
@@ -458,4 +449,3 @@ class RadioDisViewNN(RadioDisView):
     def __init__(self, parent=None):
         super(RadioDisViewNN, self).__init__(parent)
         self.showNames = False
-
