@@ -214,6 +214,15 @@ class ServerState(object):
         self.storeData("dynamicPath", self.dynamicPath)
 
 
+    def storeGroups(self):
+        if not self.__dp:
+            self.setServer()
+        self.storeDict("dataSourceGroup", self.dsgroup) 
+        self.storeDict("componentGroup", self.cpgroup) 
+        self.storeDict("automaticComponentGroup", self.acpgroup) 
+        self.storeList("automaticDataSources", self.adslist) 
+
+
     def storeSettings(self):
         if not self.__dp:
             self.setServer()

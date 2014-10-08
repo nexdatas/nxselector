@@ -228,6 +228,7 @@ class Selector(Qt.QDialog, TaurusBaseWidget):
         self.connect(self.ui.data, Qt.SIGNAL("dirty"), self.setDirty)
         self.connect(self.ui.storage, Qt.SIGNAL("dirty"), self.setDirty)
         self.connect(self.ui.storage, Qt.SIGNAL("reset"), self.resetViews)
+        self.connect(self.ui.storage, Qt.SIGNAL("updateGroups"), self.updateGroups)
 
 
     def __componentChanged(self):
@@ -363,6 +364,11 @@ class Selector(Qt.QDialog, TaurusBaseWidget):
         self.resetViews()
         logger.debug("reset rows ended")
         
+    def updateGroups(self):
+        self.state.storeGroups()
+        self.resetAll()
+
+
     def resetViews(self):
         for tab in self.tabs:
             tab.userView = self.preferences.views[

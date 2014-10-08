@@ -205,20 +205,30 @@ class Storage(object):
         dform.beam_datasources.update(
             dict((cp, True) for cp in self.state.adslist))
 
-#        dform.beam_components =  list( 
-#            set(self.state.avdslist) | set(self.state.acpgroup.keys))
-#        dform.beam_datasources = list( 
-#            set(self.state.avdslist) | set(self.state.adsgroup.keys))
-#        dform.widget.record = self.state.labels
-#        dform.simple = True
-#        dform.headers = ["Element", "Label"]
-#        dform.available_names = list( 
-#            set(self.state.avcplist) | set(self.state.avdslist))
-
         dform.createGUI()
         dform.exec_()
         if dform.dirty:
-            self.ui.storage.emit(Qt.SIGNAL("reset"))
+            if dform.dcpchanged:
+                self.__updateGroup(self.state.cpgroup, dform.det_components)
+            if dform.ddschanged:
+                self.__updateGroup(self.state.dsgroup, dform.det_datasources)
+            if dform.bcpchanged:
+                self.__updateGroup(self.state.acpgroup, dform.beam_components)
+            if dform.bdschanged:
+                self.state.adslist = self.__createList(dform.beam_datasources)
+            self.ui.storage.emit(Qt.SIGNAL("updateGroups"))
+
+    def __updateGroup(self, group, dct):
+        for k, st in dct.items():
+            if k in group.keys():
+                if st == False:
+                    group.pop(k)
+            else:
+                if st == True:
+                    group[k] = False
+
+    def __createList(self, dct):
+        return [k for (k, st) in dct.items() if st ==True]
 
     def __props(self):    
         dform  = PropertiesDlg(self.ui.storage)
