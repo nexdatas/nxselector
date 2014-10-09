@@ -64,7 +64,8 @@ class LDataDlg(Qt.QDialog):
             shape = ''
         else:
             shape = self.shape
-        self.ui.shapeLineEdit.setText(Qt.QString(str(shape)))
+        self.ui.shapeLineEdit.setText(
+            Qt.QString(str(shape)))
         self.ui.typeLineEdit.setText(Qt.QString(str(self.dtype)))
 
         cid = self.ui.linkComboBox.findText(
@@ -89,17 +90,17 @@ class LDataDlg(Qt.QDialog):
         self.label = unicode(self.ui.labelLineEdit.text())
         self.path = unicode(self.ui.pathLineEdit.text())
         self.dtype = unicode(self.ui.typeLineEdit.text())
-        tshape = unicode(self.ui.shapeLineEdit.text())
+        tshape = unicode(self.ui.shapeLineEdit.text()).replace("None", "null")
         try:
             if not tshape:
                 self.shape = None
             else:
-                shape = json.load(tshape)
+                shape = json.loads(tshape)
                 assert isinstance(shape, list)
                 self.shape = shape
-        except:
+        except Exception as e:
             Qt.QMessageBox.warning(self, "Wrong Data",
-                                   "Wrong structure of Shape")
+                                   "Wrong structure of Shape: %s " % str(e))
             self.ui.shapeLineEdit.setFocus()
             return
 
