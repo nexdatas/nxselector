@@ -22,7 +22,10 @@
 """ main window application dialog """
 
 
-from taurus.external.qt import Qt
+try:
+    from taurus.external.qt import Qt
+except:
+    from taurus.qt import Qt
 
 import logging
 logger = logging.getLogger(__name__)

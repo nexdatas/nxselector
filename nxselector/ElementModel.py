@@ -21,7 +21,10 @@
 
 """ device Model """
 
-from taurus.external.qt import Qt
+try:
+    from taurus.external.qt import Qt
+except:
+    from taurus.qt import Qt
 
 from .Element import DS, CP
 

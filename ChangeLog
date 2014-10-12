@@ -1,3 +1,7 @@
+2014-10-12 Jan Kotanski <jankotan@gmail.com>
+	* adding support for older tauru versions
+	* tagged as 1.8.2
+
 2014-10-09 Jan Kotanski <jankotan@gmail.com>
 	* fixing for shape property editing
 	* tagged as 1.8.1

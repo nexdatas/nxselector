@@ -21,7 +21,10 @@
 
 """ storage tab """
 
-from taurus.external.qt import Qt
+try:
+    from taurus.external.qt import Qt
+except:
+    from taurus.qt import Qt
 
 from .EdListDlg import EdListDlg
 from .GroupsDlg import GroupsDlg

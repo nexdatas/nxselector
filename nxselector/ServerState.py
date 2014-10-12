@@ -28,7 +28,10 @@ import time
 import logging
 logger = logging.getLogger(__name__)
 
-from taurus.external.qt import Qt
+try:
+    from taurus.external.qt import Qt
+except:
+    from taurus.qt import Qt
 
 
 ## main window class

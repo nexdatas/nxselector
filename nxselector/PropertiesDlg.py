@@ -22,7 +22,10 @@
 """  label dialog """
 
 
-from taurus.external.qt import Qt
+try:
+    from taurus.external.qt import Qt
+except:
+    from taurus.qt import Qt
 
 from .ui.ui_edlistdlg import Ui_EdListDlg
 

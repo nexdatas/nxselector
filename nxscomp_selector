@@ -37,7 +37,11 @@ logger = logging.getLogger(__name__)
 ## the main function
 def main():
 
-    from taurus.external.qt import Qt
+    try:
+        from taurus.external.qt import Qt
+    except:
+        from taurus.qt import Qt
+        
     import taurus.qt.qtgui.application
     Application = taurus.qt.qtgui.application.TaurusApplication
 

@@ -22,7 +22,10 @@
 """ automatic tab """
 
 
-from taurus.external.qt import Qt
+try:
+    from taurus.external.qt import Qt
+except:
+    from taurus.qt import Qt
 
 from .Element import CPElement
 from .ElementModel import ElementModel

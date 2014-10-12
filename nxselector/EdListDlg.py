@@ -21,13 +21,10 @@
 
 """  editable list dialog """
 
-
-#from PyQt4.QtCore import (SIGNAL, Qt)
-#from PyQt4.QtGui import (
-#    QDialog, QTableWidgetItem, QMessageBox, QAbstractItemView,
-#    QWidget, QHBoxLayout)
-
-from taurus.external.qt import Qt
+try:
+    from taurus.external.qt import Qt
+except:
+    from taurus.qt import Qt
 
 from .ui.ui_edlistdlg import Ui_EdListDlg
 
