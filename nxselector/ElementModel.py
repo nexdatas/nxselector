@@ -47,6 +47,8 @@ class ElementModel(Qt.QAbstractTableModel):
         self.autoEnable = True
         ## list of device elements
         self.group = []
+        ## headers
+        self.headers = ["Element", "Label", "Display", "Scans", "Contains"]
 
         if group:
             self.group = sorted(group, key=lambda x: x.name, reverse=False)
@@ -59,7 +61,6 @@ class ElementModel(Qt.QAbstractTableModel):
 
     def index(self, row, column, _=Qt.QModelIndex()):
         return self.createIndex(row, column)
-
 
     def __elementCheck(self, device, index):
         if (not (self.flags(index) & Qt.Qt.ItemIsEnabled)
@@ -101,7 +102,6 @@ class ElementModel(Qt.QAbstractTableModel):
         if contains:
             return " ".join([str(c) for c in sorted(contains)])
 
-
     def __descSources(self, device):
         desc = device.state.description
         contains = set()
@@ -116,7 +116,6 @@ class ElementModel(Qt.QAbstractTableModel):
                                     break
         if contains:
             return " ".join([str(c) for c in sorted(contains)])
-
 
     @classmethod
     def __createList(cls, text, words=7):
@@ -135,7 +134,6 @@ class ElementModel(Qt.QAbstractTableModel):
             st += lst[-1]
         return st
 
-
     def __createTips(self, device, index):
         scans = self.__scanSources(device)
         depends = self.__descSources(device)
@@ -147,7 +145,6 @@ class ElementModel(Qt.QAbstractTableModel):
 
         if text.strip():
             return text
-        
 
     def data(self, index, role=Qt.Qt.DisplayRole):
         if not index.isValid() or \
@@ -185,17 +182,8 @@ class ElementModel(Qt.QAbstractTableModel):
     def headerData(self, section, _, role=Qt.Qt.DisplayRole):
         if role != Qt.Qt.DisplayRole:
             return Qt.QVariant()
-        if section == 0:
-            return Qt.QVariant("Element")
-        elif section == 1:
-            return Qt.QVariant("Label")
-        elif section == 2:
-            return Qt.QVariant("Display")
-        elif section == 3:
-            return Qt.QVariant("Scans")
-        elif section == 4:
-            return Qt.QVariant("Contains")
-
+        if section >= 0 and section < len(self.headers):
+            return Qt.QVariant(self.headers[section])
         return Qt.QVariant(int(section + 1))
 
     def flags(self, index):
@@ -210,19 +198,16 @@ class ElementModel(Qt.QAbstractTableModel):
         column = index.column()
         if device.eltype == DS:
             dds = device.state.ddsdict
-            if device.name in dds.keys():
+            if device.name in dds.keys() and self.autoEnable:
                 enable = False
                 flag &= ~Qt.Qt.ItemIsEnabled
                 comp = dds[device.name]
         elif device.eltype == CP:
             mcp = device.state.mcplist
             acp = device.state.acplist
-            if (device.name in mcp or device.name in acp):
+            if (device.name in mcp or device.name in acp) and self.autoEnable:
                 enable2 = False
                 flag &= ~Qt.Qt.ItemIsEnabled
-        if self.autoEnable:
-            enable = True
-            enable2= True   
         if column == 0:
             if enable and enable2:
                 return Qt.Qt.ItemFlags(flag |
