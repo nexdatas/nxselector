@@ -214,38 +214,11 @@ class CheckerView(Qt.QWidget):
             ds.setEnabled(bool(Qt.Qt.ItemIsEnabled & flags2))
         return (cb, ds)
 
-    @classmethod
-    def __createList(cls, text, words=7):
-        lst = str(text).split() if text else ''
-        cnt = 0
-        st = ""
-        for sl in lst[:-1]:
-            st += sl
-            cnt += 1
-            if cnt % words:
-                st += ', '
-            else:
-                st += ',\n'
-
-        if len(lst):
-            st += lst[-1]
-        return st
-
     def __setNameTips(self, row, cb):
         ind = self.model.index(row, 0)
         ind1 = self.model.index(row, 1)
-        ind3 = self.model.index(row, 3)
-        ind4 = self.model.index(row, 4)
         name = self.model.data(ind, role=Qt.Qt.DisplayRole)
-
         label = self.model.data(ind1, role=Qt.Qt.DisplayRole)
-        scans = self.model.data(ind3, role=Qt.Qt.DisplayRole)
-        depends = self.model.data(ind4, role=Qt.Qt.DisplayRole)
-        tscans = self.__createList(scans)
-        tdepends = self.__createList(depends)
-        text = tscans if tscans else ""
-        if tdepends:
-            text = "%s\n[%s]" % (text, tdepends)
 
         if name:
             if self.showLabels and label and \
@@ -258,6 +231,10 @@ class CheckerView(Qt.QWidget):
                     cb.setText("%s" % (str(label)))
             else:
                 cb.setText(str(name))
+
+        text = self.model.data(ind, role=Qt.Qt.ToolTipRole)
+        text = str(text) if text else ""
+
         if self.showLabels:
             if self.showNames:
                 if text.strip():
@@ -269,9 +246,7 @@ class CheckerView(Qt.QWidget):
                 else:
                     cb.setToolTip(str(name))
         else:
-            ln = str(label) \
-                if str(label) \
-                else str(name)
+            ln = str(label) if label else str(name)
             if text.strip():
                 cb.setToolTip("%s: %s" % (ln, text))
             else:

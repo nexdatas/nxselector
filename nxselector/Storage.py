@@ -190,6 +190,7 @@ class Storage(object):
 
     def __groups(self):
         dform = GroupsDlg(self.ui.storage)
+        dform.state = self.state
         dform.det_components = dict((cp, False) for cp in self.state.avcplist)
         dform.det_components.update(
             dict((cp, True) for cp in self.state.cpgroup.keys()))
@@ -207,14 +208,10 @@ class Storage(object):
         dform.createGUI()
         dform.exec_()
         if dform.dirty:
-            if dform.dcpchanged:
-                self.__updateGroup(self.state.cpgroup, dform.det_components)
-            if dform.ddschanged:
-                self.__updateGroup(self.state.dsgroup, dform.det_datasources)
-            if dform.bcpchanged:
-                self.__updateGroup(self.state.acpgroup, dform.beam_components)
-            if dform.bdschanged:
-                self.state.adslist = self.__createList(dform.beam_datasources)
+            self.__updateGroup(self.state.cpgroup, dform.det_components)
+            self.__updateGroup(self.state.dsgroup, dform.det_datasources)
+            self.__updateGroup(self.state.acpgroup, dform.beam_components)
+            self.state.adslist = self.__createList(dform.beam_datasources)
             self.ui.storage.emit(Qt.SIGNAL("updateGroups"))
 
     def __updateGroup(self, group, dct):

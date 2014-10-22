@@ -34,12 +34,10 @@ class Element(object):
     # \param name element name
     # \param eltype element type, i.e. DS or CP
     # \param state recorder settings state
-    # \param params parameters
-    def __init__(self, name, eltype, state, params=None):
+    def __init__(self, name, eltype, state):
         self.name = name
         self.eltype = eltype
         self.state = state
-        self.params = params
 
     def __getChecked(self):
         return self._getChecked()
@@ -72,7 +70,27 @@ class Element(object):
                        doc='check status')
 
     def __str__(self):
-        return (self.name, self.eltype, self.state, self.params)
+        return (self.name, self.eltype, self.state)
+
+## datasource element class
+class GElement(Element):
+
+    ## constructor
+    # \param parent parent widget
+    # \param eltype element type, i.e. DS or CP
+    # \param state recorder settings state
+    def __init__(self, name, eltype, state, dct):
+        super(GElement, self).__init__(name, eltype, state)
+        self.group = dct
+
+    def _getChecked(self):
+        if self.name in self.group.keys():
+            return self.group[self.name]
+        return False
+
+    def _setChecked(self, status):
+        logger.debug("Changed: %s to %s" % (self.name, status))
+        self.group[self.name] = bool(status)
 
 
 ## datasource element class
@@ -81,9 +99,8 @@ class DSElement(Element):
     ## constructor
     # \param parent parent widget
     # \param state recorder settings state
-    # \param params parameters
-    def __init__(self, name, state, params=None):
-        super(DSElement, self).__init__(name, DS, state, params)
+    def __init__(self, name, state):
+        super(DSElement, self).__init__(name, DS, state)
 
     def _getChecked(self):
         res = self.state.dsgroup
@@ -131,9 +148,8 @@ class CPElement(Element):
     ## constructor
     # \param parent parent widget
     # \param state recorder settings state
-    # \param params parameters
-    def __init__(self, name, state, params=None, group=None):
-        super(CPElement, self).__init__(name, CP, state, params)
+    def __init__(self, name, state, group=None):
+        super(CPElement, self).__init__(name, CP, state)
         self.group = group
 
     def _getChecked(self):

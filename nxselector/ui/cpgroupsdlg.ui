@@ -25,42 +25,19 @@
         <attribute name="title">
          <string>Detectors</string>
         </attribute>
-        <layout class="QGridLayout" name="gridLayout_3">
-         <item row="0" column="0">
-          <layout class="QGridLayout" name="gridLayout_2">
-           <item row="0" column="0">
-            <widget class="QTableWidget" name="dcpTableWidget"/>
-           </item>
-           <item row="0" column="1">
-            <widget class="QTableWidget" name="ddsTableWidget"/>
-           </item>
-          </layout>
-         </item>
-        </layout>
+        <zorder>closeButtonBox</zorder>
        </widget>
        <widget class="QWidget" name="beamline">
         <attribute name="title">
          <string>Descriptions</string>
         </attribute>
-        <layout class="QGridLayout" name="gridLayout_5">
-         <item row="0" column="0">
-          <layout class="QGridLayout" name="gridLayout_4">
-           <item row="0" column="0">
-            <widget class="QTableWidget" name="bcpTableWidget"/>
-           </item>
-           <item row="0" column="1">
-            <widget class="QTableWidget" name="bdsTableWidget"/>
-           </item>
-          </layout>
-         </item>
-        </layout>
        </widget>
       </widget>
      </item>
      <item>
       <widget class="QDialogButtonBox" name="closeButtonBox">
        <property name="standardButtons">
-        <set>QDialogButtonBox::Apply|QDialogButtonBox::Close</set>
+        <set>QDialogButtonBox::Close</set>
        </property>
       </widget>
      </item>

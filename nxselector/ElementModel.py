@@ -43,6 +43,8 @@ class ElementModel(Qt.QAbstractTableModel):
         super(ElementModel, self).__init__()
         ## if enable selection for user
         self.enable = True
+        ## if auto enable
+        self.autoEnable = True
         ## list of device elements
         self.group = []
 
@@ -58,6 +60,95 @@ class ElementModel(Qt.QAbstractTableModel):
     def index(self, row, column, _=Qt.QModelIndex()):
         return self.createIndex(row, column)
 
+
+    def __elementCheck(self, device, index):
+        if (not (self.flags(index) & Qt.Qt.ItemIsEnabled)
+            and self.enable) or device.checked:
+            return Qt.Qt.Checked
+        else:
+            return Qt.Qt.Unchecked
+
+    def __displayCheck(self, device, index):
+        if (not (self.flags(index) & Qt.Qt.ItemIsEnabled)
+            and self.enable) or device.checked:
+            if device.eltype == DS:
+                dds = device.state.ddsdict
+                if device.name in dds.keys():
+                    nd = device.state.nodisplay
+                    if not dds[device.name] in nd \
+                            and dds[device.name]:
+                        return Qt.Qt.Checked
+
+                if device.display:
+                    return Qt.Qt.Checked
+                else:
+                    return Qt.Qt.Unchecked
+            else:
+                return Qt.Qt.Unchecked
+
+    def __scanSources(self, device):
+        desc = device.state.description
+        contains = set()
+        for cpg in desc:
+            for cp, dss in cpg.items():
+                if cp == device.name:
+                    if isinstance(dss, dict):
+                        for ds, values in dss.items():
+                            for vl in values:
+                                if len(vl) > 0 and vl[0] == 'STEP':
+                                    contains.add(ds)
+                                    break
+        if contains:
+            return " ".join([str(c) for c in sorted(contains)])
+
+
+    def __descSources(self, device):
+        desc = device.state.description
+        contains = set()
+        for cpg in desc:
+            for cp, dss in cpg.items():
+                if cp == device.name:
+                    if isinstance(dss, dict):
+                        for ds, values in dss.items():
+                            for vl in values:
+                                if len(vl) == 0 or vl[0] != 'STEP':
+                                    contains.add(ds)
+                                    break
+        if contains:
+            return " ".join([str(c) for c in sorted(contains)])
+
+
+    @classmethod
+    def __createList(cls, text, words=7):
+        lst = str(text).split() if text else ''
+        cnt = 0
+        st = ""
+        for sl in lst[:-1]:
+            st += sl
+            cnt += 1
+            if cnt % words:
+                st += ', '
+            else:
+                st += ',\n'
+
+        if len(lst):
+            st += lst[-1]
+        return st
+
+
+    def __createTips(self, device, index):
+        scans = self.__scanSources(device)
+        depends = self.__descSources(device)
+        tscans = self.__createList(scans)
+        tdepends = self.__createList(depends)
+        text = tscans if tscans else ""
+        if tdepends:
+            text = "%s\n[%s]" % (text, tdepends)
+
+        if text.strip():
+            return text
+        
+
     def data(self, index, role=Qt.Qt.DisplayRole):
         if not index.isValid() or \
                 not (0 <= index.row() < len(self.group)):
@@ -68,12 +159,11 @@ class ElementModel(Qt.QAbstractTableModel):
             if role == Qt.Qt.DisplayRole:
                 return Qt.QVariant(device.name)
             if role == Qt.Qt.CheckStateRole:
-                if (not (self.flags(index) & Qt.Qt.ItemIsEnabled)
-                    and self.enable) \
-                        or device.checked:
-                    return Qt.Qt.Checked
-                else:
-                    return Qt.Qt.Unchecked
+                return self.__elementCheck(device, index)
+            if role == Qt.Qt.ToolTipRole:
+                tips = self.__createTips(device, index)
+                if tips:
+                    return Qt.QVariant(Qt.QString(tips))
         elif column == 1:
             if role == Qt.Qt.CheckStateRole:
                 return
@@ -81,58 +171,15 @@ class ElementModel(Qt.QAbstractTableModel):
                 return Qt.QVariant(device.state.labels[device.name])
         elif column == 2:
             if role == Qt.Qt.CheckStateRole:
-                if (not (self.flags(index) & Qt.Qt.ItemIsEnabled)
-                    and self.enable) \
-                        or device.checked:
-                    if device.eltype == DS:
-                        dds = device.state.ddsdict
-                        if device.name in dds.keys():
-                            nd = device.state.nodisplay
-                            if not dds[device.name] in nd \
-                                    and dds[device.name]:
-                                return Qt.Qt.Checked
-
-                    if device.display:
-                        return Qt.Qt.Checked
-                    else:
-                        return Qt.Qt.Unchecked
-                else:
-                    return Qt.Qt.Unchecked
+                return self.__displayCheck(device, index)
         elif column == 3:
             if role == Qt.Qt.CheckStateRole:
                 return
-            desc = device.state.description
-            contains = set()
-            for cpg in desc:
-                for cp, dss in cpg.items():
-                    if cp == device.name:
-                        if isinstance(dss, dict):
-                            for ds, values in dss.items():
-                                for vl in values:
-                                    if len(vl) > 0 and vl[0] == 'STEP':
-                                        contains.add(ds)
-                                        break
-            if contains:
-                return Qt.QVariant(Qt.QString(
-                        " ".join([str(c) for c in sorted(contains)])))
+            return Qt.QVariant(Qt.QString(self.__scanSources(device)))
         elif column == 4:
             if role == Qt.Qt.CheckStateRole:
                 return
-            desc = device.state.description
-            contains = set()
-            for cpg in desc:
-                for cp, dss in cpg.items():
-                    if cp == device.name:
-                        if isinstance(dss, dict):
-                            for ds, values in dss.items():
-                                for vl in values:
-                                    if len(vl) == 0 or vl[0] != 'STEP':
-                                        contains.add(ds)
-                                        break
-            if contains:
-                return Qt.QVariant(Qt.QString(
-                        " ".join([str(c) for c in sorted(contains)])))
-
+            return Qt.QVariant(Qt.QString(self.__descSources(device)))
         return Qt.QVariant()
 
     def headerData(self, section, _, role=Qt.Qt.DisplayRole):
@@ -170,9 +217,12 @@ class ElementModel(Qt.QAbstractTableModel):
         elif device.eltype == CP:
             mcp = device.state.mcplist
             acp = device.state.acplist
-            if device.name in mcp or device.name in acp:
+            if (device.name in mcp or device.name in acp):
                 enable2 = False
                 flag &= ~Qt.Qt.ItemIsEnabled
+        if self.autoEnable:
+            enable = True
+            enable2= True   
         if column == 0:
             if enable and enable2:
                 return Qt.Qt.ItemFlags(flag |

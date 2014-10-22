@@ -27,6 +27,9 @@ except:
     from taurus.qt import Qt
 
 from .ui.ui_cpgroupsdlg import Ui_CpGroupsDlg
+from .Views import OneTableView
+from .Element import GElement, CP, DS
+from .ElementModel import ElementModel
 
 import logging
 logger = logging.getLogger(__name__)
@@ -47,85 +50,97 @@ class GroupsDlg(Qt.QDialog):
         self.ddschanged = False
         self.bcpchanged = False
         self.bdschanged = False
+        self.dcpgroup = []
+        self.ddsgroup = []
+        self.bcpgroup = []
+        self.bdsgroup = []
+        self.state = None
+
+    def __createViews(self, widget, cpview, dsview):
+    
+        gridLayout_3 = Qt.QGridLayout(widget)
+        gridLayout = Qt.QGridLayout()
+        gridLayout.addWidget(cpview, 0, 0, 1, 1)
+        gridLayout.addWidget(dsview, 0, 1, 1, 1)
+        gridLayout_3.addLayout(gridLayout, 0, 0, 1, 1)
+
+
 
     def createGUI(self):
         self.ui.setupUi(self)
         self.setWindowTitle("Component Groups")
+        self.ui.dcpTableView = OneTableView(self.ui.detector)
+        self.ui.ddsTableView = OneTableView(self.ui.detector)
+        self.ui.bcpTableView = OneTableView(self.ui.beamline)
+        self.ui.bdsTableView = OneTableView(self.ui.beamline)
 
-        self.__populateTable(self.ui.dcpTableWidget,
+        self.__createViews(self.ui.detector, 
+                           self.ui.dcpTableView, self.ui.ddsTableView)
+        self.__createViews(self.ui.beamline, 
+                           self.ui.bcpTableView, self.ui.bdsTableView)
+
+
+        self.__populateCPTable(self.ui.dcpTableView, self.dcpgroup,
                              self.det_components, "Components:")
-        self.__populateTable(self.ui.ddsTableWidget,
+        self.__populateDSTable(self.ui.ddsTableView, self.ddsgroup,
                              self.det_datasources, "DataSources:")
-        self.__populateTable(self.ui.bcpTableWidget,
+        self.__populateCPTable(self.ui.bcpTableView, self.bcpgroup,
                              self.beam_components, "Components:")
-        self.__populateTable(self.ui.bdsTableWidget,
+        self.__populateDSTable(self.ui.bdsTableView, self.bdsgroup,
                              self.beam_datasources, "DataSources:")
 
-        self.connect(self.ui.dcpTableWidget,
-                     Qt.SIGNAL("cellChanged(int, int)"),
-                     self.__dirty)
-        self.connect(self.ui.ddsTableWidget,
-                     Qt.SIGNAL("cellChanged(int, int)"),
-                     self.__dirty)
-        self.connect(self.ui.bcpTableWidget,
-                     Qt.SIGNAL("cellChanged(int, int)"),
-                     self.__dirty)
-        self.connect(self.ui.bdsTableWidget,
-                     Qt.SIGNAL("cellChanged(int, int)"),
-                     self.__dirty)
+        self.connect(self.ui.dcpTableView, Qt.SIGNAL("dirty"), self.__dirty)
+        self.connect(self.ui.ddsTableView, Qt.SIGNAL("dirty"), self.__dirty)
+        self.connect(self.ui.bcpTableView, Qt.SIGNAL("dirty"), self.__dirty)
+        self.connect(self.ui.bdsTableView, Qt.SIGNAL("dirty"), self.__dirty)
 
         self.connect(self.ui.closeButtonBox.button(Qt.QDialogButtonBox.Close),
                      Qt.SIGNAL("clicked()"),
                      self.reject)
-        self.connect(self.ui.closeButtonBox.button(Qt.QDialogButtonBox.Apply),
-                     Qt.SIGNAL("clicked()"),
-                     self.__apply)
+#        self.connect(self.ui.closeButtonBox.button(Qt.QDialogButtonBox.Apply),
+#                     Qt.SIGNAL("clicked()"),
+#                     self.__apply)
 
-    def __updateDict(self, table, dct):
-        changed = False
-        for i in range(table.rowCount()):
-            item = table.item(i, 0)
-            status = bool((item.checkState()) / 2)
-            name = str(item.data(Qt.Qt.DisplayRole))
-
-            if dct[name] != status:
-                dct[name] = status
-                changed = True
-                self.dirty = True
-        return changed
-
-    def __apply(self):
-        if self.__updateDict(
-            self.ui.dcpTableWidget, self.det_components):
-            self.dcpchanged = True
-        if self.__updateDict(
-            self.ui.ddsTableWidget, self.det_datasources):
-            self.ddschanged = True
-        if self.__updateDict(
-            self.ui.bcpTableWidget, self.beam_components):
-            self.bcpchanged = True
-        if self.__updateDict(
-            self.ui.bdsTableWidget, self.beam_datasources):
-            self.bdschanged = True
-        logger.debug("APPLY")
 
     def __dirty(self):
+        self.dirty = True
         self.setWindowTitle("Component Groups *")
+        
         logger.debug("changed")
 
-    def __populateTable(self, widget, dct, header):
-        widget.clear()
-        widget.setSortingEnabled(False)
-        names = sorted(dct.keys())
-        widget.setRowCount(len(names))
-        widget.setColumnCount(1)
-        widget.setHorizontalHeaderLabels([header])
-        for row, name in enumerate(names):
-            enable = True
+    def __populateCPTable(self, view, group, dct, header):
+        for el, sl in dct.items():
+            group.append(GElement(el, CP, self.state, dct))
+        md = ElementModel(group)
+        view.setModel(md)
+        md.connect(md, Qt.SIGNAL("dirty"),
+                   self.__dirty)
 
-            item = Qt.QTableWidgetItem(name)
-            item.setCheckState(int(dct[name]) * 2)
-            widget.setItem(row, 0, item)
-        widget.resizeColumnsToContents()
-        widget.horizontalHeader().setStretchLastSection(True)
-        widget.setEditTriggers(Qt.QAbstractItemView.NoEditTriggers)
+#            md.connect(md, Qt.SIGNAL("componentChecked"),
+#                       self.updateViews)
+
+    def __populateDSTable(self, view, group, dct, header):
+        for el, sl in dct.items():
+            group.append(GElement(el, DS, self.state, dct))
+        md = ElementModel(group)
+        md.autoEnable = False
+        view.setModel(md)
+        md.connect(md, Qt.SIGNAL("dirty"),
+                   self.__dirty)
+#        widget.clear()
+#        widget.setSortingEnabled(False)
+#        names = sorted(dct.keys())
+#        widget.setRowCount(len(names))
+#        widget.setColumnCount(1)
+#        widget.setHorizontalHeaderLabels([header])
+#        for row, name in enumerate(names):
+#            enable = True
+
+#            item = Qt.QTableWidgetItem(name)
+#            item.setCheckState(int(dct[name]) * 2)
+#            widget.setItem(row, 0, item)
+#        widget.resizeColumnsToContents()
+#        widget.horizontalHeader().setStretchLastSection(True)
+#        widget.setEditTriggers(Qt.QAbstractItemView.NoEditTriggers)
+
+
