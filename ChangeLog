@@ -1,3 +1,7 @@
+2014-10-30 Jan Kotanski <jankotan@gmail.com>
+	* making mntgrp and selector server writable in user mode
+	* tagged as 1.8.4
+
 2014-10-22 Jan Kotanski <jankotan@gmail.com>
 	* adding tips for group components
 	* tagged as 1.8.3

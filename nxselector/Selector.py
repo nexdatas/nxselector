@@ -147,8 +147,8 @@ class Selector(Qt.QDialog, TaurusBaseWidget):
             self.ui.devWriterLineEdit.hide()
             self.ui.devConfigPushButton.hide()
             self.ui.groupsPushButton.hide()
-            self.ui.devSettingsLineEdit.setReadOnly(True)
-            self.ui.mntGrpLineEdit.setReadOnly(True)
+#            self.ui.devSettingsLineEdit.setReadOnly(True)
+#            self.ui.mntGrpLineEdit.setReadOnly(True)
 
         if not self.__standalone:
             self.ui.mntServerLineEdit.hide()
