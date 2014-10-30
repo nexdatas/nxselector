@@ -1,4 +1,8 @@
 2014-10-30 Jan Kotanski <jankotan@gmail.com>
+	* adding asynchronious call for updateControllers
+	* tagged as 1.8.5
+
+2014-10-30 Jan Kotanski <jankotan@gmail.com>
 	* making mntgrp and selector server writable in user mode
 	* tagged as 1.8.4
 

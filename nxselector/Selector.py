@@ -346,6 +346,7 @@ class Selector(Qt.QDialog, TaurusBaseWidget):
     def __resetServer(self, server):
         try:
             self.state = ServerState(server)
+            self.state.updateControllers()
             self.state.fetchSettings()
         except PyTango.DevFailed as e:
             value = sys.exc_info()[1]
@@ -364,6 +365,7 @@ class Selector(Qt.QDialog, TaurusBaseWidget):
                 "%s" % (value))
             self.state = ServerState("")
             self.state.setServer()
+            self.state.updateControllers()
 
     def resetServer(self):
         logger.debug("reset server")
@@ -443,8 +445,8 @@ class Selector(Qt.QDialog, TaurusBaseWidget):
         logger.debug("update DoorName")
 
     def __resetClicked(self):
-        self.ui.buttonBox.button(Qt.QDialogButtonBox.Reset).hide()
-        self.ui.buttonBox.button(Qt.QDialogButtonBox.Reset).show()
+#        self.ui.buttonBox.button(Qt.QDialogButtonBox.Reset).hide()
+#        self.ui.buttonBox.button(Qt.QDialogButtonBox.Reset).show()
         self.ui.buttonBox.button(Qt.QDialogButtonBox.Reset).setFocus()
 
 #        self.ui.resetPushButton.hide()
@@ -483,8 +485,8 @@ class Selector(Qt.QDialog, TaurusBaseWidget):
             self.resetAll()
 
     def __applyClicked(self):
-        self.ui.buttonBox.button(Qt.QDialogButtonBox.Apply).hide()
-        self.ui.buttonBox.button(Qt.QDialogButtonBox.Apply).show()
+#        self.ui.buttonBox.button(Qt.QDialogButtonBox.Apply).hide()
+#        self.ui.buttonBox.button(Qt.QDialogButtonBox.Apply).show()
         self.ui.buttonBox.button(Qt.QDialogButtonBox.Apply).setFocus()
 #        self.ui.applyPushButton.hide()
 #        self.ui.applyPushButton.show()

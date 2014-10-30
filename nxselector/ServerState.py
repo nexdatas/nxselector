@@ -271,8 +271,13 @@ class ServerState(object):
         self.fetchSettings()
 
     def updateControllers(self):
-        self.__dp.updateControllers()
-
+        if hasattr(self.__dp, "command_inout_asynch"):
+            self.__dp.command_inout_asynch("updateControllers")
+            while self.__dp.state() == PyTango.DevState.RUNNING:
+                time.sleep(0.01)
+        else:
+            self.__dp.updateControllers()
+            
     def setServer(self):
 
         if self.server:
