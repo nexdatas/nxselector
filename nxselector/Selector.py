@@ -51,7 +51,8 @@ class Selector(Qt.QDialog, TaurusBaseWidget):
 
     ## constructor
     # \param parent parent widget
-    def __init__(self, server=None, standalone=False, expert=False,
+    def __init__(self, server=None, door=None,
+                 standalone=False, expert=False,
                  organization='DESY', application='NXS Component Selector',
                  parent=None):
         Qt.QWidget.__init__(self, parent)
@@ -60,7 +61,7 @@ class Selector(Qt.QDialog, TaurusBaseWidget):
                      server, parent)
         self.__organization = organization
         self.__application = application
-
+        self.__door = door
         self.__standalone = standalone
         self.__ask = False
 
@@ -345,11 +346,10 @@ class Selector(Qt.QDialog, TaurusBaseWidget):
 
     def __resetServer(self, server):
         try:
-## import sardana.spock.genutils
-## dr = sardana.spock.genutils.get_door()
-## dname = dr.getFullName()
 
             self.state = ServerState(server)
+            if self.__door:
+                self.state.storeData("door", self.__door)
             ## QProgressDialog to be added
             self.state.updateControllers()
             self.state.fetchSettings()
