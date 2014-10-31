@@ -1,3 +1,7 @@
+2014-XX-XX Jan Kotanski <jankotan@gmail.com>
+	* waiting after timeout
+	* tagged as 1.8.6
+
 2014-10-30 Jan Kotanski <jankotan@gmail.com>
 	* adding asynchronious call for updateControllers
 	* tagged as 1.8.5

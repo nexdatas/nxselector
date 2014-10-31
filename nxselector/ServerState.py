@@ -292,23 +292,27 @@ class ServerState(object):
 
     @classmethod
     def openProxy(cls, server):
+        proxy = PyTango.DeviceProxy(server)
+        cls.wait(proxy)
+        return proxy
+
+    @classmethod
+    def wait(cls, proxy, counter=100):
         found = False
         cnt = 0
-        proxy = PyTango.DeviceProxy(server)
-
-        while not found and cnt < 100:
+        while not found and cnt < counter:
             if cnt > 1:
                 time.sleep(0.01)
             try:
                 if proxy.state() != PyTango.DevState.RUNNING:
                     found = True
-            except (PyTango.DevFailed, PyTango.Except, PyTango.DevError):
+            except (PyTango.DevFailed, PyTango.Except, PyTango.DevError) as e:
                 time.sleep(0.01)
                 found = False
-                if cnt == 99:
+                if cnt == counter - 1:
                     raise
+                
             cnt += 1
-        return proxy
 
     def loadDict(self, name):
         if not self.__dp:
@@ -334,7 +338,13 @@ class ServerState(object):
 
         jvalue = json.dumps(value)
         if self.server:
-            self.__dp.write_attribute(name, jvalue)
+            try:
+                self.__dp.write_attribute(name, jvalue)
+            except PyTango.CommunicationFailed as e:
+                if e[-1].reason == "API_DeviceTimedOut":   
+                    self.wait(self.__dp)
+                else:
+                    raise
         else:
             setattr(self.__dp, name, jvalue)
 
@@ -348,7 +358,13 @@ class ServerState(object):
 
         jvalue = json.dumps(value)
         if self.server:
-            self.__dp.write_attribute(name, jvalue)
+            try:
+                self.__dp.write_attribute(name, jvalue)
+            except PyTango.CommunicationFailed as e:
+                if e[-1].reason == "API_DeviceTimedOut":   
+                    self.wait(self.__dp)
+                else:
+                    raise
         else:
             setattr(self.__dp, name, jvalue)
 
@@ -361,7 +377,13 @@ class ServerState(object):
             self.__dp.ping()
 
         if self.server:
-            self.__dp.write_attribute(name, value)
+            try:
+                self.__dp.write_attribute(name, value)
+            except PyTango.CommunicationFailed as e:
+                if e[-1].reason == "API_DeviceTimedOut":   
+                    self.wait(self.__dp)
+                else:
+                    raise
         else:
             setattr(self.__dp, name, value)
         logger.debug(" %s = %s" % (name, value))

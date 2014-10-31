@@ -345,7 +345,12 @@ class Selector(Qt.QDialog, TaurusBaseWidget):
 
     def __resetServer(self, server):
         try:
+## import sardana.spock.genutils
+## dr = sardana.spock.genutils.get_door()
+## dname = dr.getFullName()
+
             self.state = ServerState(server)
+            ## QProgressDialog to be added
             self.state.updateControllers()
             self.state.fetchSettings()
         except PyTango.DevFailed as e:
@@ -365,6 +370,7 @@ class Selector(Qt.QDialog, TaurusBaseWidget):
                 "%s" % (value))
             self.state = ServerState("")
             self.state.setServer()
+            ## QProgressDialog to be added
             self.state.updateControllers()
 
     def resetServer(self):
@@ -388,8 +394,11 @@ class Selector(Qt.QDialog, TaurusBaseWidget):
         logger.debug("reset rows ended")
 
     def updateGroups(self):
+        ## QProgressDialog to be added
         self.state.storeGroups()
-        self.resetAll()
+        self.state.importMntGrp()
+        self.reset()
+        self.setDirty(True)
 
     def resetViews(self):
         for tab in self.tabs:
@@ -415,6 +424,7 @@ class Selector(Qt.QDialog, TaurusBaseWidget):
 
     def resetAll(self, ask=True):
         logger.debug("reset ALL")
+        ## QProgressDialog to be added
         self.state.updateControllers()
         self.state.importMntGrp()
         self.reset()
