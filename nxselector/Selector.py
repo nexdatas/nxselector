@@ -396,9 +396,7 @@ class Selector(Qt.QDialog, TaurusBaseWidget):
     def updateGroups(self):
         ## QProgressDialog to be added
         self.state.storeGroups()
-        self.state.importMntGrp()
-        self.reset()
-        self.setDirty(True)
+        self.resetAll()
 
     def resetViews(self):
         for tab in self.tabs:

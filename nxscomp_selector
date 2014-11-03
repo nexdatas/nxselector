@@ -58,7 +58,7 @@ def main():
             "-s", "--server", dest="server",
             help="selector server")
         parser.add_option(
-            "-d", "--doorr", dest="door",
+            "-d", "--door", dest="door",
             help="door device name")
         parser.add_option(
             "-t", "--style", dest="style",

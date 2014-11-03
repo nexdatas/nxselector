@@ -272,9 +272,15 @@ class ServerState(object):
 
     def updateControllers(self):
         if hasattr(self.__dp, "command_inout_asynch"):
-            self.__dp.command_inout_asynch("updateControllers")
-            while self.__dp.state() == PyTango.DevState.RUNNING:
-                time.sleep(0.01)
+#            aid = self.__dp.command_inout_asynch("updateControllers")
+#            self.wait(self.__dp)
+            try:
+                self.__dp.updateControllers()
+            except PyTango.CommunicationFailed as e:
+                if e[-1].reason == "API_DeviceTimedOut":   
+                    self.wait(self.__dp)
+                else:
+                    raise
         else:
             self.__dp.updateControllers()
             
