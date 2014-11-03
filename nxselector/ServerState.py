@@ -277,13 +277,13 @@ class ServerState(object):
             try:
                 self.__dp.updateControllers()
             except PyTango.CommunicationFailed as e:
-                if e[-1].reason == "API_DeviceTimedOut":   
+                if e[-1].reason == "API_DeviceTimedOut":
                     self.wait(self.__dp)
                 else:
                     raise
         else:
             self.__dp.updateControllers()
-            
+
     def setServer(self):
 
         if self.server:
@@ -317,7 +317,7 @@ class ServerState(object):
                 found = False
                 if cnt == counter - 1:
                     raise
-                
+
             cnt += 1
 
     def loadDict(self, name):
@@ -347,7 +347,7 @@ class ServerState(object):
             try:
                 self.__dp.write_attribute(name, jvalue)
             except PyTango.CommunicationFailed as e:
-                if e[-1].reason == "API_DeviceTimedOut":   
+                if e[-1].reason == "API_DeviceTimedOut":
                     self.wait(self.__dp)
                 else:
                     raise
@@ -367,7 +367,7 @@ class ServerState(object):
             try:
                 self.__dp.write_attribute(name, jvalue)
             except PyTango.CommunicationFailed as e:
-                if e[-1].reason == "API_DeviceTimedOut":   
+                if e[-1].reason == "API_DeviceTimedOut":
                     self.wait(self.__dp)
                 else:
                     raise
@@ -386,7 +386,7 @@ class ServerState(object):
             try:
                 self.__dp.write_attribute(name, value)
             except PyTango.CommunicationFailed as e:
-                if e[-1].reason == "API_DeviceTimedOut":   
+                if e[-1].reason == "API_DeviceTimedOut":
                     self.wait(self.__dp)
                 else:
                     raise
