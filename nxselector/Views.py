@@ -85,7 +85,6 @@ class CheckerView(Qt.QWidget):
         if self.dmapper:
             if not value:
                 self.displays[row].setChecked(bool(False))
-                
 
         self.model.setData(ind, value, Qt.Qt.CheckStateRole)
 
