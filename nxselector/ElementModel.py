@@ -274,6 +274,7 @@ class ElementModel(Qt.QAbstractTableModel):
                     self.emit(
                         Qt.SIGNAL("dataChanged(QModelIndex, QModelIndex)"),
                               index, index3)
+#                    self.emit(Qt.SIGNAL("componentChecked"))
                     if device.eltype == CP:
                         self.emit(Qt.SIGNAL("componentChecked"))
                     self.emit(Qt.SIGNAL("dirty"))
