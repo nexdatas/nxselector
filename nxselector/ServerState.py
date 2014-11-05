@@ -109,10 +109,10 @@ class ServerState(object):
                                     stdout=subprocess.PIPE , shell= True).stdout
             res = pipe.read().split("\n")
             cres = [r for r in res if 'NXSRecSelector' in r]
-            if len(cres) > 1:
+            if len(cres) > 0:
                 instance = cres[0].split()[-1]
                 server = self.__db.get_device_class_list(
-                    "NXSRecSelector/%" % instance).value_string[2]
+                    "NXSRecSelector/%s" % instance).value_string[2]
         except:
             pass
         return server
@@ -122,9 +122,10 @@ class ServerState(object):
             servers = self.__db.get_device_exported_for_class(
                 "NXSRecSelector").value_string
             if len(servers):
-                gserver = self.grepServer()
-                if gserver in servers:
-                    self.server = str(gserver)
+                if len(servers) > 1:
+                    gserver = self.grepServer()
+                    if gserver in servers:
+                        self.server = str(gserver)
                 else:
                     self.server = str(servers[0])
             else:
