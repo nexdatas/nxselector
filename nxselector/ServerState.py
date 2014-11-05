@@ -24,6 +24,7 @@
 import PyTango
 import json
 import time
+import subprocess
 
 import logging
 logger = logging.getLogger(__name__)
@@ -101,18 +102,39 @@ class ServerState(object):
         self.labelshapes = {}
         self.labeltypes = {}
 
+    def grepServer(self):
+        server = None
+        try:
+            pipe = subprocess.Popen("ps -ef | grep 'NXSRecSelecto'" ,
+                                    stdout=subprocess.PIPE , shell= True).stdout
+            res = pipe.read().split("\n")
+            cres = [r for r in res if 'NXSRecSelector' in r]
+            if len(cres) > 1:
+                instance = cres[0].split()[-1]
+                server = self.__db.get_device_class_list(
+                    "NXSRecSelector/%" % instance).value_string[2]
+        except:
+            pass
+        return server
+
     def findServer(self, server=None):
         if server is None:
             servers = self.__db.get_device_exported_for_class(
                 "NXSRecSelector").value_string
             if len(servers):
-                self.server = str(servers[0])
+                gserver = self.grepServer()
+                if gserver in servers:
+                    self.server = str(gserver)
+                else:
+                    self.server = str(servers[0])
             else:
                 self.server = None
         elif not server:
             self.server = None
         else:
             self.server = str(server)
+
+
 
     def fetchSettings(self):
         if not self.__dp:
