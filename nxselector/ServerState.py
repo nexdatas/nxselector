@@ -105,14 +105,22 @@ class ServerState(object):
     def grepServer(self):
         server = None
         try:
-            pipe = subprocess.Popen("ps -ef | grep 'NXSRecSelecto'" ,
-                                    stdout=subprocess.PIPE , shell= True).stdout
+            pipe = subprocess.Popen("ps -ef | grep 'NXSRecSelecto'",
+                                    stdout=subprocess.PIPE,
+                                    shell=True, bufsize=10000).stdout
             res = pipe.read().split("\n")
             cres = [r for r in res if 'NXSRecSelector' in r]
+            mi = 0
             if len(cres) > 0:
-                instance = cres[0].split()[-1]
-                server = self.__db.get_device_class_list(
-                    "NXSRecSelector/%s" % instance).value_string[2]
+                command = cres[0].split()
+                for i in range(len(command)):
+                    if 'NXSRecSelector' in command[i]:
+                        mi = i
+                        break
+                if len(command) > mi + 1:
+                    instance = command[mi + 1]
+                    server = self.__db.get_device_class_list(
+                        "NXSRecSelector/%s" % instance).value_string[2]
         except:
             pass
         return server
@@ -134,8 +142,6 @@ class ServerState(object):
             self.server = None
         else:
             self.server = str(server)
-
-
 
     def fetchSettings(self):
         if not self.__dp:
