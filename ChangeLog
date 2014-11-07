@@ -1,4 +1,8 @@
 2014-11-07 Jan Kotanski <jankotan@gmail.com>
+	* removing printouts
+	* tagged as 1.8.11
+
+2014-11-07 Jan Kotanski <jankotan@gmail.com>
 	* adding progress bar
 	* fixes for component display checkbox
 	* tagged as 1.8.10
