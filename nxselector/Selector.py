@@ -79,14 +79,12 @@ class Selector(Qt.QDialog, TaurusBaseWidget):
 
         self.__resetServer(server)
 
-
-        self.ui = Ui_Selector()
-
     def settings(self):
         if self.__progress:
             self.__progress.reset()
             self.__progress.hide()
 
+        self.ui = Ui_Selector()
         settings = Qt.QSettings(self.__organization, self.__application, self)
 
         self.userView = settings.value('Preferences/UserView',
@@ -360,12 +358,12 @@ class Selector(Qt.QDialog, TaurusBaseWidget):
 
     def __resetServer(self, server):
         try:
-
             self.state = ServerState(server)
             if self.__door:
                 self.state.storeData("door", self.__door)
             ## QProgressDialog to be added
-            self.runProgress(["updateControllers", "fetchSettings"], "settings")
+            self.runProgress(["updateControllers", "fetchSettings"],
+                             "settings")
 #            self.runProgress(["fetchSettings"], False)
 #            self.state.updateControllers()
 #            self.state.fetchSettings()
@@ -449,7 +447,7 @@ class Selector(Qt.QDialog, TaurusBaseWidget):
         logger.debug("waiting for Thread")
         if self.__rs:
             self.__rs.wait()
-        logger.debug("waiting for Thread ENDED")    
+        logger.debug("waiting for Thread ENDED")
 
     def runProgress(self, commands, onclose="closeProgress"):
         self.__rs = CommandThread(self.state, commands, self)
@@ -465,12 +463,10 @@ class Selector(Qt.QDialog, TaurusBaseWidget):
         self.__rs.start()
         self.__progress.show()
 
-
     def resetAll(self, ask=True):
         logger.debug("reset ALL")
         self.runProgress(["updateControllers", "importMntGrp"])
         logger.debug("reset ENDED")
-
 
     def resetConfiguration(self, expconf):
         logger.debug("reset Configuration")
@@ -569,5 +565,3 @@ class Selector(Qt.QDialog, TaurusBaseWidget):
                 str(e))
 
         logger.debug("apply END")
-
-
