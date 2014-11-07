@@ -16,15 +16,10 @@
 #    You should have received a copy of the GNU General Public License
 #    along with nexdatas.  If not, see <http://www.gnu.org/licenses/>.
 ## \package nxselector nexdatas
-## \file ServerState.py
-# state of sardana recorder server
+## \file CommandThread.py
+# command thread
 
-""" state of recorder server """
-
-import PyTango
-import json
-import time
-import subprocess
+""" command thread """
 
 import logging
 logger = logging.getLogger(__name__)

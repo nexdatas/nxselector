@@ -75,7 +75,7 @@ class Selector(Qt.QDialog, TaurusBaseWidget):
 
         self.cnfFile = ''
         self.__progress = None
-        self.__rs = None
+        self.__commandthread = None
 
         self.__resetServer(server)
 
@@ -445,14 +445,14 @@ class Selector(Qt.QDialog, TaurusBaseWidget):
 
     def waitForThread(self):
         logger.debug("waiting for Thread")
-        if self.__rs:
-            self.__rs.wait()
+        if self.__commandthread:
+            self.__commandthread.wait()
         logger.debug("waiting for Thread ENDED")
 
     def runProgress(self, commands, onclose="closeProgress"):
-        self.__rs = CommandThread(self.state, commands, self)
+        self.__commandthread = CommandThread(self.state, commands, self)
         oncloseaction = getattr(self, onclose)
-        self.__rs.finished.connect(
+        self.__commandthread.finished.connect(
             oncloseaction, Qt.Qt.QueuedConnection)
         self.__progress = None
         self.__progress = Qt.QProgressDialog(
@@ -460,7 +460,7 @@ class Selector(Qt.QDialog, TaurusBaseWidget):
         self.__progress.setWindowModality(Qt.Qt.WindowModal)
         self.__progress.rejected.connect(
             self.waitForThread, Qt.Qt.QueuedConnection)
-        self.__rs.start()
+        self.__commandthread.start()
         self.__progress.show()
 
     def resetAll(self, ask=True):
