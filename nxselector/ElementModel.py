@@ -80,12 +80,12 @@ class ElementModel(Qt.QAbstractTableModel):
                             and dds[device.name]:
                         return Qt.Qt.Checked
 
-                if device.display:
-                    return Qt.Qt.Checked
-                else:
-                    return Qt.Qt.Unchecked
+            if device.display:
+                return Qt.Qt.Checked
             else:
                 return Qt.Qt.Unchecked
+        else:
+            return Qt.Qt.Unchecked
 
     def __scanSources(self, device):
         desc = device.state.description
@@ -292,11 +292,13 @@ class ElementModel(Qt.QAbstractTableModel):
                 if role == Qt.Qt.CheckStateRole:
                     index3 = self.index(index.row(), 2)
                     device.display = value
+                    print "Component checked", device.name, value
 
                     self.emit(Qt.SIGNAL(
                             "dataChanged(QModelIndex, QModelIndex)"),
                               index, index3)
                     if device.eltype == CP:
+                        print "Component checked"
                         self.emit(Qt.SIGNAL("componentChecked"))
                     self.emit(Qt.SIGNAL("dirty"))
                     return True

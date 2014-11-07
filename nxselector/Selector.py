@@ -24,6 +24,7 @@
 import sys
 import PyTango
 import json
+import time
 
 try:
     from taurus.external.qt import Qt
@@ -38,6 +39,7 @@ from .Preferences import Preferences
 from .State import State
 from .Data import Data
 from .Storage import Storage
+from .CommandThread import CommandThread
 
 from .ui.ui_selector import Ui_Selector
 
@@ -65,12 +67,25 @@ class Selector(Qt.QDialog, TaurusBaseWidget):
         self.__standalone = standalone
         self.__ask = False
 
+        self.__resetFlag = True
+
         self.state = None
         ## expert mode
         self.expert = expert
 
         self.cnfFile = ''
+        self.__progress = None
+        self.__rs = None
+
         self.__resetServer(server)
+
+
+        self.ui = Ui_Selector()
+
+    def settings(self):
+        if self.__progress:
+            self.__progress.reset()
+            self.__progress.hide()
 
         settings = Qt.QSettings(self.__organization, self.__application, self)
 
@@ -81,7 +96,6 @@ class Selector(Qt.QDialog, TaurusBaseWidget):
                                                 2))
 
         ## user interface
-        self.ui = Ui_Selector()
         self.preferences = Preferences(self.ui, self.state)
         if self.userView not in self.preferences.views:
             self.userView = 'CheckBoxes Dis'
@@ -351,8 +365,10 @@ class Selector(Qt.QDialog, TaurusBaseWidget):
             if self.__door:
                 self.state.storeData("door", self.__door)
             ## QProgressDialog to be added
-            self.state.updateControllers()
-            self.state.fetchSettings()
+            self.runProgress(["updateControllers", "fetchSettings"], "settings")
+#            self.runProgress(["fetchSettings"], False)
+#            self.state.updateControllers()
+#            self.state.fetchSettings()
         except PyTango.DevFailed as e:
             value = sys.exc_info()[1]
             Qt.QMessageBox.warning(
@@ -371,7 +387,8 @@ class Selector(Qt.QDialog, TaurusBaseWidget):
             self.state = ServerState("")
             self.state.setServer()
             ## QProgressDialog to be added
-            self.state.updateControllers()
+            self.runProgress(["updateControllers"], "settings")
+#            self.state.updateControllers()
 
     def resetServer(self):
         logger.debug("reset server")
@@ -420,14 +437,40 @@ class Selector(Qt.QDialog, TaurusBaseWidget):
             tab.reset()
         logger.debug("reset selector ended")
 
-    def resetAll(self, ask=True):
-        logger.debug("reset ALL")
-        ## QProgressDialog to be added
-        self.state.updateControllers()
-        self.state.importMntGrp()
+    def closeProgress(self):
+        logger.debug("closing Progress")
+        if self.__progress:
+            self.__progress.reset()
         self.reset()
         self.setDirty(True)
+        logger.debug("closing Progress ENDED")
+
+    def waitForThread(self):
+        logger.debug("waiting for Thread")
+        if self.__rs:
+            self.__rs.wait()
+        logger.debug("waiting for Thread ENDED")    
+
+    def runProgress(self, commands, onclose="closeProgress"):
+        self.__rs = CommandThread(self.state, commands, self)
+        oncloseaction = getattr(self, onclose)
+        self.__rs.finished.connect(
+            oncloseaction, Qt.Qt.QueuedConnection)
+        self.__progress = None
+        self.__progress = Qt.QProgressDialog(
+            "Updating preselected devices...", None, 0, 0, self)
+        self.__progress.setWindowModality(Qt.Qt.WindowModal)
+        self.__progress.rejected.connect(
+            self.waitForThread, Qt.Qt.QueuedConnection)
+        self.__rs.start()
+        self.__progress.show()
+
+
+    def resetAll(self, ask=True):
+        logger.debug("reset ALL")
+        self.runProgress(["updateControllers", "importMntGrp"])
         logger.debug("reset ENDED")
+
 
     def resetConfiguration(self, expconf):
         logger.debug("reset Configuration")
@@ -526,3 +569,5 @@ class Selector(Qt.QDialog, TaurusBaseWidget):
                 str(e))
 
         logger.debug("apply END")
+
+
