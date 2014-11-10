@@ -28,6 +28,9 @@ try:
 except:
     from taurus.qt import Qt
 
+from .MessageBox import MessageBox
+
+
 from .ui.ui_ldatadlg import Ui_LDataDlg
 
 import logging
@@ -102,8 +105,13 @@ class LDataDlg(Qt.QDialog):
                 assert isinstance(shape, list)
                 self.shape = shape
         except Exception as e:
-            Qt.QMessageBox.warning(self, "Wrong Data",
-                                   "Wrong structure of Shape: %s " % str(e))
+            import traceback
+            value = traceback.format_exc()
+            text = MessageBox.getText("Wrong structure of Shape")
+            MessageBox.warning(
+                self,
+                "NXSSelector: Wrong Data",
+                text, str(value))
             self.ui.shapeLineEdit.setFocus()
             return
 

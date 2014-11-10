@@ -523,11 +523,13 @@ class Selector(Qt.QDialog, TaurusBaseWidget):
                 self.state.setConfiguration(jconf)
                 self.resetAll()
         except Exception as e:
+            import traceback
+            value = traceback.format_exc()
             text = MessageBox.getText("Problems in loading profile")
             MessageBox.warning(
                 self,
                 "NXSSelector: Error in loading Selector Server profile",
-                text, str(e))
+                text, str(value))
 
     def cnfSave(self):
         try:
@@ -546,11 +548,13 @@ class Selector(Qt.QDialog, TaurusBaseWidget):
                 self.resetAll()
 
         except Exception as e:
+            import traceback
+            value = traceback.format_exc()
             text = MessageBox.getText("Problems in loading profile")
             MessageBox.warning(
                 self,
                 "NXSSelector: Error in loading Selector Server profile",
-                text, str(e))
+                text, str(value))
 
     def __applyClicked(self):
 #        self.ui.buttonBox.button(Qt.QDialogButtonBox.Apply).hide()
@@ -573,17 +577,13 @@ class Selector(Qt.QDialog, TaurusBaseWidget):
             self.ui.fileScanIDSpinBox.setValue(self.state.scanID)
             self.setDirty(False)
             self.emit(Qt.SIGNAL('experimentConfigurationChanged'), conf)
-        except PyTango.DevFailed as e:
-            text = MessageBox.getText("Problems in applying settings")
-            MessageBox.warning(
-                self,
-                "NXSSelector: Error in applying Selector Server settings",
-                text, str(e))
         except Exception as e:
+            import traceback
+            value = traceback.format_exc()
             text = MessageBox.getText("Problems in resetting Server")
             MessageBox.warning(
                 self,
                 "NXSSelector: Error in applying Selector Server settings",
-                text, str(e))
+                text, str(value))
 
         logger.debug("apply END")
