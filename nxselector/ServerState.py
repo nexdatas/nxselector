@@ -52,14 +52,7 @@ class ServerState(object):
 
         ## tango database
         self.errors = []
-        try:
-            self.setServer()
-            if self.server:
-                self.__dp.init()
-                self.__dp.ping()
-        except Exception as e:
-            self.errors.append(e)
-        logger.debug("DP %s" % type(self.__dp))
+
 
         self.scanDir = None
         self.scanFile = []
@@ -101,6 +94,17 @@ class ServerState(object):
         self.labelpaths = {}
         self.labelshapes = {}
         self.labeltypes = {}
+
+        try:
+            self.setServer()
+            if self.server:
+                self.__dp.init()
+                self.__dp.ping()
+        except Exception as e:
+            self.server = None
+            raise
+        logger.debug("DP %s" % type(self.__dp))
+
 
     def grepServer(self):
         server = None

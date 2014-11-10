@@ -370,18 +370,6 @@ class Selector(Qt.QDialog, TaurusBaseWidget):
             self.state = ServerState(server)
             if self.__door:
                 self.state.storeData("door", self.__door)
-            self.runProgress(["updateControllers", "fetchSettings"],
-                             "settings")
-        except PyTango.DevFailed as e:
-            value = sys.exc_info()[1]
-
-            text = MessageBox.getText(
-                "Problems in resetting Server")
-            MessageBox.warning(
-                self, "NXSSelector: Error in Setting Selector Server",
-                text, str(value))
-            self.state = ServerState("")
-            self.state.setServer()
         except Exception as e:
             import traceback
             value = traceback.format_exc()
@@ -392,7 +380,10 @@ class Selector(Qt.QDialog, TaurusBaseWidget):
                 text, str(value))
             self.state = ServerState("")
             self.state.setServer()
-            self.runProgress(["updateControllers"], "settings")
+            if self.__door:
+                self.state.storeData("door", self.__door)
+        self.runProgress(["updateControllers", "fetchSettings"],
+                         "settings")
 
     def resetServer(self):
         logger.debug("reset server")
