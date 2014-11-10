@@ -1,3 +1,7 @@
+2014-11-11 Jan Kotanski <jankotan@gmail.com>
+	* adding QMessageBox for Thread errors
+	* tagged as 1.8.13
+
 2014-11-10 Jan Kotanski <jankotan@gmail.com>
 	* checking door on error
 	* tagged as 1.8.12

@@ -35,10 +35,13 @@ class CommandThread(Qt.QThread):
         super(CommandThread, self).__init__(parent)
         self.instance = instance
         self.commands = list(commands)
+        self.error = None
 
     def run(self):
         try:
             for cmd in self.commands:
                 getattr(self.instance, cmd)()
+        except Exception as e:
+            self.error = e
         finally:
             self.emit(Qt.SIGNAL("finished"))

@@ -82,7 +82,13 @@ class Selector(Qt.QDialog, TaurusBaseWidget):
     def settings(self):
         if self.__progress:
             self.__progress.reset()
-            self.__progress.hide()
+            self.__progress.hide()        
+        if self.__commandthread.error:
+            Qt.QMessageBox.warning(
+                self,
+                "NXSSelector: Error in updating Channels",
+                "%s" % str(self.__commandthread.error))
+            self.__commandthread.error = None
 
         self.ui = Ui_Selector()
         settings = Qt.QSettings(self.__organization, self.__application, self)
@@ -439,6 +445,12 @@ class Selector(Qt.QDialog, TaurusBaseWidget):
         logger.debug("closing Progress")
         if self.__progress:
             self.__progress.reset()
+        if self.__commandthread.error:
+            Qt.QMessageBox.warning(
+                self,
+                "NXSSelector: Error in updating Channels",
+                "%s" % str(self.__commandthread.error))
+            self.__commandthread.error = None
         self.reset()
         self.setDirty(True)
         logger.debug("closing Progress ENDED")
