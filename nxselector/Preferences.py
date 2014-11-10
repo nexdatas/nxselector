@@ -25,6 +25,7 @@ import os
 import PyTango
 import json
 
+from .MessageBox import MessageBox
 try:
     from taurus.external.qt import Qt
 except:
@@ -131,10 +132,10 @@ class Preferences(object):
 
         self.ui.preferences.disconnect(
             self.ui.layoutButtonBox.button(Qt.QDialogButtonBox.Open),
-            Qt.SIGNAL("pressed()"), self.profileLoad)
+            Qt.SIGNAL("pressed()"), self.layoutLoad)
         self.ui.preferences.disconnect(
             self.ui.layoutButtonBox.button(Qt.QDialogButtonBox.Save),
-            Qt.SIGNAL("pressed()"), self.profileSave)
+            Qt.SIGNAL("pressed()"), self.layoutSave)
 
     def connectSignals(self):
         self.disconnectSignals()
@@ -155,10 +156,10 @@ class Preferences(object):
 
         self.ui.preferences.connect(
             self.ui.layoutButtonBox.button(Qt.QDialogButtonBox.Open),
-            Qt.SIGNAL("pressed()"), self.profileLoad)
+            Qt.SIGNAL("pressed()"), self.layoutLoad)
         self.ui.preferences.connect(
             self.ui.layoutButtonBox.button(Qt.QDialogButtonBox.Save),
-            Qt.SIGNAL("pressed()"), self.profileSave)
+            Qt.SIGNAL("pressed()"), self.layoutSave)
 
     def reset(self):
         logger.debug("reset preferences")
@@ -252,6 +253,11 @@ class Preferences(object):
                         Qt.SIGNAL("layoutChanged(QString,QString)"),
                         Qt.QString(frames), Qt.QString(groups))
         except Exception as e:
+            text = MessageBox.getText("Problem in setting layout")
+            MessageBox.warning(
+                self.ui.preferences,
+                "NXSSelector: Error during settings layout",
+                text, str(e))
             logger.debug(str(e))
             self.reset()
         self.connectSignals()
@@ -265,11 +271,11 @@ class Preferences(object):
     def apply(self):
         pass
 
-    def profileLoad(self):
+    def layoutLoad(self):
         filename = str(
             Qt.QFileDialog.getOpenFileName(
                 self.ui.preferences,
-                "Load Profile",
+                "Load Layout",
                 self.profFile,
                 "JSON files (*.json);;All files (*)"))
         logger.debug("loading profile from %s" % filename)
@@ -299,25 +305,33 @@ class Preferences(object):
                             int(profile["rowMax"]))
 
             except Exception as e:
-                Qt.QMessageBox.warning(
+                text = MessageBox.getText("Problem in reading the layout")
+                MessageBox.warning(
                     self.ui.preferences,
-                    "Error during reading the file",
-                    str(e))
+                    "NXSSelector: Error during reading the file",
+                    text, str(e))
 
-    def profileSave(self):
-        filename = str(Qt.QFileDialog.getSaveFileName(
-                self.ui.storage,
-                "Save Profile",
-                self.profFile,
-                "JSON files (*.json);;All files (*)"))
-        logger.debug("saving profile to %s" % filename)
-        if filename:
-            self.profFile = filename
-            profile = {}
-            profile["server"] = str(self.ui.devSettingsLineEdit.text())
-            profile["frames"] = str(self.ui.frameLineEdit.text())
-            profile["groups"] = str(self.ui.groupLineEdit.text())
-            profile["rowMax"] = self.ui.rowMaxSpinBox.value()
-            jprof = json.dumps(profile)
-            with open(filename, 'w') as myfile:
-                myfile.write(jprof)
+    def layoutSave(self):
+        try:
+            filename = str(Qt.QFileDialog.getSaveFileName(
+                    self.ui.storage,
+                    "Save Layout",
+                    self.profFile,
+                    "JSON files (*.json);;All files (*)"))
+            logger.debug("saving profile to %s" % filename)
+            if filename:
+                self.profFile = filename
+                profile = {}
+                profile["server"] = str(self.ui.devSettingsLineEdit.text())
+                profile["frames"] = str(self.ui.frameLineEdit.text())
+                profile["groups"] = str(self.ui.groupLineEdit.text())
+                profile["rowMax"] = self.ui.rowMaxSpinBox.value()
+                jprof = json.dumps(profile)
+                with open(filename, 'w') as myfile:
+                    myfile.write(jprof)
+        except Exception as e:
+            text = MessageBox.getText("Problem in saving the layout")
+            MessageBox.warning(
+                self.ui.preferences,
+                "NXSSelector: Error during saving the file",
+                text, str(e))

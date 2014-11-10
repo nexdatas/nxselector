@@ -40,6 +40,7 @@ from .State import State
 from .Data import Data
 from .Storage import Storage
 from .CommandThread import CommandThread
+from .MessageBox import MessageBox
 
 from .ui.ui_selector import Ui_Selector
 
@@ -84,9 +85,11 @@ class Selector(Qt.QDialog, TaurusBaseWidget):
             self.__progress.reset()
             self.__progress.hide()
         if self.__commandthread.error:
-            Qt.QMessageBox.warning(
-                self,
-                "NXSSelector: Error in updating Channels",
+            text = MessageBox.getText(
+                "Problems in updating Channels",
+                self.__commandthread.error)
+            MessageBox.warning(
+                self, "NXSSelector: Error in Setting Selector Server", text,
                 "%s" % str(self.__commandthread.error))
             self.__commandthread.error = None
 
@@ -186,14 +189,14 @@ class Selector(Qt.QDialog, TaurusBaseWidget):
         self.ui.statusLabel.setEnabled(False)
         self.ui.buttonBox.setCenterButtons(True)
 
-        layout = self.ui.layoutButtonBox.layout()
+        layout = self.ui.profileButtonBox.layout()
         for i in range(layout.count()):
             spacer = layout.itemAt(i)
             if isinstance(spacer, Qt.QSpacerItem):
                 spacer.changeSize(
                     0, 0, Qt.QSizePolicy.Minimum)
 
-        layout = self.ui.profileButtonBox.layout()
+        layout = self.ui.layoutButtonBox.layout()
         for i in range(layout.count()):
             spacer = layout.itemAt(i)
             if isinstance(spacer, Qt.QSpacerItem):
@@ -367,32 +370,29 @@ class Selector(Qt.QDialog, TaurusBaseWidget):
             self.state = ServerState(server)
             if self.__door:
                 self.state.storeData("door", self.__door)
-            ## QProgressDialog to be added
             self.runProgress(["updateControllers", "fetchSettings"],
                              "settings")
-#            self.runProgress(["fetchSettings"], False)
-#            self.state.updateControllers()
-#            self.state.fetchSettings()
         except PyTango.DevFailed as e:
             value = sys.exc_info()[1]
-            Qt.QMessageBox.warning(
-                self,
-                "NXSSelector: Error in Setting Selector Server",
-                "%s" % str("\n".join(["%s " % (err.desc) for err in value])))
+
+            text = MessageBox.getText(
+                "Problems in resetting Server")
+            MessageBox.warning(
+                self, "NXSSelector: Error in Setting Selector Server",
+                text, str(value))
             self.state = ServerState("")
             self.state.setServer()
         except Exception as e:
             import traceback
             value = traceback.format_exc()
-            Qt.QMessageBox.warning(
-                self,
-                "NXSSelector: Error in Setting Selector Server",
-                "%s" % (value))
+            text = MessageBox.getText(
+                "Problems in resetting Server")
+            MessageBox.warning(
+                self, "NXSSelector: Error in Setting Selector Server",
+                text, str(value))
             self.state = ServerState("")
             self.state.setServer()
-            ## QProgressDialog to be added
             self.runProgress(["updateControllers"], "settings")
-#            self.state.updateControllers()
 
     def resetServer(self):
         logger.debug("reset server")
@@ -432,11 +432,10 @@ class Selector(Qt.QDialog, TaurusBaseWidget):
         except Exception as e:
             import traceback
             value = traceback.format_exc()
-            Qt.QMessageBox.warning(
-                self,
-                "NXSSelector: Error in Setting Selector Server",
-                "%s" % (value))
-
+            text = MessageBox.getText("Problems in resetting Server")
+            MessageBox.warning(
+                self, "NXSSelector: Error in Resetting Selector Server",
+                text, str(value))
         for tab in self.tabs:
             tab.reset()
         logger.debug("reset selector ended")
@@ -446,9 +445,13 @@ class Selector(Qt.QDialog, TaurusBaseWidget):
         if self.__progress:
             self.__progress.reset()
         if self.__commandthread.error:
-            Qt.QMessageBox.warning(
+            text = MessageBox.getText(
+                "Problems in updating Channels",
+                self.__commandthread.error)
+            MessageBox.warning(
                 self,
-                "NXSSelector: Error in updating Channels",
+                "NXSSelector: Error in updating Selector Server Channels",
+                text,
                 "%s" % str(self.__commandthread.error))
             self.__commandthread.error = None
         self.reset()
@@ -515,33 +518,48 @@ class Selector(Qt.QDialog, TaurusBaseWidget):
         self.resetAll()
 
     def cnfLoad(self):
-        filename = str(Qt.QFileDialog.getOpenFileName(
-                self.ui.storage,
-                "Load Configuration",
-                self.cnfFile,
-                "JSON files (*.json);;All files (*)"))
-        logger.debug("loading configuration from %s" % filename)
-        if filename:
-            self.cnfFile = filename
-            jconf = open(filename).read()
+        try:
+            filename = str(Qt.QFileDialog.getOpenFileName(
+                    self.ui.storage,
+                    "Load Profile",
+                    self.cnfFile,
+                    "JSON files (*.json);;All files (*)"))
+            logger.debug("loading configuration from %s" % filename)
+            if filename:
+                self.cnfFile = filename
+                jconf = open(filename).read()
 
-            self.state.setConfiguration(jconf)
-            self.resetAll()
+                self.state.setConfiguration(jconf)
+                self.resetAll()
+        except Exception as e:
+            text = MessageBox.getText("Problems in loading profile")
+            MessageBox.warning(
+                self,
+                "NXSSelector: Error in loading Selector Server profile",
+                text, str(e))
 
     def cnfSave(self):
-        filename = str(Qt.QFileDialog.getSaveFileName(
-                self.ui.storage,
-                "Save Configuration",
-                self.cnfFile,
-                "JSON files (*.json);;All files (*)"))
-        logger.debug("saving configuration to %s" % filename)
-        if filename:
-            jconf = self.state.getConfiguration()
-            self.cnfFile = filename
+        try:
+            filename = str(Qt.QFileDialog.getSaveFileName(
+                    self.ui.storage,
+                    "Save Profile",
+                    self.cnfFile,
+                    "JSON files (*.json);;All files (*)"))
+            logger.debug("saving configuration to %s" % filename)
+            if filename:
+                jconf = self.state.getConfiguration()
+                self.cnfFile = filename
 
-            with open(filename, 'w') as myfile:
-                myfile.write(jconf)
-            self.resetAll()
+                with open(filename, 'w') as myfile:
+                    myfile.write(jconf)
+                self.resetAll()
+
+        except Exception as e:
+            text = MessageBox.getText("Problems in loading profile")
+            MessageBox.warning(
+                self,
+                "NXSSelector: Error in loading Selector Server profile",
+                text, str(e))
 
     def __applyClicked(self):
 #        self.ui.buttonBox.button(Qt.QDialogButtonBox.Apply).hide()
@@ -565,15 +583,16 @@ class Selector(Qt.QDialog, TaurusBaseWidget):
             self.setDirty(False)
             self.emit(Qt.SIGNAL('experimentConfigurationChanged'), conf)
         except PyTango.DevFailed as e:
-            value = sys.exc_info()[1]
-            Qt.QMessageBox.warning(
+            text = MessageBox.getText("Problems in applying settings")
+            MessageBox.warning(
                 self,
-                "NXSSelector: Error in updating Measurement Group",
-                "%s" % str("\n".join(["%s " % (err.desc) for err in value])))
+                "NXSSelector: Error in applying Selector Server settings",
+                text, str(e))
         except Exception as e:
-            Qt.QMessageBox.warning(
+            text = MessageBox.getText("Problems in resetting Server")
+            MessageBox.warning(
                 self,
-                "NXSSelector: Error in updating Measurement Group",
-                str(e))
+                "NXSSelector: Error in applying Selector Server settings",
+                text, str(e))
 
         logger.debug("apply END")
