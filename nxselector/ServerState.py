@@ -176,7 +176,11 @@ class ServerState(object):
     def fetchFileData(self):
         self.timers = self.loadList("timer", True)
         self.mntgrp = self.loadData("mntGrp")
-        self.door = self.loadData("door")
+        try:
+            self.door = self.loadData("door")
+        except:
+            self.storeData("door", "")
+            self.door = self.loadData("door")
 
         self.configDevice = self.loadData("configDevice")
         self.writerDevice = self.loadData("writerDevice")
