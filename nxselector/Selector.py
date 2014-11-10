@@ -82,7 +82,7 @@ class Selector(Qt.QDialog, TaurusBaseWidget):
     def settings(self):
         if self.__progress:
             self.__progress.reset()
-            self.__progress.hide()        
+            self.__progress.hide()
         if self.__commandthread.error:
             Qt.QMessageBox.warning(
                 self,
