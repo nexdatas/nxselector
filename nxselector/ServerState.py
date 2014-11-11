@@ -53,7 +53,6 @@ class ServerState(object):
         ## tango database
         self.errors = []
 
-
         self.scanDir = None
         self.scanFile = []
         self.scanID = 0
@@ -104,7 +103,6 @@ class ServerState(object):
             self.server = None
             raise
         logger.debug("DP %s" % type(self.__dp))
-
 
     def grepServer(self):
         server = None

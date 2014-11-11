@@ -69,6 +69,7 @@ class Selector(Qt.QDialog, TaurusBaseWidget):
         self.__ask = False
 
         self.__resetFlag = True
+        self.__doortoupdateFlag = False
 
         self.state = None
         ## expert mode
@@ -80,7 +81,11 @@ class Selector(Qt.QDialog, TaurusBaseWidget):
 
         self.__resetServer(server)
 
+        self.ui = Ui_Selector()
+
     def settings(self):
+        logger.debug("settings")
+
         if self.__progress:
             self.__progress.reset()
             self.__progress.hide()
@@ -93,9 +98,7 @@ class Selector(Qt.QDialog, TaurusBaseWidget):
                 "%s" % str(self.__commandthread.error))
             self.__commandthread.error = None
 
-        self.ui = Ui_Selector()
         settings = Qt.QSettings(self.__organization, self.__application, self)
-
         self.userView = settings.value('Preferences/UserView',
                                        'CheckBoxes Dis')
         self.rowMax = int(settings.value('Preferences/RowMax', 20))
@@ -152,6 +155,10 @@ class Selector(Qt.QDialog, TaurusBaseWidget):
         self.title = 'NeXus Component Selector'
         self.__dirty = True
         self.setDirty()
+        self.__progress = None
+        if self.__doortoupdateFlag:
+            self.updateDoorName(self.__door)
+        logger.debug("settings END")
 
     ##  creates GUI
     # \brief It create dialogs for the main window application
@@ -447,6 +454,9 @@ class Selector(Qt.QDialog, TaurusBaseWidget):
             self.__commandthread.error = None
         self.reset()
         self.setDirty(True)
+        self.__progress = None
+        if self.__doortoupdateFlag:
+            self.updateDoorName(self.__door)
         logger.debug("closing Progress ENDED")
 
     def waitForThread(self):
@@ -490,12 +500,17 @@ class Selector(Qt.QDialog, TaurusBaseWidget):
         logger.debug("reset Configuration END")
 
     def updateDoorName(self, door):
-        if str(door) != str(self.state.door):
+        logger.debug("update DoorName")
+        if self.__progress:
+            self.__door = door
+            self.__doortoupdateFlag = True
+        elif str(door) != str(self.state.door):
             self.ui.mntServerLineEdit.setText(door)
             self.storage.apply()
             logger.debug("change DoorName %s " % door)
+            self.__doortoupdateFlag = False
 
-        logger.debug("update DoorName")
+        logger.debug("update DoorName END")
 
     def __resetClicked(self):
 #        self.ui.buttonBox.button(Qt.QDialogButtonBox.Reset).hide()
