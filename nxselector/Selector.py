@@ -66,7 +66,6 @@ class Selector(Qt.QDialog, TaurusBaseWidget):
         self.__application = application
         self.__door = door
         self.__standalone = standalone
-        self.__ask = False
 
         self.__resetFlag = True
         self.__doortoupdateFlag = False
@@ -438,7 +437,7 @@ class Selector(Qt.QDialog, TaurusBaseWidget):
             tab.reset()
         logger.debug("reset selector ended")
 
-    def closeProgress(self):
+    def closeReset(self):
         logger.debug("closing Progress")
         if self.__progress:
             self.__progress.reset()
@@ -465,7 +464,7 @@ class Selector(Qt.QDialog, TaurusBaseWidget):
             self.__commandthread.wait()
         logger.debug("waiting for Thread ENDED")
 
-    def runProgress(self, commands, onclose="closeProgress"):
+    def runProgress(self, commands, onclose="closeReset"):
         self.__commandthread = CommandThread(self.state, commands, self)
         oncloseaction = getattr(self, onclose)
         self.__commandthread.finished.connect(
@@ -479,7 +478,7 @@ class Selector(Qt.QDialog, TaurusBaseWidget):
         self.__commandthread.start()
         self.__progress.show()
 
-    def resetAll(self, ask=True):
+    def resetAll(self):
         logger.debug("reset ALL")
         self.runProgress(["updateControllers", "importMntGrp"])
         logger.debug("reset ENDED")
@@ -496,7 +495,7 @@ class Selector(Qt.QDialog, TaurusBaseWidget):
                 "Would you like to update the changes? ",
                 Qt.QMessageBox.Yes | Qt.QMessageBox.No)
             if replay == Qt.QMessageBox.Yes:
-                self.resetAll(False)
+                self.resetAll()
         logger.debug("reset Configuration END")
 
     def updateDoorName(self, door):
@@ -513,14 +512,7 @@ class Selector(Qt.QDialog, TaurusBaseWidget):
         logger.debug("update DoorName END")
 
     def __resetClicked(self):
-#        self.ui.buttonBox.button(Qt.QDialogButtonBox.Reset).hide()
-#        self.ui.buttonBox.button(Qt.QDialogButtonBox.Reset).show()
         self.ui.buttonBox.button(Qt.QDialogButtonBox.Reset).setFocus()
-
-#        self.ui.resetPushButton.hide()
-#        self.ui.resetPushButton.show()
-#        self.ui.resetPushButton.setFocus()
-
         self.resetAll()
 
     def cnfLoad(self):
@@ -572,26 +564,26 @@ class Selector(Qt.QDialog, TaurusBaseWidget):
                 text, str(value))
 
     def __applyClicked(self):
-#        self.ui.buttonBox.button(Qt.QDialogButtonBox.Apply).hide()
-#        self.ui.buttonBox.button(Qt.QDialogButtonBox.Apply).show()
         self.ui.buttonBox.button(Qt.QDialogButtonBox.Apply).setFocus()
-#        self.ui.applyPushButton.hide()
-#        self.ui.applyPushButton.show()
-#        self.ui.applyPushButton.setFocus()
         self.apply()
 
     def __displayStatusChanged(self, state):
         self.displayStatus = state
         self.setDirty(self.__dirty)
 
+    def closeApply(self):
+        self.closeReset()
+        self.ui.fileScanIDSpinBox.setValue(self.state.scanID)
+        self.setDirty(False)
+        
+
     def apply(self):
         logger.debug("apply")
         try:
             conf = self.state.updateMntGrp()
-            self.resetAll()
-            self.ui.fileScanIDSpinBox.setValue(self.state.scanID)
-            self.setDirty(False)
             self.emit(Qt.SIGNAL('experimentConfigurationChanged'), conf)
+            self.runProgress(["updateControllers", "importMntGrp"], 
+                             "closeApply")
         except Exception as e:
             import traceback
             value = traceback.format_exc()
