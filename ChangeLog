@@ -1,3 +1,7 @@
+2014-11-XX Jan Kotanski <jankotan@gmail.com>
+	* adding setModel (server)
+	* tagged as 1.8.17
+
 2014-11-17 Jan Kotanski <jankotan@gmail.com>
 	* fixes for dirty status
 	* tagged as 1.8.16

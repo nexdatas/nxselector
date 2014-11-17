@@ -177,19 +177,21 @@ class Preferences(object):
         self.connectSignals()
         logger.debug("reset preferences ended")
 
-    def on_devSettingsLineEdit_editingFinished(self):
-        logger.debug("on_devSettingsLineEdit_editingFinished")
+
+    def changeServer(self, ask=True):
         self.disconnectSignals()
         logger.debug("server changing")
         server = str(self.ui.devSettingsLineEdit.text())
         logger.debug("from %s to  %s" % (self.state.server, server))
+        replay = Qt.QMessageBox.Yes
         if not server or server != self.state.server:
-            replay = Qt.QMessageBox.question(
-                self.ui.preferences,
-                "Setting server has changed.",
-                "Changing server will cause loosing the current data. "
-                " Are you sure?",
-                Qt.QMessageBox.Yes | Qt.QMessageBox.No)
+            if ask:
+                replay = Qt.QMessageBox.question(
+                    self.ui.preferences,
+                    "Setting server has changed.",
+                    "Changing server will cause loosing the current data. "
+                    " Are you sure?",
+                    Qt.QMessageBox.Yes | Qt.QMessageBox.No)
             if replay == Qt.QMessageBox.Yes:
                 try:
                     if server == 'module':
@@ -216,6 +218,11 @@ class Preferences(object):
                 self.ui.devSettingsLineEdit.setText(Qt.QString(
                         self.state.server if self.state.server else 'module'))
         self.connectSignals()
+    
+
+    def on_devSettingsLineEdit_editingFinished(self):
+        logger.debug("on_devSettingsLineEdit_editingFinished")
+        self.changeServer()
         logger.debug("server changed")
 
     def addHint(self, string, hints):

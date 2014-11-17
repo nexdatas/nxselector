@@ -69,7 +69,9 @@ class Selector(Qt.QDialog, TaurusBaseWidget):
 
         self.__resetFlag = True
         self.__doortoupdateFlag = False
+        self.__servertoupdateFlag = False
 
+        self.__model = None
         self.state = None
         ## expert mode
         self.expert = expert
@@ -155,8 +157,11 @@ class Selector(Qt.QDialog, TaurusBaseWidget):
         self.__dirty = True
         self.setDirty()
         self.__progress = None
+        if self.__servertoupdateFlag:
+            self.setModel(self.__model)
         if self.__doortoupdateFlag:
             self.updateDoorName(self.__door)
+            
         logger.debug("settings END")
 
     ##  creates GUI
@@ -285,6 +290,20 @@ class Selector(Qt.QDialog, TaurusBaseWidget):
     def __componentChanged(self):
         self.setDirty()
         self.selectable.updateViews()
+
+        
+    def setModel(self, model):
+        if str(model) != str(self.state.server):
+            if self.__progress:
+                self.__model = model
+                self.__servertoupdateFlag = True
+            elif self.__servertoupdateFlag: 
+                self.ui.devSettingsLineEdit.setText(model)
+                self.preferences.changeServer(False)
+                self.__servertoupdateFlag = False
+                logger.debug("change ServerName %s " % model)
+        else:
+            self.__servertoupdateFlag = False
 
     def setDirty(self, flag=True):
         self.__dirty = flag
@@ -454,6 +473,8 @@ class Selector(Qt.QDialog, TaurusBaseWidget):
         self.reset()
         self.setDirty(True)
         self.__progress = None
+        if self.__servertoupdateFlag:
+            self.updateServer(self.__model)
         if self.__doortoupdateFlag:
             self.updateDoorName(self.__door)
         logger.debug("closing Progress ENDED")
