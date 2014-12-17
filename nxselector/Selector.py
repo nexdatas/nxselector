@@ -60,6 +60,8 @@ class Selector(Qt.QDialog, TaurusBaseWidget):
                  parent=None):
         Qt.QWidget.__init__(self, parent)
         TaurusBaseWidget.__init__(self, 'NXSExpDescriptionEditor')
+        self.setWindowFlags(Qt.Qt.Window)
+
         logger.debug("PARAMETERS: %s %s",
                      server, parent)
         self.__organization = organization
