@@ -60,6 +60,9 @@ class Preferences(object):
 
         # frames/columns/groups
         self.frameshelp = [
+            Qt.QString(
+                '[[[["Components",1],["Timers",5]]],[[["Counters", 4]],' 
+                + '[["ADC",3]],[["VFC",7]]],[[["MCA/SCA",6],["Others",0]]]]'),
             Qt.QString('[[[["Components",1],["Timers",5]]],[[["Counters", 4]],'
                        + '[["ADC",3]]],[[["MCA/SCA",6],["Devices",0]]]]'),
             Qt.QString('[[[["Counters", 4]],[["Channels",0]]],'
@@ -71,6 +74,9 @@ class Preferences(object):
             Qt.QString('[[[["My Channels", 0]]],[[["My Components", 1]]]]'),
             Qt.QString('')]
         self.mgroupshelp = [
+            Qt.QString('{ "3":[["*_adc*", 0]], "4":[["*_c*",0]],'
+                       + '"5":[["*_t*",0]], "6":[["*_mca*",0]],'
+                       + '"7":[["*_vfc*",0]]}'),
             Qt.QString('{ "3":[["exp_adc*", 0]], "4":[["exp_c*",0]],'
                        + '"5":[["exp_t*",0]], "6":[["exp_mca*",0],'
                        + '["sca_exp_*",0]]}'),

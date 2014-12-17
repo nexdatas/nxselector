@@ -1,4 +1,8 @@
 2014-12-17 Jan Kotanski <jankotan@gmail.com>
+	* adding default frames and groups
+	* tagged as 1.8.18
+
+2014-12-17 Jan Kotanski <jankotan@gmail.com>
 	* set main dialog as window
 	* adding setModel (server)
 	* tagged as 1.8.17
