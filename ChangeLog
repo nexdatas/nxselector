@@ -1,4 +1,9 @@
 2014-12-19 Jan Kotanski <jankotan@gmail.com>
+	* skipping CP/DS in frame groups format
+	* adding checks for duplicated frame ID
+	* tagged as 1.9.1
+
+2014-12-19 Jan Kotanski <jankotan@gmail.com>
 	* rearrage Detectors to more square boxes
 	* impove action on rowMax changed
 	* tagged as 1.9.0

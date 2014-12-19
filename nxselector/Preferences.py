@@ -74,22 +74,21 @@ class Preferences(object):
             Qt.QString('[[[["My Channels", 0]]],[[["My Components", 1]]]]'),
             Qt.QString('')]
         self.mgroupshelp = [
-            Qt.QString('{ "3":[["*_adc*", 0]], "4":[["*_c*",0]],'
-                       + '"5":[["*_t*",0]], "6":[["*_mca*",0]],'
-                       + '"7":[["*_vfc*",0]]}'),
-            Qt.QString('{ "3":[["exp_adc*", 0]], "4":[["exp_c*",0]],'
-                       + '"5":[["exp_t*",0]], "6":[["exp_mca*",0],'
-                       + '["sca_exp_*",0]]}'),
-            Qt.QString('{"2":[["mca8701*", 1]] , "3":[["exp_adc*", 0]],'
-                       + ' "4":[["exp_c*",0]]}'),
-            Qt.QString(
-                '{"2":[["ct01", 0], ["ct02",0]], "5":[["appscan", 1]]}'),
+            Qt.QString('{ "3":["*_adc*"], "4":["*_c*"],'
+                       + '"5":["*_t*"], "6":["*_mca*"],'
+                       + '"7":["*_vfc*"]}'),
+            Qt.QString('{ "3":["exp_adc*"], "4":["exp_c*"],'
+                       + '"5":["exp_t*"], "6":["exp_mca*"],'
+                       + '["sca_exp_*"]}'),
+            Qt.QString('{"2":["mca8701*"]] , "3":["exp_adc*"],'
+                       + ' "4":["exp_c*"]}'),
+            Qt.QString('{"2":["ct01", "ct02"], "5":["appscan"]}'),
             Qt.QString('')]
         self.serverhelp = [
             Qt.QString(self.state.server)]
 
-        self.mgroups = str(self.mgroupshelp[0])
-        self.frames = str(self.frameshelp[0])
+        self.__mgroups = str(self.mgroupshelp[0])
+        self.__frames = str(self.frameshelp[0])
 
         self.views = {
             "CentralCheckBoxes (A)": CheckerView,
@@ -118,7 +117,51 @@ class Preferences(object):
             }
 
         self.maxHelp = 10
-        self.profFile = os.getcwd()
+        self.profFile = os.getcwd()    
+
+    def __setmgroups(self, groups):
+        try:
+            lgroups = json.loads(groups)
+            for k, gr in lgroups.items():
+                for i in range(len(gr)):
+                    if isinstance(gr[i], list) and gr[i]:
+                        gr[i] = gr[i][0]
+            self.__mgroups = json.dumps(lgroups)
+        except:
+            self.__mgroups = "{}"
+
+
+    def __getmgroups(self):
+        return self.__mgroups
+
+      ## the json data string
+    mgroups = property(__getmgroups, __setmgroups,
+                       doc='device groups')     
+
+
+    def __setframes(self, frames):
+        try:
+            nml = []
+            lframes = json.loads(frames)
+            for fr in lframes:
+                for cl in fr:
+                    for rw in cl:
+                        nm = int(rw[1])
+                        if nm not in nml:
+                            nml.append(nm)
+                        else:
+                            raise Exception("Duplicated id")
+            self.__frames = frames
+        except Exception as e:
+            print str(e)
+
+
+    def __getframes(self):
+        return self.__frames
+
+      ## the json data string
+    frames = property(__getframes, __setframes,
+                       doc='detector frames')     
 
     def disconnectSignals(self):
         self.ui.preferences.disconnect(
@@ -234,9 +277,9 @@ class Preferences(object):
     def addHint(self, string, hints):
         qstring = Qt.QString(string)
         if qstring not in hints:
-            hints.append(string)
+            hints.insert(0, string)
         if self.maxHelp < len(hints):
-            hints.pop(0)
+            hints.pop(len(hints)-1)
 
     def on_layoutLineEdits_editingFinished(self):
         logger.debug("on_groupLineEdit_editingFinished")
@@ -247,10 +290,9 @@ class Preferences(object):
         try:
             if not frames:
                 frames = '[]'
-            mframes = json.loads(frames)
-            if isinstance(mframes, list):
-                self.frames = frames
-                self.addHint(frames, self.frameshelp)
+            oldframes = self.frames    
+            self.frames = frames
+            self.addHint(self.frames, self.frameshelp)
 
             if not groups:
                 groups = '{}'
@@ -260,7 +302,7 @@ class Preferences(object):
                 self.mgroups = groups
                 self.addHint(groups, self.mgroupshelp)
 
-                if isinstance(mframes, list):
+                if oldframes != self.frames:
                     self.connectSignals()
                     self.ui.preferences.emit(
                         Qt.SIGNAL("layoutChanged(QString,QString)"),

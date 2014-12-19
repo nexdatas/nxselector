@@ -67,22 +67,26 @@ class Selectable(object):
             if int(k) in self.__availableGroups():
                 group = []
                 for elem in gr:
-                    if elem[1] == DS:
-                        filtered = fnmatch.filter(
-                            self.state.dsgroup.keys(),
-                            elem[0])
-                        for felem in filtered:
-                            group.append(
-                                DSElement(felem, self.state))
-                            uds.add(felem)
-                    elif elem[1] == CP:
+                    if isinstance(elem, list) and elem:
+                        ielem = elem[0]
+                    else:
+                        ielem = elem
+                    if ielem in self.state.avcplist:
                         filtered = fnmatch.filter(
                             self.state.cpgroup.keys(),
-                            elem[0])
+                            ielem)
                         for felem in filtered:
                             group.append(
                                 CPElement(felem, self.state))
                             ucp.add(felem)
+                    else:
+                        filtered = fnmatch.filter(
+                            self.state.dsgroup.keys(),
+                            ielem)
+                        for felem in filtered:
+                            group.append(
+                                DSElement(felem, self.state))
+                            uds.add(felem)
                 if group:
                     if int(k) not in self.groups:
                         self.groups[int(k)] = []
