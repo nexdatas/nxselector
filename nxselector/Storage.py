@@ -374,9 +374,11 @@ class Storage(object):
             return
         self.state.mntgrp = str(self.ui.mntGrpLineEdit.text())
 
+        logger.debug("apply Timers")
         self.__applyTimer(self.ui.mntTimerComboBox, 0)
         for nid, widget in enumerate(self.__tWidgets):
             self.__applyTimer(widget, nid + 1)
+        logger.debug("apply Timers ended")
 
         self.state.door = str(self.ui.mntServerLineEdit.text())
 
