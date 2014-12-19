@@ -127,13 +127,26 @@ class CheckerView(Qt.QWidget):
             self.selectedWidgetRow = None
         self.show()
 
+
+    def __findRowNumber(self, rowMax, rowCount):
+        rowNo =  rowMax
+        fullColumnNo = rowCount / rowMax
+        lastRowNo = rowCount % rowMax
+        while fullColumnNo < rowNo - lastRowNo:
+            rowNo -= 1
+            lastRowNo += fullColumnNo
+        return rowNo
+
     def updateState(self):
         if not self.model is None:
-            for row in range(self.model.rowCount()):
+            rowCount = self.model.rowCount()
+            rowNo = self.__findRowNumber(self.rowMax, rowCount)
+            
+            for row in range(rowCount):
 
                 cb, ds = self.__setWidgets(row)
                 self.__setNameTips(row, cb)
-                self.__createGrid(row, cb, ds)
+                self.__createGrid(row, cb, ds, rowNo)
 
             if not self.spacer:
                 self.spacer = Qt.QSpacerItem(10, 10,
@@ -145,7 +158,8 @@ class CheckerView(Qt.QWidget):
         self.update()
         self.updateGeometry()
 
-    def __createGrid(self, row, cb, ds):
+    def __createGrid(self, row, cb, ds, rowNo=None):
+        rowNo = self.rowMax if not rowNo else rowNo
         ind = self.model.index(row, 0)
         ind2 = self.model.index(row, 2)
         status = self.model.data(ind, role=Qt.Qt.CheckStateRole)
@@ -156,13 +170,12 @@ class CheckerView(Qt.QWidget):
             if dstatus is not None:
                 ds.setChecked(bool(dstatus))
         if row >= len(self.widgets):
-            if self.rowMax:
-                lrow = row % self.rowMax
-                lcol = row / self.rowMax
+            if rowNo:
+                lrow = row % rowNo
+                lcol = row / rowNo
             else:
                 lrow = row
                 lcol = 0
-
             if self.dmapper:
                 lrow = lrow + 1
                 lcol = 2 * lcol

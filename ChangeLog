@@ -1,3 +1,8 @@
+2014-12-19 Jan Kotanski <jankotan@gmail.com>
+	* rearrage Detectors to more square boxes
+	* impove action on rowMax changed
+	* tagged as 1.9.0
+
 2014-12-17 Jan Kotanski <jankotan@gmail.com>
 	* adding default frames and groups
 	* tagged as 1.8.18

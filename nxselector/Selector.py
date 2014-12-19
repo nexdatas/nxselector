@@ -274,7 +274,7 @@ class Selector(Qt.QDialog, TaurusBaseWidget):
                      Qt.SIGNAL("currentIndexChanged(int)"), self.resetViews)
 
         self.connect(self.ui.rowMaxSpinBox,
-                     Qt.SIGNAL("valueChanged(int)"), self.resetRows)
+                     Qt.SIGNAL("editingFinished()"), self.resetRows)
 
         self.connect(self.ui.statusCheckBox,
             Qt.SIGNAL("stateChanged(int)"), self.__displayStatusChanged)
@@ -386,10 +386,17 @@ class Selector(Qt.QDialog, TaurusBaseWidget):
             "Preferences/GroupsHints",
             Qt.QVariant(self.preferences.mgroupshelp))
 
+    def keyPressEvent(self, event):
+        if hasattr(event, "key") and event.key() == Qt.Qt.Key_Escape:
+            logger.debug("escape key event")
+            self.__saveSettings()
+        Qt.QDialog.keyPressEvent(self, event)
+        
+
     def closeEvent(self, event):
         logger.debug("close event")
         self.__saveSettings()
-        Qt.QWidget.closeEvent(self, event)
+        Qt.QDialog.closeEvent(self, event)
         logger.debug("close event ended")
 
     def __resetServer(self, server):
@@ -425,8 +432,9 @@ class Selector(Qt.QDialog, TaurusBaseWidget):
         self.resetViews()
         logger.debug("reset layout ended")
 
-    def resetRows(self, rowMax):
+    def resetRows(self):
         logger.debug("reset rows")
+        rowMax = self.ui.rowMaxSpinBox.value()
         for tab in self.tabs:
             tab.rowMax = rowMax
         self.resetViews()
