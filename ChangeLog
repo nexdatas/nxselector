@@ -1,3 +1,7 @@
+2015-01-06 Jan Kotanski <jankotan@gmail.com>
+	* improving finding lastrow number
+	* tagged as 1.9.2
+
 2014-12-19 Jan Kotanski <jankotan@gmail.com>
 	* skipping CP/DS in frame groups format
 	* adding checks for duplicated frame ID

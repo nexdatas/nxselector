@@ -129,12 +129,12 @@ class CheckerView(Qt.QWidget):
 
 
     def __findRowNumber(self, rowMax, rowCount):
-        rowNo =  rowMax
+        rowNo = rowMax
         if rowNo < 1:
             rowNo = 1
         fullColumnNo = rowCount / rowNo
         lastRowNo = rowCount % rowNo
-        while fullColumnNo < rowNo - lastRowNo:
+        while lastRowNo and fullColumnNo < rowNo - lastRowNo:
             rowNo -= 1
             lastRowNo += fullColumnNo
         return rowNo
