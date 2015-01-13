@@ -282,7 +282,7 @@ class Preferences(object):
             hints.pop(len(hints)-1)
 
     def on_layoutLineEdits_editingFinished(self):
-        logger.debug("on_groupLineEdit_editingFinished")
+        logger.debug("on_layoutLineEdit_editingFinished")
         self.disconnectSignals()
 
         groups = str(self.ui.groupLineEdit.text())
@@ -299,10 +299,11 @@ class Preferences(object):
             mgroups = json.loads(groups)
 
             if isinstance(mgroups, dict):
+                oldgroups = self.mgroups
                 self.mgroups = groups
                 self.addHint(groups, self.mgroupshelp)
 
-                if oldframes != self.frames:
+                if oldframes != self.frames or oldgroups != self.mgroups:
                     self.connectSignals()
                     self.ui.preferences.emit(
                         Qt.SIGNAL("layoutChanged(QString,QString)"),

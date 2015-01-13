@@ -446,10 +446,12 @@ class Selector(Qt.QDialog, TaurusBaseWidget):
         self.resetAll()
 
     def resetViews(self):
+        logger.debug("reset view")
         for tab in self.tabs:
             tab.userView = self.preferences.views[
                 str(self.ui.viewComboBox.currentText())]
             tab.reset()
+        logger.debug("reset view end")
 
     def reset(self):
         logger.debug("reset selector")

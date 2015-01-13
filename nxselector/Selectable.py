@@ -71,19 +71,19 @@ class Selectable(object):
                         ielem = elem[0]
                     else:
                         ielem = elem
-                    if ielem in self.state.avcplist:
-                        filtered = fnmatch.filter(
-                            self.state.cpgroup.keys(),
-                            ielem)
-                        for felem in filtered:
+                    filtered = fnmatch.filter(
+                        self.state.cpgroup.keys(),
+                        ielem)
+                    dsfiltered = fnmatch.filter(
+                        self.state.dsgroup.keys(),
+                        ielem)
+                    filtered.extend(dsfiltered)
+                    for felem in filtered:
+                        if ielem in self.state.avcplist:
                             group.append(
                                 CPElement(felem, self.state))
                             ucp.add(felem)
-                    else:
-                        filtered = fnmatch.filter(
-                            self.state.dsgroup.keys(),
-                            ielem)
-                        for felem in filtered:
+                        else:
                             group.append(
                                 DSElement(felem, self.state))
                             uds.add(felem)
