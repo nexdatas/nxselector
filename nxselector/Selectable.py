@@ -71,13 +71,14 @@ class Selectable(object):
                         ielem = elem[0]
                     else:
                         ielem = elem
-                    filtered = fnmatch.filter(
+                    cpfiltered = fnmatch.filter(
                         self.state.cpgroup.keys(),
                         ielem)
                     dsfiltered = fnmatch.filter(
                         self.state.dsgroup.keys(),
                         ielem)
-                    filtered.extend(dsfiltered)
+                    filtered = set(cpfiltered)
+                    filtered.update(dsfiltered)
                     for felem in filtered:
                         if ielem in self.state.avcplist:
                             group.append(
@@ -93,12 +94,13 @@ class Selectable(object):
                     self.groups[int(k)].extend(group)
 
         for ds in self.state.dsgroup.keys():
-            if ds not in uds:
+            if ds not in uds and ds not in ucp:
                 if DS not in self.groups:
                     self.groups[DS] = []
                 self.groups[DS].append(DSElement(ds, self.state))
         for cp in self.state.cpgroup.keys():
-            if cp not in ucp and cp not in self.state.mcplist \
+            if cp not in ucp and cp not in uds \
+                    and cp not in self.state.mcplist \
                     and cp not in self.state.acplist:
                 if CP not in self.groups:
                     self.groups[CP] = []
