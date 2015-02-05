@@ -1,3 +1,7 @@
+2015-02-06 Jan Kotanski <jankotan@gmail.com>
+	* fix selecting component datasources
+	* tagged as 1.9.6
+
 2015-01-23 Jan Kotanski <jankotan@gmail.com>
 	* fix for deselecting datasource devices
 	* tagged as 1.9.5

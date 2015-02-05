@@ -80,7 +80,7 @@ class Selectable(object):
                     filtered = set(cpfiltered)
                     filtered.update(dsfiltered)
                     for felem in filtered:
-                        if felem in self.state.avcplist:
+                        if felem not in self.state.avdslist:
                             group.append(
                                 CPElement(felem, self.state))
                             ucp.add(felem)
