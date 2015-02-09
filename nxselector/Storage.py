@@ -383,6 +383,9 @@ class Storage(object):
                 self.state.timers[nid] = timer
 
     def __mntgrp_changed(self):
+        if str(self.ui.mntGrpLineEdit.text()) == self.state.mntgrp:
+            return
+        self.disconnectSignals()
         replay = Qt.QMessageBox.question(
             self.ui.preferences,
             "NXSSelector: Name "
@@ -391,15 +394,16 @@ class Storage(object):
             Qt.QMessageBox.Yes | Qt.QMessageBox.No)
 
         if replay == Qt.QMessageBox.Yes:
-            self.disconnectSignals()
             if not str(self.ui.mntGrpLineEdit.text()):
                 self.ui.mntGrpLineEdit.setFocus()
                 self.connectSignals()
                 return
             self.state.mntgrp = str(self.ui.mntGrpLineEdit.text())
             self.state.storeData("mntGrp", self.state.mntgrp)
+            self.connectSignals()
             self.ui.storage.emit(Qt.SIGNAL("resetAll"))
         else:
+            self.connectSignals()
             self.apply()
 
     def apply(self):

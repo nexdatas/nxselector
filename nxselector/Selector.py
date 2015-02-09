@@ -105,6 +105,8 @@ class Selector(Qt.QDialog, TaurusBaseWidget):
         self.userView = settings.value('Preferences/UserView',
                                        'CheckBoxes Dis')
         self.rowMax = int(settings.value('Preferences/RowMax', 16))
+        if not self.rowMax:
+            self.rowMax = 16 
         self.displayStatus = int(settings.value('Preferences/DisplayStatus',
                                                 2))
 
@@ -182,8 +184,6 @@ class Selector(Qt.QDialog, TaurusBaseWidget):
             self.ui.devWriterLineEdit.hide()
             self.ui.devConfigPushButton.hide()
             self.ui.groupsPushButton.hide()
-#            self.ui.devSettingsLineEdit.setReadOnly(True)
-#            self.ui.mntGrpLineEdit.setReadOnly(True)
 
         if not self.__standalone:
             self.ui.mntServerLineEdit.hide()
@@ -216,6 +216,13 @@ class Selector(Qt.QDialog, TaurusBaseWidget):
                 spacer.changeSize(
                     0, 0, Qt.QSizePolicy.Minimum)
 
+        self.ui.defaultPushButton = Qt.QPushButton()
+#        self.ui.defaultPushButton.resize(0,0)
+        self.ui.defaultPushButton.setDefault(True)
+#        self.ui.defaultPushButton.setAutoDefault(True)
+        layout.addWidget(self.ui.defaultPushButton)
+        self.ui.defaultPushButton.hide()
+
         flayout = Qt.QHBoxLayout(self.ui.timerButtonFrame)
         flayout.setContentsMargins(0, 0, 0, 0)
         self.ui.timerAddPushButton = Qt.QPushButton("+")
@@ -228,9 +235,6 @@ class Selector(Qt.QDialog, TaurusBaseWidget):
         self.ui.statusLabel.setAutoFillBackground(True)
         self.ui.statusLabel.setSizePolicy(Qt.QSizePolicy.Expanding,
                                           Qt.QSizePolicy.Fixed)
-#        self.ui.statusLabel.setFrameShape(Qt.QFrame.StyledPanel)
-#        self.ui.statusLabel.setFrameShadow(Qt.QFrame.Raised)
-#        self.ui.statusLabel.setAlignment(Qt.Qt.AlignHCenter)
 
         self.ui.statusLabel.setStyleSheet(
             "background-color:white;border-style: outset; "

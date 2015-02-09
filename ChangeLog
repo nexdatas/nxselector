@@ -1,4 +1,9 @@
 2015-02-09 Jan Kotanski <jankotan@gmail.com>
+	* unsetting defaultButton
+	* skip mntgrp change action if mntgrp is not changed
+	* tagged as 1.10.2
+
+2015-02-09 Jan Kotanski <jankotan@gmail.com>
 	* setting dirty on changing order
 	* tagged as 1.10.1
 
