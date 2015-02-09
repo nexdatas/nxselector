@@ -1,4 +1,8 @@
 2015-02-09 Jan Kotanski <jankotan@gmail.com>
+	* setting dirty on changing order
+	* tagged as 1.10.1
+
+2015-02-09 Jan Kotanski <jankotan@gmail.com>
 	* addding setting channel order
 	* adding setting channel order
 	* asking if import mntgrp on mntgtp name change

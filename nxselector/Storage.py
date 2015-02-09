@@ -203,6 +203,7 @@ class Storage(object):
         dform.exec_()
         if dform.dirty:
             self.state.orderedchannels = list(dform.channels)
+            self.ui.storage.emit(Qt.SIGNAL("dirty"))
 
     def __groups(self):
         dform = GroupsDlg(self.ui.storage)
