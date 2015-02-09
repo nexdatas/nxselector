@@ -1,3 +1,10 @@
+2015-02-09 Jan Kotanski <jankotan@gmail.com>
+	* addding setting channel order
+	* adding setting channel order
+	* asking if import mntgrp on mntgtp name change
+	* dedicated to use with NXSRecSelector 1.10.0 or above
+	* tagged as 1.10.0
+
 2015-02-05 Jan Kotanski <jankotan@gmail.com>
 	* fix selecting component datasources
 	* tagged as 1.9.6

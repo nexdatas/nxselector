@@ -85,6 +85,8 @@ class ServerState(object):
         self.avdslist = []
         self.vrcpdict = {}
 
+        self.orderedchannels = []
+
         self.configvars = {}
         self.datarecord = {}
         self.fullnames = {}
@@ -157,12 +159,13 @@ class ServerState(object):
         self.labelshapes = self.loadDict("labelShapes")
         self.labeltypes = self.loadDict("labelTypes")
         self.nodisplay = self.loadList("hiddenElements", True)
+        self.orderedchannels = self.loadList("orderedChannels", True)
         self.cpgroup = self.loadDict("componentGroup")
         self.avcplist = self.getList("availableComponents")
         self.avdslist = self.getList("availableDataSources")
         self.acpgroup = self.loadDict("automaticComponentGroup")
         self.acplist = self.loadList("automaticComponents")
-        ## new
+
         self.adslist = self.loadList("automaticDataSources", True)
         self.atlist = list(self.loadList("availableTimers"))
         self.mcplist = self.getList("mandatoryComponents")
@@ -261,6 +264,7 @@ class ServerState(object):
         self.storeDict("labelShapes", self.labelshapes)
         self.storeDict("labelTypes", self.labeltypes)
         self.storeList("hiddenElements", self.nodisplay)
+        self.storeList("orderedChannels", self.orderedchannels)
         self.storeDict("componentGroup", self.cpgroup)
         self.storeDict("dataRecord", self.datarecord)
         self.storeDict("configVariables", self.configvars)

@@ -28,6 +28,7 @@ except:
 
 from .EdListDlg import EdListDlg
 from .GroupsDlg import GroupsDlg
+from .OrderDlg import OrderDlg
 from .PropertiesDlg import PropertiesDlg
 
 import logging
@@ -68,7 +69,7 @@ class Storage(object):
                                    Qt.SIGNAL("clicked()"), self.__delTimer)
         self.ui.storage.disconnect(self.ui.mntGrpLineEdit,
                                    Qt.SIGNAL("editingFinished()"),
-                                   self.apply)
+                                   self.__mntgrp_changed)
         self.ui.storage.disconnect(self.ui.mntServerLineEdit,
                                    Qt.SIGNAL("editingFinished()"), self.apply)
 
@@ -101,6 +102,9 @@ class Storage(object):
         self.ui.storage.disconnect(self.ui.labelsPushButton,
                                    Qt.SIGNAL("clicked()"),
                                    self.__labels)
+        self.ui.storage.disconnect(self.ui.orderPushButton,
+                                   Qt.SIGNAL("clicked()"),
+                                   self.__order)
         self.ui.storage.disconnect(self.ui.groupsPushButton,
                                    Qt.SIGNAL("clicked()"),
                                    self.__groups)
@@ -127,7 +131,7 @@ class Storage(object):
                                 Qt.SIGNAL("clicked()"), self.__addTimer)
         self.ui.storage.connect(self.ui.mntGrpLineEdit,
                                 Qt.SIGNAL("editingFinished()"),
-                                self.apply)
+                                self.__mntgrp_changed)
         self.ui.storage.connect(self.ui.mntServerLineEdit,
                                 Qt.SIGNAL("editingFinished()"), self.apply)
 
@@ -160,6 +164,9 @@ class Storage(object):
         self.ui.storage.connect(self.ui.labelsPushButton,
                                 Qt.SIGNAL("clicked()"),
                                 self.__labels)
+        self.ui.storage.connect(self.ui.orderPushButton,
+                                Qt.SIGNAL("clicked()"),
+                                self.__order)
 
         self.ui.storage.connect(self.ui.groupsPushButton,
                                 Qt.SIGNAL("clicked()"),
@@ -187,6 +194,15 @@ class Storage(object):
         dform.exec_()
         if dform.dirty:
             self.ui.storage.emit(Qt.SIGNAL("reset"))
+
+    def __order(self):
+        dform = OrderDlg(self.ui.storage)
+        dform.channels = list(self.state.orderedchannels)
+
+        dform.createGUI()
+        dform.exec_()
+        if dform.dirty:
+            self.state.orderedchannels = list(dform.channels)
 
     def __groups(self):
         dform = GroupsDlg(self.ui.storage)
@@ -364,6 +380,26 @@ class Storage(object):
                 self.state.timers.append(timer)
             elif self.state.timers[nid] != timer:
                 self.state.timers[nid] = timer
+
+    def __mntgrp_changed(self):
+        replay = Qt.QMessageBox.question(
+            self.ui.preferences,
+            "NXSSelector: Name "
+            "of Measument Group has been changed.",
+            "Would you like to import MntGrp? ",
+            Qt.QMessageBox.Yes | Qt.QMessageBox.No)
+
+        if replay == Qt.QMessageBox.Yes:
+            self.disconnectSignals()
+            if not str(self.ui.mntGrpLineEdit.text()):
+                self.ui.mntGrpLineEdit.setFocus()
+                self.connectSignals()
+                return
+            self.state.mntgrp = str(self.ui.mntGrpLineEdit.text())
+            self.state.storeData("mntGrp", self.state.mntgrp)
+            self.ui.storage.emit(Qt.SIGNAL("resetAll"))
+        else:
+            self.apply()
 
     def apply(self):
         logger.debug("updateForm apply")

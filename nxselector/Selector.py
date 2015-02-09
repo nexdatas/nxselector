@@ -286,6 +286,8 @@ class Selector(Qt.QDialog, TaurusBaseWidget):
         self.connect(self.ui.storage, Qt.SIGNAL("dirty"), self.setDirty)
         self.connect(self.ui.storage, Qt.SIGNAL("reset"),
                      self.resetViews)
+        self.connect(self.ui.storage, Qt.SIGNAL("resetAll"),
+                     self.resetAll)
         self.connect(self.ui.storage, Qt.SIGNAL("updateGroups"),
                      self.updateGroups)
 
