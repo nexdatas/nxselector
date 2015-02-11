@@ -83,6 +83,7 @@ class ServerState(object):
         self.description = []
         self.avcplist = []
         self.avdslist = []
+        self.avmglist = []
         self.vrcpdict = {}
 
         self.orderedchannels = []
@@ -163,6 +164,7 @@ class ServerState(object):
         self.cpgroup = self.loadDict("componentGroup")
         self.avcplist = self.getList("availableComponents")
         self.avdslist = self.getList("availableDataSources")
+        self.avmglist = self.getList("availableMeasurementGroups")
         self.acpgroup = self.loadDict("automaticComponentGroup")
         self.acplist = self.loadList("automaticComponents")
 

@@ -69,7 +69,7 @@ class Selector(Qt.QDialog, TaurusBaseWidget):
         self.__door = door
         self.__standalone = standalone
 
-        self.__resetFlag = True
+        self.__progressFlag = False
         self.__doortoupdateFlag = False
         self.__servertoupdateFlag = False
 
@@ -106,7 +106,7 @@ class Selector(Qt.QDialog, TaurusBaseWidget):
                                        'CheckBoxes Dis')
         self.rowMax = int(settings.value('Preferences/RowMax', 16))
         if not self.rowMax:
-            self.rowMax = 16 
+            self.rowMax = 16
         self.displayStatus = int(settings.value('Preferences/DisplayStatus',
                                                 2))
 
@@ -115,6 +115,7 @@ class Selector(Qt.QDialog, TaurusBaseWidget):
         if self.userView not in self.preferences.views:
             self.userView = 'CheckBoxes Dis'
         self.storage = Storage(self.ui, self.state)
+
         self.selectable = Selectable(
             self.ui, self.state,
             self.preferences.views[self.userView],
@@ -165,7 +166,7 @@ class Selector(Qt.QDialog, TaurusBaseWidget):
             self.setModel(self.__model)
         if self.__doortoupdateFlag:
             self.updateDoorName(self.__door)
-            
+
         logger.debug("settings END")
 
     ##  creates GUI
@@ -247,6 +248,11 @@ class Selector(Qt.QDialog, TaurusBaseWidget):
         for tab in self.tabs:
             tab.reset()
 
+        self.ui.mntGrpComboBox.setInsertPolicy(
+            self.ui.mntGrpComboBox.InsertAtTop)
+
+        self.storage.updateMntGrpComboBox()
+        
         cid = self.ui.viewComboBox.findText(Qt.QString(self.userView))
         if cid >= 0:
             self.ui.viewComboBox.setCurrentIndex(cid)
@@ -304,13 +310,12 @@ class Selector(Qt.QDialog, TaurusBaseWidget):
         self.setDirty()
         self.selectable.updateViews()
 
-        
     def setModel(self, model):
         if str(model) != str(self.state.server):
             if self.__progress:
                 self.__model = model
                 self.__servertoupdateFlag = True
-            elif self.__servertoupdateFlag: 
+            elif self.__servertoupdateFlag:
                 self.ui.devSettingsLineEdit.setText(model)
                 self.preferences.changeServer(False)
                 self.__servertoupdateFlag = False
@@ -402,7 +407,6 @@ class Selector(Qt.QDialog, TaurusBaseWidget):
             logger.debug("escape key event")
             self.__saveSettings()
         Qt.QDialog.keyPressEvent(self, event)
-        
 
     def closeEvent(self, event):
         logger.debug("close event")
@@ -509,6 +513,8 @@ class Selector(Qt.QDialog, TaurusBaseWidget):
         logger.debug("waiting for Thread ENDED")
 
     def runProgress(self, commands, onclose="closeReset"):
+        if self.__progress:
+            return
         self.__commandthread = CommandThread(self.state, commands, self)
         oncloseaction = getattr(self, onclose)
         self.__commandthread.finished.connect(
@@ -600,8 +606,8 @@ class Selector(Qt.QDialog, TaurusBaseWidget):
             logger.debug("saving configuration to %s" % filename)
             if filename:
                 if len(filename) < 4 or filename[-4] != '.' or \
-                        (len(filename) > 4 and  filename[-5] != '.'):
-                    filename = filename + '.json' 
+                        (len(filename) > 4 and filename[-5] != '.'):
+                    filename = filename + '.json'
 
                 jconf = self.state.getConfiguration()
                 self.cnfFile = filename
@@ -631,14 +637,13 @@ class Selector(Qt.QDialog, TaurusBaseWidget):
         self.closeReset()
         self.ui.fileScanIDSpinBox.setValue(self.state.scanID)
         self.setDirty(False)
-        
 
     def apply(self):
         logger.debug("apply")
         try:
             conf = self.state.updateMntGrp()
             self.emit(Qt.SIGNAL('experimentConfigurationChanged'), conf)
-            self.runProgress(["updateControllers", "importMntGrp"], 
+            self.runProgress(["updateControllers", "importMntGrp"],
                              "closeApply")
         except Exception as e:
             import traceback

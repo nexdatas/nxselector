@@ -1,3 +1,12 @@
+2015-02-11 Jan Kotanski <jankotan@gmail.com>
+	* adding ClearAll button
+	* adding filter for channel order
+	* adding searcher for scanDir
+	* bloking overlaping runnning Processes
+	* adding checkbox for mntgrp
+	* dedicated to use with NXSRecSelector 1.11.0 or above
+	* tagged as 1.11.0
+
 2015-02-09 Jan Kotanski <jankotan@gmail.com>
 	* unsetting defaultButton
 	* skip mntgrp change action if mntgrp is not changed

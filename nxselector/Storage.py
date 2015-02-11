@@ -45,6 +45,7 @@ class Storage(object):
         self.state = state
         self.__layout = None
         self.__tWidgets = []
+        self.__onlyselected = False
 
         self.__moduleLabel = 'module'
 
@@ -53,8 +54,6 @@ class Storage(object):
                                    Qt.SIGNAL("editingFinished()"), self.apply)
         self.ui.storage.disconnect(self.ui.fileScanDirToolButton,
                                    Qt.SIGNAL("pressed()"), self.__setDir)
-#        self.ui.storage.disconnect(self.ui.fileScanIDSpinBox,
-#                                Qt.SIGNAL("valueChanged(int)"), self.apply)
         self.ui.storage.disconnect(self.ui.fileScanLineEdit,
                                    Qt.SIGNAL("editingFinished()"), self.apply)
                                 # measurement group
@@ -69,8 +68,8 @@ class Storage(object):
                                    Qt.SIGNAL("clicked()"), self.__addTimer)
         self.ui.storage.disconnect(self.ui.timerDelPushButton,
                                    Qt.SIGNAL("clicked()"), self.__delTimer)
-        self.ui.storage.disconnect(self.ui.mntGrpLineEdit,
-                                   Qt.SIGNAL("editingFinished()"),
+        self.ui.storage.disconnect(self.ui.mntGrpComboBox,
+                                   Qt.SIGNAL("currentIndexChanged(QString)"),
                                    self.__mntgrp_changed)
         self.ui.storage.disconnect(self.ui.mntServerLineEdit,
                                    Qt.SIGNAL("editingFinished()"), self.apply)
@@ -133,8 +132,8 @@ class Storage(object):
                                 Qt.SIGNAL("clicked()"), self.__delTimer)
         self.ui.storage.connect(self.ui.timerAddPushButton,
                                 Qt.SIGNAL("clicked()"), self.__addTimer)
-        self.ui.storage.connect(self.ui.mntGrpLineEdit,
-                                Qt.SIGNAL("editingFinished()"),
+        self.ui.storage.connect(self.ui.mntGrpComboBox,
+                                Qt.SIGNAL("currentIndexChanged(QString)"),
                                 self.__mntgrp_changed)
         self.ui.storage.connect(self.ui.mntServerLineEdit,
                                 Qt.SIGNAL("editingFinished()"), self.apply)
@@ -146,8 +145,6 @@ class Storage(object):
                                 Qt.SIGNAL("editingFinished()"), self.apply)
 
         # dynamic component group
-#        self.ui.storage.connect(self.ui.dcEnableCheckBox,
-#                                Qt.SIGNAL("clicked(bool)"), self.apply)
         self.ui.storage.connect(self.ui.dcLinksCheckBox,
                                 Qt.SIGNAL("clicked(bool)"), self.apply)
         self.ui.storage.connect(self.ui.dcPathLineEdit,
@@ -176,6 +173,17 @@ class Storage(object):
                                 Qt.SIGNAL("clicked()"),
                                 self.__groups)
 
+    def updateMntGrpComboBox(self):
+        self.disconnectSignals()
+        self.ui.mntGrpComboBox.clear()
+        for mg in self.state.avmglist:
+            self.ui.mntGrpComboBox.addItem(mg)
+        if self.state.mntgrp not in self.state.avmglist:
+            self.ui.mntGrpComboBox.addItem(mg)
+        ind = self.ui.mntGrpComboBox.findText(self.state.mntgrp)
+        self.ui.mntGrpComboBox.setCurrentIndex(ind)
+        self.connectSignals()
+
     def __variables(self):
         dform = EdListDlg(self.ui.storage)
         dform.widget.record = self.state.configvars
@@ -202,9 +210,17 @@ class Storage(object):
     def __order(self):
         dform = OrderDlg(self.ui.storage)
         dform.channels = list(self.state.orderedchannels)
+        dform.selected = list(
+            set([cp for cp in self.state.cpgroup.keys()
+                 if self.state.cpgroup[cp]])
+            | set([ds for ds in self.state.dsgroup.keys()
+                   if self.state.dsgroup[ds]])
+            | set(self.state.timers))
+        dform.onlyselected = self.__onlyselected
 
         dform.createGUI()
         dform.exec_()
+        self.__onlyselected = dform.onlyselected
         if dform.dirty:
             self.state.orderedchannels = list(dform.channels)
             self.ui.storage.emit(Qt.SIGNAL("dirty"))
@@ -358,7 +374,7 @@ class Storage(object):
 
         # measurement group
         if self.state.mntgrp is not None:
-            self.ui.mntGrpLineEdit.setText(self.state.mntgrp)
+            self.ui.mntGrpComboBox.setEditText(self.state.mntgrp)
         self.ui.mntServerLineEdit.setText(self.state.door)
 
         # device group
@@ -387,7 +403,8 @@ class Storage(object):
                 self.state.timers[nid] = timer
 
     def __mntgrp_changed(self):
-        if str(self.ui.mntGrpLineEdit.text()) == self.state.mntgrp:
+        logger.debug("mntgrp changed")
+        if str(self.ui.mntGrpComboBox.currentText()) == self.state.mntgrp:
             return
         self.disconnectSignals()
         replay = Qt.QMessageBox.question(
@@ -398,17 +415,18 @@ class Storage(object):
             Qt.QMessageBox.Yes | Qt.QMessageBox.No)
 
         if replay == Qt.QMessageBox.Yes:
-            if not str(self.ui.mntGrpLineEdit.text()):
-                self.ui.mntGrpLineEdit.setFocus()
+            if not str(self.ui.mntGrpComboBox.currentText()):
+                self.ui.mntGrpComboBox.setFocus()
                 self.connectSignals()
                 return
-            self.state.mntgrp = str(self.ui.mntGrpLineEdit.text())
+            self.state.mntgrp = str(self.ui.mntGrpComboBox.currentText())
             self.state.storeData("mntGrp", self.state.mntgrp)
             self.connectSignals()
             self.ui.storage.emit(Qt.SIGNAL("resetAll"))
         else:
             self.connectSignals()
             self.apply()
+        logger.debug("mntgrp changed end")
 
     def __setDir(self):
         dirname = str(Qt.QFileDialog.getExistingDirectory(
@@ -417,16 +435,16 @@ class Storage(object):
                 self.state.scanDir))
         if str(dirname) and str(dirname) != str(self.state.scanDir):
             self.ui.fileScanDirLineEdit.setText(dirname)
-            self.state.scanDir = str(dirname) 
+            self.state.scanDir = str(dirname)
 
     def apply(self):
         logger.debug("updateForm apply")
         self.disconnectSignals()
-        if not str(self.ui.mntGrpLineEdit.text()):
-            self.ui.mntGrpLineEdit.setFocus()
+        if not str(self.ui.mntGrpComboBox.currentText()):
+            self.ui.mntGrpComboBox.setFocus()
             self.connectSignals()
             return
-        self.state.mntgrp = str(self.ui.mntGrpLineEdit.text())
+        self.state.mntgrp = str(self.ui.mntGrpComboBox.currentText())
 
         logger.debug("apply Timers")
         self.__applyTimer(self.ui.mntTimerComboBox, 0)

@@ -476,6 +476,9 @@
                      </item>
                      <item>
                       <layout class="QGridLayout" name="gridLayout_2">
+                       <item row="3" column="2">
+                        <widget class="QLineEdit" name="mntServerLineEdit"/>
+                       </item>
                        <item row="4" column="0">
                         <widget class="QLabel" name="devConfigLabel">
                          <property name="text">
@@ -507,13 +510,7 @@
                          <property name="text">
                           <string>MntGrp:</string>
                          </property>
-                         <property name="buddy">
-                          <cstring>mntGrpLineEdit</cstring>
-                         </property>
                         </widget>
-                       </item>
-                       <item row="1" column="2">
-                        <widget class="QLineEdit" name="mntGrpLineEdit"/>
                        </item>
                        <item row="4" column="2">
                         <widget class="QLineEdit" name="devConfigLineEdit"/>
@@ -541,8 +538,15 @@
                          </property>
                         </widget>
                        </item>
-                       <item row="3" column="2">
-                        <widget class="QLineEdit" name="mntServerLineEdit"/>
+                       <item row="1" column="2">
+                        <widget class="QComboBox" name="mntGrpComboBox">
+                         <property name="enabled">
+                          <bool>true</bool>
+                         </property>
+                         <property name="editable">
+                          <bool>true</bool>
+                         </property>
+                        </widget>
                        </item>
                       </layout>
                      </item>
@@ -1084,7 +1088,6 @@
   <tabstop>fileScanLineEdit</tabstop>
   <tabstop>fileScanDirLineEdit</tabstop>
   <tabstop>fileScanIDSpinBox</tabstop>
-  <tabstop>mntGrpLineEdit</tabstop>
   <tabstop>labelsPushButton</tabstop>
   <tabstop>dcLinksCheckBox</tabstop>
   <tabstop>dcPathLineEdit</tabstop>

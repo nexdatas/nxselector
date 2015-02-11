@@ -41,13 +41,11 @@ class OrderDlg(Qt.QDialog):
         self.ui = Ui_OrderDlg()
         self.dirty = False
         self.channels = []
-
-
+        self.selected = []
+        self.onlyselected = False
 
     def __setDirty(self):
         self.dirty = True
-
-
 
     def createGUI(self):
         self.ui.setupUi(self)
@@ -59,16 +57,25 @@ class OrderDlg(Qt.QDialog):
             "&Up", Qt.QDialogButtonBox.ActionRole)
         self.ui.downPushButton = self.ui.upDownButtonBox.addButton(
             "&Down", Qt.QDialogButtonBox.ActionRole)
+        self.ui.selPushButton = self.ui.closeButtonBox.addButton(
+            "&Only Selected", Qt.QDialogButtonBox.ActionRole)
+        self.ui.selPushButton.setCheckable(True)
+        self.ui.selPushButton.setChecked(self.onlyselected)
 
         if self.channels:
             item = self.channels[0]
         else:
             item = None
+        self.selected = list(set(self.channels) & set(self.selected))
+
         self.__populateList(item)
         self.connect(self.ui.upPushButton, Qt.SIGNAL("clicked()"),
                      self.__up)
         self.connect(self.ui.downPushButton, Qt.SIGNAL("clicked()"),
                      self.__down)
+
+        self.connect(self.ui.selPushButton, Qt.SIGNAL("clicked()"),
+                     self.__setfilter)
 
         self.connect(
             self.ui.closeButtonBox.button(Qt.QDialogButtonBox.Close),
@@ -77,11 +84,13 @@ class OrderDlg(Qt.QDialog):
         self.ui.closePushButton.show()
         self.connect(self, Qt.SIGNAL("dirty"), self.__setDirty)
 
-
     def __populateList(self, selectedChannel=None):
         selected = None
         self.ui.listWidget.clear()
         for ch in self.channels:
+            if self.onlyselected:
+                if ch not in self.selected:
+                    continue
             item = Qt.QListWidgetItem(Qt.QString(ch))
             self.ui.listWidget.addItem(item)
             if selectedChannel is not None and selectedChannel == ch:
@@ -93,24 +102,51 @@ class OrderDlg(Qt.QDialog):
     def __currentName(self):
         name = None
         row = self.ui.listWidget.currentRow()
-        if len(self.channels) > row and row >= 0:
-            name = self.channels[row]
+        if not self.onlyselected:
+            if len(self.channels) > row and row >= 0:
+                name = self.channels[row]
+        else:
+            index = -1
+            for i, channel in enumerate(self.channels):
+                if channel in self.selected:
+                    index += 1
+                if row == index:
+                    name = self.channels[i]
+                    break
         return name
 
     def __up(self):
         name = self.__currentName()
+        if not name:
+            return
         ni = self.channels.index(name)
         if ni > 0:
-            self.channels[ni], self.channels[ni-1] = \
-                self.channels[ni-1], self.channels[ni]  
+            nim1 = ni - 1
+            if self.onlyselected:
+                while nim1 and self.channels[nim1] not in self.selected:
+                    nim1 -= 1
+            self.channels[ni], self.channels[nim1] = \
+                self.channels[nim1], self.channels[ni]
             self.emit(Qt.SIGNAL("dirty"))
             self.__populateList(name)
 
     def __down(self):
         name = self.__currentName()
+        if not name:
+            return
         ni = self.channels.index(name)
         if ni < len(self.channels) - 1:
-            self.channels[ni], self.channels[ni+1] = \
-                self.channels[ni+1], self.channels[ni]  
+            nip1 = ni + 1
+            if self.onlyselected:
+                while nip1 < len(self.channels) - 1 \
+                        and self.channels[nip1] not in self.selected:
+                    nip1 += 1
+            self.channels[ni], self.channels[nip1] = \
+                self.channels[nip1], self.channels[ni]
             self.emit(Qt.SIGNAL("dirty"))
             self.__populateList(name)
+
+    def __setfilter(self):
+        self.onlyselected = bool(self.ui.selPushButton.isChecked())
+        name = self.__currentName()
+        self.__populateList(name)

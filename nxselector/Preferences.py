@@ -31,7 +31,6 @@ try:
 except:
     from taurus.qt import Qt
 
-
 from .Views import (TableView, OneTableView,
                     CheckerView, RadioView, ButtonView,
                     LeftCheckerView, LeftRadioView,
@@ -61,7 +60,7 @@ class Preferences(object):
         # frames/columns/groups
         self.frameshelp = [
             Qt.QString(
-                '[[[["Components",1],["Timers",5]]],[[["Counters", 4]],' 
+                '[[[["Components",1],["Timers",5]]],[[["Counters", 4]],'
                 + '[["ADC",3]],[["VFC",7]]],[[["MCA/SCA",6],["Others",0]]]]'),
             Qt.QString('[[[["Components",1],["Timers",5]]],[[["Counters", 4]],'
                        + '[["ADC",3]]],[[["MCA/SCA",6],["Devices",0]]]]'),
@@ -117,7 +116,7 @@ class Preferences(object):
             }
 
         self.maxHelp = 10
-        self.profFile = os.getcwd()    
+        self.profFile = os.getcwd()
 
     def __setmgroups(self, groups):
         try:
@@ -130,14 +129,12 @@ class Preferences(object):
         except:
             self.__mgroups = "{}"
 
-
     def __getmgroups(self):
         return self.__mgroups
 
       ## the json data string
     mgroups = property(__getmgroups, __setmgroups,
-                       doc='device groups')     
-
+                       doc='device groups')
 
     def __setframes(self, frames):
         try:
@@ -155,13 +152,12 @@ class Preferences(object):
         except Exception as e:
             print str(e)
 
-
     def __getframes(self):
         return self.__frames
 
       ## the json data string
     frames = property(__getframes, __setframes,
-                       doc='detector frames')     
+                       doc='detector frames')
 
     def disconnectSignals(self):
         self.ui.preferences.disconnect(
@@ -226,7 +222,6 @@ class Preferences(object):
         self.connectSignals()
         logger.debug("reset preferences ended")
 
-
     def changeServer(self, ask=True):
         self.disconnectSignals()
         logger.debug("server changing")
@@ -244,10 +239,10 @@ class Preferences(object):
             if replay == Qt.QMessageBox.Yes:
                 try:
                     if server == 'module':
-                            self.state.server = ''
-                            self.state.setServer()
-                            self.state.fetchSettings()
-                            self.addHint(server, self.serverhelp)
+                        self.state.server = ''
+                        self.state.setServer()
+                        self.state.fetchSettings()
+                        self.addHint(server, self.serverhelp)
                     else:
                         if not server:
                             self.state.findServer()
@@ -267,7 +262,6 @@ class Preferences(object):
                 self.ui.devSettingsLineEdit.setText(Qt.QString(
                         self.state.server if self.state.server else 'module'))
         self.connectSignals()
-    
 
     def on_devSettingsLineEdit_editingFinished(self):
         logger.debug("on_devSettingsLineEdit_editingFinished")
@@ -279,7 +273,7 @@ class Preferences(object):
         if qstring not in hints:
             hints.insert(0, string)
         if self.maxHelp < len(hints):
-            hints.pop(len(hints)-1)
+            hints.pop(len(hints) - 1)
 
     def on_layoutLineEdits_editingFinished(self):
         logger.debug("on_layoutLineEdit_editingFinished")
@@ -290,7 +284,7 @@ class Preferences(object):
         try:
             if not frames:
                 frames = '[]'
-            oldframes = self.frames    
+            oldframes = self.frames
             self.frames = frames
             self.addHint(self.frames, self.frameshelp)
 
@@ -377,8 +371,8 @@ class Preferences(object):
             logger.debug("saving profile to %s" % filename)
             if filename:
                 if len(filename) < 4 or filename[-4] != '.' or \
-                        (len(filename) > 4 and  filename[-5] != '.'):
-                    filename = filename + '.json' 
+                        (len(filename) > 4 and filename[-5] != '.'):
+                    filename = filename + '.json'
 
                 self.profFile = filename
                 profile = {}

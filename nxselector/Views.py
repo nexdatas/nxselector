@@ -127,7 +127,6 @@ class CheckerView(Qt.QWidget):
             self.selectedWidgetRow = None
         self.show()
 
-
     def __findRowNumber(self, rowMax, rowCount):
         rowNo = rowMax
         if rowNo < 1:
@@ -143,7 +142,7 @@ class CheckerView(Qt.QWidget):
         if not self.model is None:
             rowCount = self.model.rowCount()
             rowNo = self.__findRowNumber(self.rowMax, rowCount)
-            
+
             for row in range(rowCount):
 
                 cb, ds = self.__setWidgets(row)
