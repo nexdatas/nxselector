@@ -51,6 +51,8 @@ class Storage(object):
     def disconnectSignals(self):
         self.ui.storage.disconnect(self.ui.fileScanDirLineEdit,
                                    Qt.SIGNAL("editingFinished()"), self.apply)
+        self.ui.storage.disconnect(self.ui.fileScanDirToolButton,
+                                   Qt.SIGNAL("pressed()"), self.__setDir)
 #        self.ui.storage.disconnect(self.ui.fileScanIDSpinBox,
 #                                Qt.SIGNAL("valueChanged(int)"), self.apply)
         self.ui.storage.disconnect(self.ui.fileScanLineEdit,
@@ -111,6 +113,8 @@ class Storage(object):
 
     def connectSignals(self):
         self.disconnectSignals()
+        self.ui.storage.connect(self.ui.fileScanDirToolButton,
+                                Qt.SIGNAL("pressed()"), self.__setDir)
         self.ui.storage.connect(self.ui.fileScanDirLineEdit,
                                 Qt.SIGNAL("editingFinished()"), self.apply)
 #        self.ui.storage.connect(self.ui.fileScanIDSpinBox,
@@ -405,6 +409,15 @@ class Storage(object):
         else:
             self.connectSignals()
             self.apply()
+
+    def __setDir(self):
+        dirname = str(Qt.QFileDialog.getExistingDirectory(
+                self.ui.storage,
+                "Scan Directory",
+                self.state.scanDir))
+        if str(dirname) and str(dirname) != str(self.state.scanDir):
+            self.ui.fileScanDirLineEdit.setText(dirname)
+            self.state.scanDir = str(dirname) 
 
     def apply(self):
         logger.debug("updateForm apply")

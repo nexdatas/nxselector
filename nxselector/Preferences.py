@@ -376,6 +376,10 @@ class Preferences(object):
                     "JSON files (*.json);;All files (*)"))
             logger.debug("saving profile to %s" % filename)
             if filename:
+                if len(filename) < 4 or filename[-4] != '.' or \
+                        (len(filename) > 4 and  filename[-5] != '.'):
+                    filename = filename + '.json' 
+
                 self.profFile = filename
                 profile = {}
                 profile["server"] = str(self.ui.devSettingsLineEdit.text())

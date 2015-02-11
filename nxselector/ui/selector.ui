@@ -54,6 +54,13 @@
            <widget class="QLineEdit" name="fileScanDirLineEdit"/>
           </item>
           <item>
+           <widget class="QToolButton" name="fileScanDirToolButton">
+            <property name="text">
+             <string>...</string>
+            </property>
+           </widget>
+          </item>
+          <item>
            <widget class="QLabel" name="fileScanIDLabel">
             <property name="text">
              <string>Scan ID:</string>

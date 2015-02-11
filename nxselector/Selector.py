@@ -197,6 +197,8 @@ class Selector(Qt.QDialog, TaurusBaseWidget):
         self.ui.buttonBox.setSizePolicy(Qt.QSizePolicy.Expanding,
                                         Qt.QSizePolicy.Fixed)
 
+        self.ui.clearAllPushButton = self.ui.buttonBox.addButton(
+            "ClearAll", Qt.QDialogButtonBox.ActionRole)
         self.ui.statusLabel = self.ui.buttonBox.addButton(
             "", Qt.QDialogButtonBox.ActionRole)
         self.ui.statusLabel.setEnabled(False)
@@ -257,6 +259,8 @@ class Selector(Qt.QDialog, TaurusBaseWidget):
         if self.__standalone:
             self.connect(self.ui.buttonBox.button(Qt.QDialogButtonBox.Close),
                          Qt.SIGNAL("pressed()"), self.close)
+        self.connect(self.ui.clearAllPushButton,
+                     Qt.SIGNAL("pressed()"), self.__clearAllClicked)
 
         self.connect(self.ui.profileButtonBox.button(Qt.QDialogButtonBox.Open),
                      Qt.SIGNAL("pressed()"), self.cnfLoad)
@@ -554,6 +558,14 @@ class Selector(Qt.QDialog, TaurusBaseWidget):
         self.ui.buttonBox.button(Qt.QDialogButtonBox.Reset).setFocus()
         self.resetAll()
 
+    def __clearAllClicked(self):
+        for ds in self.state.dsgroup.keys():
+            self.state.dsgroup[ds] = False
+        for ds in self.state.cpgroup.keys():
+            self.state.cpgroup[ds] = False
+        self.resetViews()
+        self.setDirty()
+
     def cnfLoad(self):
         try:
             filename = str(Qt.QFileDialog.getOpenFileName(
@@ -586,6 +598,10 @@ class Selector(Qt.QDialog, TaurusBaseWidget):
                     "JSON files (*.json);;All files (*)"))
             logger.debug("saving configuration to %s" % filename)
             if filename:
+                if len(filename) < 4 or filename[-4] != '.' or \
+                        (len(filename) > 4 and  filename[-5] != '.'):
+                    filename = filename + '.json' 
+
                 jconf = self.state.getConfiguration()
                 self.cnfFile = filename
 
