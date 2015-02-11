@@ -198,7 +198,8 @@ class Selector(Qt.QDialog, TaurusBaseWidget):
                                         Qt.QSizePolicy.Fixed)
 
         self.ui.clearAllPushButton = self.ui.buttonBox.addButton(
-            "ClearAll", Qt.QDialogButtonBox.ActionRole)
+            Qt.QDialogButtonBox.RestoreDefaults)
+        self.ui.clearAllPushButton.setText("ClearAll")
         self.ui.statusLabel = self.ui.buttonBox.addButton(
             "", Qt.QDialogButtonBox.ActionRole)
         self.ui.statusLabel.setEnabled(False)
