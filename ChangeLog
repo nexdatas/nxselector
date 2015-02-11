@@ -4,6 +4,7 @@
 	* adding searcher for scanDir
 	* bloking overlaping runnning Processes
 	* adding checkbox for mntgrp
+	* adding default .json extension to config files
 	* dedicated to use with NXSRecSelector 1.11.0 or above
 	* tagged as 1.11.0
 
