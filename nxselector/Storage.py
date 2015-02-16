@@ -407,25 +407,26 @@ class Storage(object):
         if str(self.ui.mntGrpComboBox.currentText()) == self.state.mntgrp:
             return
         self.disconnectSignals()
-        replay = Qt.QMessageBox.question(
-            self.ui.preferences,
-            "NXSSelector: Name "
-            "of Measument Group has been changed.",
-            "Would you like to import MntGrp? ",
-            Qt.QMessageBox.Yes | Qt.QMessageBox.No)
+#        replay = Qt.QMessageBox.question(
+#            self.ui.preferences,
+#            "NXSSelector: Name "
+#            "of Measument Group has been changed.",
+#            "Would you like to import MntGrp? ",
+#            Qt.QMessageBox.Yes | Qt.QMessageBox.No)#
 
-        if replay == Qt.QMessageBox.Yes:
-            if not str(self.ui.mntGrpComboBox.currentText()):
-                self.ui.mntGrpComboBox.setFocus()
-                self.connectSignals()
-                return
-            self.state.mntgrp = str(self.ui.mntGrpComboBox.currentText())
-            self.state.storeData("mntGrp", self.state.mntgrp)
+#        if replay == Qt.QMessageBox.Yes:
+        if not str(self.ui.mntGrpComboBox.currentText()):
+            self.ui.mntGrpComboBox.setFocus()
             self.connectSignals()
-            self.ui.storage.emit(Qt.SIGNAL("resetAll"))
-        else:
-            self.connectSignals()
-            self.apply()
+            return
+        self.state.mntgrp = str(self.ui.mntGrpComboBox.currentText())
+        self.state.storeData("mntGrp", self.state.mntgrp)
+        self.state.fetchMntGrp()
+        self.connectSignals()
+        self.ui.storage.emit(Qt.SIGNAL("resetAll"))
+#        else:
+#            self.connectSignals()
+#            self.apply()
         logger.debug("mntgrp changed end")
 
     def __setDir(self):

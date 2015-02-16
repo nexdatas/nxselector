@@ -109,6 +109,7 @@ class Selector(Qt.QDialog, TaurusBaseWidget):
             self.rowMax = 16
         self.displayStatus = int(settings.value('Preferences/DisplayStatus',
                                                 2))
+        self.cnfFile = str(settings.value("Selector/CnfFile", "./"))
 
         ## user interface
         self.preferences = Preferences(self.ui, self.state)
@@ -139,6 +140,8 @@ class Selector(Qt.QDialog, TaurusBaseWidget):
         self.preferences.addHint(
             self.preferences.frames,
             self.preferences.frameshelp)
+
+        self.preferences.layoutFile = str(settings.value("Preferences/LayoutFile", "./"))
 
         self.selectable.mgroups = str(self.preferences.mgroups)
         self.selectable.frames = str(self.preferences.frames)
@@ -401,6 +404,11 @@ class Selector(Qt.QDialog, TaurusBaseWidget):
         settings.setValue(
             "Preferences/GroupsHints",
             Qt.QVariant(self.preferences.mgroupshelp))
+        settings.setValue(
+            "Selector/CnfFile", Qt.QVariant(self.cnfFile))
+        settings.setValue(
+            "Preferences/LayoutFile", 
+            Qt.QVariant(self.preferences.layoutFile))
 
     def keyPressEvent(self, event):
         if hasattr(event, "key") and event.key() == Qt.Qt.Key_Escape:
@@ -575,6 +583,7 @@ class Selector(Qt.QDialog, TaurusBaseWidget):
 
     def cnfLoad(self):
         try:
+            print "CNFFILE", self.cnfFile
             filename = str(Qt.QFileDialog.getOpenFileName(
                     self.ui.storage,
                     "Load Profile",
@@ -605,8 +614,8 @@ class Selector(Qt.QDialog, TaurusBaseWidget):
                     "JSON files (*.json);;All files (*)"))
             logger.debug("saving configuration to %s" % filename)
             if filename:
-                if len(filename) < 4 or filename[-4] != '.' or \
-                        (len(filename) > 4 and filename[-5] != '.'):
+                if (len(filename) < 4 or filename[-4] != '.' ) and \
+                        not (len(filename) > 5 and filename[-5] == '.'):
                     filename = filename + '.json'
 
                 jconf = self.state.getConfiguration()

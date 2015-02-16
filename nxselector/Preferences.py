@@ -116,7 +116,7 @@ class Preferences(object):
             }
 
         self.maxHelp = 10
-        self.profFile = os.getcwd()
+        self.layoutFile = os.getcwd()
 
     def __setmgroups(self, groups):
         try:
@@ -326,11 +326,11 @@ class Preferences(object):
             Qt.QFileDialog.getOpenFileName(
                 self.ui.preferences,
                 "Load Layout",
-                self.profFile,
+                self.layoutFile,
                 "JSON files (*.json);;All files (*)"))
         logger.debug("loading profile from %s" % filename)
         if filename:
-            self.profFile = filename
+            self.layoutFile = filename
             jprof = open(filename).read()
             try:
                 profile = json.loads(jprof)
@@ -366,15 +366,15 @@ class Preferences(object):
             filename = str(Qt.QFileDialog.getSaveFileName(
                     self.ui.storage,
                     "Save Layout",
-                    self.profFile,
+                    self.layoutFile,
                     "JSON files (*.json);;All files (*)"))
             logger.debug("saving profile to %s" % filename)
             if filename:
-                if len(filename) < 4 or filename[-4] != '.' or \
-                        (len(filename) > 4 and filename[-5] != '.'):
+                if (len(filename) < 4 or filename[-4] != '.' ) and \
+                        not (len(filename) > 5 and filename[-5] == '.'):
                     filename = filename + '.json'
 
-                self.profFile = filename
+                self.layoutFile = filename
                 profile = {}
                 profile["server"] = str(self.ui.devSettingsLineEdit.text())
                 profile["frames"] = str(self.ui.frameLineEdit.text())

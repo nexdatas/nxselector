@@ -149,8 +149,10 @@ class ServerState(object):
             self.server = str(server)
 
     def fetchSettings(self):
+
         if not self.__dp:
             self.setServer()
+        self.cpgroup = self.loadDict("componentGroup")
         if not self.server:
             self.__dp.importAllEnv()
         self.dsgroup = self.loadDict("dataSourceGroup")
@@ -259,7 +261,8 @@ class ServerState(object):
             self.setServer()
         self.storeEnvData()
         self.storeFileData()
-        self.storeDict("dataSourceGroup", self.dsgroup)
+        self.storeGroups()
+#        self.storeDict("dataSourceGroup", self.dsgroup)
         self.storeDict("labels", self.labels)
         self.storeDict("labelLinks", self.labellinks)
         self.storeDict("labelPaths", self.labelpaths)
@@ -267,11 +270,19 @@ class ServerState(object):
         self.storeDict("labelTypes", self.labeltypes)
         self.storeList("hiddenElements", self.nodisplay)
         self.storeList("orderedChannels", self.orderedchannels)
-        self.storeDict("componentGroup", self.cpgroup)
+#        self.storeDict("componentGroup", self.cpgroup)
         self.storeDict("dataRecord", self.datarecord)
         self.storeDict("configVariables", self.configvars)
         if not self.server:
             self.__dp.exportAllEnv()
+#        self.__dp.storeConfiguration()
+            
+
+
+    def fetchMntGrp(self):
+        if not self.__dp:
+            self.setServer()
+        self.__dp.fetchConfiguration()
 
     def updateMntGrp(self):
         if not self.mntgrp:
