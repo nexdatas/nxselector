@@ -108,6 +108,9 @@ class ServerState(object):
             raise
         logger.debug("DP %s" % type(self.__dp))
 
+        self.recorder_names = ['serialno', 'end_time', 'start_time',
+                               'point_nb', 'timestamps']
+
     def __grepServer(self):
         server = None
         try:
@@ -531,21 +534,22 @@ class ServerState(object):
                 dds[timer] = ''
         return dds
 
-    def clientRecords(self, selected=False):
+    def clientRecords(self):
         res = self.description
         dds = {}
 
         for cpg in res:
             for cp, dss in cpg.items():
                 if isinstance(dss, dict):
-                    if not selected or cp in self.cplist \
+                    if cp in self.cplist \
                             or cp in self.mcplist \
                             or cp in self.acplist:
                         for ds, values in dss.items():
                             for vl in values:
                                 if len(vl) > 1 and vl[1] == 'CLIENT':
                                     dds[ds] = vl[2]
-        return dds
+        return list(set(dds.values()) - set(self.fullnames.values())- 
+                    set(self.recorder_names))
 
     ## provides disable datasources
     ddsdict = property(__disableDataSources,

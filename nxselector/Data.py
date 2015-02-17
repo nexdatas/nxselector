@@ -43,8 +43,6 @@ class Data(object):
         self.state = state
         self.layout = None
         self.form = None
-        self.recorder_names = ['serialno', 'end_time', 'start_time',
-                               'point_nb', 'timestamps']
 
     def createGUI(self):
         self.ui.data.hide()
@@ -63,9 +61,7 @@ class Data(object):
 
         self.form = EdListWg(self.ui.data)
         self.form.record = self.state.datarecord
-        names = list(
-            set(self.state.clientRecords(True).values())
-            - set(self.state.fullnames.values()) - set(self.recorder_names))
+        names = self.state.clientRecords()
         logger.debug("NAMES: %s " % names)
         self.form.available_names = names
         self.form.createGUI()
