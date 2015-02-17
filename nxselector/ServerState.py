@@ -48,6 +48,9 @@ class ServerState(object):
 
         self.__timeout = 25000
 
+        ## server configuration
+        self.__conf = {}
+
         self.findServer(server)
 
         ## tango database
@@ -107,7 +110,7 @@ class ServerState(object):
             raise
         logger.debug("DP %s" % type(self.__dp))
 
-    def grepServer(self):
+    def __grepServer(self):
         server = None
         try:
             pipe = subprocess.Popen("ps -ef | grep 'NXSRecSelecto'",
@@ -136,7 +139,7 @@ class ServerState(object):
                 "NXSRecSelector").value_string
             if len(servers):
                 if len(servers) > 1:
-                    gserver = self.grepServer()
+                    gserver = self.__grepServer()
                     if gserver in servers:
                         self.server = str(gserver)
                 else:
@@ -148,60 +151,66 @@ class ServerState(object):
         else:
             self.server = str(server)
 
-    def fetchSettings(self):
-
+    def __fetchConfiguration(self):
         if not self.__dp:
             self.setServer()
-        self.cpgroup = self.loadDict("componentGroup")
         if not self.server:
             self.__dp.importAllEnv()
-        self.dsgroup = self.loadDict("dataSourceGroup")
-        self.labels = self.loadDict("labels")
-        self.labellinks = self.loadDict("labelLinks")
-        self.labelpaths = self.loadDict("labelPaths")
-        self.labelshapes = self.loadDict("labelShapes")
-        self.labeltypes = self.loadDict("labelTypes")
-        self.nodisplay = self.loadList("hiddenElements", True)
-        self.orderedchannels = self.loadList("orderedChannels", True)
-        self.cpgroup = self.loadDict("componentGroup")
-        self.avcplist = self.getList("availableComponents")
-        self.avdslist = self.getList("availableDataSources")
-        self.avmglist = self.getList("availableMeasurementGroups")
-        self.acpgroup = self.loadDict("automaticComponentGroup")
-        self.acplist = self.loadList("automaticComponents")
+        self.__conf = json.loads(self.__dp.configuration)
 
-        self.adslist = self.loadList("automaticDataSources", True)
-        self.atlist = list(self.loadList("availableTimers"))
-        self.mcplist = self.getList("mandatoryComponents")
-        self.description = self.loadList("description", True)
-        self.vrcpdict = self.loadDict("variableComponents")
-        self.fullnames = self.loadDict("fullDeviceNames")
-        self.datarecord = self.loadDict("dataRecord")
-        self.configvars = self.loadDict("configVariables")
+    def fetchSettings(self):
 
-        self.fetchFileData()
-        self.fetchEnvData()
+        self.__fetchConfiguration()    
+            
+        self.cpgroup = self.__importDict("ComponentGroup")
+        self.dsgroup = self.__importDict("DataSourceGroup")
+        self.acpgroup = self.__importDict("AutomaticComponentGroup")
+        self.labels = self.__importDict("Labels")
+        self.labellinks = self.__importDict("LabelLinks")
+        self.labelpaths = self.__importDict("LabelPaths")
+        self.labelshapes = self.__importDict("LabelShapes")
+        self.labeltypes = self.__importDict("LabelTypes")
+        self.datarecord = self.__importDict("DataRecord")
+        self.configvars = self.__importDict("ConfigVariables")
 
-    def fetchFileData(self):
-        self.timers = self.loadList("timer", True)
-        self.mntgrp = self.loadData("mntGrp")
+        self.nodisplay = self.__importList("HiddenElements", True)
+        self.orderedchannels = self.__importList("OrderedChannels", True)
+        self.adslist = self.__importList("AutomaticDataSources", True)
+
+        self.avcplist = self.__getList("availableComponents")
+        self.avdslist = self.__getList("availableDataSources")
+        self.avmglist = self.__getList("availableMeasurementGroups")
+        self.mcplist = self.__getList("mandatoryComponents")
+
+        self.acplist = self.__loadList("AutomaticComponents")
+        self.atlist = list(self.__loadList("availableTimers"))
+        self.description = self.__loadList("description", True)
+
+        self.vrcpdict = self.__loadDict("variableComponents")
+        self.fullnames = self.__loadDict("fullDeviceNames")
+
+        self.__fetchFileData()
+        self.__fetchEnvData()
+
+    def __fetchFileData(self):
+        self.timers = self.__importList("Timer", True)
+        self.mntgrp = str(self.__importData("MntGrp"))
         try:
-            self.door = self.loadData("door")
+            self.door = str(self.__loadData("Door"))
         except:
             self.storeData("door", "")
-            self.door = self.loadData("door")
+            self.door = str(self.__loadData("door"))
 
-        self.configDevice = self.loadData("configDevice")
-        self.writerDevice = self.loadData("writerDevice")
+        self.configDevice = str(self.__loadData("configDevice"))
+        self.writerDevice = str(self.__importData("WriterDevice"))
 
-        self.appendEntry = self.loadData("appendEntry")
+        self.appendEntry = self.__importData("AppendEntry")
+        self.dynamicLinks = self.__importData("DynamicLinks")
+        self.dynamicPath = str(self.__importData("DynamicPath"))
 
-#        self.dynamicComponents = self.loadData("dynamicComponents")
-        self.dynamicLinks = self.loadData("dynamicLinks")
-        self.dynamicPath = self.loadData("dynamicPath")
-        self.cnfFile = self.loadData("configFile")
+        self.cnfFile = str(self.__loadData("configFile"))
 
-    def fetchEnvData(self):
+    def __fetchEnvData(self):
         params = {"ScanDir": "scanDir",
                   "ScanFile": "scanFile",
                   "ScanID": "scanID"}
@@ -217,7 +226,7 @@ class ServerState(object):
                 setattr(self, attr, value[var])
         logger.debug("fetch Env: %s" % (jvalue))
 
-    def storeEnvData(self):
+    def __storeEnvData(self):
         params = {"ScanDir": "scanDir",
                   "ScanFile": "scanFile",
                   "NeXusSelectorDevice": "server",
@@ -234,15 +243,14 @@ class ServerState(object):
         self.scanID = self.__dp.storeEnvData(jvalue)
         logger.debug("Store Env: %s" % (jvalue))
 
-    def storeFileData(self):
+    def __storeFileData(self):
 
         self.storeData("configDevice", self.configDevice)
-        self.storeData("writerDevice", self.writerDevice)
-
-        self.storeList("timer", self.timers)
         self.storeData("door", self.door)
         self.storeData("mntGrp", self.mntgrp)
 
+        self.storeData("writerDevice", self.writerDevice)
+        self.__storeList("timer", self.timers)
         self.storeData("appendEntry", self.appendEntry)
         self.storeData("dynamicComponents", self.dynamicComponents)
         self.storeData("dynamicLinks", self.dynamicLinks)
@@ -251,34 +259,30 @@ class ServerState(object):
     def storeGroups(self):
         if not self.__dp:
             self.setServer()
-        self.storeDict("dataSourceGroup", self.dsgroup)
-        self.storeDict("componentGroup", self.cpgroup)
-        self.storeDict("automaticComponentGroup", self.acpgroup)
-        self.storeList("automaticDataSources", self.adslist)
+        self.__storeDict("dataSourceGroup", self.dsgroup)
+        self.__storeDict("componentGroup", self.cpgroup)
+        self.__storeDict("automaticComponentGroup", self.acpgroup)
+        self.__storeList("automaticDataSources", self.adslist)
 
     def storeSettings(self):
         if not self.__dp:
             self.setServer()
-        self.storeEnvData()
-        self.storeFileData()
+        self.__storeEnvData()
+        self.__storeFileData()
         self.storeGroups()
-#        self.storeDict("dataSourceGroup", self.dsgroup)
-        self.storeDict("labels", self.labels)
-        self.storeDict("labelLinks", self.labellinks)
-        self.storeDict("labelPaths", self.labelpaths)
-        self.storeDict("labelShapes", self.labelshapes)
-        self.storeDict("labelTypes", self.labeltypes)
-        self.storeList("hiddenElements", self.nodisplay)
-        self.storeList("orderedChannels", self.orderedchannels)
-#        self.storeDict("componentGroup", self.cpgroup)
-        self.storeDict("dataRecord", self.datarecord)
-        self.storeDict("configVariables", self.configvars)
+        self.__storeDict("labels", self.labels)
+        self.__storeDict("labelLinks", self.labellinks)
+        self.__storeDict("labelPaths", self.labelpaths)
+        self.__storeDict("labelShapes", self.labelshapes)
+        self.__storeDict("labelTypes", self.labeltypes)
+        self.__storeList("hiddenElements", self.nodisplay)
+        self.__storeList("orderedChannels", self.orderedchannels)
+        self.__storeDict("dataRecord", self.datarecord)
+        self.__storeDict("configVariables", self.configvars)
         if not self.server:
             self.__dp.exportAllEnv()
 #        self.__dp.storeConfiguration()
             
-
-
     def fetchMntGrp(self):
         if not self.__dp:
             self.setServer()
@@ -325,12 +329,12 @@ class ServerState(object):
     def updateControllers(self):
         if hasattr(self.__dp, "command_inout_asynch"):
 #            aid = self.__dp.command_inout_asynch("updateControllers")
-#            self.wait(self.__dp)
+#            self.__wait(self.__dp)
             try:
                 self.__dp.updateControllers()
             except PyTango.CommunicationFailed as e:
                 if e[-1].reason == "API_DeviceTimedOut":
-                    self.wait(self.__dp)
+                    self.__wait(self.__dp)
                 else:
                     raise
         else:
@@ -339,7 +343,7 @@ class ServerState(object):
     def setServer(self):
 
         if self.server:
-            self.__dp = self.openProxy(self.server)
+            self.__dp = self.__openProxy(self.server)
             self.__dp.set_timeout_millis(self.__timeout)
             logger.debug("set server: %s:%s/%s" % (self.__dp.get_db_host(),
                                                    self.__dp.get_db_port(),
@@ -349,13 +353,13 @@ class ServerState(object):
             self.__dp = Settings.Settings()
 
     @classmethod
-    def openProxy(cls, server):
+    def __openProxy(cls, server):
         proxy = PyTango.DeviceProxy(server)
-        cls.wait(proxy)
+        cls.__wait(proxy)
         return proxy
 
     @classmethod
-    def wait(cls, proxy, counter=100):
+    def __wait(cls, proxy, counter=100):
         found = False
         cnt = 0
         while not found and cnt < counter:
@@ -372,7 +376,34 @@ class ServerState(object):
 
             cnt += 1
 
-    def loadDict(self, name):
+    def __importDict(self, name):
+        dsg = self.__conf[name] if name in self.__conf else None
+        res = {}
+        if dsg:
+            dc = json.loads(dsg)
+            if isinstance(dc, dict):
+                res = dc
+        logger.debug(" %s = %s" % (name, res))
+        return res
+
+    def __importList(self, name, encoded=False):
+        dc = self.__conf[name] if name in self.__conf else None
+        logger.debug(dc)
+        res = []
+        if dc:
+            if encoded:
+                dc = json.loads(dc)
+            if isinstance(dc, (list, tuple)):
+                res = dc
+        logger.debug(" %s = %s" % (name, res))
+        return res
+
+    def __importData(self, name):
+        dc = self.__conf[name] if name in self.__conf else None
+        logger.debug(dc)
+        return dc
+
+    def __loadDict(self, name):
         if not self.__dp:
             self.setServer()
         if self.server:
@@ -388,7 +419,7 @@ class ServerState(object):
         logger.debug(" %s = %s" % (name, res))
         return res
 
-    def storeDict(self, name, value):
+    def __storeDict(self, name, value):
         if not self.__dp:
             self.setServer()
         if self.server:
@@ -400,7 +431,7 @@ class ServerState(object):
                 self.__dp.write_attribute(name, jvalue)
             except PyTango.CommunicationFailed as e:
                 if e[-1].reason == "API_DeviceTimedOut":
-                    self.wait(self.__dp)
+                    self.__wait(self.__dp)
                 else:
                     raise
         else:
@@ -408,7 +439,7 @@ class ServerState(object):
 
         logger.debug(" %s = %s" % (name, jvalue))
 
-    def storeList(self, name, value):
+    def __storeList(self, name, value):
         if not self.__dp:
             self.setServer()
         if self.server:
@@ -420,7 +451,7 @@ class ServerState(object):
                 self.__dp.write_attribute(name, jvalue)
             except PyTango.CommunicationFailed as e:
                 if e[-1].reason == "API_DeviceTimedOut":
-                    self.wait(self.__dp)
+                    self.__wait(self.__dp)
                 else:
                     raise
         else:
@@ -439,14 +470,14 @@ class ServerState(object):
                 self.__dp.write_attribute(name, value)
             except PyTango.CommunicationFailed as e:
                 if e[-1].reason == "API_DeviceTimedOut":
-                    self.wait(self.__dp)
+                    self.__wait(self.__dp)
                 else:
                     raise
         else:
             setattr(self.__dp, name, value)
         logger.debug(" %s = %s" % (name, value))
 
-    def loadList(self, name, encoded=False):
+    def __loadList(self, name, encoded=False):
         if not self.__dp:
             self.setServer()
         if self.server:
@@ -464,7 +495,8 @@ class ServerState(object):
         logger.debug(" %s = %s" % (name, res))
         return res
 
-    def loadData(self, name):
+
+    def __loadData(self, name):
         if not self.__dp:
             self.setServer()
         if self.server:
@@ -476,7 +508,7 @@ class ServerState(object):
         logger.debug(dc)
         return dc
 
-    def getList(self, name):
+    def __getList(self, name):
         if not self.__dp:
             self.setServer()
         if self.server:
@@ -494,7 +526,7 @@ class ServerState(object):
         return res
 
     ## update a list of Disable DataSources
-    def disableDataSources(self):
+    def __disableDataSources(self):
         res = self.description
         dds = {}
 
@@ -530,16 +562,16 @@ class ServerState(object):
         return dds
 
     ## provides disable datasources
-    ddsdict = property(disableDataSources,
+    ddsdict = property(__disableDataSources,
                        doc='provides disable datasources')
 
-    ## update a list of Components
-    def Components(self):
+    ## update a list of components
+    def __components(self):
         if isinstance(self.cpgroup, dict):
             return [cp for cp in self.cpgroup.keys() if self.cpgroup[cp]]
         else:
             return []
 
     ## provides disable datasources
-    cplist = property(Components,
+    cplist = property(__components,
                        doc='provides selected components')
