@@ -60,8 +60,6 @@ class ServerState(object):
         self.scanFile = []
         self.scanID = 0
 
-        self.cnfFile = "/"
-
         self.timers = None
         self.mntgrp = None
         self.door = None
@@ -158,6 +156,7 @@ class ServerState(object):
             self.__dp.importAllEnv()
         self.__conf = json.loads(self.__dp.configuration)
 
+
     def fetchSettings(self):
 
         self.__fetchConfiguration()    
@@ -182,7 +181,7 @@ class ServerState(object):
         self.avmglist = self.__getList("availableMeasurementGroups")
         self.mcplist = self.__getList("mandatoryComponents")
 
-        self.acplist = self.__loadList("AutomaticComponents")
+        self.acplist = self.__loadList("automaticComponents")
         self.atlist = list(self.__loadList("availableTimers"))
         self.description = self.__loadList("description", True)
 
@@ -196,7 +195,7 @@ class ServerState(object):
         self.timers = self.__importList("Timer", True)
         self.mntgrp = str(self.__importData("MntGrp"))
         try:
-            self.door = str(self.__loadData("Door"))
+            self.door = str(self.__loadData("door"))
         except:
             self.storeData("door", "")
             self.door = str(self.__loadData("door"))
@@ -207,8 +206,6 @@ class ServerState(object):
         self.appendEntry = self.__importData("AppendEntry")
         self.dynamicLinks = self.__importData("DynamicLinks")
         self.dynamicPath = str(self.__importData("DynamicPath"))
-
-        self.cnfFile = str(self.__loadData("configFile"))
 
     def __fetchEnvData(self):
         params = {"ScanDir": "scanDir",
@@ -247,42 +244,58 @@ class ServerState(object):
 
         self.storeData("configDevice", self.configDevice)
         self.storeData("door", self.door)
-        self.storeData("mntGrp", self.mntgrp)
 
-        self.storeData("writerDevice", self.writerDevice)
-        self.__storeList("timer", self.timers)
-        self.storeData("appendEntry", self.appendEntry)
-        self.storeData("dynamicComponents", self.dynamicComponents)
-        self.storeData("dynamicLinks", self.dynamicLinks)
-        self.storeData("dynamicPath", self.dynamicPath)
+        self.__exportData("ConfigDevice", self.configDevice)
+        self.__exportData("Door", self.door)
+        self.__exportData("MntGrp", self.mntgrp)
+
+        self.__exportData("writerDevice", self.writerDevice)
+        self.__exportList("timer", self.timers)
+        self.__exportData("appendEntry", self.appendEntry)
+        self.__exportData("dynamicComponents", self.dynamicComponents)
+        self.__exportData("dynamicLinks", self.dynamicLinks)
+        self.__exportData("dynamicPath", self.dynamicPath)
 
     def storeGroups(self):
         if not self.__dp:
             self.setServer()
-        self.__storeDict("dataSourceGroup", self.dsgroup)
-        self.__storeDict("componentGroup", self.cpgroup)
-        self.__storeDict("automaticComponentGroup", self.acpgroup)
-        self.__storeList("automaticDataSources", self.adslist)
+        self.__exportDict("DataSourceGroup", self.dsgroup)
+        self.__exportDict("ComponentGroup", self.cpgroup)
+        self.__exportDict("AutomaticComponentGroup", self.acpgroup)
+        self.__exportList("AutomaticDataSources", self.adslist)
+        self.__storeConfiguration()
 
     def storeSettings(self):
         if not self.__dp:
             self.setServer()
         self.__storeEnvData()
         self.__storeFileData()
-        self.storeGroups()
-        self.__storeDict("labels", self.labels)
-        self.__storeDict("labelLinks", self.labellinks)
-        self.__storeDict("labelPaths", self.labelpaths)
-        self.__storeDict("labelShapes", self.labelshapes)
-        self.__storeDict("labelTypes", self.labeltypes)
-        self.__storeList("hiddenElements", self.nodisplay)
-        self.__storeList("orderedChannels", self.orderedchannels)
-        self.__storeDict("dataRecord", self.datarecord)
-        self.__storeDict("configVariables", self.configvars)
+        self.__exportDict("DataSourceGroup", self.dsgroup)
+        self.__exportDict("ComponentGroup", self.cpgroup)
+        self.__exportDict("AutomaticComponentGroup", self.acpgroup)
+        self.__exportList("AutomaticDataSources", self.adslist)
+        self.__exportDict("Labels", self.labels)
+        self.__exportDict("LabelLinks", self.labellinks)
+        self.__exportDict("LabelPaths", self.labelpaths)
+        self.__exportDict("LabelShapes", self.labelshapes)
+        self.__exportDict("LabelTypes", self.labeltypes)
+        self.__exportList("HiddenElements", self.nodisplay)
+        self.__exportList("OrderedChannels", self.orderedchannels)
+        self.__exportDict("DataRecord", self.datarecord)
+        self.__exportDict("ConfigVariables", self.configvars)
         if not self.server:
             self.__dp.exportAllEnv()
-#        self.__dp.storeConfiguration()
+        self.__storeConfiguration()
             
+
+    def __storeConfiguration(self):
+        if not self.__dp:
+            self.setServer()
+        if not self.server:
+            self.__dp.exportAllEnv()
+        self.__dp.configuration = str(json.dumps(self.__conf))
+
+
     def fetchMntGrp(self):
         if not self.__dp:
             self.setServer()
@@ -419,45 +432,13 @@ class ServerState(object):
         logger.debug(" %s = %s" % (name, res))
         return res
 
-    def __storeDict(self, name, value):
-        if not self.__dp:
-            self.setServer()
-        if self.server:
-            self.__dp.ping()
+    def __exportDict(self, name, value):
+        self.__conf[name] = json.dumps(value)
+        logger.debug(" %s = %s" % (name, value))
 
-        jvalue = json.dumps(value)
-        if self.server:
-            try:
-                self.__dp.write_attribute(name, jvalue)
-            except PyTango.CommunicationFailed as e:
-                if e[-1].reason == "API_DeviceTimedOut":
-                    self.__wait(self.__dp)
-                else:
-                    raise
-        else:
-            setattr(self.__dp, name, jvalue)
-
-        logger.debug(" %s = %s" % (name, jvalue))
-
-    def __storeList(self, name, value):
-        if not self.__dp:
-            self.setServer()
-        if self.server:
-            self.__dp.ping()
-
-        jvalue = json.dumps(value)
-        if self.server:
-            try:
-                self.__dp.write_attribute(name, jvalue)
-            except PyTango.CommunicationFailed as e:
-                if e[-1].reason == "API_DeviceTimedOut":
-                    self.__wait(self.__dp)
-                else:
-                    raise
-        else:
-            setattr(self.__dp, name, jvalue)
-
-        logger.debug(" %s = %s" % (name, jvalue))
+    def __exportList(self, name, value):
+        self.__conf[name] = json.dumps(value)
+        logger.debug(" %s = %s" % (name, value))
 
     def storeData(self, name, value):
         if not self.__dp:
@@ -475,6 +456,11 @@ class ServerState(object):
                     raise
         else:
             setattr(self.__dp, name, value)
+        logger.debug(" %s = %s" % (name, value))
+
+
+    def __exportData(self, name, value):
+        self.__conf[name] = value
         logger.debug(" %s = %s" % (name, value))
 
     def __loadList(self, name, encoded=False):
