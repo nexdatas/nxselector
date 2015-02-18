@@ -370,7 +370,7 @@ class Preferences(object):
                     "JSON files (*.json);;All files (*)"))
             logger.debug("saving profile to %s" % filename)
             if filename:
-                if (len(filename) < 4 or filename[-4] != '.' ) and \
+                if (len(filename) < 4 or filename[-4] != '.') and \
                         not (len(filename) > 5 and filename[-5] == '.'):
                     filename = filename + '.json'
 

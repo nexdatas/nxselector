@@ -29,11 +29,6 @@ import subprocess
 import logging
 logger = logging.getLogger(__name__)
 
-try:
-    from taurus.external.qt import Qt
-except:
-    from taurus.qt import Qt
-
 
 ## main window class
 class ServerState(object):
@@ -86,6 +81,7 @@ class ServerState(object):
         self.avdslist = []
         self.avmglist = []
         self.vrcpdict = {}
+        self.adslist = []
 
         self.orderedchannels = []
 
@@ -103,7 +99,7 @@ class ServerState(object):
             if self.server:
                 self.__dp.init()
                 self.__dp.ping()
-        except Exception as e:
+        except Exception:
             self.server = None
             raise
         logger.debug("DP %s" % type(self.__dp))
@@ -134,6 +130,8 @@ class ServerState(object):
             pass
         return server
 
+    ## sets the existing NXSRecSelector server
+    ## \param server server name
     def findServer(self, server=None):
         if server is None:
             servers = self.__db.get_device_exported_for_class(
@@ -159,11 +157,10 @@ class ServerState(object):
             self.__dp.importAllEnv()
         self.__conf = json.loads(self.__dp.configuration)
 
-
+    ## fetches configuration setting from server
     def fetchSettings(self):
+        self.__fetchConfiguration()
 
-        self.__fetchConfiguration()    
-            
         self.cpgroup = self.__importDict("ComponentGroup")
         self.dsgroup = self.__importDict("DataSourceGroup")
         self.acpgroup = self.__importDict("AutomaticComponentGroup")
@@ -268,6 +265,7 @@ class ServerState(object):
         self.__exportList("AutomaticDataSources", self.adslist)
         self.__storeConfiguration()
 
+    ## stores configuration settings on server
     def storeSettings(self):
         if not self.__dp:
             self.setServer()
@@ -289,7 +287,6 @@ class ServerState(object):
         if not self.server:
             self.__dp.exportAllEnv()
         self.__storeConfiguration()
-            
 
     def __storeConfiguration(self):
         if not self.__dp:
@@ -298,12 +295,12 @@ class ServerState(object):
             self.__dp.exportAllEnv()
         self.__dp.configuration = str(json.dumps(self.__conf))
 
-
     def fetchMntGrp(self):
         if not self.__dp:
             self.setServer()
         self.__dp.fetchConfiguration()
 
+    ## update measurement group
     def updateMntGrp(self):
         if not self.mntgrp:
             raise Exception("ActiveMntGrp not defined")
@@ -384,12 +381,11 @@ class ServerState(object):
             try:
                 if proxy.state() != PyTango.DevState.RUNNING:
                     found = True
-            except (PyTango.DevFailed, PyTango.Except, PyTango.DevError) as e:
+            except (PyTango.DevFailed, PyTango.Except, PyTango.DevError):
                 time.sleep(0.01)
                 found = False
                 if cnt == counter - 1:
                     raise
-
             cnt += 1
 
     def __importDict(self, name):
@@ -461,7 +457,6 @@ class ServerState(object):
             setattr(self.__dp, name, value)
         logger.debug(" %s = %s" % (name, value))
 
-
     def __exportData(self, name, value):
         self.__conf[name] = value
         logger.debug(" %s = %s" % (name, value))
@@ -483,7 +478,6 @@ class ServerState(object):
                 res = dc
         logger.debug(" %s = %s" % (name, res))
         return res
-
 
     def __loadData(self, name):
         if not self.__dp:
@@ -548,7 +542,7 @@ class ServerState(object):
                             for vl in values:
                                 if len(vl) > 1 and vl[1] == 'CLIENT':
                                     dds[ds] = vl[2]
-        return list(set(dds.values()) - set(self.fullnames.values())- 
+        return list(set(dds.values()) - set(self.fullnames.values()) -
                     set(self.recorder_names))
 
     ## provides disable datasources

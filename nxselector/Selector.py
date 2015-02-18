@@ -141,7 +141,8 @@ class Selector(Qt.QDialog, TaurusBaseWidget):
             self.preferences.frames,
             self.preferences.frameshelp)
 
-        self.preferences.layoutFile = str(settings.value("Preferences/LayoutFile", "./"))
+        self.preferences.layoutFile = str(
+            settings.value("Preferences/LayoutFile", "./"))
 
         self.selectable.mgroups = str(self.preferences.mgroups)
         self.selectable.frames = str(self.preferences.frames)
@@ -255,7 +256,7 @@ class Selector(Qt.QDialog, TaurusBaseWidget):
             self.ui.mntGrpComboBox.InsertAtTop)
 
         self.storage.updateMntGrpComboBox()
-        
+
         cid = self.ui.viewComboBox.findText(Qt.QString(self.userView))
         if cid >= 0:
             self.ui.viewComboBox.setCurrentIndex(cid)
@@ -407,7 +408,7 @@ class Selector(Qt.QDialog, TaurusBaseWidget):
         settings.setValue(
             "Selector/CnfFile", Qt.QVariant(self.cnfFile))
         settings.setValue(
-            "Preferences/LayoutFile", 
+            "Preferences/LayoutFile",
             Qt.QVariant(self.preferences.layoutFile))
 
     def keyPressEvent(self, event):
@@ -614,7 +615,7 @@ class Selector(Qt.QDialog, TaurusBaseWidget):
                     "JSON files (*.json);;All files (*)"))
             logger.debug("saving configuration to %s" % filename)
             if filename:
-                if (len(filename) < 4 or filename[-4] != '.' ) and \
+                if (len(filename) < 4 or filename[-4] != '.') and \
                         not (len(filename) > 5 and filename[-5] == '.'):
                     filename = filename + '.json'
 
