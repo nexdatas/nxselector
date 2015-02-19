@@ -1,4 +1,8 @@
 2015-02-19 Jan Kotanski <jankotan@gmail.com>
+	* removing call for  init server
+	* tagged as 1.12.2
+
+2015-02-19 Jan Kotanski <jankotan@gmail.com>
 	* adding update for availableTimer list
 	* tagged as 1.12.1
 
