@@ -190,6 +190,7 @@ class ServerState(object):
 
         self.__fetchFileData()
         self.__fetchEnvData()
+        self.atlist = list(set(self.atlist) | set(self.timers))
 
     def __fetchFileData(self):
         self.timers = self.__importList("Timer", True)
