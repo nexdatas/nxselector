@@ -317,10 +317,24 @@ class ServerState(object):
         return conf
 
     def isMntGrpChanged(self):
+        if not self.__dp:
+            self.setServer()
         return self.__dp.isMntGrpChanged()
 
     def importMntGrp(self):
+        if not self.__dp:
+            self.setServer()
         return self.__dp.importMntGrp()
+
+    def deleteMntGrp(self, name):
+        if not self.__dp:
+            self.setServer()
+        self.__dp.deleteMntGrp(str(name))
+        self.avmglist = self.__getList("availableMeasurementGroups")
+        if self.avmglist:
+            self.mntgrp = self.avmglist[0]
+            self.storeData("mntGrp", self.mntgrp)
+            self.fetchMntGrp()
 
     def mntGrpConfiguration(self):
         mgconf = self.__dp.mntGrpConfiguration()

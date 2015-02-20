@@ -71,6 +71,9 @@ class Storage(object):
         self.ui.storage.disconnect(self.ui.mntGrpComboBox,
                                    Qt.SIGNAL("currentIndexChanged(QString)"),
                                    self.__mntgrp_changed)
+        self.ui.storage.disconnect(self.ui.mntGrpToolButton,
+                                   Qt.SIGNAL("pressed()"),
+                                   self.__mntgrp_deleted)
         self.ui.storage.disconnect(self.ui.mntGrpComboBox.lineEdit(),
                                    Qt.SIGNAL("editingFinished()"),
                                    self.__mntgrp_edited)
@@ -135,6 +138,9 @@ class Storage(object):
                                 Qt.SIGNAL("clicked()"), self.__delTimer)
         self.ui.storage.connect(self.ui.timerAddPushButton,
                                 Qt.SIGNAL("clicked()"), self.__addTimer)
+        self.ui.storage.connect(self.ui.mntGrpToolButton,
+                                   Qt.SIGNAL("pressed()"),
+                                   self.__mntgrp_deleted)
         self.ui.storage.connect(self.ui.mntGrpComboBox,
                                 Qt.SIGNAL("currentIndexChanged(QString)"),
                                 self.__mntgrp_changed)
@@ -411,7 +417,7 @@ class Storage(object):
     def __mntgrp_edited(self):
         logger.debug("mntgrp edited")
         if str(self.ui.mntGrpComboBox.currentText()) == self.state.mntgrp:
-           return
+            return
         self.disconnectSignals()
         if not str(self.ui.mntGrpComboBox.currentText()):
             self.ui.mntGrpComboBox.setFocus()
@@ -422,6 +428,7 @@ class Storage(object):
             self.updateMntGrpComboBox()
             self.connectSignals()
             self.apply()
+        logger.debug("mntgrp edited end")
 
     def __mntgrp_changed(self):
         logger.debug("mntgrp changed")
@@ -437,7 +444,7 @@ class Storage(object):
         if self.state.mntgrp not in self.state.avmglist:
             self.connectSignals()
             self.apply()
-        else:    
+        else:
             self.state.storeData("mntGrp", self.state.mntgrp)
             self.state.fetchMntGrp()
             self.connectSignals()
@@ -446,6 +453,21 @@ class Storage(object):
 #            self.connectSignals()
 #            self.apply()
         logger.debug("mntgrp changed end")
+
+    def __mntgrp_deleted(self):
+        logger.debug("mntgrp deleted")
+        replay = Qt.QMessageBox.question(
+            self.ui.storage,
+            "NXSSelector: ",
+            "Would you like to delete %s Measurement Group? "
+            % self.ui.mntGrpComboBox.currentText(),
+            Qt.QMessageBox.Yes | Qt.QMessageBox.No)
+        if replay == Qt.QMessageBox.Yes:
+            self.disconnectSignals()
+            self.state.deleteMntGrp(self.ui.mntGrpComboBox.currentText())
+            self.connectSignals()
+            self.ui.storage.emit(Qt.SIGNAL("resetAll"))
+        logger.debug("mntgrp deleted end")
 
     def __setDir(self):
         dirname = str(Qt.QFileDialog.getExistingDirectory(

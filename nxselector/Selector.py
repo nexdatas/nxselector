@@ -181,6 +181,7 @@ class Selector(Qt.QDialog, TaurusBaseWidget):
             self.ui.groupFrame.hide()
             self.ui.channelFrame.hide()
             self.ui.dynFrame.hide()
+            self.ui.measFrame.hide()
             self.ui.mntServerLabel.hide()
             self.ui.mntServerLineEdit.hide()
             self.ui.devConfigLabel.hide()
