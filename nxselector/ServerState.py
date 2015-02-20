@@ -249,12 +249,12 @@ class ServerState(object):
         self.__exportData("Door", self.door)
         self.__exportData("MntGrp", self.mntgrp)
 
-        self.__exportData("writerDevice", self.writerDevice)
-        self.__exportList("timer", self.timers)
-        self.__exportData("appendEntry", self.appendEntry)
-        self.__exportData("dynamicComponents", self.dynamicComponents)
-        self.__exportData("dynamicLinks", self.dynamicLinks)
-        self.__exportData("dynamicPath", self.dynamicPath)
+        self.__exportData("WriterDevice", self.writerDevice)
+        self.__exportList("Timer", self.timers)
+        self.__exportData("AppendEntry", self.appendEntry)
+        self.__exportData("DynamicComponents", self.dynamicComponents)
+        self.__exportData("DynamicLinks", self.dynamicLinks)
+        self.__exportData("DynamicPath", self.dynamicPath)
 
     def storeGroups(self):
         if not self.__dp:
