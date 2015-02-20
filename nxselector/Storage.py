@@ -71,6 +71,9 @@ class Storage(object):
         self.ui.storage.disconnect(self.ui.mntGrpComboBox,
                                    Qt.SIGNAL("currentIndexChanged(QString)"),
                                    self.__mntgrp_changed)
+        self.ui.storage.disconnect(self.ui.mntGrpComboBox.lineEdit(),
+                                   Qt.SIGNAL("editingFinished()"),
+                                   self.__mntgrp_edited)
         self.ui.storage.disconnect(self.ui.mntServerLineEdit,
                                    Qt.SIGNAL("editingFinished()"), self.apply)
 
@@ -135,6 +138,9 @@ class Storage(object):
         self.ui.storage.connect(self.ui.mntGrpComboBox,
                                 Qt.SIGNAL("currentIndexChanged(QString)"),
                                 self.__mntgrp_changed)
+        self.ui.storage.connect(self.ui.mntGrpComboBox.lineEdit(),
+                                   Qt.SIGNAL("editingFinished()"),
+                                   self.__mntgrp_edited)
         self.ui.storage.connect(self.ui.mntServerLineEdit,
                                 Qt.SIGNAL("editingFinished()"), self.apply)
 
@@ -179,7 +185,7 @@ class Storage(object):
         for mg in self.state.avmglist:
             self.ui.mntGrpComboBox.addItem(mg)
         if self.state.mntgrp not in self.state.avmglist:
-            self.ui.mntGrpComboBox.addItem(mg)
+            self.ui.mntGrpComboBox.addItem(self.state.mntgrp)
         ind = self.ui.mntGrpComboBox.findText(self.state.mntgrp)
         self.ui.mntGrpComboBox.setCurrentIndex(ind)
         self.connectSignals()
@@ -402,28 +408,40 @@ class Storage(object):
             elif self.state.timers[nid] != timer:
                 self.state.timers[nid] = timer
 
-    def __mntgrp_changed(self):
-        logger.debug("mntgrp changed")
+    def __mntgrp_edited(self):
+        logger.debug("mntgrp edited")
         if str(self.ui.mntGrpComboBox.currentText()) == self.state.mntgrp:
-            return
+           return
         self.disconnectSignals()
-#        replay = Qt.QMessageBox.question(
-#            self.ui.preferences,
-#            "NXSSelector: Name "
-#            "of Measument Group has been changed.",
-#            "Would you like to import MntGrp? ",
-#            Qt.QMessageBox.Yes | Qt.QMessageBox.No)#
-
-#        if replay == Qt.QMessageBox.Yes:
         if not str(self.ui.mntGrpComboBox.currentText()):
             self.ui.mntGrpComboBox.setFocus()
             self.connectSignals()
             return
         self.state.mntgrp = str(self.ui.mntGrpComboBox.currentText())
-        self.state.storeData("mntGrp", self.state.mntgrp)
-        self.state.fetchMntGrp()
-        self.connectSignals()
-        self.ui.storage.emit(Qt.SIGNAL("resetAll"))
+        if self.state.mntgrp not in self.state.avmglist:
+            self.updateMntGrpComboBox()
+            self.connectSignals()
+            self.apply()
+
+    def __mntgrp_changed(self):
+        logger.debug("mntgrp changed")
+        if str(self.ui.mntGrpComboBox.currentText()) == self.state.mntgrp:
+            return
+        self.disconnectSignals()
+        if not str(self.ui.mntGrpComboBox.currentText()):
+            self.ui.mntGrpComboBox.setFocus()
+            self.connectSignals()
+            return
+
+        self.state.mntgrp = str(self.ui.mntGrpComboBox.currentText())
+        if self.state.mntgrp not in self.state.avmglist:
+            self.connectSignals()
+            self.apply()
+        else:    
+            self.state.storeData("mntGrp", self.state.mntgrp)
+            self.state.fetchMntGrp()
+            self.connectSignals()
+            self.ui.storage.emit(Qt.SIGNAL("resetAll"))
 #        else:
 #            self.connectSignals()
 #            self.apply()

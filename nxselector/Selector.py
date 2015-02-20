@@ -507,6 +507,7 @@ class Selector(Qt.QDialog, TaurusBaseWidget):
                 "%s" % str(self.__commandthread.error))
             self.__commandthread.error = None
         self.reset()
+        self.storage.updateMntGrpComboBox()
         self.setDirty(True)
         self.__progress = None
         if self.__servertoupdateFlag:
