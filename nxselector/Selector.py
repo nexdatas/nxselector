@@ -586,7 +586,6 @@ class Selector(Qt.QDialog, TaurusBaseWidget):
 
     def cnfLoad(self):
         try:
-            print "CNFFILE", self.cnfFile
             filename = str(Qt.QFileDialog.getOpenFileName(
                     self.ui.storage,
                     "Load Profile",
