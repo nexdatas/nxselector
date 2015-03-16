@@ -1,3 +1,8 @@
+2015-03-XX Jan Kotanski <jankotan@gmail.com>
+	* adding preselecting datasources
+	* dedicated to use with NXSRecSelector 1.15.0 or above
+	* tagged as 1.15.0
+
 2015-02-23 Jan Kotanski <jankotan@gmail.com>
 	* adding stretchers to measurement groups
 	* tagged as 1.13.2
