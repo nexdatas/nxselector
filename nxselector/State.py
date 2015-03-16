@@ -27,7 +27,7 @@ try:
 except:
     from taurus.qt import Qt
 
-from .Element import CPElement
+from .Element import CPElement, DSElement
 from .ElementModel import ElementModel
 from .Views import CheckerView
 
@@ -50,65 +50,75 @@ class State(object):
         self.agroup = []
         self.aview = None
 
+        self.igroup = []
+        self.iview = None
+
         self.mgroup = []
         self.mview = None
 
     def createGUI(self):
 
         self.ui.state.hide()
-        if self.layout:
-            child = self.layout.takeAt(0)
-            while child:
-                self.layout.removeItem(child)
-                if isinstance(child, Qt.QWidgetItem):
-                    child.widget().hide()
-                    child.widget().close()
-                    self.layout.removeWidget(child.widget())
-                child = self.layout.takeAt(0)
+        if self.layout and self.dlayout:
+            self.__clearLayout(self.layout)
+            self.__clearLayout(self.dlayout)
         else:
-            self.layout = Qt.QHBoxLayout(self.ui.state)
+            self.hlayout = Qt.QHBoxLayout(self.ui.state)
+            self.layout = Qt.QVBoxLayout()
+            self.dlayout = Qt.QVBoxLayout()
+            self.hlayout.addLayout(self.layout)
+            self.hlayout.addLayout(self.dlayout)
 
-        mframe = Qt.QFrame(self.ui.state)
-        mframe.setFrameShape(Qt.QFrame.StyledPanel)
-        mframe.setFrameShadow(Qt.QFrame.Raised)
-        layout_groups = Qt.QHBoxLayout(mframe)
-
-        mgroup = Qt.QGroupBox(mframe)
-        mgroup.setTitle("Beamline")
-        layout_auto = Qt.QGridLayout(mgroup)
-        mview = self.userView(mgroup)
-        mview.rowMax = self.rowMax
-        if hasattr(mview, 'dmapper'):
-            mview.dmapper = None
-
-        layout_auto.addWidget(mview, 0, 0, 1, 1)
-        layout_groups.addWidget(mgroup)
-
-        self.mview = mview
-        self.layout.addWidget(mframe)
-
-        mframe = Qt.QFrame(self.ui.state)
-        mframe.setFrameShape(Qt.QFrame.StyledPanel)
-        mframe.setFrameShadow(Qt.QFrame.Raised)
-        layout_groups = Qt.QHBoxLayout(mframe)
-
-        mgroup = Qt.QGroupBox(mframe)
-        mgroup.setTitle("Discipline")
-        layout_auto = Qt.QGridLayout(mgroup)
-        mview = self.userView(mgroup)
-        mview.rowMax = self.rowMax
-        if hasattr(mview, 'dmapper'):
-            mview.dmapper = None
-
-        layout_auto.addWidget(mview, 0, 0, 1, 1)
-        layout_groups.addWidget(mgroup)
-
-        self.aview = mview
-        self.layout.addWidget(mframe)
+        self.iview = self.__addView("Others", self.rowMax,
+                                     self.dlayout, not self.igroup)
+        la = len(self.agroup)
+        lm = len(self.mgroup)
+        la, lm = [float(la) / (la + lm), float(lm) / (la + lm)]
+        self.mview = self.__addView("Beamline",
+                                    max(1, int(lm * (self.rowMax - 1))))
+        self.aview = self.__addView("Discipline",
+                                    max(1, int(la * (self.rowMax - 1))))
 
         self.ui.state.update()
         if self.ui.tabWidget.currentWidget() == self.ui.state:
             self.ui.state.show()
+
+    @classmethod
+    def __clearLayout(cls, layout):
+        child = layout.takeAt(0)
+        while child:
+            layout.removeItem(child)
+            if isinstance(child, Qt.QWidgetItem):
+                child.widget().hide()
+                child.widget().close()
+                layout.removeWidget(child.widget())
+            child = layout.takeAt(0)
+
+    def __addView(self, label, rowMax, layout=None, hide=False):
+        if layout is None:
+            layout = self.layout
+        mframe = Qt.QFrame(self.ui.state)
+        mframe.setFrameShape(Qt.QFrame.StyledPanel)
+        mframe.setFrameShadow(Qt.QFrame.Raised)
+        layout_groups = Qt.QHBoxLayout(mframe)
+
+        mgroup = Qt.QGroupBox(mframe)
+        mgroup.setTitle(label)
+        layout_auto = Qt.QGridLayout(mgroup)
+        mview = self.userView(mgroup)
+        mview.rowMax = rowMax
+        if hasattr(mview, 'dmapper'):
+            mview.dmapper = None
+
+        layout_auto.addWidget(mview, 0, 0, 1, 1)
+        layout_groups.addWidget(mgroup)
+
+        layout.addWidget(mframe)
+        if hide:
+            mframe.hide()
+        else:
+            mframe.show()
+        return mview
 
     def updateGroups(self):
         self.agroup = []
@@ -125,6 +135,14 @@ class State(object):
             self.mgroup.append(
                 CPElement(cp, self.state, group=mcpgroup))
 
+        self.igroup = []
+        icpgroup = {}
+        for ds in self.state.idslist:
+            icpgroup[ds] = True
+        for ds in icpgroup.keys():
+            self.igroup.append(
+                CPElement(ds, self.state, group=icpgroup))
+
     def setModels(self):
         md = ElementModel(self.agroup)
         md.enable = False
@@ -138,12 +156,19 @@ class State(object):
         md.connect(md, Qt.SIGNAL("componentChecked"),
                    self.__componentChecked)
 
+        md = ElementModel(self.igroup)
+        md.enable = False
+        self.iview.setModel(md)
+        md.connect(md, Qt.SIGNAL("componentChecked"),
+                   self.__componentChecked)
+
     def __componentChecked(self):
         self.ui.state.emit(Qt.SIGNAL("componentChecked"))
 
     def updateViews(self):
         self.aview.reset()
         self.mview.reset()
+        self.iview.reset()
 
     def reset(self):
         self.updateGroups()

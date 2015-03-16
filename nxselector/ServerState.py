@@ -81,7 +81,7 @@ class ServerState(object):
         self.avdslist = []
         self.avmglist = []
         self.vrcpdict = {}
-        self.adslist = []
+        self.idslist = []
 
         self.orderedchannels = []
 
@@ -173,7 +173,7 @@ class ServerState(object):
 
         self.nodisplay = self.__importList("HiddenElements", True)
         self.orderedchannels = self.__importList("OrderedChannels", True)
-        self.adslist = self.__importList("AutomaticDataSources", True)
+        self.idslist = self.__importList("InitDataSources", True)
 
         self.avcplist = self.__getList("availableComponents")
         self.avdslist = self.__getList("availableDataSources")
@@ -262,7 +262,7 @@ class ServerState(object):
         self.__exportDict("DataSourceGroup", self.dsgroup)
         self.__exportDict("ComponentGroup", self.cpgroup)
         self.__exportDict("AutomaticComponentGroup", self.acpgroup)
-        self.__exportList("AutomaticDataSources", self.adslist)
+        self.__exportList("InitDataSources", self.idslist)
         self.__storeConfiguration()
 
     ## stores configuration settings on server
@@ -274,7 +274,7 @@ class ServerState(object):
         self.__exportDict("DataSourceGroup", self.dsgroup)
         self.__exportDict("ComponentGroup", self.cpgroup)
         self.__exportDict("AutomaticComponentGroup", self.acpgroup)
-        self.__exportList("AutomaticDataSources", self.adslist)
+        self.__exportList("InitDataSources", self.idslist)
         self.__exportDict("Labels", self.labels)
         self.__exportDict("LabelLinks", self.labellinks)
         self.__exportDict("LabelPaths", self.labelpaths)
