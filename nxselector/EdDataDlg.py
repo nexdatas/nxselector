@@ -54,7 +54,6 @@ class EdDataDlg(Qt.QDialog):
         self.available_names = None
 
     def createGUI(self):
-        print "NAME", self.name
 #        self.ui.setupUi(self)
         if len(self.headers) > 0:
             self.ui.nameLabel.setText(str(self.headers[0]))

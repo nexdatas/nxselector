@@ -1128,33 +1128,34 @@
   </layout>
  </widget>
  <tabstops>
+  <tabstop>tabWidget</tabstop>
   <tabstop>fileScanLineEdit</tabstop>
   <tabstop>fileScanDirLineEdit</tabstop>
   <tabstop>fileScanDirToolButton</tabstop>
   <tabstop>fileScanIDSpinBox</tabstop>
   <tabstop>mntTimerComboBox</tabstop>
   <tabstop>mntGrpComboBox</tabstop>
+  <tabstop>mntGrpToolButton</tabstop>
   <tabstop>othersEntryCheckBox</tabstop>
-  <tabstop>buttonBox</tabstop>
   <tabstop>orderPushButton</tabstop>
   <tabstop>labelsPushButton</tabstop>
+  <tabstop>dcLinksCheckBox</tabstop>
   <tabstop>dcPathLineEdit</tabstop>
   <tabstop>propPushButton</tabstop>
-  <tabstop>dcLinksCheckBox</tabstop>
-  <tabstop>profileButtonBox</tabstop>
   <tabstop>mntServerLineEdit</tabstop>
   <tabstop>devConfigLineEdit</tabstop>
   <tabstop>devWriterLineEdit</tabstop>
   <tabstop>devConfigPushButton</tabstop>
   <tabstop>groupsPushButton</tabstop>
+  <tabstop>profileButtonBox</tabstop>
   <tabstop>viewComboBox</tabstop>
   <tabstop>rowMaxSpinBox</tabstop>
   <tabstop>statusCheckBox</tabstop>
-  <tabstop>devSettingsLineEdit</tabstop>
   <tabstop>frameLineEdit</tabstop>
   <tabstop>groupLineEdit</tabstop>
+  <tabstop>devSettingsLineEdit</tabstop>
   <tabstop>layoutButtonBox</tabstop>
-  <tabstop>tabWidget</tabstop>
+  <tabstop>buttonBox</tabstop>
  </tabstops>
  <resources/>
  <connections/>
