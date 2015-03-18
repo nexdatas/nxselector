@@ -1,2 +1,5 @@
 include COPYRIGHT
 include man/nxscomp_selector.1
+include nxselector/images/network_folder.png
+include nxselector/qrc/resources.qrc
+exclude nxselector/qrc/resources.rcc
