@@ -54,13 +54,13 @@ class toolBuild(build):
     @classmethod
     def makeqrc(cls, qfile, path):
         qrcfile = os.path.join(path, "%s.qrc" % qfile)
-        pyfile = os.path.join(path, "qrc_%s.py" % qfile)
+        rccfile = os.path.join(path, "%s.rcc" % qfile)
 
-        compiled = os.system("pyrcc4 %s -o %s" % (qrcfile, pyfile))
+        compiled = os.system("rcc %s -o %s -binary" % (qrcfile, rccfile))
         if compiled == 0:
-            print "Built: %s -> %s" % (qrcfile, pyfile)
+            print "Built: %s -> %s" % (qrcfile, rccfile)
         else:
-            print >> sys.stderr, "Error: Cannot build  %s" % (pyfile)
+            print >> sys.stderr, "Error: Cannot build  %s" % (rccfile)
 
 
     ## runner
@@ -95,16 +95,19 @@ class toolClean(clean):
             os.remove(str(fl))
 
         cfiles = [os.path.join(UIDIR, cfile) for cfile
-                  in os.listdir(UIDIR) if cfile.endswith('.pyc') or
-                  (cfile.endswith('.py')
-                   and cfile.endswith('__init_.py'))]
+                  in os.listdir(UIDIR) if (
+                cfile.endswith('.pyc') or
+                (cfile.endswith('.py')
+                 and not cfile.endswith('__init__.py')))]
         for fl in cfiles:
             os.remove(str(fl))
 
         cfiles = [os.path.join(QRCDIR, cfile) for cfile
-                  in os.listdir(QRCDIR) if cfile.endswith('.pyc')
-                  or (cfile.endswith('.py')
-                      and cfile.endswith('__init_.py'))]
+                  in os.listdir(QRCDIR) if ( 
+                cfile.endswith('.pyc')
+                or cfile.endswith('.rcc') or 
+                (cfile.endswith('.py')
+                 and not cfile.endswith('__init__.py')))]
         for fl in cfiles:
             os.remove(str(fl))
 
@@ -121,7 +124,7 @@ def get_scripts(scripts):
         return scripts + [sc + '.pyw' for sc in scripts]
     return scripts
 
-package_data = {'nxselector': ['ui/*.ui']
+package_data = {'nxselector': ['ui/*.ui', 'qrc/*.rcc']
                 }
 
 
