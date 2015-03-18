@@ -27,7 +27,8 @@ try:
 except:
     from taurus.qt import Qt
 
-from .ui.ui_edlistdlg import Ui_EdListDlg
+#from .ui.ui_edlistdlg import Ui_EdListDlg
+from taurus.qt.qtgui.util.ui import UILoadable
 
 from .LDataDlg import LDataDlg
 
@@ -62,6 +63,7 @@ class PropertiesDlg(Qt.QDialog):
 
 
 ## main window class
+@UILoadable(with_ui='ui')
 class PropertiesWg(Qt.QWidget):
 
     ## constructor
@@ -74,10 +76,11 @@ class PropertiesWg(Qt.QWidget):
         self.links = {}
         self.types = {}
         self.available_names = None
-        self.ui = Ui_EdListDlg()
+#        self.ui = Ui_EdListDlg()
 
     def createGUI(self):
-        self.ui.setupUi(self)
+        self.loadUi(filename='EdListWg.ui')
+#        self.ui.setupUi(self)
         self.ui.closePushButton = self.ui.closeButtonBox.button(
             Qt.QDialogButtonBox.Close)
         self.ui.addPushButton = self.ui.addEditRemoveButtonBox.addButton(

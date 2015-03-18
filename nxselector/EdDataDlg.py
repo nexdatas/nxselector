@@ -28,30 +28,34 @@ try:
 except:
     from taurus.qt import Qt
 
-from .ui.ui_eddatadlg import Ui_EdDataDlg
+from taurus.qt.qtgui.util.ui import UILoadable
+
+#from .ui.ui_eddatadlg import Ui_EdDataDlg
 
 import logging
 logger = logging.getLogger(__name__)
 
 
 ## main window class
+@UILoadable(with_ui='ui')
 class EdDataDlg(Qt.QDialog):
 
     ## constructor
     # \param parent parent widget
     def __init__(self, parent=None):
         super(EdDataDlg, self).__init__(parent)
+        self.loadUi()
         self.simple = False
         self.name = ''
         self.value = ''
         self.isString = True
-        self.ui = Ui_EdDataDlg()
+#        self.ui = Ui_EdDataDlg()
         self.headers = []
         self.available_names = None
 
     def createGUI(self):
-
-        self.ui.setupUi(self)
+        print "NAME", self.name
+#        self.ui.setupUi(self)
         if len(self.headers) > 0:
             self.ui.nameLabel.setText(str(self.headers[0]))
             if len(self.headers) > 1:

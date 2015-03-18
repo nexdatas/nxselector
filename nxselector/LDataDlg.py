@@ -31,13 +31,15 @@ except:
 from .MessageBox import MessageBox
 
 
-from .ui.ui_ldatadlg import Ui_LDataDlg
+from taurus.qt.qtgui.util.ui import UILoadable
+#from .ui.ui_ldatadlg import Ui_LDataDlg
 
 import logging
 logger = logging.getLogger(__name__)
 
 
 ## main window class
+@UILoadable(with_ui='ui')
 class LDataDlg(Qt.QDialog):
 
     ## constructor
@@ -50,7 +52,7 @@ class LDataDlg(Qt.QDialog):
         self.dtype = ''
         self.link = None
         self.available_names = None
-        self.ui = Ui_LDataDlg()
+#        self.ui = Ui_LDataDlg()
 
     @classmethod
     def __linkText(cls, value):
@@ -62,8 +64,8 @@ class LDataDlg(Qt.QDialog):
         return "Default"
 
     def createGUI(self):
-
-        self.ui.setupUi(self)
+        self.loadUi()
+#        self.ui.setupUi(self)
         self.ui.labelLineEdit.setText(Qt.QString(str(self.label)))
         self.ui.pathLineEdit.setText(Qt.QString(str(self.path)))
         if self.shape is None:

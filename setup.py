@@ -62,31 +62,10 @@ class toolBuild(build):
         else:
             print >> sys.stderr, "Error: Cannot build  %s" % (pyfile)
 
-    ## creates the python ui files
-    # \param ufile ui file name
-    # \param path  ui file path
-    @classmethod
-    def makeui(cls, ufile, path):
-        uifile = os.path.join(path, "%s.ui" % ufile)
-        pyfile = os.path.join(path, "ui_%s.py" % ufile)
-        compiled = os.system("pyuic4 %s -o %s" % (uifile, pyfile))
-        if compiled == 0:
-            print "Compiled %s -> %s" % (uifile, pyfile)
-        else:
-            print >> sys.stderr,  "Error: Cannot build %s" % (pyfile)
 
     ## runner
     # \brief It is running during building
     def run(self):
-        try:
-            ufiles = [(ufile[:-3],
-                       UIDIR) for ufile
-                      in os.listdir(UIDIR) if ufile.endswith('.ui')]
-            for ui in ufiles:
-                if not ui[0] in (".", ".."):
-                    self.makeui(ui[0], ui[1])
-        except TypeError as e:
-            print >> sys.stderr, "No .ui files to build", e
 
         try:
             qfiles = [(qfile[:-4], QRCDIR) for qfile
@@ -142,6 +121,10 @@ def get_scripts(scripts):
         return scripts + [sc + '.pyw' for sc in scripts]
     return scripts
 
+package_data = {'nxselector': ['ui/*.ui']
+                }
+
+
 ## metadata for distutils
 SETUPDATA = dict(
     name="nxselector",
@@ -157,6 +140,7 @@ SETUPDATA = dict(
     url="http://www.desy.de/~jkotan/",
     platforms=("Linux", " Windows", " MacOS "),
     packages=[TOOL, UIDIR, QRCDIR],
+    package_data=package_data,
     scripts=get_scripts(SCRIPTS),
     long_description=read('README'),
     cmdclass={"build": toolBuild, "clean": toolClean}

@@ -30,6 +30,8 @@ try:
     from taurus.external.qt import Qt
 except:
     from taurus.qt import Qt
+from taurus.qt.qtgui.util.ui import UILoadable
+
 
 from taurus.qt.qtgui.base import TaurusBaseWidget
 from .ServerState import ServerState
@@ -42,7 +44,7 @@ from .Storage import Storage
 from .CommandThread import CommandThread
 from .MessageBox import MessageBox
 
-from .ui.ui_selector import Ui_Selector
+#from .ui.ui_selector import Ui_Selector
 
 
 import logging
@@ -50,6 +52,7 @@ logger = logging.getLogger(__name__)
 
 
 ## main window class
+@UILoadable(with_ui='ui')
 class Selector(Qt.QDialog, TaurusBaseWidget):
 
     ## constructor
@@ -61,6 +64,7 @@ class Selector(Qt.QDialog, TaurusBaseWidget):
         Qt.QWidget.__init__(self, parent)
         TaurusBaseWidget.__init__(self, 'NXSExpDescriptionEditor')
         self.setWindowFlags(Qt.Qt.Window)
+        self.loadUi()
 
         logger.debug("PARAMETERS: %s %s",
                      server, parent)
@@ -84,7 +88,7 @@ class Selector(Qt.QDialog, TaurusBaseWidget):
 
         self.__resetServer(server)
 
-        self.ui = Ui_Selector()
+#        self.ui = Ui_Selector()
 
     def settings(self):
         logger.debug("settings")
@@ -110,6 +114,7 @@ class Selector(Qt.QDialog, TaurusBaseWidget):
         self.displayStatus = int(settings.value('Preferences/DisplayStatus',
                                                 2))
         self.cnfFile = str(settings.value("Selector/CnfFile", "./"))
+
 
         ## user interface
         self.preferences = Preferences(self.ui, self.state)
@@ -176,7 +181,7 @@ class Selector(Qt.QDialog, TaurusBaseWidget):
     ##  creates GUI
     # \brief It create dialogs for the main window application
     def createGUI(self):
-        self.ui.setupUi(self)
+#        self.ui.setupUi(self)
         if not self.expert:
             self.ui.groupFrame.hide()
             self.ui.channelFrame.hide()
