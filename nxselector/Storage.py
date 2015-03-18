@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 #   This file is part of nexdatas - Tango Server for NeXus data writer
 #
-#    Copyright (C) 2014 DESY, Jan Kotanski <jkotan@mail.desy.de>
+#    Copyright (C) 2014-2015 DESY, Jan Kotanski <jkotan@mail.desy.de>
 #
 #    nexdatas is free software: you can redistribute it and/or modify
 #    it under the terms of the GNU General Public License as published by
@@ -252,7 +252,7 @@ class Storage(object):
         dform.beam_datasources = dict(
             (cp, False) for cp in self.state.avdslist)
         dform.beam_datasources.update(
-            dict((cp, True) for cp in self.state.adslist))
+            dict((cp, True) for cp in self.state.idslist))
 
         dform.createGUI()
         dform.exec_()
@@ -260,7 +260,7 @@ class Storage(object):
             self.__updateGroup(self.state.cpgroup, dform.det_components)
             self.__updateGroup(self.state.dsgroup, dform.det_datasources)
             self.__updateGroup(self.state.acpgroup, dform.beam_components)
-            self.state.adslist = self.__createList(dform.beam_datasources)
+            self.state.idslist = self.__createList(dform.beam_datasources)
             self.ui.storage.emit(Qt.SIGNAL("updateGroups"))
 
     def __updateGroup(self, group, dct):

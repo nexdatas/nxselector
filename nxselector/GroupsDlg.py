@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 #   This file is part of nexdatas - Tango Server for NeXus data writer
 #
-#    Copyright (C) 2014 DESY, Jan Kotanski <jkotan@mail.desy.de>
+#    Copyright (C) 2014-2015 DESY, Jan Kotanski <jkotan@mail.desy.de>
 #
 #    nexdatas is free software: you can redistribute it and/or modify
 #    it under the terms of the GNU General Public License as published by
@@ -85,7 +85,7 @@ class GroupsDlg(Qt.QDialog):
                              "Preselectable Components:")
         self.__populateTable(self.ui.bdsTableView, self.bdsgroup, DS,
                              self.beam_datasources,
-                             "Preselecting DataSources:")
+                             "Preselectable DataSources:")
 
         self.connect(self.ui.dcpTableView, Qt.SIGNAL("dirty"), self.__dirty)
         self.connect(self.ui.ddsTableView, Qt.SIGNAL("dirty"), self.__dirty)
