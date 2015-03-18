@@ -291,9 +291,9 @@ class ServerState(object):
     def __storeConfiguration(self):
         if not self.__dp:
             self.setServer()
+        self.__dp.configuration = str(json.dumps(self.__conf))
         if not self.server:
             self.__dp.exportAllEnv()
-        self.__dp.configuration = str(json.dumps(self.__conf))
 
     def fetchMntGrp(self):
         if not self.__dp:
