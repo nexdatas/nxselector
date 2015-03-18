@@ -73,7 +73,9 @@ class State(object):
                                      self.dlayout, not self.igroup)
         la = len(self.agroup)
         lm = len(self.mgroup)
-        la, lm = [float(la) / (la + lm), float(lm) / (la + lm)]
+        if la + lm:
+            la, lm = [float(la) / (la + lm), float(lm) / (la + lm)]
+            
         self.mview = self.__addView("Beamline",
                                     max(1, int(lm * (self.rowMax - 1))))
         self.aview = self.__addView("Discipline",
