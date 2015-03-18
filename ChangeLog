@@ -1,5 +1,6 @@
-2015-03-XX Jan Kotanski <jankotan@gmail.com>
+2015-03-18 Jan Kotanski <jankotan@gmail.com>
 	* switching into loadUi
+	* switching from qrc into rcc
 	* tagged as 1.15.1
 
 2015-03-18 Jan Kotanski <jankotan@gmail.com>
