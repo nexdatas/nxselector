@@ -287,7 +287,7 @@ class ServerState(object):
         if not self.server:
             self.__dp.exportAllEnv()
         self.__storeConfiguration()
- 
+
     def __storeConfiguration(self):
         if not self.__dp:
             self.setServer()

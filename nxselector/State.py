@@ -77,7 +77,7 @@ class State(object):
         lm = len(self.mgroup)
         if la + lm:
             la, lm = [float(la) / (la + lm), float(lm) / (la + lm)]
-            
+
         self.aview = self.__addView("Discipline",
                                     max(1, int(la * (self.rowMax - 1))))
         self.mview = self.__addView("Beamline",
