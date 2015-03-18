@@ -41,7 +41,7 @@ class GroupsDlg(Qt.QDialog):
     ## constructor
     # \param parent parent widget
     def __init__(self, parent=None):
-        super(GroupsDlg, self).__init__(parent) 
+        super(GroupsDlg, self).__init__(parent)
         self.loadUi()
         self.dirty = False
         self.det_components = {}

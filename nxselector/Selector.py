@@ -110,7 +110,6 @@ class Selector(Qt.QDialog, TaurusBaseWidget):
                                                 2))
         self.cnfFile = str(settings.value("Selector/CnfFile", "./"))
 
-
         ## user interface
         self.preferences = Preferences(self.ui, self.state)
         if self.userView not in self.preferences.views:

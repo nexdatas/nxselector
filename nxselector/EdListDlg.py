@@ -72,7 +72,7 @@ class EdListWg(Qt.QWidget):
     ## constructor
     # \param parent parent widget
     def __init__(self, parent=None):
-        super(EdListWg, self).__init__(parent) 
+        super(EdListWg, self).__init__(parent)
         self.loadUi()
         self.simple = False
         self.record = {}
