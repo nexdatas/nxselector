@@ -28,8 +28,6 @@ except:
 
 from taurus.qt.qtgui.util.ui import UILoadable
 
-#from .ui.ui_edlistdlg import Ui_EdListDlg
-
 from .EdDataDlg import EdDataDlg
 
 import logging
@@ -80,10 +78,8 @@ class EdListWg(Qt.QWidget):
         self.record = {}
         self.available_names = None
         self.headers = ["Name", "Value"]
-#        self.ui = Ui_EdListDlg()
 
     def createGUI(self):
-#        self.ui.setupUi(self)
         self.ui.closePushButton = self.ui.closeButtonBox.button(
             Qt.QDialogButtonBox.Close)
 

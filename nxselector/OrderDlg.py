@@ -26,7 +26,6 @@ try:
 except:
     from taurus.qt import Qt
 
-#from .ui.ui_orderdlg import Ui_OrderDlg
 from taurus.qt.qtgui.util.ui import UILoadable
 
 
@@ -40,7 +39,7 @@ class OrderDlg(Qt.QDialog):
     # \param parent parent widget
     def __init__(self, parent=None):
         super(OrderDlg, self).__init__(parent)
-#        self.ui = Ui_OrderDlg()
+        self.loadUi()
         self.dirty = False
         self.channels = []
         self.selected = []
@@ -50,8 +49,6 @@ class OrderDlg(Qt.QDialog):
         self.dirty = True
 
     def createGUI(self):
-#        self.ui.setupUi(self)
-        self.loadUi()
         self.ui.closePushButton = self.ui.closeButtonBox.button(
             Qt.QDialogButtonBox.Close)
 

@@ -49,12 +49,10 @@ class EdDataDlg(Qt.QDialog):
         self.name = ''
         self.value = ''
         self.isString = True
-#        self.ui = Ui_EdDataDlg()
         self.headers = []
         self.available_names = None
 
     def createGUI(self):
-#        self.ui.setupUi(self)
         if len(self.headers) > 0:
             self.ui.nameLabel.setText(str(self.headers[0]))
             if len(self.headers) > 1:

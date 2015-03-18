@@ -46,13 +46,13 @@ class LDataDlg(Qt.QDialog):
     # \param parent parent widget
     def __init__(self, parent=None):
         super(LDataDlg, self).__init__(parent)
+        self.loadUi()
         self.label = ''
         self.path = ''
         self.shape = None
         self.dtype = ''
         self.link = None
         self.available_names = None
-#        self.ui = Ui_LDataDlg()
 
     @classmethod
     def __linkText(cls, value):
@@ -64,8 +64,6 @@ class LDataDlg(Qt.QDialog):
         return "Default"
 
     def createGUI(self):
-        self.loadUi()
-#        self.ui.setupUi(self)
         self.ui.labelLineEdit.setText(Qt.QString(str(self.label)))
         self.ui.pathLineEdit.setText(Qt.QString(str(self.path)))
         if self.shape is None:

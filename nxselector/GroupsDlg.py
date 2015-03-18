@@ -28,7 +28,6 @@ except:
 
 from taurus.qt.qtgui.util.ui import UILoadable
 
-#from .ui.ui_cpgroupsdlg import Ui_CpGroupsDlg
 from .Views import OneTableView
 from .Element import GElement, CP, DS
 from .ElementModel import ElementModel
@@ -42,8 +41,8 @@ class GroupsDlg(Qt.QDialog):
     ## constructor
     # \param parent parent widget
     def __init__(self, parent=None):
-        super(GroupsDlg, self).__init__(parent)
-#        self.ui = Ui_CpGroupsDlg()
+        super(GroupsDlg, self).__init__(parent) 
+        self.loadUi()
         self.dirty = False
         self.det_components = {}
         self.det_datasources = {}
@@ -67,8 +66,6 @@ class GroupsDlg(Qt.QDialog):
         gridLayout_3.addLayout(gridLayout, 0, 0, 1, 1)
 
     def createGUI(self):
-        self.loadUi()
-#        self.ui.setupUi(self)
         self.setWindowTitle("Component Groups")
         self.ui.dcpTableView = OneTableView(self.ui.detector)
         self.ui.ddsTableView = OneTableView(self.ui.detector)

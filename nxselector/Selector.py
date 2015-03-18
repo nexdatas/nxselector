@@ -44,9 +44,6 @@ from .Storage import Storage
 from .CommandThread import CommandThread
 from .MessageBox import MessageBox
 
-#from .ui.ui_selector import Ui_Selector
-
-
 import logging
 logger = logging.getLogger(__name__)
 
@@ -87,8 +84,6 @@ class Selector(Qt.QDialog, TaurusBaseWidget):
         self.__commandthread = None
 
         self.__resetServer(server)
-
-#        self.ui = Ui_Selector()
 
     def settings(self):
         logger.debug("settings")
@@ -181,7 +176,6 @@ class Selector(Qt.QDialog, TaurusBaseWidget):
     ##  creates GUI
     # \brief It create dialogs for the main window application
     def createGUI(self):
-#        self.ui.setupUi(self)
         if not self.expert:
             self.ui.groupFrame.hide()
             self.ui.channelFrame.hide()
