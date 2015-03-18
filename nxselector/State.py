@@ -45,7 +45,9 @@ class State(object):
         self.state = state
         self.userView = userView
         self.rowMax = rowMax
-        self.layout = None
+        self.__cplayout = None
+        self.__dslayout = None
+        self.__mainlayout = None
 
         self.agroup = []
         self.aview = None
@@ -59,27 +61,27 @@ class State(object):
     def createGUI(self):
 
         self.ui.state.hide()
-        if self.layout and self.dlayout:
-            self.__clearLayout(self.layout)
-            self.__clearLayout(self.dlayout)
+        if self.__cplayout and self.__dslayout:
+            self.__clearLayout(self.__cplayout)
+            self.__clearLayout(self.__dslayout)
         else:
-            self.hlayout = Qt.QHBoxLayout(self.ui.state)
-            self.layout = Qt.QVBoxLayout()
-            self.dlayout = Qt.QVBoxLayout()
-            self.hlayout.addLayout(self.layout)
-            self.hlayout.addLayout(self.dlayout)
+            self.__mainlayout = Qt.QHBoxLayout(self.ui.state)
+            self.__cplayout = Qt.QVBoxLayout()
+            self.__dslayout = Qt.QVBoxLayout()
+            self.__mainlayout.addLayout(self.__cplayout)
+            self.__mainlayout.addLayout(self.__dslayout)
 
         self.iview = self.__addView("Others", self.rowMax,
-                                     self.dlayout, not self.igroup)
+                                     self.__dslayout, not self.igroup)
         la = len(self.agroup)
         lm = len(self.mgroup)
         if la + lm:
             la, lm = [float(la) / (la + lm), float(lm) / (la + lm)]
             
-        self.mview = self.__addView("Beamline",
-                                    max(1, int(lm * (self.rowMax - 1))))
         self.aview = self.__addView("Discipline",
                                     max(1, int(la * (self.rowMax - 1))))
+        self.mview = self.__addView("Beamline",
+                                    max(1, int(lm * (self.rowMax - 1))))
 
         self.ui.state.update()
         if self.ui.tabWidget.currentWidget() == self.ui.state:
@@ -98,7 +100,7 @@ class State(object):
 
     def __addView(self, label, rowMax, layout=None, hide=False):
         if layout is None:
-            layout = self.layout
+            layout = self.__cplayout
         mframe = Qt.QFrame(self.ui.state)
         mframe.setFrameShape(Qt.QFrame.StyledPanel)
         mframe.setFrameShadow(Qt.QFrame.Raised)
