@@ -353,6 +353,20 @@ class ServerState(object):
         self.__dp.updateMntGrp()
         self.fetchSettings()
 
+    def resetDescriptions(self):
+        if hasattr(self.__dp, "command_inout_asynch"):
+#            aid = self.__dp.command_inout_asynch("updateControllers")
+#            self.__wait(self.__dp)
+            try:
+                self.__dp.resetAutomaticComponents()
+            except PyTango.CommunicationFailed as e:
+                if e[-1].reason == "API_DeviceTimedOut":
+                    self.__wait(self.__dp)
+                else:
+                    raise
+        else:
+            self.__dp.resetAutomaticComponents()
+
     def updateControllers(self):
         if hasattr(self.__dp, "command_inout_asynch"):
 #            aid = self.__dp.command_inout_asynch("updateControllers")

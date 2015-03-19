@@ -115,6 +115,9 @@ class Storage(object):
         self.ui.storage.disconnect(self.ui.groupsPushButton,
                                    Qt.SIGNAL("clicked()"),
                                    self.__groups)
+        self.ui.storage.disconnect(self.ui.resetDescriptionsPushButton,
+                                   Qt.SIGNAL("clicked()"),
+                                   self.__resetDescriptions)
 
     def connectSignals(self):
         self.disconnectSignals()
@@ -184,6 +187,9 @@ class Storage(object):
         self.ui.storage.connect(self.ui.groupsPushButton,
                                 Qt.SIGNAL("clicked()"),
                                 self.__groups)
+        self.ui.storage.connect(self.ui.resetDescriptionsPushButton,
+                                Qt.SIGNAL("clicked()"),
+                                self.__resetDescriptions)
 
     def updateMntGrpComboBox(self):
         self.disconnectSignals()
@@ -236,6 +242,9 @@ class Storage(object):
         if dform.dirty:
             self.state.orderedchannels = list(dform.channels)
             self.ui.storage.emit(Qt.SIGNAL("dirty"))
+
+    def __resetDescriptions(self):
+        self.ui.storage.emit(Qt.SIGNAL("resetDescriptions"))
 
     def __groups(self):
         dform = GroupsDlg(self.ui.storage)

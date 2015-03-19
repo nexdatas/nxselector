@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>909</width>
-    <height>607</height>
+    <width>785</width>
+    <height>613</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -234,6 +234,12 @@
               <verstretch>0</verstretch>
              </sizepolicy>
             </property>
+            <property name="minimumSize">
+             <size>
+              <width>150</width>
+              <height>0</height>
+             </size>
+            </property>
             <property name="editable">
              <bool>true</bool>
             </property>
@@ -354,22 +360,6 @@
                    <string>Channels:</string>
                   </property>
                   <layout class="QGridLayout" name="gridLayout_16">
-                   <item row="3" column="1">
-                    <spacer name="verticalSpacer_10">
-                     <property name="orientation">
-                      <enum>Qt::Vertical</enum>
-                     </property>
-                     <property name="sizeType">
-                      <enum>QSizePolicy::Maximum</enum>
-                     </property>
-                     <property name="sizeHint" stdset="0">
-                      <size>
-                       <width>20</width>
-                       <height>40</height>
-                      </size>
-                     </property>
-                    </spacer>
-                   </item>
                    <item row="2" column="1">
                     <widget class="QPushButton" name="labelsPushButton">
                      <property name="text">
@@ -393,7 +383,7 @@
                      </property>
                     </spacer>
                    </item>
-                   <item row="4" column="1">
+                   <item row="3" column="1">
                     <spacer name="verticalSpacer_22">
                      <property name="orientation">
                       <enum>Qt::Vertical</enum>
@@ -637,6 +627,29 @@
                       <widget class="QPushButton" name="groupsPushButton">
                        <property name="text">
                         <string>Groups ...</string>
+                       </property>
+                      </widget>
+                     </item>
+                     <item>
+                      <spacer name="verticalSpacer_11">
+                       <property name="orientation">
+                        <enum>Qt::Vertical</enum>
+                       </property>
+                       <property name="sizeType">
+                        <enum>QSizePolicy::Maximum</enum>
+                       </property>
+                       <property name="sizeHint" stdset="0">
+                        <size>
+                         <width>20</width>
+                         <height>40</height>
+                        </size>
+                       </property>
+                      </spacer>
+                     </item>
+                     <item>
+                      <widget class="QPushButton" name="resetDescriptionsPushButton">
+                       <property name="text">
+                        <string>Reset Descriptions</string>
                        </property>
                       </widget>
                      </item>

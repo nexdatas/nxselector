@@ -304,6 +304,8 @@ class Selector(Qt.QDialog, TaurusBaseWidget):
         self.connect(self.ui.storage, Qt.SIGNAL("dirty"), self.setDirty)
         self.connect(self.ui.storage, Qt.SIGNAL("reset"),
                      self.resetViews)
+        self.connect(self.ui.storage, Qt.SIGNAL("resetDescriptions"),
+                     self.resetDescriptions)
         self.connect(self.ui.storage, Qt.SIGNAL("resetAll"),
                      self.resetAll)
         self.connect(self.ui.storage, Qt.SIGNAL("updateGroups"),
@@ -541,6 +543,11 @@ class Selector(Qt.QDialog, TaurusBaseWidget):
         logger.debug("reset ALL")
         self.runProgress(["updateControllers", "importMntGrp"])
         logger.debug("reset ENDED")
+
+    def resetDescriptions(self):
+        logger.debug("reset Descriptions")
+        self.runProgress(["resetDescriptions", "importMntGrp"])
+        logger.debug("reset Descriptions ENDED")
 
     def resetConfiguration(self, expconf):
         logger.debug("reset Configuration")
