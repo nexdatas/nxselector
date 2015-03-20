@@ -1,4 +1,8 @@
 2015-03-19 Jan Kotanski <jankotan@gmail.com>
+	* fix for changing mntgrp run without server
+	* tagged as 1.16.2
+
+2015-03-19 Jan Kotanski <jankotan@gmail.com>
 	* changelog update
 	* tagged as 1.16.1
 

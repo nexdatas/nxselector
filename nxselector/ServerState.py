@@ -153,7 +153,7 @@ class ServerState(object):
         if not self.__dp:
             self.setServer()
         if not self.server:
-            self.__dp.importAllEnv()
+            self.__dp.exportAllEnv()
         self.__conf = json.loads(self.__dp.configuration)
 
     ## fetches configuration setting from server
