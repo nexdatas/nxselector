@@ -43,11 +43,13 @@ logger = logging.getLogger(__name__)
 class Selectable(object):
 
     ## constructor
-    def __init__(self, ui, state=None, userView=CheckerView, rowMax=0):
+    def __init__(self, ui, state=None, userView=CheckerView, rowMax=0,
+                 simpleMode=0):
         self.ui = ui
         self.state = state
         self.userView = userView
         self.rowMax = rowMax
+        self.__simpleMode = simpleMode
         self.layout = None
 
         self.frames = None
@@ -148,20 +150,33 @@ class Selectable(object):
                 layout_groups = Qt.QVBoxLayout()
 
                 for group in column:
-                    mgroup = Qt.QGroupBox(mframe)
-                    mgroup.setTitle(group[0])
-                    layout_auto = Qt.QGridLayout(mgroup)
-                    mview = self.userView(mgroup)
-                    mview.rowMax = self.rowMax
+                    hide = False
+                    try:
+                        ig = int(group[1])
+                        if (self.__simpleMode & 1) and ig < 0:
+                            hide = True
+                    except Exception:
+                        pass
+                    if not hide:
+                        mgroup = Qt.QGroupBox(mframe)
+                        mgroup.setTitle(group[0])
+                        layout_auto = Qt.QGridLayout(mgroup)
+                        mview = self.userView(mgroup)
+                        mview.rowMax = self.rowMax
 
-                    layout_auto.addWidget(mview, 0, 0, 1, 1)
-                    layout_groups.addWidget(mgroup)
+                        layout_auto.addWidget(mview, 0, 0, 1, 1)
+                        layout_groups.addWidget(mgroup)
 
-                    self.views[group[1]] = mview
+                        self.views[group[1]] = mview
+                if layout_groups.count():
+                    layout_columns.addLayout(layout_groups)
+                else:
+                    mgroup.hide()
 
-                layout_columns.addLayout(layout_groups)
-
-            self.layout.addWidget(mframe)
+            if layout_columns.count():
+                self.layout.addWidget(mframe)
+            else:
+                mframe.hide()
         self.ui.selectable.update()
         if self.ui.tabWidget.currentWidget() == self.ui.selectable:
             self.ui.selectable.show()
@@ -173,6 +188,13 @@ class Selectable(object):
             else:
                 md = ElementModel([])
 
+            try:
+                ig = int(k)
+                if (self.__simpleMode & 2) and ig < 0:
+                    md.enable = False
+                    md.disEnable = False
+            except Exception:
+                pass
             self.views[k].setModel(md)
             md.connect(md, Qt.SIGNAL("componentChecked"),
                        self.updateViews)

@@ -38,11 +38,13 @@ class Data(object):
 
     ## constructor
     # \param settings frame settings
-    def __init__(self, ui, state=None):
+    def __init__(self, ui, state=None, simpleMode=False):
         self.ui = ui
         self.state = state
         self.layout = None
         self.form = None
+        self.__simpleMode = simpleMode
+        self.disable = ["beamtime_id", "title"]
 
     def createGUI(self):
         self.ui.data.hide()
@@ -60,6 +62,8 @@ class Data(object):
             self.layout = Qt.QHBoxLayout(self.ui.data)
 
         self.form = EdListWg(self.ui.data)
+        if self.__simpleMode:
+            self.form.disable = self.disable
         self.form.record = self.state.datarecord
         names = self.state.clientRecords()
         logger.debug("NAMES: %s " % names)

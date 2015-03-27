@@ -44,11 +44,13 @@ class EdListDlg(Qt.QDialog):
         self.dirty = False
         self.available_names = None
         self.headers = ["Name", "Value"]
+        self.disable = []
 
     def createGUI(self):
         self.widget.simple = self.simple
         self.widget.available_names = self.available_names
         self.widget.headers = self.headers
+        self.widget.disable = self.disable
         self.widget.createGUI()
         layout = Qt.QHBoxLayout()
         layout.addWidget(self.widget)
@@ -78,6 +80,7 @@ class EdListWg(Qt.QWidget):
         self.record = {}
         self.available_names = None
         self.headers = ["Name", "Value"]
+        self.disable = []
 
     def createGUI(self):
         self.ui.closePushButton = self.ui.closeButtonBox.button(
@@ -128,9 +131,12 @@ class EdListWg(Qt.QWidget):
             if selected is not None and selected == name:
                 sitem = item
             self.ui.tableWidget.setItem(row, 0, item)
-
             value = self.record[name]
             item = Qt.QTableWidgetItem(str(value))
+            if name in self.disable:
+                flags = item.flags()
+                flags &= ~Qt.Qt.ItemIsEnabled
+                item.setFlags(flags)
             self.ui.tableWidget.setItem(row, 1, item)
         self.ui.tableWidget.resizeColumnsToContents()
         self.ui.tableWidget.setSelectionBehavior(
@@ -165,10 +171,15 @@ class EdListWg(Qt.QWidget):
             self.emit(Qt.SIGNAL("dirty"))
 
     def __edit(self):
+        name = self.__currentName()
+        if name in self.disable:
+            Qt.QMessageBox.information(
+                self, "Selector in Simple Mode",
+                "This data cannot be edited")
+            return
         dform = EdDataDlg(self)
         dform.simple = self.simple
         dform.available_names = self.available_names
-        name = self.__currentName()
         if name:
             dform.name = name
             dform.value = self.record[name]
@@ -183,6 +194,11 @@ class EdListWg(Qt.QWidget):
 
     def __remove(self):
         name = self.__currentName()
+        if name in self.disable:
+            Qt.QMessageBox.information(
+                self, "Selector in Simple Mode",
+                "This data cannot be removed")
+            return
         if name not in self.record:
             return
 

@@ -40,12 +40,13 @@ class Storage(object):
 
     ## constructor
     # \param settings frame settings
-    def __init__(self, ui, state=None):
+    def __init__(self, ui, state=None, simplemode=False):
         self.ui = ui
         self.state = state
         self.__layout = None
         self.__tWidgets = []
         self.__onlyselected = False
+        self.__simplemode = simplemode
 
         self.__moduleLabel = 'module'
 
@@ -315,6 +316,7 @@ class Storage(object):
             self.__layout = Qt.QHBoxLayout(self.ui.timerFrame)
             self.__layout.setContentsMargins(0, 0, 0, 0)
         self.__layout.addWidget(cb)
+        cb.setEnabled(not self.__simplemode)
 
     def __delTimer(self):
         logger.debug("delTimer")

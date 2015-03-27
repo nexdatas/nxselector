@@ -55,7 +55,7 @@ class Selector(Qt.QDialog, TaurusBaseWidget):
     ## constructor
     # \param parent parent widget
     def __init__(self, server=None, door=None,
-                 standalone=False, expert=False,
+                 standalone=False, umode=None,
                  organization='DESY', application='NXS Component Selector',
                  parent=None):
         Qt.QWidget.__init__(self, parent)
@@ -76,8 +76,28 @@ class Selector(Qt.QDialog, TaurusBaseWidget):
 
         self.__model = None
         self.state = None
+
         ## expert mode
-        self.expert = expert
+        if umode == 'expert':
+            self.expert = True
+            self.user = False
+            self.simple = False
+        elif umode == 'advanced':
+            self.expert = False
+            self.user = False
+            self.simple = False
+        elif umode == 'user':
+            self.expert = False
+            self.user = True
+            self.simple = False
+        elif umode == 'simple':
+            self.expert = False
+            self.user = True
+            self.simple = True
+        else:
+            self.expert = True
+            self.user = False
+            self.simple = True
 
         self.cnfFile = ''
         self.__progress = None
@@ -114,12 +134,12 @@ class Selector(Qt.QDialog, TaurusBaseWidget):
         self.preferences = Preferences(self.ui, self.state)
         if self.userView not in self.preferences.views:
             self.userView = 'CheckBoxes Dis'
-        self.storage = Storage(self.ui, self.state)
+        self.storage = Storage(self.ui, self.state, self.simple)
 
         self.selectable = Selectable(
             self.ui, self.state,
             self.preferences.views[self.userView],
-            self.rowMax)
+            self.rowMax, int(self.simple) + 2 * int(self.user))
 
         self.preferences.mgroups = settings.value(
             'Preferences/Groups', '{}')
@@ -150,7 +170,7 @@ class Selector(Qt.QDialog, TaurusBaseWidget):
             self.preferences.views[self.userView],
             self.rowMax)
 
-        self.data = Data(self.ui, self.state)
+        self.data = Data(self.ui, self.state, self.simple)
 
         self.tabs = [self.selectable, self.automatic, self.data,
                      self.storage, self.preferences]
@@ -175,19 +195,6 @@ class Selector(Qt.QDialog, TaurusBaseWidget):
     ##  creates GUI
     # \brief It create dialogs for the main window application
     def createGUI(self):
-        if not self.expert:
-            self.ui.groupFrame.hide()
-            self.ui.channelFrame.hide()
-            self.ui.dynFrame.hide()
-            self.ui.measFrame.hide()
-            self.ui.mntServerLabel.hide()
-            self.ui.mntServerLineEdit.hide()
-            self.ui.devConfigLabel.hide()
-            self.ui.devConfigLineEdit.hide()
-            self.ui.devWriterLabel.hide()
-            self.ui.devWriterLineEdit.hide()
-            self.ui.devConfigPushButton.hide()
-            self.ui.groupsPushButton.hide()
 
         if not self.__standalone:
             self.ui.mntServerLineEdit.hide()
@@ -248,6 +255,35 @@ class Selector(Qt.QDialog, TaurusBaseWidget):
             "border-width: 1px; border-color: gray; "
             "color:#208020;font:bold;")
 
+        if not self.expert:
+            self.ui.groupFrame.hide()
+            self.ui.channelFrame.hide()
+            self.ui.dynFrame.hide()
+            self.ui.measFrame.hide()
+            self.ui.mntServerLabel.hide()
+            self.ui.mntServerLineEdit.hide()
+            self.ui.devConfigLabel.hide()
+            self.ui.devConfigLineEdit.hide()
+            self.ui.devWriterLabel.hide()
+            self.ui.devWriterLineEdit.hide()
+            self.ui.devConfigPushButton.hide()
+            self.ui.groupsPushButton.hide()
+            self.ui.componentFrame.hide()
+            self.ui.devSettingsLineEdit.setEnabled(False)
+        if self.user:
+            self.ui.mntGrpComboBox.setEnabled(False)
+            self.ui.mntGrpToolButton.hide()
+            self.ui.selectorFrame.hide()
+            self.ui.viewServerFrame.hide()
+            self.ui.viewFrame.hide()
+        if self.simple:
+            self.ui.timerAddPushButton.hide()
+            self.ui.timerDelPushButton.hide()
+            self.ui.mntTimerComboBox.setEnabled(False)
+            self.ui.timerButtonFrame.setEnabled(False)
+            self.ui.state.hide()
+            self.ui.tabWidget.removeTab(1)
+            self.ui.tabWidget.setCurrentIndex(1)
         for tab in self.tabs:
             tab.reset()
 
@@ -261,7 +297,6 @@ class Selector(Qt.QDialog, TaurusBaseWidget):
             self.ui.viewComboBox.setCurrentIndex(cid)
         self.ui.rowMaxSpinBox.setValue(self.rowMax)
         self.ui.statusCheckBox.setChecked(self.displayStatus != 0)
-
         self.connect(self.ui.buttonBox.button(Qt.QDialogButtonBox.Apply),
                      Qt.SIGNAL("pressed()"), self.__applyClicked)
         self.connect(self.ui.buttonBox.button(Qt.QDialogButtonBox.Reset),

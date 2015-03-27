@@ -92,12 +92,12 @@ def main():
         server = options.server
         if options.stylesheet:
             app.setStyle(options.stylesheet)
-        if options.mode and options.mode == 'user':
-            expert = False
+        if options.mode:
+            umode = options.mode
         else:
-            extert = True
+            umode = 'expert'
 
-    form = Selector(server, standalone=True, expert=expert,
+    form = Selector(server, standalone=True, umode=umode,
                     door=options.door)
     form.show()
 

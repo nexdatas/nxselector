@@ -43,6 +43,8 @@ class ElementModel(Qt.QAbstractTableModel):
         super(ElementModel, self).__init__()
         ## if enable selection for user
         self.enable = True
+        ## if enable selection for user
+        self.disEnable = True
         ## if auto enable
         self.autoEnable = True
         ## list of device elements
@@ -226,6 +228,9 @@ class ElementModel(Qt.QAbstractTableModel):
                                 Qt.Qt.ItemIsEditable
                                 )
         if column == 2:
+            if not self.disEnable:
+                flag &= ~Qt.Qt.ItemIsEnabled
+                return Qt.Qt.ItemFlags(flag | Qt.Qt.ItemIsUserCheckable)
             cpncheck = False
             if comp:
                 if comp in device.state.mcplist:
