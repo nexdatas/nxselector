@@ -81,7 +81,7 @@ class Selector(Qt.QDialog, TaurusBaseWidget):
         self.__umode = umode
         self.expert = True
         self.user = False
-        self.simple = True
+        self.simple = False
         if self.__umode:
             self.__setmode(self.__umode)
         self.cnfFile = ''
