@@ -55,7 +55,7 @@ class Selector(Qt.QDialog, TaurusBaseWidget):
     ## constructor
     # \param parent parent widget
     def __init__(self, server=None, door=None,
-                 standalone=False, umode=None, 
+                 standalone=False, umode=None,
                  setdefault=False,
                  organization='DESY', application='NXS Component Selector',
                  parent=None):
@@ -76,7 +76,7 @@ class Selector(Qt.QDialog, TaurusBaseWidget):
 
         self.__model = None
         self.state = None
-        
+
         self.__setdefault = setdefault
         self.__umode = umode
         self.expert = True
@@ -108,7 +108,7 @@ class Selector(Qt.QDialog, TaurusBaseWidget):
             self.expert = False
             self.user = True
             self.simple = True
-    
+
     def settings(self):
         logger.debug("settings")
 
@@ -126,7 +126,7 @@ class Selector(Qt.QDialog, TaurusBaseWidget):
 
         settings = Qt.QSettings(self.__organization, self.__application, self)
         if not self.__umode:
-            self.__umode = str(settings.value("Selector/DefaultMode", 
+            self.__umode = str(settings.value("Selector/DefaultMode",
                                               str(self.__umode)))
         self.__setmode(self.__umode)
         self.userView = settings.value('Preferences/UserView',
@@ -412,9 +412,11 @@ class Selector(Qt.QDialog, TaurusBaseWidget):
                         40, 20, Qt.QSizePolicy.Expanding)
 
             if flag:
-                self.setWindowTitle('%s (%s mode) * ' % (self.title, self.__umode))
+                self.setWindowTitle(
+                    '%s (%s mode) * ' % (self.title, self.__umode))
             else:
-                self.setWindowTitle('%s (%s mode)' % (self.title, self.__umode))
+                self.setWindowTitle(
+                    '%s (%s mode)' % (self.title, self.__umode))
                 self.ui.buttonBox.button(
                     Qt.QDialogButtonBox.Reset).setEnabled(False)
                 self.ui.buttonBox.button(
@@ -458,7 +460,6 @@ class Selector(Qt.QDialog, TaurusBaseWidget):
             settings.setValue(
                 "Selector/DefaultMode",
                 Qt.QVariant(self.__umode))
-            
 
     def keyPressEvent(self, event):
         if hasattr(event, "key") and event.key() == Qt.Qt.Key_Escape:
