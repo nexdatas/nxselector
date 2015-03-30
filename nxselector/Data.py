@@ -44,7 +44,6 @@ class Data(object):
         self.layout = None
         self.form = None
         self.__simpleMode = simpleMode
-        self.disable = ["beamtime_id", "title"]
 
     def createGUI(self):
         self.ui.data.hide()
@@ -63,7 +62,7 @@ class Data(object):
 
         self.form = EdListWg(self.ui.data)
         if self.__simpleMode:
-            self.form.disable = self.disable
+            self.form.disable = self.state.adminData
         self.form.record = self.state.datarecord
         names = self.state.clientRecords()
         logger.debug("NAMES: %s " % names)

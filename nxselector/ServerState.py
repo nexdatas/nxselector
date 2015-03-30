@@ -82,6 +82,7 @@ class ServerState(object):
         self.avmglist = []
         self.vrcpdict = {}
         self.idslist = []
+        self.admindata = []
 
         self.orderedchannels = []
 
@@ -186,6 +187,7 @@ class ServerState(object):
 
         self.vrcpdict = self.__loadDict("variableComponents")
         self.fullnames = self.__loadDict("fullDeviceNames")
+        self.adminData = self.__loadList("adminData", True)
 
         self.__fetchFileData()
         self.__fetchEnvData()

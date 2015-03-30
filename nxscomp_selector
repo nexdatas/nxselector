@@ -74,7 +74,13 @@ def main():
             help="Qt stylesheet")
         parser.add_option(
             "-m", "--mode", dest="mode",
-            help="interface mode, i.e. user, expert")
+            help="interface mode, i.e. simple, user, advanced, expert")
+        parser.add_option(
+            "", "--set-as-default-mode",
+            action="store_true",
+            default=False,
+            dest="setdefault",
+            help="set the current mode as default")
 
         app = Application(
             sys.argv,
@@ -95,9 +101,10 @@ def main():
         if options.mode:
             umode = options.mode
         else:
-            umode = 'expert'
+            umode = None
 
-    form = Selector(server, standalone=True, umode=umode,
+    form = Selector(server, standalone=True, umode=umode, 
+                    setdefault=options.setdefault,
                     door=options.door)
     form.show()
 

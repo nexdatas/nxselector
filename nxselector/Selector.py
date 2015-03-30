@@ -55,14 +55,14 @@ class Selector(Qt.QDialog, TaurusBaseWidget):
     ## constructor
     # \param parent parent widget
     def __init__(self, server=None, door=None,
-                 standalone=False, umode=None,
+                 standalone=False, umode=None, 
+                 setdefault=False,
                  organization='DESY', application='NXS Component Selector',
                  parent=None):
         Qt.QWidget.__init__(self, parent)
         TaurusBaseWidget.__init__(self, 'NXSExpDescriptionEditor')
         self.setWindowFlags(Qt.Qt.Window)
         self.loadUi()
-
         logger.debug("PARAMETERS: %s %s",
                      server, parent)
         self.__organization = organization
@@ -76,7 +76,21 @@ class Selector(Qt.QDialog, TaurusBaseWidget):
 
         self.__model = None
         self.state = None
+        
+        self.__setdefault = setdefault
+        self.__umode = umode
+        self.expert = True
+        self.user = False
+        self.simple = True
+        if self.__umode:
+            self.__setmode(self.__umode)
+        self.cnfFile = ''
+        self.__progress = None
+        self.__commandthread = None
 
+        self.__resetServer(server)
+
+    def __setmode(self, umode):
         ## expert mode
         if umode == 'expert':
             self.expert = True
@@ -94,17 +108,7 @@ class Selector(Qt.QDialog, TaurusBaseWidget):
             self.expert = False
             self.user = True
             self.simple = True
-        else:
-            self.expert = True
-            self.user = False
-            self.simple = True
-
-        self.cnfFile = ''
-        self.__progress = None
-        self.__commandthread = None
-
-        self.__resetServer(server)
-
+    
     def settings(self):
         logger.debug("settings")
 
@@ -121,6 +125,10 @@ class Selector(Qt.QDialog, TaurusBaseWidget):
             self.__commandthread.error = None
 
         settings = Qt.QSettings(self.__organization, self.__application, self)
+        if not self.__umode:
+            self.__umode = str(settings.value("Selector/DefaultMode", 
+                                              str(self.__umode)))
+        self.__setmode(self.__umode)
         self.userView = settings.value('Preferences/UserView',
                                        'CheckBoxes Dis')
         self.rowMax = int(settings.value('Preferences/RowMax', 16))
@@ -404,9 +412,9 @@ class Selector(Qt.QDialog, TaurusBaseWidget):
                         40, 20, Qt.QSizePolicy.Expanding)
 
             if flag:
-                self.setWindowTitle(self.title + ' * ')
+                self.setWindowTitle('%s (%s mode) * ' % (self.title, self.__umode))
             else:
-                self.setWindowTitle(self.title)
+                self.setWindowTitle('%s (%s mode)' % (self.title, self.__umode))
                 self.ui.buttonBox.button(
                     Qt.QDialogButtonBox.Reset).setEnabled(False)
                 self.ui.buttonBox.button(
@@ -446,6 +454,11 @@ class Selector(Qt.QDialog, TaurusBaseWidget):
         settings.setValue(
             "Preferences/LayoutFile",
             Qt.QVariant(self.preferences.layoutFile))
+        if self.__setdefault:
+            settings.setValue(
+                "Selector/DefaultMode",
+                Qt.QVariant(self.__umode))
+            
 
     def keyPressEvent(self, event):
         if hasattr(event, "key") and event.key() == Qt.Qt.Key_Escape:
