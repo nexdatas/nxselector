@@ -13,6 +13,9 @@
   <property name="windowTitle">
    <string>Dialog</string>
   </property>
+  <property name="modal">
+   <bool>false</bool>
+  </property>
   <layout class="QGridLayout" name="gridLayout">
    <item row="0" column="0">
     <layout class="QVBoxLayout" name="verticalLayout">
@@ -23,13 +26,20 @@
          <property name="text">
           <string>&amp;Name:</string>
          </property>
-         <property name="buddy">
-          <cstring>nameLineEdit</cstring>
-         </property>
         </widget>
        </item>
        <item>
-        <widget class="QLineEdit" name="nameLineEdit"/>
+        <widget class="QComboBox" name="nameComboBox">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="editable">
+          <bool>true</bool>
+         </property>
+        </widget>
        </item>
       </layout>
      </item>
@@ -86,7 +96,6 @@
   </layout>
  </widget>
  <tabstops>
-  <tabstop>nameLineEdit</tabstop>
   <tabstop>valueTextEdit</tabstop>
   <tabstop>stringCheckBox</tabstop>
   <tabstop>buttonBox</tabstop>

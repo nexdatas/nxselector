@@ -176,8 +176,9 @@ class Selector(Qt.QDialog, TaurusBaseWidget):
         self.selectable.mgroups = str(self.preferences.mgroups)
         self.selectable.frames = str(self.preferences.frames)
         self.automatic = State(
-            self.ui, self.state,
-            self.preferences.views[self.userView],
+            self.ui, self.state, 
+            self.preferences.views["CheckBoxes Dis (U)"],
+#            self.preferences.views[self.userView],
             self.rowMax)
 
         self.data = Data(self.ui, self.state, self.simple)
@@ -532,7 +533,8 @@ class Selector(Qt.QDialog, TaurusBaseWidget):
     def resetViews(self):
         logger.debug("reset view")
         for tab in self.tabs:
-            tab.userView = self.preferences.views[
+            if not isinstance(tab, State):
+                tab.userView = self.preferences.views[
                 str(self.ui.viewComboBox.currentText())]
             tab.reset()
         logger.debug("reset view end")

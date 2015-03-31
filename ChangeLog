@@ -1,3 +1,7 @@
+2015-03-XX Jan Kotanski <jankotan@gmail.com>
+	* changing layout
+	* tagged as 1.18.0
+
 2015-03-31 Jan Kotanski <jankotan@gmail.com>
 	* adding expert/advanced/user/simple modes
 	* adding set-as-default-mode switch

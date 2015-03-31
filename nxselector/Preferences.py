@@ -32,6 +32,7 @@ except:
     from taurus.qt import Qt
 
 from .Views import (TableView, OneTableView,
+                    CheckerLabelViewNN,
                     CheckerView, RadioView, ButtonView,
                     LeftCheckerView, LeftRadioView,
                     CheckerViewNL, RadioViewNL, ButtonViewNL,
@@ -113,6 +114,7 @@ class Preferences(object):
             "RadioButtons Dis (N)": RadioDisViewNL,
             "CheckBoxes Dis": CheckDisViewNN,
             "RadioButtons Dis": RadioDisViewNN,
+            "CheckBoxes Dis (U)": CheckerLabelViewNN,
             }
 
         self.maxHelp = 10

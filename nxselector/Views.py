@@ -31,6 +31,39 @@ import logging
 logger = logging.getLogger(__name__)
 
 
+class CheckerLabelWidget(Qt.QWidget):
+    def __init__(self, parent=None):
+        super(Qt.QWidget, self).__init__(parent)
+        self.checkBox = Qt.QCheckBox(self)
+        self.label = Qt.QLabel(self)
+        layout = Qt.QHBoxLayout()
+        layout.addWidget(self.checkBox)
+        layout.addWidget(self.label)
+        layout.setContentsMargins(2,2,2,2)
+        self.setLayout(layout)
+
+    def isChecked(self):
+        return self.checkBox.isChecked()
+
+    def setChecked(self, status):
+        self.label.setEnabled(status)
+        return self.checkBox.setChecked(status)
+
+    def setCheckable(self, status):
+        return self.checkBox.setCheckable(status)
+
+    def setEnabled(self, status):
+        return self.checkBox.setEnabled(status)
+
+    def setPolicy(self, policy):
+        return self.label.setPolicy(policy)
+
+    def setText(self, text):
+        return self.label.setText(text)
+
+
+    
+
 class TableView(Qt.QTableView):
 
     def __init__(self, parent=None):
@@ -320,7 +353,6 @@ class ButtonView(CheckerView):
         self.widget = Qt.QPushButton
         self.center = False
 
-
 class CheckerViewNL(CheckerView):
 
     def __init__(self, parent=None):
@@ -433,6 +465,11 @@ class CheckDisViewNN(CheckDisView):
         super(CheckDisViewNN, self).__init__(parent)
         self.showNames = False
 
+
+class CheckerLabelViewNN(CheckerViewNN):
+    def __init__(self, parent=None):
+        super(CheckerViewNN, self).__init__(parent)
+        self.widget = CheckerLabelWidget
 
 class ButtonDisViewNN(ButtonDisView):
 

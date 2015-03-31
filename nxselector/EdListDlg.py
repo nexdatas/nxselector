@@ -164,6 +164,7 @@ class EdListWg(Qt.QWidget):
         dform.simple = self.simple
         dform.headers = self.headers
         dform.available_names = self.available_names
+        dform.available_tips = True
         dform.createGUI()
         if dform.exec_():
             self.record[dform.name] = dform.value
@@ -186,7 +187,7 @@ class EdListWg(Qt.QWidget):
         dform.headers = self.headers
         dform.createGUI()
         if name:
-            dform.ui.nameLineEdit.setEnabled(False)
+            dform.ui.nameComboBox.setEnabled(False)
         if dform.exec_():
             self.record[dform.name] = dform.value
             self.__populateTable()

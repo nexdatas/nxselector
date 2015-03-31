@@ -52,7 +52,19 @@ class EdDataDlg(Qt.QDialog):
         self.headers = []
         self.available_names = None
 
+    def setText(self, text):
+        if str(text) not in self.available_names:
+            self.ui.nameComboBox.addItem(str(text))
+        ind = self.ui.nameComboBox.findText(str(text))
+        self.ui.nameComboBox.setCurrentIndex(ind)
+        self.ui.nameComboBox.setEditText(str(text))
+
+
     def createGUI(self):
+        if self.available_names:
+            self.ui.nameComboBox.clear()
+            for an in self.available_names:
+                self.ui.nameComboBox.addItem(str(an))
         if len(self.headers) > 0:
             self.ui.nameLabel.setText(str(self.headers[0]))
             if len(self.headers) > 1:
@@ -63,12 +75,12 @@ class EdDataDlg(Qt.QDialog):
             self.isString = isinstance(self.value,
                                        (str, unicode, Qt.QString))
         self.ui.stringCheckBox.setChecked(self.isString)
-        self.ui.nameLineEdit.setText(Qt.QString(self.name))
+        self.setText(Qt.QString(self.name))
         self.ui.valueTextEdit.setText(Qt.QString(str(self.value)))
 
-        if self.available_names:
-            completer = Qt.QCompleter(self.available_names, self)
-            self.ui.nameLineEdit.setCompleter(completer)
+#        if self.available_names:
+#            completer = Qt.QCompleter(self.available_names, self)
+#            self.ui.nameLineEdit.setCompleter(completer)
 
         self.connect(self.ui.buttonBox, Qt.SIGNAL("accepted()"),
                      self.accept)
@@ -76,7 +88,7 @@ class EdDataDlg(Qt.QDialog):
                      self.reject)
 
     def accept(self):
-        self.name = unicode(self.ui.nameLineEdit.text())
+        self.name = unicode(self.ui.nameComboBox.currentText())
         self.isString = self.ui.stringCheckBox.isChecked()
         self.value = unicode(self.ui.valueTextEdit.toPlainText())
         if not self.isString and not self.simple:
@@ -87,6 +99,6 @@ class EdDataDlg(Qt.QDialog):
 
         if not self.name:
             Qt.QMessageBox.warning(self, "Wrong Data", "Empty data name")
-            self.ui.nameLineEdit.setFocus()
+            self.ui.nameComboBox.setFocus()
             return
         Qt.QDialog.accept(self)
