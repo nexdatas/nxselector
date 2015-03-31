@@ -1,4 +1,4 @@
-2015-03-19 Jan Kotanski <jankotan@gmail.com>
+2015-03-31 Jan Kotanski <jankotan@gmail.com>
 	* adding expert/advanced/user/simple modes
 	* adding set-as-default-mode switch
 	* adding adding read-only data (adminData) for user data
