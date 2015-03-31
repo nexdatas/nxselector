@@ -63,6 +63,8 @@ class Selector(Qt.QDialog, TaurusBaseWidget):
         TaurusBaseWidget.__init__(self, 'NXSExpDescriptionEditor')
         self.setWindowFlags(Qt.Qt.Window)
         self.loadUi()
+        if umode != 'administrator':
+            self.ui.tabWidget.removeTab(4)
         logger.debug("PARAMETERS: %s %s",
                      server, parent)
         self.__organization = organization
@@ -224,6 +226,10 @@ class Selector(Qt.QDialog, TaurusBaseWidget):
         self.ui.statusLabel.setEnabled(False)
         self.ui.buttonBox.setCenterButtons(True)
 
+        self.ui.layoutButtonBox.button(Qt.QDialogButtonBox.Open).setText("Load")
+        self.ui.layoutButtonBox.button(Qt.QDialogButtonBox.Save).setText("Save")
+        self.ui.profileButtonBox.button(Qt.QDialogButtonBox.Open).setText("&Load")
+
         layout = self.ui.profileButtonBox.layout()
         for i in range(layout.count()):
             spacer = layout.itemAt(i)
@@ -261,13 +267,15 @@ class Selector(Qt.QDialog, TaurusBaseWidget):
         self.ui.statusLabel.setStyleSheet(
             "background-color:white;border-style: outset; "
             "border-width: 1px; border-color: gray; "
-            "color:#208020;font:bold;")
+            "color:#208020;font:bold;font-size: 14pt;")
 
         if not self.expert:
-            self.ui.groupFrame.hide()
-            self.ui.channelFrame.hide()
+#            self.ui.groupFrame.hide()
+            self.ui.groupGroupBox.hide()
+            self.ui.frameGroupBox.hide()
+#            self.ui.channelFrame.hide()
             self.ui.dynFrame.hide()
-            self.ui.measFrame.hide()
+            self.ui.tangoFrame.hide()
             self.ui.mntServerLabel.hide()
             self.ui.mntServerLineEdit.hide()
             self.ui.devConfigLabel.hide()
@@ -276,14 +284,16 @@ class Selector(Qt.QDialog, TaurusBaseWidget):
             self.ui.devWriterLineEdit.hide()
             self.ui.devConfigPushButton.hide()
             self.ui.groupsPushButton.hide()
-            self.ui.componentFrame.hide()
+#            self.ui.componentFrame.hide()
+            self.ui.componentGroupBox.hide()
             self.ui.devSettingsLineEdit.setEnabled(False)
         if self.user:
             self.ui.mntGrpComboBox.setEnabled(False)
             self.ui.mntGrpToolButton.hide()
-            self.ui.selectorFrame.hide()
+#            self.ui.selectorFrame.hide()
             self.ui.viewServerFrame.hide()
-            self.ui.viewFrame.hide()
+            self.ui.viewGroupBox.hide()
+#            self.ui.viewFrame.hide()
         if self.simple:
             self.ui.timerAddPushButton.hide()
             self.ui.timerDelPushButton.hide()
@@ -392,7 +402,7 @@ class Selector(Qt.QDialog, TaurusBaseWidget):
                 self.ui.statusLabel.setStyleSheet(
                     "background-color: white;border-style: outset; "
                     "border-width: 1px; border-color: gray; "
-                    "color:#A02020;font:bold;")
+                    "color:#A02020;font:bold;font-size: 14pt;")
                 self.ui.statusLabel.setText('NOT APPLIED')
                 self.setWindowTitle(self.title + ' * ')
             else:
@@ -400,7 +410,7 @@ class Selector(Qt.QDialog, TaurusBaseWidget):
                 self.ui.statusLabel.setStyleSheet(
                     "background-color: white;border-style: outset; "
                     "border-width: 1px; border-color: gray; "
-                    "color:#206020;font:bold;")
+                    "color:#206020;font:bold;font-size: 14pt;")
                 self.ui.statusLabel.setText('APPLIED')
             self.ui.statusLabel.show()
         else:

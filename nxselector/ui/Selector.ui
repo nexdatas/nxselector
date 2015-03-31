@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>760</width>
-    <height>636</height>
+    <width>624</width>
+    <height>663</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -309,6 +309,9 @@
      </item>
      <item>
       <widget class="QTabWidget" name="tabWidget">
+       <property name="enabled">
+        <bool>true</bool>
+       </property>
        <property name="sizePolicy">
         <sizepolicy hsizetype="Preferred" vsizetype="Expanding">
          <horstretch>0</horstretch>
@@ -320,6 +323,9 @@
        </property>
        <property name="currentIndex">
         <number>0</number>
+       </property>
+       <property name="tabsClosable">
+        <bool>false</bool>
        </property>
        <widget class="QWidget" name="selectable">
         <attribute name="title">
@@ -338,64 +344,226 @@
        </widget>
        <widget class="QWidget" name="storage">
         <attribute name="title">
-         <string>Storage</string>
+         <string>Configuration</string>
         </attribute>
-        <layout class="QGridLayout" name="gridLayout_21">
+        <layout class="QGridLayout" name="gridLayout_9">
          <item row="0" column="0">
-          <layout class="QVBoxLayout" name="verticalLayout_9">
+          <layout class="QVBoxLayout" name="verticalLayout_5">
            <item>
-            <layout class="QHBoxLayout" name="horizontalLayout_5">
+            <layout class="QHBoxLayout" name="horizontalLayout_6">
              <item>
-              <layout class="QVBoxLayout" name="verticalLayout_6">
-               <item>
-                <widget class="QFrame" name="channelFrame">
-                 <property name="frameShape">
-                  <enum>QFrame::StyledPanel</enum>
-                 </property>
-                 <property name="frameShadow">
-                  <enum>QFrame::Raised</enum>
-                 </property>
-                 <layout class="QGridLayout" name="gridLayout_20">
-                  <item row="0" column="0">
-                   <widget class="QGroupBox" name="groupBox_7">
-                    <property name="title">
-                     <string>Channels:</string>
-                    </property>
-                    <layout class="QGridLayout" name="gridLayout_16">
-                     <item row="2" column="1">
-                      <widget class="QPushButton" name="labelsPushButton">
+              <widget class="QFrame" name="profileFrame">
+               <property name="frameShape">
+                <enum>QFrame::StyledPanel</enum>
+               </property>
+               <property name="frameShadow">
+                <enum>QFrame::Raised</enum>
+               </property>
+               <layout class="QGridLayout" name="gridLayout_10">
+                <item row="0" column="0">
+                 <widget class="QGroupBox" name="groupBox_6">
+                  <property name="title">
+                   <string>Profile:</string>
+                  </property>
+                  <layout class="QGridLayout" name="gridLayout_8">
+                   <item row="0" column="0">
+                    <spacer name="verticalSpacer_16">
+                     <property name="orientation">
+                      <enum>Qt::Vertical</enum>
+                     </property>
+                     <property name="sizeType">
+                      <enum>QSizePolicy::Maximum</enum>
+                     </property>
+                     <property name="sizeHint" stdset="0">
+                      <size>
+                       <width>20</width>
+                       <height>20</height>
+                      </size>
+                     </property>
+                    </spacer>
+                   </item>
+                   <item row="2" column="0">
+                    <spacer name="verticalSpacer_15">
+                     <property name="orientation">
+                      <enum>Qt::Vertical</enum>
+                     </property>
+                     <property name="sizeType">
+                      <enum>QSizePolicy::Maximum</enum>
+                     </property>
+                     <property name="sizeHint" stdset="0">
+                      <size>
+                       <width>20</width>
+                       <height>40</height>
+                      </size>
+                     </property>
+                    </spacer>
+                   </item>
+                   <item row="1" column="0">
+                    <widget class="QDialogButtonBox" name="profileButtonBox">
+                     <property name="standardButtons">
+                      <set>QDialogButtonBox::Open|QDialogButtonBox::Save</set>
+                     </property>
+                     <property name="centerButtons">
+                      <bool>true</bool>
+                     </property>
+                    </widget>
+                   </item>
+                  </layout>
+                 </widget>
+                </item>
+                <item row="1" column="0">
+                 <widget class="QGroupBox" name="componentGroupBox">
+                  <property name="title">
+                   <string>Components:</string>
+                  </property>
+                  <layout class="QGridLayout" name="gridLayout_18">
+                   <item row="0" column="0">
+                    <layout class="QHBoxLayout" name="horizontalLayout_10">
+                     <item>
+                      <widget class="QPushButton" name="groupsPushButton">
                        <property name="text">
-                        <string>Labels ...</string>
+                        <string>Groups ...</string>
                        </property>
                       </widget>
                      </item>
-                     <item row="1" column="1">
-                      <spacer name="verticalSpacer_6">
-                       <property name="orientation">
-                        <enum>Qt::Vertical</enum>
-                       </property>
-                       <property name="sizeType">
-                        <enum>QSizePolicy::Maximum</enum>
-                       </property>
-                       <property name="sizeHint" stdset="0">
-                        <size>
-                         <width>20</width>
-                         <height>20</height>
-                        </size>
-                       </property>
-                      </spacer>
-                     </item>
-                     <item row="2" column="0">
+                     <item>
                       <widget class="QPushButton" name="orderPushButton">
                        <property name="text">
                         <string>Order ...</string>
                        </property>
                       </widget>
                      </item>
-                     <item row="3" column="1">
-                      <spacer name="verticalSpacer_22">
+                     <item>
+                      <widget class="QPushButton" name="resetDescriptionsPushButton">
+                       <property name="text">
+                        <string>Reset Descriptions</string>
+                       </property>
+                      </widget>
+                     </item>
+                    </layout>
+                   </item>
+                  </layout>
+                 </widget>
+                </item>
+               </layout>
+              </widget>
+             </item>
+             <item>
+              <widget class="QFrame" name="tangoFrame">
+               <property name="frameShape">
+                <enum>QFrame::StyledPanel</enum>
+               </property>
+               <property name="frameShadow">
+                <enum>QFrame::Raised</enum>
+               </property>
+               <layout class="QVBoxLayout" name="verticalLayout_3">
+                <item>
+                 <widget class="QGroupBox" name="fileGroupBox">
+                  <property name="title">
+                   <string>Tango Servers:</string>
+                  </property>
+                  <layout class="QGridLayout" name="gridLayout_5">
+                   <item row="0" column="0">
+                    <layout class="QVBoxLayout" name="verticalLayout_7">
+                     <item>
+                      <layout class="QGridLayout" name="gridLayout_2">
+                       <item row="4" column="2">
+                        <widget class="QLineEdit" name="devWriterLineEdit"/>
+                       </item>
+                       <item row="1" column="2">
+                        <widget class="QLineEdit" name="mntServerLineEdit"/>
+                       </item>
+                       <item row="4" column="0">
+                        <widget class="QLabel" name="devWriterLabel">
+                         <property name="text">
+                          <string>Data Writer:</string>
+                         </property>
+                         <property name="buddy">
+                          <cstring>devWriterLineEdit</cstring>
+                         </property>
+                        </widget>
+                       </item>
+                       <item row="1" column="0">
+                        <widget class="QLabel" name="mntServerLabel">
+                         <property name="text">
+                          <string>Door:</string>
+                         </property>
+                         <property name="buddy">
+                          <cstring>mntServerLineEdit</cstring>
+                         </property>
+                        </widget>
+                       </item>
+                       <item row="3" column="0">
+                        <widget class="QLabel" name="devConfigLabel">
+                         <property name="text">
+                          <string>Config Server:</string>
+                         </property>
+                         <property name="buddy">
+                          <cstring>devConfigLineEdit</cstring>
+                         </property>
+                        </widget>
+                       </item>
+                       <item row="3" column="2">
+                        <widget class="QLineEdit" name="devConfigLineEdit"/>
+                       </item>
+                       <item row="2" column="0">
+                        <widget class="QLabel" name="label">
+                         <property name="text">
+                          <string>Selector:</string>
+                         </property>
+                        </widget>
+                       </item>
+                       <item row="2" column="2">
+                        <widget class="QLineEdit" name="devSettingsLineEdit"/>
+                       </item>
+                      </layout>
+                     </item>
+                    </layout>
+                   </item>
+                  </layout>
+                 </widget>
+                </item>
+               </layout>
+              </widget>
+             </item>
+            </layout>
+           </item>
+           <item>
+            <widget class="QFrame" name="layoutFrame">
+             <property name="frameShape">
+              <enum>QFrame::StyledPanel</enum>
+             </property>
+             <property name="frameShadow">
+              <enum>QFrame::Raised</enum>
+             </property>
+             <layout class="QGridLayout" name="gridLayout_4">
+              <item row="0" column="0">
+               <layout class="QVBoxLayout" name="verticalLayout_4">
+                <item>
+                 <layout class="QHBoxLayout" name="horizontalLayout_5">
+                  <item>
+                   <widget class="QGroupBox" name="groupBox_2">
+                    <property name="title">
+                     <string>Layout:</string>
+                    </property>
+                    <layout class="QGridLayout" name="gridLayout_7">
+                     <item row="1" column="0">
+                      <widget class="QDialogButtonBox" name="layoutButtonBox">
+                       <property name="standardButtons">
+                        <set>QDialogButtonBox::Open|QDialogButtonBox::Save</set>
+                       </property>
+                       <property name="centerButtons">
+                        <bool>true</bool>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="2" column="0">
+                      <spacer name="verticalSpacer_21">
                        <property name="orientation">
                         <enum>Qt::Vertical</enum>
+                       </property>
+                       <property name="sizeType">
+                        <enum>QSizePolicy::Maximum</enum>
                        </property>
                        <property name="sizeHint" stdset="0">
                         <size>
@@ -405,83 +573,8 @@
                        </property>
                       </spacer>
                      </item>
-                    </layout>
-                   </widget>
-                  </item>
-                 </layout>
-                </widget>
-               </item>
-               <item>
-                <widget class="QFrame" name="dynFrame">
-                 <property name="frameShape">
-                  <enum>QFrame::StyledPanel</enum>
-                 </property>
-                 <property name="frameShadow">
-                  <enum>QFrame::Raised</enum>
-                 </property>
-                 <layout class="QGridLayout" name="gridLayout_19">
-                  <item row="0" column="0">
-                   <widget class="QGroupBox" name="groupBox">
-                    <property name="title">
-                     <string>Dynamic Components:</string>
-                    </property>
-                    <layout class="QGridLayout" name="gridLayout_6">
-                     <item row="1" column="0">
-                      <layout class="QVBoxLayout" name="verticalLayout_2">
-                       <item>
-                        <layout class="QHBoxLayout" name="horizontalLayout_11">
-                         <item>
-                          <widget class="QLabel" name="dcPathLabel">
-                           <property name="text">
-                            <string>Default NeXus Path:</string>
-                           </property>
-                           <property name="buddy">
-                            <cstring>dcPathLineEdit</cstring>
-                           </property>
-                          </widget>
-                         </item>
-                         <item>
-                          <widget class="QCheckBox" name="dcLinksCheckBox">
-                           <property name="layoutDirection">
-                            <enum>Qt::RightToLeft</enum>
-                           </property>
-                           <property name="text">
-                            <string>Links </string>
-                           </property>
-                          </widget>
-                         </item>
-                        </layout>
-                       </item>
-                       <item>
-                        <widget class="QLineEdit" name="dcPathLineEdit"/>
-                       </item>
-                       <item>
-                        <spacer name="verticalSpacer_2">
-                         <property name="orientation">
-                          <enum>Qt::Vertical</enum>
-                         </property>
-                         <property name="sizeType">
-                          <enum>QSizePolicy::Maximum</enum>
-                         </property>
-                         <property name="sizeHint" stdset="0">
-                          <size>
-                           <width>20</width>
-                           <height>40</height>
-                          </size>
-                         </property>
-                        </spacer>
-                       </item>
-                       <item>
-                        <widget class="QPushButton" name="propPushButton">
-                         <property name="text">
-                          <string>Properties ...</string>
-                         </property>
-                        </widget>
-                       </item>
-                      </layout>
-                     </item>
                      <item row="0" column="0">
-                      <spacer name="verticalSpacer_4">
+                      <spacer name="verticalSpacer_14">
                        <property name="orientation">
                         <enum>Qt::Vertical</enum>
                        </property>
@@ -496,131 +589,56 @@
                        </property>
                       </spacer>
                      </item>
-                     <item row="2" column="0">
-                      <spacer name="verticalSpacer">
-                       <property name="orientation">
-                        <enum>Qt::Vertical</enum>
-                       </property>
-                       <property name="sizeType">
-                        <enum>QSizePolicy::Expanding</enum>
-                       </property>
-                       <property name="sizeHint" stdset="0">
-                        <size>
-                         <width>20</width>
-                         <height>40</height>
-                        </size>
-                       </property>
-                      </spacer>
-                     </item>
                     </layout>
                    </widget>
                   </item>
-                 </layout>
-                </widget>
-               </item>
-              </layout>
-             </item>
-             <item>
-              <layout class="QVBoxLayout" name="verticalLayout_8">
-               <item>
-                <widget class="QFrame" name="measFrame">
-                 <property name="frameShape">
-                  <enum>QFrame::StyledPanel</enum>
-                 </property>
-                 <property name="frameShadow">
-                  <enum>QFrame::Raised</enum>
-                 </property>
-                 <layout class="QVBoxLayout" name="verticalLayout_3">
                   <item>
-                   <widget class="QGroupBox" name="fileGroupBox">
+                   <widget class="QGroupBox" name="viewGroupBox">
                     <property name="title">
-                     <string>Measurement and Writing:</string>
+                     <string>View:</string>
                     </property>
-                    <layout class="QGridLayout" name="gridLayout_5">
+                    <layout class="QGridLayout" name="gridLayout_3">
                      <item row="0" column="0">
-                      <layout class="QVBoxLayout" name="verticalLayout_7">
+                      <layout class="QHBoxLayout" name="horizontalLayout">
                        <item>
-                        <layout class="QGridLayout" name="gridLayout_2">
-                         <item row="1" column="0">
-                          <widget class="QLabel" name="mntServerLabel">
-                           <property name="text">
-                            <string>Door:</string>
-                           </property>
-                           <property name="buddy">
-                            <cstring>mntServerLineEdit</cstring>
-                           </property>
-                          </widget>
-                         </item>
-                         <item row="1" column="2">
-                          <widget class="QLineEdit" name="mntServerLineEdit"/>
-                         </item>
-                         <item row="2" column="0">
-                          <widget class="QLabel" name="devConfigLabel">
-                           <property name="text">
-                            <string>Config Server:</string>
-                           </property>
-                           <property name="buddy">
-                            <cstring>devConfigLineEdit</cstring>
-                           </property>
-                          </widget>
-                         </item>
-                         <item row="2" column="2">
-                          <widget class="QLineEdit" name="devConfigLineEdit"/>
-                         </item>
-                         <item row="3" column="0">
-                          <widget class="QLabel" name="devWriterLabel">
-                           <property name="text">
-                            <string>Data Writer:</string>
-                           </property>
-                           <property name="buddy">
-                            <cstring>devWriterLineEdit</cstring>
-                           </property>
-                          </widget>
-                         </item>
-                         <item row="3" column="2">
-                          <widget class="QLineEdit" name="devWriterLineEdit"/>
-                         </item>
-                        </layout>
+                        <widget class="QLabel" name="rowMaxLabel">
+                         <property name="text">
+                          <string>Row Max.:</string>
+                         </property>
+                        </widget>
                        </item>
                        <item>
-                        <spacer name="verticalSpacer_3">
+                        <widget class="QSpinBox" name="rowMaxSpinBox"/>
+                       </item>
+                       <item>
+                        <spacer name="horizontalSpacer">
                          <property name="orientation">
-                          <enum>Qt::Vertical</enum>
-                         </property>
-                         <property name="sizeType">
-                          <enum>QSizePolicy::Expanding</enum>
+                          <enum>Qt::Horizontal</enum>
                          </property>
                          <property name="sizeHint" stdset="0">
                           <size>
-                           <width>20</width>
-                           <height>40</height>
+                           <width>40</width>
+                           <height>20</height>
                           </size>
                          </property>
                         </spacer>
                        </item>
                        <item>
-                        <layout class="QHBoxLayout" name="horizontalLayout_6">
-                         <item>
-                          <widget class="QPushButton" name="devConfigPushButton">
-                           <property name="text">
-                            <string>Configuration Variables ...</string>
-                           </property>
-                          </widget>
-                         </item>
-                        </layout>
+                        <widget class="QCheckBox" name="statusCheckBox">
+                         <property name="text">
+                          <string>Status</string>
+                         </property>
+                        </widget>
                        </item>
                        <item>
-                        <spacer name="verticalSpacer_11">
+                        <spacer name="horizontalSpacer_2">
                          <property name="orientation">
-                          <enum>Qt::Vertical</enum>
-                         </property>
-                         <property name="sizeType">
-                          <enum>QSizePolicy::Maximum</enum>
+                          <enum>Qt::Horizontal</enum>
                          </property>
                          <property name="sizeHint" stdset="0">
                           <size>
-                           <width>20</width>
-                           <height>40</height>
+                           <width>40</width>
+                           <height>20</height>
                           </size>
                          </property>
                         </spacer>
@@ -631,139 +649,32 @@
                    </widget>
                   </item>
                  </layout>
-                </widget>
-               </item>
-               <item>
-                <widget class="QFrame" name="componentFrame">
-                 <property name="frameShape">
-                  <enum>QFrame::StyledPanel</enum>
-                 </property>
-                 <property name="frameShadow">
-                  <enum>QFrame::Raised</enum>
-                 </property>
-                 <layout class="QGridLayout" name="gridLayout_9">
-                  <item row="0" column="0">
-                   <widget class="QGroupBox" name="groupBox_4">
-                    <property name="title">
-                     <string>Components:</string>
-                    </property>
-                    <layout class="QGridLayout" name="gridLayout_18">
-                     <item row="0" column="0">
-                      <spacer name="verticalSpacer_5">
-                       <property name="orientation">
-                        <enum>Qt::Vertical</enum>
-                       </property>
-                       <property name="sizeType">
-                        <enum>QSizePolicy::Maximum</enum>
-                       </property>
-                       <property name="sizeHint" stdset="0">
-                        <size>
-                         <width>20</width>
-                         <height>40</height>
-                        </size>
-                       </property>
-                      </spacer>
-                     </item>
-                     <item row="1" column="0">
-                      <layout class="QHBoxLayout" name="horizontalLayout_10">
-                       <item>
-                        <widget class="QPushButton" name="resetDescriptionsPushButton">
-                         <property name="text">
-                          <string>Reset Descriptions</string>
-                         </property>
-                        </widget>
-                       </item>
-                       <item>
-                        <widget class="QPushButton" name="groupsPushButton">
-                         <property name="text">
-                          <string>Groups ...</string>
-                         </property>
-                        </widget>
-                       </item>
-                      </layout>
-                     </item>
-                     <item row="2" column="0">
-                      <spacer name="verticalSpacer_7">
-                       <property name="orientation">
-                        <enum>Qt::Vertical</enum>
-                       </property>
-                       <property name="sizeHint" stdset="0">
-                        <size>
-                         <width>20</width>
-                         <height>40</height>
-                        </size>
-                       </property>
-                      </spacer>
-                     </item>
-                    </layout>
-                   </widget>
-                  </item>
-                 </layout>
-                </widget>
-               </item>
-              </layout>
-             </item>
-            </layout>
-           </item>
-           <item>
-            <widget class="QFrame" name="profileFrame">
-             <property name="frameShape">
-              <enum>QFrame::StyledPanel</enum>
-             </property>
-             <property name="frameShadow">
-              <enum>QFrame::Raised</enum>
-             </property>
-             <layout class="QGridLayout" name="gridLayout_10">
-              <item row="0" column="0">
-               <widget class="QGroupBox" name="groupBox_6">
-                <property name="title">
-                 <string>Profile:</string>
-                </property>
-                <layout class="QGridLayout" name="gridLayout_8">
-                 <item row="0" column="0">
-                  <spacer name="verticalSpacer_16">
-                   <property name="orientation">
-                    <enum>Qt::Vertical</enum>
-                   </property>
-                   <property name="sizeType">
-                    <enum>QSizePolicy::Maximum</enum>
-                   </property>
-                   <property name="sizeHint" stdset="0">
-                    <size>
-                     <width>20</width>
-                     <height>20</height>
-                    </size>
-                   </property>
-                  </spacer>
-                 </item>
-                 <item row="2" column="0">
-                  <spacer name="verticalSpacer_15">
-                   <property name="orientation">
-                    <enum>Qt::Vertical</enum>
-                   </property>
-                   <property name="sizeType">
-                    <enum>QSizePolicy::Maximum</enum>
-                   </property>
-                   <property name="sizeHint" stdset="0">
-                    <size>
-                     <width>20</width>
-                     <height>40</height>
-                    </size>
-                   </property>
-                  </spacer>
-                 </item>
-                 <item row="1" column="0">
-                  <widget class="QDialogButtonBox" name="profileButtonBox">
-                   <property name="standardButtons">
-                    <set>QDialogButtonBox::Open|QDialogButtonBox::Save</set>
-                   </property>
-                   <property name="centerButtons">
-                    <bool>true</bool>
-                   </property>
-                  </widget>
-                 </item>
-                </layout>
-               </widget>
+                </item>
+                <item>
+                 <widget class="QGroupBox" name="frameGroupBox">
+                  <property name="title">
+                   <string>Frames:</string>
+                  </property>
+                  <layout class="QGridLayout" name="gridLayout_12">
+                   <item row="0" column="0">
+                    <widget class="QLineEdit" name="frameLineEdit"/>
+                   </item>
+                  </layout>
+                 </widget>
+                </item>
+                <item>
+                 <widget class="QGroupBox" name="groupGroupBox">
+                  <property name="title">
+                   <string>Groups:</string>
+                  </property>
+                  <layout class="QGridLayout" name="gridLayout_13">
+                   <item row="0" column="0">
+                    <widget class="QLineEdit" name="groupLineEdit"/>
+                   </item>
+                  </layout>
+                 </widget>
+                </item>
+               </layout>
               </item>
              </layout>
             </widget>
@@ -771,113 +682,17 @@
           </layout>
          </item>
         </layout>
+        <zorder>frameGroupBox</zorder>
+        <zorder>layoutFrame</zorder>
+        <zorder>viewFrame</zorder>
+        <zorder>layoutFrame</zorder>
+        <zorder>layoutWidget_2</zorder>
        </widget>
        <widget class="QWidget" name="preferences">
         <attribute name="title">
-         <string>Preferences</string>
+         <string>Administrator</string>
         </attribute>
         <layout class="QGridLayout" name="gridLayout_14">
-         <item row="1" column="0">
-          <widget class="QFrame" name="groupFrame">
-           <property name="frameShape">
-            <enum>QFrame::StyledPanel</enum>
-           </property>
-           <property name="frameShadow">
-            <enum>QFrame::Raised</enum>
-           </property>
-           <layout class="QGridLayout" name="gridLayout_4">
-            <item row="0" column="0">
-             <layout class="QVBoxLayout" name="verticalLayout_5">
-              <item>
-               <widget class="QGroupBox" name="frameGroupBox">
-                <property name="title">
-                 <string>Frames:</string>
-                </property>
-                <layout class="QGridLayout" name="gridLayout_12">
-                 <item row="1" column="0">
-                  <widget class="QLineEdit" name="frameLineEdit"/>
-                 </item>
-                 <item row="0" column="0">
-                  <spacer name="verticalSpacer_19">
-                   <property name="orientation">
-                    <enum>Qt::Vertical</enum>
-                   </property>
-                   <property name="sizeType">
-                    <enum>QSizePolicy::Maximum</enum>
-                   </property>
-                   <property name="sizeHint" stdset="0">
-                    <size>
-                     <width>20</width>
-                     <height>20</height>
-                    </size>
-                   </property>
-                  </spacer>
-                 </item>
-                 <item row="2" column="0">
-                  <spacer name="verticalSpacer_9">
-                   <property name="orientation">
-                    <enum>Qt::Vertical</enum>
-                   </property>
-                   <property name="sizeType">
-                    <enum>QSizePolicy::Maximum</enum>
-                   </property>
-                   <property name="sizeHint" stdset="0">
-                    <size>
-                     <width>20</width>
-                     <height>40</height>
-                    </size>
-                   </property>
-                  </spacer>
-                 </item>
-                </layout>
-               </widget>
-              </item>
-              <item>
-               <widget class="QGroupBox" name="groupGroupBox">
-                <property name="title">
-                 <string>Groups:</string>
-                </property>
-                <layout class="QGridLayout" name="gridLayout_13">
-                 <item row="0" column="0">
-                  <spacer name="verticalSpacer_20">
-                   <property name="orientation">
-                    <enum>Qt::Vertical</enum>
-                   </property>
-                   <property name="sizeType">
-                    <enum>QSizePolicy::Maximum</enum>
-                   </property>
-                   <property name="sizeHint" stdset="0">
-                    <size>
-                     <width>20</width>
-                     <height>20</height>
-                    </size>
-                   </property>
-                  </spacer>
-                 </item>
-                 <item row="1" column="0">
-                  <widget class="QLineEdit" name="groupLineEdit"/>
-                 </item>
-                 <item row="2" column="0">
-                  <spacer name="verticalSpacer_8">
-                   <property name="orientation">
-                    <enum>Qt::Vertical</enum>
-                   </property>
-                   <property name="sizeHint" stdset="0">
-                    <size>
-                     <width>20</width>
-                     <height>40</height>
-                    </size>
-                   </property>
-                  </spacer>
-                 </item>
-                </layout>
-               </widget>
-              </item>
-             </layout>
-            </item>
-           </layout>
-          </widget>
-         </item>
          <item row="0" column="0">
           <widget class="QFrame" name="viewServerFrame">
            <property name="frameShape">
@@ -889,63 +704,31 @@
            <property name="lineWidth">
             <number>1</number>
            </property>
-           <layout class="QGridLayout" name="gridLayout_3">
-            <property name="margin">
-             <number>0</number>
-            </property>
-            <property name="spacing">
-             <number>0</number>
-            </property>
+           <layout class="QGridLayout" name="gridLayout_20">
             <item row="0" column="0">
-             <layout class="QHBoxLayout" name="viewHorizontalLayout" stretch="1,0,1">
+             <layout class="QHBoxLayout" name="horizontalLayout_12">
               <item>
-               <widget class="QFrame" name="viewFrame">
+               <widget class="QFrame" name="frame">
                 <property name="frameShape">
                  <enum>QFrame::StyledPanel</enum>
                 </property>
                 <property name="frameShadow">
                  <enum>QFrame::Raised</enum>
                 </property>
-                <layout class="QGridLayout" name="gridLayout_22">
-                 <item row="0" column="0">
-                  <widget class="QGroupBox" name="groupBox_3">
+                <layout class="QVBoxLayout" name="verticalLayout_8">
+                 <item>
+                  <widget class="QGroupBox" name="groupBox_5">
                    <property name="title">
-                    <string>View:</string>
+                    <string>Checkboxes:</string>
                    </property>
-                   <layout class="QGridLayout" name="gridLayout_11">
+                   <layout class="QGridLayout" name="gridLayout_15">
                     <item row="1" column="0">
                      <widget class="QComboBox" name="viewComboBox"/>
                     </item>
-                    <item row="1" column="2">
-                     <widget class="QLabel" name="rowMaxLabel">
-                      <property name="text">
-                       <string>Row Max.:</string>
-                      </property>
-                     </widget>
-                    </item>
                     <item row="0" column="0">
-                     <spacer name="verticalSpacer_17">
+                     <spacer name="verticalSpacer_7">
                       <property name="orientation">
                        <enum>Qt::Vertical</enum>
-                      </property>
-                      <property name="sizeType">
-                       <enum>QSizePolicy::Maximum</enum>
-                      </property>
-                      <property name="sizeHint" stdset="0">
-                       <size>
-                        <width>20</width>
-                        <height>20</height>
-                       </size>
-                      </property>
-                     </spacer>
-                    </item>
-                    <item row="2" column="2">
-                     <spacer name="verticalSpacer_12">
-                      <property name="orientation">
-                       <enum>Qt::Vertical</enum>
-                      </property>
-                      <property name="sizeType">
-                       <enum>QSizePolicy::Expanding</enum>
                       </property>
                       <property name="sizeHint" stdset="0">
                        <size>
@@ -955,41 +738,44 @@
                       </property>
                      </spacer>
                     </item>
-                    <item row="1" column="3">
-                     <widget class="QSpinBox" name="rowMaxSpinBox"/>
-                    </item>
-                    <item row="1" column="5">
-                     <widget class="QCheckBox" name="statusCheckBox">
+                   </layout>
+                  </widget>
+                 </item>
+                 <item>
+                  <spacer name="verticalSpacer_5">
+                   <property name="orientation">
+                    <enum>Qt::Vertical</enum>
+                   </property>
+                   <property name="sizeHint" stdset="0">
+                    <size>
+                     <width>20</width>
+                     <height>40</height>
+                    </size>
+                   </property>
+                  </spacer>
+                 </item>
+                 <item>
+                  <widget class="QGroupBox" name="groupBox_7">
+                   <property name="title">
+                    <string>Configuration Server:</string>
+                   </property>
+                   <layout class="QGridLayout" name="gridLayout_16">
+                    <item row="1" column="0">
+                     <widget class="QPushButton" name="devConfigPushButton">
                       <property name="text">
-                       <string>Status</string>
+                       <string>Variables ...</string>
                       </property>
                      </widget>
                     </item>
-                    <item row="1" column="4">
-                     <spacer name="horizontalSpacer_7">
+                    <item row="0" column="0">
+                     <spacer name="verticalSpacer_6">
                       <property name="orientation">
-                       <enum>Qt::Horizontal</enum>
-                      </property>
-                      <property name="sizeType">
-                       <enum>QSizePolicy::Expanding</enum>
+                       <enum>Qt::Vertical</enum>
                       </property>
                       <property name="sizeHint" stdset="0">
                        <size>
-                        <width>10</width>
-                        <height>20</height>
-                       </size>
-                      </property>
-                     </spacer>
-                    </item>
-                    <item row="1" column="1">
-                     <spacer name="horizontalSpacer">
-                      <property name="orientation">
-                       <enum>Qt::Horizontal</enum>
-                      </property>
-                      <property name="sizeHint" stdset="0">
-                       <size>
-                        <width>40</width>
-                        <height>20</height>
+                        <width>20</width>
+                        <height>40</height>
                        </size>
                       </property>
                      </spacer>
@@ -997,62 +783,113 @@
                    </layout>
                   </widget>
                  </item>
+                 <item>
+                  <spacer name="verticalSpacer_3">
+                   <property name="orientation">
+                    <enum>Qt::Vertical</enum>
+                   </property>
+                   <property name="sizeHint" stdset="0">
+                    <size>
+                     <width>20</width>
+                     <height>40</height>
+                    </size>
+                   </property>
+                  </spacer>
+                 </item>
                 </layout>
                </widget>
               </item>
               <item>
-               <spacer name="horizontalSpacer_4">
-                <property name="orientation">
-                 <enum>Qt::Horizontal</enum>
-                </property>
-                <property name="sizeHint" stdset="0">
-                 <size>
-                  <width>5</width>
-                  <height>20</height>
-                 </size>
-                </property>
-               </spacer>
-              </item>
-              <item>
-               <widget class="QFrame" name="selectorFrame">
+               <widget class="QFrame" name="dynFrame">
                 <property name="frameShape">
                  <enum>QFrame::StyledPanel</enum>
                 </property>
                 <property name="frameShadow">
                  <enum>QFrame::Raised</enum>
                 </property>
-                <layout class="QGridLayout" name="gridLayout_23">
-                 <item row="0" column="1">
-                  <widget class="QGroupBox" name="serverGroupBox">
+                <layout class="QGridLayout" name="gridLayout_19">
+                 <item row="0" column="0">
+                  <widget class="QGroupBox" name="groupBox">
                    <property name="title">
-                    <string>Selector Server:</string>
+                    <string>Dynamic Components:</string>
                    </property>
-                   <layout class="QGridLayout" name="gridLayout_15">
+                   <layout class="QGridLayout" name="gridLayout_6">
                     <item row="1" column="0">
-                     <layout class="QHBoxLayout" name="horizontalLayout">
+                     <layout class="QVBoxLayout" name="verticalLayout_2">
                       <item>
-                       <widget class="QLineEdit" name="devSettingsLineEdit"/>
+                       <layout class="QHBoxLayout" name="horizontalLayout_11">
+                        <item>
+                         <widget class="QLabel" name="dcPathLabel">
+                          <property name="text">
+                           <string>Default NeXus Path:</string>
+                          </property>
+                          <property name="buddy">
+                           <cstring>dcPathLineEdit</cstring>
+                          </property>
+                         </widget>
+                        </item>
+                        <item>
+                         <widget class="QCheckBox" name="dcLinksCheckBox">
+                          <property name="layoutDirection">
+                           <enum>Qt::RightToLeft</enum>
+                          </property>
+                          <property name="text">
+                           <string>Links </string>
+                          </property>
+                         </widget>
+                        </item>
+                       </layout>
                       </item>
                       <item>
-                       <spacer name="horizontalSpacer_2">
+                       <widget class="QLineEdit" name="dcPathLineEdit"/>
+                      </item>
+                      <item>
+                       <spacer name="verticalSpacer_8">
                         <property name="orientation">
-                         <enum>Qt::Horizontal</enum>
-                        </property>
-                        <property name="sizeType">
-                         <enum>QSizePolicy::Minimum</enum>
+                         <enum>Qt::Vertical</enum>
                         </property>
                         <property name="sizeHint" stdset="0">
                          <size>
-                          <width>40</width>
-                          <height>20</height>
+                          <width>20</width>
+                          <height>40</height>
                          </size>
                         </property>
                        </spacer>
                       </item>
+                      <item>
+                       <widget class="QPushButton" name="propPushButton">
+                        <property name="text">
+                         <string>Properties ...</string>
+                        </property>
+                       </widget>
+                      </item>
+                      <item>
+                       <spacer name="verticalSpacer_2">
+                        <property name="orientation">
+                         <enum>Qt::Vertical</enum>
+                        </property>
+                        <property name="sizeType">
+                         <enum>QSizePolicy::Maximum</enum>
+                        </property>
+                        <property name="sizeHint" stdset="0">
+                         <size>
+                          <width>20</width>
+                          <height>40</height>
+                         </size>
+                        </property>
+                       </spacer>
+                      </item>
+                      <item>
+                       <widget class="QPushButton" name="labelsPushButton">
+                        <property name="text">
+                         <string>Labels ...</string>
+                        </property>
+                       </widget>
+                      </item>
                      </layout>
                     </item>
                     <item row="0" column="0">
-                     <spacer name="verticalSpacer_18">
+                     <spacer name="verticalSpacer_4">
                       <property name="orientation">
                        <enum>Qt::Vertical</enum>
                       </property>
@@ -1068,7 +905,7 @@
                      </spacer>
                     </item>
                     <item row="2" column="0">
-                     <spacer name="verticalSpacer_13">
+                     <spacer name="verticalSpacer">
                       <property name="orientation">
                        <enum>Qt::Vertical</enum>
                       </property>
@@ -1090,69 +927,6 @@
                </widget>
               </item>
              </layout>
-            </item>
-           </layout>
-          </widget>
-         </item>
-         <item row="2" column="0">
-          <widget class="QFrame" name="frame_11">
-           <property name="frameShape">
-            <enum>QFrame::StyledPanel</enum>
-           </property>
-           <property name="frameShadow">
-            <enum>QFrame::Raised</enum>
-           </property>
-           <layout class="QGridLayout" name="gridLayout_17">
-            <item row="0" column="0">
-             <widget class="QGroupBox" name="groupBox_2">
-              <property name="title">
-               <string>Layout:</string>
-              </property>
-              <layout class="QGridLayout" name="gridLayout_7">
-               <item row="0" column="0">
-                <spacer name="verticalSpacer_14">
-                 <property name="orientation">
-                  <enum>Qt::Vertical</enum>
-                 </property>
-                 <property name="sizeType">
-                  <enum>QSizePolicy::Maximum</enum>
-                 </property>
-                 <property name="sizeHint" stdset="0">
-                  <size>
-                   <width>20</width>
-                   <height>20</height>
-                  </size>
-                 </property>
-                </spacer>
-               </item>
-               <item row="2" column="0">
-                <spacer name="verticalSpacer_21">
-                 <property name="orientation">
-                  <enum>Qt::Vertical</enum>
-                 </property>
-                 <property name="sizeType">
-                  <enum>QSizePolicy::Maximum</enum>
-                 </property>
-                 <property name="sizeHint" stdset="0">
-                  <size>
-                   <width>20</width>
-                   <height>40</height>
-                  </size>
-                 </property>
-                </spacer>
-               </item>
-               <item row="1" column="0">
-                <widget class="QDialogButtonBox" name="layoutButtonBox">
-                 <property name="standardButtons">
-                  <set>QDialogButtonBox::Open|QDialogButtonBox::Save</set>
-                 </property>
-                 <property name="centerButtons">
-                  <bool>true</bool>
-                 </property>
-                </widget>
-               </item>
-              </layout>
-             </widget>
             </item>
            </layout>
           </widget>
@@ -1188,23 +962,10 @@
   <tabstop>mntGrpComboBox</tabstop>
   <tabstop>mntGrpToolButton</tabstop>
   <tabstop>othersEntryCheckBox</tabstop>
-  <tabstop>orderPushButton</tabstop>
-  <tabstop>labelsPushButton</tabstop>
-  <tabstop>dcLinksCheckBox</tabstop>
-  <tabstop>dcPathLineEdit</tabstop>
-  <tabstop>propPushButton</tabstop>
   <tabstop>mntServerLineEdit</tabstop>
   <tabstop>devConfigLineEdit</tabstop>
   <tabstop>devWriterLineEdit</tabstop>
-  <tabstop>devConfigPushButton</tabstop>
   <tabstop>profileButtonBox</tabstop>
-  <tabstop>viewComboBox</tabstop>
-  <tabstop>rowMaxSpinBox</tabstop>
-  <tabstop>statusCheckBox</tabstop>
-  <tabstop>frameLineEdit</tabstop>
-  <tabstop>groupLineEdit</tabstop>
-  <tabstop>devSettingsLineEdit</tabstop>
-  <tabstop>layoutButtonBox</tabstop>
   <tabstop>buttonBox</tabstop>
  </tabstops>
  <resources/>
