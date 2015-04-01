@@ -170,8 +170,6 @@ class Selectable(object):
                         self.views[group[1]] = mview
                 if layout_groups.count():
                     layout_columns.addLayout(layout_groups)
-                else:
-                    mgroup.hide()
 
             if layout_columns.count():
                 self.layout.addWidget(mframe)
