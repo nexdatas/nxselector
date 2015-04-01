@@ -127,10 +127,10 @@ class Selector(Qt.QDialog, TaurusBaseWidget):
             self.__commandthread.error = None
 
         settings = Qt.QSettings(self.__organization, self.__application, self)
-        if not self.__umode:
+        if not self.__umode or self.__umode == 'None':
             self.__umode = str(settings.value("Selector/DefaultMode",
-                                              str(self.__umode)))
-            if not self.__umode:
+                                              self.__umode))
+            if not self.__umode or self.__umode == 'None':
                 self.__umode = 'expert'
         self.__setmode(self.__umode)
         self.userView = settings.value('Preferences/UserView',
