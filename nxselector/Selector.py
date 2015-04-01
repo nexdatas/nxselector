@@ -130,6 +130,8 @@ class Selector(Qt.QDialog, TaurusBaseWidget):
         if not self.__umode:
             self.__umode = str(settings.value("Selector/DefaultMode",
                                               str(self.__umode)))
+            if not self.__umode:
+                self.__umode = 'expert'
         self.__setmode(self.__umode)
         self.userView = settings.value('Preferences/UserView',
                                        'CheckBoxes Dis')
