@@ -59,7 +59,6 @@ class EdDataDlg(Qt.QDialog):
         self.ui.nameComboBox.setCurrentIndex(ind)
         self.ui.nameComboBox.setEditText(str(text))
 
-
     def createGUI(self):
         if self.available_names:
             self.ui.nameComboBox.clear()

@@ -95,6 +95,8 @@ class ServerState(object):
         self.labelshapes = {}
         self.labeltypes = {}
 
+        self.errors = []
+
         try:
             self.setServer()
             if self.server:
@@ -156,6 +158,12 @@ class ServerState(object):
         if not self.server:
             self.__dp.exportAllEnv()
         self.__conf = json.loads(self.__dp.configuration)
+
+    def fetchErrors(self):
+        if not self.__dp:
+            self.setServer()
+        self.errors = self.__loadList("descriptionErrors")
+        return self.errors
 
     ## fetches configuration setting from server
     def fetchSettings(self):
@@ -327,6 +335,11 @@ class ServerState(object):
         if not self.__dp:
             self.setServer()
         return self.__dp.importMntGrp()
+
+    def createConfiguration(self):
+        if not self.__dp:
+            self.setServer()
+        return self.__dp.createConfiguration([])
 
     def deleteMntGrp(self, name):
         if not self.__dp:

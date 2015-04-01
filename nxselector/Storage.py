@@ -30,8 +30,10 @@ from .EdListDlg import EdListDlg
 from .GroupsDlg import GroupsDlg
 from .OrderDlg import OrderDlg
 from .PropertiesDlg import PropertiesDlg
+from .MessageBox import MessageBox
 
 import logging
+import json
 logger = logging.getLogger(__name__)
 
 
@@ -119,6 +121,9 @@ class Storage(object):
         self.ui.storage.disconnect(self.ui.resetDescriptionsPushButton,
                                    Qt.SIGNAL("clicked()"),
                                    self.__resetDescriptions)
+        self.ui.storage.disconnect(self.ui.errorsPushButton,
+                                   Qt.SIGNAL("clicked()"),
+                                   self.__errors)
 
     def connectSignals(self):
         self.disconnectSignals()
@@ -191,6 +196,9 @@ class Storage(object):
         self.ui.storage.connect(self.ui.resetDescriptionsPushButton,
                                 Qt.SIGNAL("clicked()"),
                                 self.__resetDescriptions)
+        self.ui.storage.connect(self.ui.errorsPushButton,
+                                   Qt.SIGNAL("clicked()"),
+                                   self.__errors)
 
     def updateMntGrpComboBox(self):
         self.disconnectSignals()
@@ -246,6 +254,29 @@ class Storage(object):
 
     def __resetDescriptions(self):
         self.ui.storage.emit(Qt.SIGNAL("resetDescriptions"))
+
+    def __errors(self):
+        errors = self.state.fetchErrors()
+        text = ""
+        details = ""
+        for er in errors:
+            try:
+                jer = json.loads(er)
+                ler = "" + str(jer["component"]) + " with " + \
+                    str(jer["datasource"]) + "\n"
+                der = "" + str(jer["component"]) + "(" + \
+                    str(jer["datasource"]) + "):\n" \
+                    + str(jer["message"]) + "\n"
+            except Exception:
+                ler = str(er) + "\n"
+                der = ler
+            text += ler
+            details += der
+        if errors:
+            MessageBox.warning(
+                self.ui.storage,
+                "NXSSelector: Errors in Descrption Component:",
+                str(text), "%s" % str(details))
 
     def __groups(self):
         dform = GroupsDlg(self.ui.storage)

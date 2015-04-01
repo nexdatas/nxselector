@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>624</width>
-    <height>663</height>
+    <height>674</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -416,7 +416,7 @@
                   <property name="title">
                    <string>Components:</string>
                   </property>
-                  <layout class="QGridLayout" name="gridLayout_18">
+                  <layout class="QGridLayout" name="gridLayout_11">
                    <item row="0" column="0">
                     <layout class="QHBoxLayout" name="horizontalLayout_10">
                      <item>
@@ -433,10 +433,21 @@
                        </property>
                       </widget>
                      </item>
+                    </layout>
+                   </item>
+                   <item row="1" column="0">
+                    <layout class="QHBoxLayout" name="horizontalLayout_13">
                      <item>
                       <widget class="QPushButton" name="resetDescriptionsPushButton">
                        <property name="text">
                         <string>Reset Descriptions</string>
+                       </property>
+                      </widget>
+                     </item>
+                     <item>
+                      <widget class="QPushButton" name="errorsPushButton">
+                       <property name="text">
+                        <string>Warnings ...</string>
                        </property>
                       </widget>
                      </item>
@@ -593,22 +604,6 @@
                    </widget>
                   </item>
                   <item>
-                   <spacer name="horizontalSpacer_4">
-                    <property name="orientation">
-                     <enum>Qt::Horizontal</enum>
-                    </property>
-                    <property name="sizeType">
-                     <enum>QSizePolicy::Maximum</enum>
-                    </property>
-                    <property name="sizeHint" stdset="0">
-                     <size>
-                      <width>40</width>
-                      <height>20</height>
-                     </size>
-                    </property>
-                   </spacer>
-                  </item>
-                  <item>
                    <widget class="QGroupBox" name="viewGroupBox">
                     <property name="title">
                      <string>View:</string>
@@ -616,6 +611,22 @@
                     <layout class="QGridLayout" name="gridLayout_3">
                      <item row="0" column="0">
                       <layout class="QHBoxLayout" name="horizontalLayout">
+                       <item>
+                        <spacer name="horizontalSpacer_4">
+                         <property name="orientation">
+                          <enum>Qt::Horizontal</enum>
+                         </property>
+                         <property name="sizeType">
+                          <enum>QSizePolicy::Maximum</enum>
+                         </property>
+                         <property name="sizeHint" stdset="0">
+                          <size>
+                           <width>40</width>
+                           <height>20</height>
+                          </size>
+                         </property>
+                        </spacer>
+                       </item>
                        <item>
                         <widget class="QLabel" name="rowMaxLabel">
                          <property name="text">
@@ -698,11 +709,6 @@
           </layout>
          </item>
         </layout>
-        <zorder>frameGroupBox</zorder>
-        <zorder>layoutFrame</zorder>
-        <zorder>viewFrame</zorder>
-        <zorder>layoutFrame</zorder>
-        <zorder>layoutWidget_2</zorder>
        </widget>
        <widget class="QWidget" name="preferences">
         <attribute name="title">
@@ -978,11 +984,27 @@
   <tabstop>mntGrpComboBox</tabstop>
   <tabstop>mntGrpToolButton</tabstop>
   <tabstop>othersEntryCheckBox</tabstop>
+  <tabstop>profileButtonBox</tabstop>
+  <tabstop>groupsPushButton</tabstop>
+  <tabstop>orderPushButton</tabstop>
+  <tabstop>resetDescriptionsPushButton</tabstop>
+  <tabstop>errorsPushButton</tabstop>
+  <tabstop>layoutButtonBox</tabstop>
+  <tabstop>rowMaxSpinBox</tabstop>
+  <tabstop>statusCheckBox</tabstop>
+  <tabstop>frameLineEdit</tabstop>
+  <tabstop>groupLineEdit</tabstop>
   <tabstop>mntServerLineEdit</tabstop>
+  <tabstop>devSettingsLineEdit</tabstop>
   <tabstop>devConfigLineEdit</tabstop>
   <tabstop>devWriterLineEdit</tabstop>
-  <tabstop>profileButtonBox</tabstop>
   <tabstop>buttonBox</tabstop>
+  <tabstop>viewComboBox</tabstop>
+  <tabstop>devConfigPushButton</tabstop>
+  <tabstop>dcLinksCheckBox</tabstop>
+  <tabstop>dcPathLineEdit</tabstop>
+  <tabstop>propPushButton</tabstop>
+  <tabstop>labelsPushButton</tabstop>
  </tabstops>
  <resources/>
  <connections/>

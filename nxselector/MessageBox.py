@@ -62,7 +62,7 @@ class MessageBox(Qt.QObject):
         msgBox.setIcon(icon)
 #        msgBox.setSizeGripEnabled(True)
 #        msgBox.setMinimumWidth(12000)
-        spacer = Qt.QSpacerItem(500, 0, Qt.QSizePolicy.Minimum,
+        spacer = Qt.QSpacerItem(800, 0, Qt.QSizePolicy.Minimum,
                                 Qt.QSizePolicy.Expanding)
         layout = msgBox.layout()
         layout.addItem(spacer, layout.rowCount(), 0, 1, layout.columnCount())

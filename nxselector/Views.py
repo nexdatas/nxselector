@@ -39,7 +39,7 @@ class CheckerLabelWidget(Qt.QWidget):
         layout = Qt.QHBoxLayout()
         layout.addWidget(self.checkBox)
         layout.addWidget(self.label)
-        layout.setContentsMargins(2,2,2,2)
+        layout.setContentsMargins(2, 2, 2, 2)
         self.setLayout(layout)
 
     def isChecked(self):
@@ -61,8 +61,6 @@ class CheckerLabelWidget(Qt.QWidget):
     def setText(self, text):
         return self.label.setText(text)
 
-
-    
 
 class TableView(Qt.QTableView):
 
@@ -353,6 +351,7 @@ class ButtonView(CheckerView):
         self.widget = Qt.QPushButton
         self.center = False
 
+
 class CheckerViewNL(CheckerView):
 
     def __init__(self, parent=None):
@@ -470,6 +469,7 @@ class CheckerLabelViewNN(CheckerViewNN):
     def __init__(self, parent=None):
         super(CheckerViewNN, self).__init__(parent)
         self.widget = CheckerLabelWidget
+
 
 class ButtonDisViewNN(ButtonDisView):
 

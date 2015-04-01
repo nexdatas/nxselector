@@ -79,9 +79,9 @@ class State(object):
             la, lm = [float(la) / (la + lm), float(lm) / (la + lm)]
 
         self.aview = self.__addView("Discipline",
-                                    max(1, int(la * (self.rowMax - 1))))
+                                    max(1, int(la * (self.rowMax - 2))))
         self.mview = self.__addView("Beamline",
-                                    max(1, int(lm * (self.rowMax - 1))))
+                                    max(1, int(lm * (self.rowMax - 2))))
 
         self.ui.state.update()
         if self.ui.tabWidget.currentWidget() == self.ui.state:

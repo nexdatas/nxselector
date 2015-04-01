@@ -163,10 +163,17 @@ class EdListWg(Qt.QWidget):
         dform = EdDataDlg(self)
         dform.simple = self.simple
         dform.headers = self.headers
-        dform.available_names = self.available_names
+        dform.available_names = list(
+            set(self.available_names) - set(self.disable))
         dform.available_tips = True
         dform.createGUI()
         if dform.exec_():
+            if dform.name in self.disable:
+                Qt.QMessageBox.information(
+                    self, "Selector in Simple/User Mode",
+                    "This data cannot be edited")
+                return
+
             self.record[dform.name] = dform.value
             self.__populateTable()
             self.emit(Qt.SIGNAL("dirty"))
@@ -175,7 +182,7 @@ class EdListWg(Qt.QWidget):
         name = self.__currentName()
         if name in self.disable:
             Qt.QMessageBox.information(
-                self, "Selector in Simple Mode",
+                self, "Selector in Simple/User Mode",
                 "This data cannot be edited")
             return
         dform = EdDataDlg(self)

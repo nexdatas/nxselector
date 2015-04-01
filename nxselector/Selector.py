@@ -176,12 +176,12 @@ class Selector(Qt.QDialog, TaurusBaseWidget):
         self.selectable.mgroups = str(self.preferences.mgroups)
         self.selectable.frames = str(self.preferences.frames)
         self.automatic = State(
-            self.ui, self.state, 
+            self.ui, self.state,
             self.preferences.views["CheckBoxes Dis (U)"],
 #            self.preferences.views[self.userView],
             self.rowMax)
 
-        self.data = Data(self.ui, self.state, self.simple)
+        self.data = Data(self.ui, self.state, self.simple or self.user)
 
         self.tabs = [self.selectable, self.automatic, self.data,
                      self.storage, self.preferences]
@@ -227,9 +227,12 @@ class Selector(Qt.QDialog, TaurusBaseWidget):
         self.ui.statusLabel.setEnabled(False)
         self.ui.buttonBox.setCenterButtons(True)
 
-        self.ui.layoutButtonBox.button(Qt.QDialogButtonBox.Open).setText("Load")
-        self.ui.layoutButtonBox.button(Qt.QDialogButtonBox.Save).setText("Save")
-        self.ui.profileButtonBox.button(Qt.QDialogButtonBox.Open).setText("&Load")
+        self.ui.layoutButtonBox.button(
+            Qt.QDialogButtonBox.Open).setText("Load")
+        self.ui.layoutButtonBox.button(
+            Qt.QDialogButtonBox.Save).setText("Save")
+        self.ui.profileButtonBox.button(
+            Qt.QDialogButtonBox.Open).setText("&Load")
 
         layout = self.ui.profileButtonBox.layout()
         for i in range(layout.count()):
@@ -276,19 +279,22 @@ class Selector(Qt.QDialog, TaurusBaseWidget):
             self.ui.frameGroupBox.hide()
 #            self.ui.channelFrame.hide()
             self.ui.dynFrame.hide()
-            self.ui.tangoFrame.hide()
-            self.ui.mntServerLabel.hide()
-            self.ui.mntServerLineEdit.hide()
-            self.ui.devConfigLabel.hide()
-            self.ui.devConfigLineEdit.hide()
-            self.ui.devWriterLabel.hide()
-            self.ui.devWriterLineEdit.hide()
+#            self.ui.mntServerLabel.hide()
+#            self.ui.mntServerLineEdit.hide()#
+#            self.ui.devConfigLabel.hide()
+#            self.ui.devConfigLineEdit.hide()
+#            self.ui.devWriterLabel.hide()
+#            self.ui.devWriterLineEdit.hide()
             self.ui.devConfigPushButton.hide()
-            self.ui.groupsPushButton.hide()
+#            self.ui.groupsPushButton.hide()
 #            self.ui.componentFrame.hide()
-            self.ui.componentGroupBox.hide()
             self.ui.devSettingsLineEdit.setEnabled(False)
+            self.ui.devWriterLineEdit.setEnabled(False)
+            self.ui.devConfigLineEdit.setEnabled(False)
+            self.ui.mntServerLineEdit.setEnabled(False)
         if self.user:
+            self.ui.componentGroupBox.hide()
+            self.ui.tangoFrame.hide()
             self.ui.mntGrpComboBox.setEnabled(False)
             self.ui.mntGrpToolButton.hide()
 #            self.ui.selectorFrame.hide()
@@ -405,9 +411,11 @@ class Selector(Qt.QDialog, TaurusBaseWidget):
                     "border-width: 1px; border-color: gray; "
                     "color:#A02020;font:bold;font-size: 14pt;")
                 self.ui.statusLabel.setText('NOT APPLIED')
-                self.setWindowTitle(self.title + ' * ')
+                self.setWindowTitle(
+                    '%s (%s mode) * ' % (self.title, self.__umode))
             else:
-                self.setWindowTitle(self.title)
+                self.setWindowTitle(
+                    '%s (%s mode)' % (self.title, self.__umode))
                 self.ui.statusLabel.setStyleSheet(
                     "background-color: white;border-style: outset; "
                     "border-width: 1px; border-color: gray; "
@@ -555,6 +563,7 @@ class Selector(Qt.QDialog, TaurusBaseWidget):
         logger.debug("reset selector ended")
 
     def closeReset(self):
+        status = True
         logger.debug("closing Progress")
         if self.__progress:
             self.__progress.reset()
@@ -568,6 +577,7 @@ class Selector(Qt.QDialog, TaurusBaseWidget):
                 text,
                 "%s" % str(self.__commandthread.error))
             self.__commandthread.error = None
+            status = False
         self.reset()
         self.storage.updateMntGrpComboBox()
         self.setDirty(True)
@@ -577,6 +587,7 @@ class Selector(Qt.QDialog, TaurusBaseWidget):
         if self.__doortoupdateFlag:
             self.updateDoorName(self.__door)
         logger.debug("closing Progress ENDED")
+        return status
 
     def waitForThread(self):
         logger.debug("waiting for Thread")
@@ -711,21 +722,25 @@ class Selector(Qt.QDialog, TaurusBaseWidget):
         self.setDirty(self.__dirty)
 
     def closeApply(self):
-        self.closeReset()
+        if not self.closeReset():
+            self.setDirty(True)
+        else:
+            self.setDirty(False)
         self.ui.fileScanIDSpinBox.setValue(self.state.scanID)
-        self.setDirty(False)
 
     def apply(self):
         logger.debug("apply")
         try:
             conf = self.state.updateMntGrp()
             self.emit(Qt.SIGNAL('experimentConfigurationChanged'), conf)
-            self.runProgress(["updateControllers", "importMntGrp"],
+            self.runProgress(["updateControllers", "importMntGrp",
+                              "createConfiguration"],
                              "closeApply")
         except Exception as e:
             import traceback
             value = traceback.format_exc()
             text = MessageBox.getText("Problems in resetting Server")
+            self.setDirty(True)
             MessageBox.warning(
                 self,
                 "NXSSelector: Error in applying Selector Server settings",
