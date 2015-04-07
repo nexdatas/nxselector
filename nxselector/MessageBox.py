@@ -44,7 +44,8 @@ class MessageBox(Qt.QObject):
         try:
             if isinstance(error, PyTango.DevFailed):
                 text = str("\n".join(["%s " % (err.desc) for err in error]))
-
+            else:
+                text = str(error)
         except Exception as e:
 #            print e
             pass
