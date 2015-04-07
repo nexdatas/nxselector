@@ -464,14 +464,15 @@ class Storage(object):
 
     def __mntgrp_edited(self):
         logger.debug("mntgrp edited")
-        if str(self.ui.mntGrpComboBox.currentText()) == self.state.mntgrp:
+        current = str(self.ui.mntGrpComboBox.currentText()).lower()
+        if current == self.state.mntgrp:
             return
         self.disconnectSignals()
-        if not str(self.ui.mntGrpComboBox.currentText()):
+        if not current:
             self.ui.mntGrpComboBox.setFocus()
             self.connectSignals()
             return
-        self.state.mntgrp = str(self.ui.mntGrpComboBox.currentText())
+        self.state.mntgrp = current
         if self.state.mntgrp not in self.state.avmglist:
             self.updateMntGrpComboBox()
             self.connectSignals()
@@ -480,15 +481,16 @@ class Storage(object):
 
     def __mntgrp_changed(self):
         logger.debug("mntgrp changed")
-        if str(self.ui.mntGrpComboBox.currentText()) == self.state.mntgrp:
+        current = str(self.ui.mntGrpComboBox.currentText()).lower()
+        if current == self.state.mntgrp:
             return
         self.disconnectSignals()
-        if not str(self.ui.mntGrpComboBox.currentText()):
+        if not current:
             self.ui.mntGrpComboBox.setFocus()
             self.connectSignals()
             return
 
-        self.state.mntgrp = str(self.ui.mntGrpComboBox.currentText())
+        self.state.mntgrp = current
         if self.state.mntgrp not in self.state.avmglist:
             self.connectSignals()
             self.apply()
@@ -512,7 +514,7 @@ class Storage(object):
             Qt.QMessageBox.Yes | Qt.QMessageBox.No)
         if replay == Qt.QMessageBox.Yes:
             self.disconnectSignals()
-            self.state.deleteMntGrp(self.ui.mntGrpComboBox.currentText())
+            self.state.deleteMntGrp(str(self.ui.mntGrpComboBox.currentText()).lower())
             self.connectSignals()
             self.ui.storage.emit(Qt.SIGNAL("resetAll"))
         logger.debug("mntgrp deleted end")
@@ -533,7 +535,7 @@ class Storage(object):
             self.ui.mntGrpComboBox.setFocus()
             self.connectSignals()
             return
-        self.state.mntgrp = str(self.ui.mntGrpComboBox.currentText())
+        self.state.mntgrp = str(self.ui.mntGrpComboBox.currentText()).lower()
 
         logger.debug("apply Timers")
         self.__applyTimer(self.ui.mntTimerComboBox, 0)

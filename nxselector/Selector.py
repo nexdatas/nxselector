@@ -615,10 +615,16 @@ class Selector(Qt.QDialog, TaurusBaseWidget):
         self.__commandthread.start()
         self.__progress.show()
 
-    def resetAll(self):
+    def resetClickAll(self):
         logger.debug("reset ALL")
         self.runProgress([
                 "switchMntGrp", 
+                "updateControllers", "importMntGrp"])
+        logger.debug("reset ENDED")
+
+    def resetAll(self):
+        logger.debug("reset ALL")
+        self.runProgress([
                 "updateControllers", "importMntGrp"])
         logger.debug("reset ENDED")
 
@@ -657,7 +663,7 @@ class Selector(Qt.QDialog, TaurusBaseWidget):
 
     def __resetClicked(self):
         self.ui.buttonBox.button(Qt.QDialogButtonBox.Reset).setFocus()
-        self.resetAll()
+        self.resetClickAll()
 
     def __clearAllClicked(self):
         for ds in self.state.dsgroup.keys():
@@ -680,7 +686,7 @@ class Selector(Qt.QDialog, TaurusBaseWidget):
                 jconf = open(filename).read()
 
                 self.state.setConfiguration(jconf)
-                self.resetAll()
+                self.apply()
         except Exception as e:
             import traceback
             value = traceback.format_exc()
@@ -713,10 +719,10 @@ class Selector(Qt.QDialog, TaurusBaseWidget):
         except Exception as e:
             import traceback
             value = traceback.format_exc()
-            text = MessageBox.getText("Problems in loading profile")
+            text = MessageBox.getText("Problems in saving profile")
             MessageBox.warning(
                 self,
-                "NXSSelector: Error in loading Selector Server profile",
+                "NXSSelector: Error in saving Selector Server profile",
                 text, str(value))
 
     def __applyClicked(self):

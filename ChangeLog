@@ -1,6 +1,7 @@
 2015-04-XX Jan Kotanski <jankotan@gmail.com>
 	* adding switch mntgrp on reset
 	* changing MessageBox text for not PyTango Errors
+	* changing mntgrp to lower case
 	* tagged as 1.19.0
 
 2015-04-01 Jan Kotanski <jankotan@gmail.com>
