@@ -310,6 +310,11 @@ class ServerState(object):
             self.setServer()
         self.__dp.fetchConfiguration()
 
+    def switchMntGrp(self):
+        if not self.__dp:
+            self.setServer()
+        self.__dp.switchMntGrp()
+
     ## update measurement group
     def updateMntGrp(self):
         if not self.mntgrp:

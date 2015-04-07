@@ -1,3 +1,7 @@
+2015-04-XX Jan Kotanski <jankotan@gmail.com>
+	* adding switch mntgrp on reset
+	* tagged as 1.19.0
+
 2015-04-01 Jan Kotanski <jankotan@gmail.com>
 	* second fix for mode display
 	* tagged as 1.18.3

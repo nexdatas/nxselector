@@ -617,7 +617,9 @@ class Selector(Qt.QDialog, TaurusBaseWidget):
 
     def resetAll(self):
         logger.debug("reset ALL")
-        self.runProgress(["updateControllers", "importMntGrp"])
+        self.runProgress([
+                "switchMntGrp", 
+                "updateControllers", "importMntGrp"])
         logger.debug("reset ENDED")
 
     def resetDescriptions(self):
