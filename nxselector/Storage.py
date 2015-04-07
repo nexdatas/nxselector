@@ -277,6 +277,12 @@ class Storage(object):
                 self.ui.storage,
                 "NXSSelector: Errors in Descrption Component:",
                 str(text), "%s" % str(details))
+        else:
+            Qt.QMessageBox.information(
+                self.ui.storage,
+                "NXSSelector: Descrption Component:",
+                "Tango Servers of Description Components are ON")
+            
 
     def __groups(self):
         dform = GroupsDlg(self.ui.storage)
