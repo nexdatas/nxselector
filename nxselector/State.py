@@ -78,9 +78,9 @@ class State(object):
         if la + lm:
             la, lm = [float(la) / (la + lm), float(lm) / (la + lm)]
 
-        self.aview = self.__addView("Discipline",
+        self.aview = self.__addView("Optional",
                                     max(1, int(la * (self.rowMax - 2))))
-        self.mview = self.__addView("Beamline",
+        self.mview = self.__addView("Mandatory",
                                     max(1, int(lm * (self.rowMax - 2))))
 
         self.ui.state.update()

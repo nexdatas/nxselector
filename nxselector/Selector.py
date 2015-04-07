@@ -203,6 +203,8 @@ class Selector(Qt.QDialog, TaurusBaseWidget):
         if self.__doortoupdateFlag:
             self.updateDoorName(self.__door)
 
+        self.ui.storage.resize(0,0)    
+        self.resize(0,0)    
         logger.debug("settings END")
 
     ##  creates GUI
