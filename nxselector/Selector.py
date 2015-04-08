@@ -406,9 +406,11 @@ class Selector(Qt.QDialog, TaurusBaseWidget):
             "and making synchronization with the Active Measurement Group.\n" +
             "Update preselection of description components "
             )
-        self.ui.buttonBox.button(
-            Qt.QDialogButtonBox.Close).setToolTip(
-            "Close the Component Selector")
+        if self.ui.buttonBox.button(
+            Qt.QDialogButtonBox.Close):
+            self.ui.buttonBox.button(
+                Qt.QDialogButtonBox.Close).setToolTip(
+                "Close the Component Selector")
         self.ui.timerAddPushButton.setToolTip("Add a non-master timer")
         self.ui.timerDelPushButton.setToolTip(
             "Remove the last non-master timer ")

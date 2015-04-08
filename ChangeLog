@@ -1,4 +1,8 @@
 2015-04-08 Jan Kotanski <jankotan@gmail.com>
+	* fix for non-existing CLOSE button in taurusgui
+	* tagged as 1.19.1
+
+2015-04-08 Jan Kotanski <jankotan@gmail.com>
 	* adding tips
 	* adding switch mntgrp on reset
 	* changing MessageBox text for not PyTango Errors
