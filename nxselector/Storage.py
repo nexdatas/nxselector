@@ -28,6 +28,7 @@ except:
 
 from .EdListDlg import EdListDlg
 from .GroupsDlg import GroupsDlg
+from .InfoDlg import InfoDlg
 from .OrderDlg import OrderDlg
 from .PropertiesDlg import PropertiesDlg
 from .MessageBox import MessageBox
@@ -112,7 +113,7 @@ class Storage(object):
         self.ui.storage.disconnect(self.ui.labelsPushButton,
                                    Qt.SIGNAL("clicked()"),
                                    self.__labels)
-        self.ui.storage.disconnect(self.ui.orderPushButton,
+        self.ui.storage.disconnect(self.ui.orderToolButton,
                                    Qt.SIGNAL("clicked()"),
                                    self.__order)
         self.ui.storage.disconnect(self.ui.groupsPushButton,
@@ -124,6 +125,9 @@ class Storage(object):
         self.ui.storage.disconnect(self.ui.errorsPushButton,
                                    Qt.SIGNAL("clicked()"),
                                    self.__errors)
+        self.ui.storage.disconnect(self.ui.infoPushButton,
+                                   Qt.SIGNAL("clicked()"),
+                                   self.__info)
 
     def connectSignals(self):
         self.disconnectSignals()
@@ -186,7 +190,7 @@ class Storage(object):
         self.ui.storage.connect(self.ui.labelsPushButton,
                                 Qt.SIGNAL("clicked()"),
                                 self.__labels)
-        self.ui.storage.connect(self.ui.orderPushButton,
+        self.ui.storage.connect(self.ui.orderToolButton,
                                 Qt.SIGNAL("clicked()"),
                                 self.__order)
 
@@ -199,6 +203,9 @@ class Storage(object):
         self.ui.storage.connect(self.ui.errorsPushButton,
                                    Qt.SIGNAL("clicked()"),
                                    self.__errors)
+        self.ui.storage.connect(self.ui.infoPushButton,
+                                   Qt.SIGNAL("clicked()"),
+                                   self.__info)
 
     def updateMntGrpComboBox(self):
         self.disconnectSignals()
@@ -254,6 +261,13 @@ class Storage(object):
 
     def __resetDescriptions(self):
         self.ui.storage.emit(Qt.SIGNAL("resetDescriptions"))
+
+    def __info(self):
+        dform = InfoDlg(self.ui.storage)
+        dform.state = self.state
+        dform.createGUI()
+        dform.exec_()
+
 
     def __errors(self):
         errors = self.state.fetchErrors()

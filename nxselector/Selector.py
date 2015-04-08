@@ -194,6 +194,8 @@ class Selector(Qt.QDialog, TaurusBaseWidget):
         if sg:
             self.restoreGeometry(sg)
 
+        self.resize(0, 0)
+
         self.title = 'NeXus Component Selector'
         self.__dirty = True
         self.setDirty()
@@ -203,14 +205,22 @@ class Selector(Qt.QDialog, TaurusBaseWidget):
         if self.__doortoupdateFlag:
             self.updateDoorName(self.__door)
 
-        self.ui.storage.resize(0,0)    
-        self.resize(0,0)    
         logger.debug("settings END")
 
     ##  creates GUI
     # \brief It create dialogs for the main window application
     def createGUI(self):
 
+        self.__setButtonBoxes()
+        self.__hideWidgets()
+        for tab in self.tabs:
+            tab.reset()
+
+        self.__setWidgetValues()
+        self.__connectSignals()
+        self.__addTips()
+
+    def __setButtonBoxes(self):
         if not self.__standalone:
             self.ui.mntServerLineEdit.hide()
             self.ui.mntServerLabel.hide()
@@ -230,6 +240,17 @@ class Selector(Qt.QDialog, TaurusBaseWidget):
             "", Qt.QDialogButtonBox.ActionRole)
         self.ui.statusLabel.setEnabled(False)
         self.ui.buttonBox.setCenterButtons(True)
+
+        flayout = Qt.QHBoxLayout(self.ui.timerButtonFrame)
+        flayout.setContentsMargins(0, 0, 0, 0)
+        self.ui.timerAddPushButton = Qt.QPushButton("+")
+        self.ui.timerAddPushButton.setMaximumWidth(30)
+        flayout.addWidget(self.ui.timerAddPushButton)
+        self.ui.timerDelPushButton = Qt.QPushButton("-")
+        self.ui.timerDelPushButton.setMaximumWidth(30)
+        flayout.addWidget(self.ui.timerDelPushButton)
+
+    def __setWidgetValues(self):
 
         self.ui.layoutButtonBox.button(
             Qt.QDialogButtonBox.Open).setText("Load")
@@ -259,15 +280,6 @@ class Selector(Qt.QDialog, TaurusBaseWidget):
         layout.addWidget(self.ui.defaultPushButton)
         self.ui.defaultPushButton.hide()
 
-        flayout = Qt.QHBoxLayout(self.ui.timerButtonFrame)
-        flayout.setContentsMargins(0, 0, 0, 0)
-        self.ui.timerAddPushButton = Qt.QPushButton("+")
-        self.ui.timerAddPushButton.setMaximumWidth(30)
-        flayout.addWidget(self.ui.timerAddPushButton)
-        self.ui.timerDelPushButton = Qt.QPushButton("-")
-        self.ui.timerDelPushButton.setMaximumWidth(30)
-        flayout.addWidget(self.ui.timerDelPushButton)
-
         self.ui.statusLabel.setAutoFillBackground(True)
         self.ui.statusLabel.setSizePolicy(Qt.QSizePolicy.Expanding,
                                           Qt.QSizePolicy.Fixed)
@@ -276,7 +288,18 @@ class Selector(Qt.QDialog, TaurusBaseWidget):
             "background-color:white;border-style: outset; "
             "border-width: 1px; border-color: gray; "
             "color:#208020;font:bold;font-size: 14pt;")
+        self.ui.mntGrpComboBox.setInsertPolicy(
+            self.ui.mntGrpComboBox.InsertAtTop)
 
+        self.storage.updateMntGrpComboBox()
+
+        cid = self.ui.viewComboBox.findText(Qt.QString(self.userView))
+        if cid >= 0:
+            self.ui.viewComboBox.setCurrentIndex(cid)
+        self.ui.rowMaxSpinBox.setValue(self.rowMax)
+        self.ui.statusCheckBox.setChecked(self.displayStatus != 0)
+
+    def __hideWidgets(self):
         if not self.expert:
 #            self.ui.groupFrame.hide()
             self.ui.groupGroupBox.hide()
@@ -298,7 +321,7 @@ class Selector(Qt.QDialog, TaurusBaseWidget):
             self.ui.mntServerLineEdit.setEnabled(False)
         if self.user:
             self.ui.componentGroupBox.hide()
-            self.ui.tangoFrame.hide()
+#            self.ui.tangoFrame.hide()
             self.ui.mntGrpComboBox.setEnabled(False)
             self.ui.mntGrpToolButton.hide()
 #            self.ui.selectorFrame.hide()
@@ -306,6 +329,7 @@ class Selector(Qt.QDialog, TaurusBaseWidget):
             self.ui.viewGroupBox.hide()
 #            self.ui.viewFrame.hide()
         if self.simple:
+            self.ui.orderToolButton.hide()
             self.ui.timerAddPushButton.hide()
             self.ui.timerDelPushButton.hide()
             self.ui.mntTimerComboBox.setEnabled(False)
@@ -313,19 +337,8 @@ class Selector(Qt.QDialog, TaurusBaseWidget):
             self.ui.state.hide()
             self.ui.tabWidget.removeTab(1)
             self.ui.tabWidget.setCurrentIndex(1)
-        for tab in self.tabs:
-            tab.reset()
 
-        self.ui.mntGrpComboBox.setInsertPolicy(
-            self.ui.mntGrpComboBox.InsertAtTop)
-
-        self.storage.updateMntGrpComboBox()
-
-        cid = self.ui.viewComboBox.findText(Qt.QString(self.userView))
-        if cid >= 0:
-            self.ui.viewComboBox.setCurrentIndex(cid)
-        self.ui.rowMaxSpinBox.setValue(self.rowMax)
-        self.ui.statusCheckBox.setChecked(self.displayStatus != 0)
+    def __connectSignals(self):
         self.connect(self.ui.buttonBox.button(Qt.QDialogButtonBox.Apply),
                      Qt.SIGNAL("pressed()"), self.__applyClicked)
         self.connect(self.ui.buttonBox.button(Qt.QDialogButtonBox.Reset),
@@ -374,6 +387,44 @@ class Selector(Qt.QDialog, TaurusBaseWidget):
                      self.resetAll)
         self.connect(self.ui.storage, Qt.SIGNAL("updateGroups"),
                      self.updateGroups)
+
+    def __addTips(self):
+        self.ui.buttonBox.button(
+            Qt.QDialogButtonBox.RestoreDefaults).setToolTip(
+            "Deselect all detector components")
+        self.ui.buttonBox.button(
+            Qt.QDialogButtonBox.Apply).setToolTip(
+            "Send the current profile into the selector server\n" +
+            "Update the current measurement group" +
+            " and set it into ActiveMntGrp.\n" +
+            "Update preselection of description components "
+            )
+        self.ui.buttonBox.button(
+            Qt.QDialogButtonBox.Reset).setToolTip(
+            "Reset local modifications " +
+            "by fetching the current profile from the selector server\n" +
+            "and making synchronization with the Active Measurement Group.\n" +
+            "Update preselection of description components "
+            )
+        self.ui.buttonBox.button(
+            Qt.QDialogButtonBox.Close).setToolTip(
+            "Close the Component Selector")
+        self.ui.timerAddPushButton.setToolTip("Add a non-master timer")
+        self.ui.timerDelPushButton.setToolTip("Remove the last non-master timer ")
+        self.ui.profileButtonBox.button(
+            Qt.QDialogButtonBox.Open).setToolTip(
+            "Load a previously selected channels from a file.")
+        self.ui.profileButtonBox.button(
+            Qt.QDialogButtonBox.Save).setToolTip(
+            "Save the currently selected channels into a file.")
+        self.ui.layoutButtonBox.button(
+            Qt.QDialogButtonBox.Open).setToolTip(
+            "Load from a file a previously saved detector layout."
+            )
+        self.ui.layoutButtonBox.button(
+            Qt.QDialogButtonBox.Save).setToolTip(
+            "Save into a file the currently detector layout."
+            )
 
     def __componentChanged(self):
         self.setDirty()
@@ -618,7 +669,7 @@ class Selector(Qt.QDialog, TaurusBaseWidget):
     def resetClickAll(self):
         logger.debug("reset ALL")
         self.runProgress([
-                "switchMntGrp", 
+                "switchMntGrp",
                 "updateControllers", "importMntGrp"])
         logger.debug("reset ENDED")
 

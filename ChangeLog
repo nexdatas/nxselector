@@ -1,7 +1,9 @@
-2015-04-XX Jan Kotanski <jankotan@gmail.com>
+2015-04-08 Jan Kotanski <jankotan@gmail.com>
+	* adding tips
 	* adding switch mntgrp on reset
 	* changing MessageBox text for not PyTango Errors
 	* changing mntgrp to lower case chars (workaround for Sardana bug)
+	* dedicated to use with NXSRecSelector 1.19.0 or above
 	* tagged as 1.19.0
 
 2015-04-01 Jan Kotanski <jankotan@gmail.com>

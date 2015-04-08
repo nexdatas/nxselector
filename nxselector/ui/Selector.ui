@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>624</width>
-    <height>674</height>
+    <width>721</width>
+    <height>580</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -29,6 +29,10 @@
          <layout class="QHBoxLayout" name="horizontalLayout_2">
           <item>
            <widget class="QLabel" name="fileScanLabel">
+            <property name="toolTip">
+             <string>Name of the data file.
+The extention .nxs corresponds to NeXus files.</string>
+            </property>
             <property name="text">
              <string>Scan &amp;File:</string>
             </property>
@@ -38,10 +42,18 @@
            </widget>
           </item>
           <item>
-           <widget class="QLineEdit" name="fileScanLineEdit"/>
+           <widget class="QLineEdit" name="fileScanLineEdit">
+            <property name="toolTip">
+             <string comment="Scan File"/>
+            </property>
+           </widget>
           </item>
           <item>
            <widget class="QLabel" name="fileScanDirLabel">
+            <property name="toolTip">
+             <string>Directory of the data file.
+It can be also found buy pressing the [...] button.</string>
+            </property>
             <property name="text">
              <string>Scan &amp;Dir:</string>
             </property>
@@ -55,6 +67,9 @@
           </item>
           <item>
            <widget class="QToolButton" name="fileScanDirToolButton">
+            <property name="toolTip">
+             <string>Search for the data file directory...</string>
+            </property>
             <property name="text">
              <string>...</string>
             </property>
@@ -62,6 +77,11 @@
           </item>
           <item>
            <widget class="QLabel" name="fileScanIDLabel">
+            <property name="toolTip">
+             <string>Consecutive number of the scan identifier.
+For the NeXus files it is appended into the data file name 
+or into the NXentry group name (in the Append Entry mode).</string>
+            </property>
             <property name="text">
              <string>Scan ID:</string>
             </property>
@@ -103,6 +123,9 @@
            <layout class="QHBoxLayout" name="horizontalLayout_4" stretch="0,1,0,0,0">
             <item>
              <widget class="QLabel" name="mntTimerLabel">
+              <property name="toolTip">
+               <string>The master timer</string>
+              </property>
               <property name="text">
                <string>&amp;Timer:</string>
               </property>
@@ -190,7 +213,7 @@
          <property name="frameShadow">
           <enum>QFrame::Raised</enum>
          </property>
-         <layout class="QHBoxLayout" name="horizontalLayout_3" stretch="0,0,0,0,0">
+         <layout class="QHBoxLayout" name="horizontalLayout_3" stretch="0,0,0,0,0,0">
           <item>
            <spacer name="horizontalSpacer_5">
             <property name="orientation">
@@ -214,6 +237,10 @@
               <horstretch>0</horstretch>
               <verstretch>0</verstretch>
              </sizepolicy>
+            </property>
+            <property name="toolTip">
+             <string>Name of the current measurement group.
+The name is equvalent to the profile name.</string>
             </property>
             <property name="text">
              <string>&amp;MntGrp:</string>
@@ -247,18 +274,18 @@
           </item>
           <item>
            <widget class="QToolButton" name="mntGrpToolButton">
+            <property name="toolTip">
+             <string>Remove the current measurement group and the current profile</string>
+            </property>
             <property name="text">
              <string>-</string>
             </property>
            </widget>
           </item>
           <item>
-           <spacer name="horizontalSpacer_6">
+           <spacer name="horizontalSpacer_7">
             <property name="orientation">
              <enum>Qt::Horizontal</enum>
-            </property>
-            <property name="sizeType">
-             <enum>QSizePolicy::Preferred</enum>
             </property>
             <property name="sizeHint" stdset="0">
              <size>
@@ -267,6 +294,16 @@
              </size>
             </property>
            </spacer>
+          </item>
+          <item>
+           <widget class="QToolButton" name="orderToolButton">
+            <property name="toolTip">
+             <string>Set the order of channels in the current measurement group</string>
+            </property>
+            <property name="text">
+             <string>&gt; &gt;</string>
+            </property>
+           </widget>
           </item>
          </layout>
         </widget>
@@ -293,6 +330,10 @@
               <horstretch>0</horstretch>
               <verstretch>0</verstretch>
              </sizepolicy>
+            </property>
+            <property name="toolTip">
+             <string>In the Append Entry mode the scans are stored in one scan file 
+into separate entries identified by the current Scan ID.</string>
             </property>
             <property name="layoutDirection">
              <enum>Qt::RightToLeft</enum>
@@ -328,21 +369,40 @@
         <bool>false</bool>
        </property>
        <widget class="QWidget" name="selectable">
+        <property name="toolTip">
+         <string>Detector components: selectable by the user.
+This components contain datasources usually written in the STEP mode.
+The set of detector components can be defined in the Configuration/Group widget.</string>
+        </property>
         <attribute name="title">
          <string>Detectors</string>
         </attribute>
        </widget>
        <widget class="QWidget" name="state">
+        <property name="toolTip">
+         <string>Description components: preselected for the specific discipline.
+This components contain motor datasources usually written in the INIT or FINAL mode.
+The set of description components can be defined in the Configuration/Group widget.</string>
+        </property>
         <attribute name="title">
          <string>Descriptions</string>
         </attribute>
        </widget>
        <widget class="QWidget" name="data">
+        <property name="toolTip">
+         <string>User data dictionary of names and their corresponding values.
+In this widget the user has to provide required CLIENT data, 
+e.g. beamtime_id, sample_name, title, chemical_formula.
+Additionally user can add some additional data , e.g. comments.</string>
+        </property>
         <attribute name="title">
          <string>User Data</string>
         </attribute>
        </widget>
        <widget class="QWidget" name="storage">
+        <property name="toolTip">
+         <string>Allow to change  frame layout, Detectors groups and the current profile parameters</string>
+        </property>
         <attribute name="title">
          <string>Configuration</string>
         </attribute>
@@ -360,14 +420,94 @@
                 <enum>QFrame::Raised</enum>
                </property>
                <layout class="QGridLayout" name="gridLayout_10">
+                <item row="0" column="1">
+                 <widget class="QGroupBox" name="componentGroupBox">
+                  <property name="toolTip">
+                   <string>Profile parameters</string>
+                  </property>
+                  <property name="title">
+                   <string>Components:</string>
+                  </property>
+                  <layout class="QGridLayout" name="gridLayout_11">
+                   <item row="0" column="0">
+                    <layout class="QHBoxLayout" name="horizontalLayout_10">
+                     <item>
+                      <widget class="QPushButton" name="groupsPushButton">
+                       <property name="sizePolicy">
+                        <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+                         <horstretch>0</horstretch>
+                         <verstretch>0</verstretch>
+                        </sizepolicy>
+                       </property>
+                       <property name="toolTip">
+                        <string>Change the available components in the Detectors and/or Descriptions tabs</string>
+                       </property>
+                       <property name="text">
+                        <string>Groups ...</string>
+                       </property>
+                      </widget>
+                     </item>
+                     <item>
+                      <widget class="QPushButton" name="errorsPushButton">
+                       <property name="sizePolicy">
+                        <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+                         <horstretch>0</horstretch>
+                         <verstretch>0</verstretch>
+                        </sizepolicy>
+                       </property>
+                       <property name="toolTip">
+                        <string>Show warning for description components which are deselected</string>
+                       </property>
+                       <property name="text">
+                        <string>Warnings ...</string>
+                       </property>
+                      </widget>
+                     </item>
+                     <item>
+                      <widget class="QPushButton" name="resetDescriptionsPushButton">
+                       <property name="sizePolicy">
+                        <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+                         <horstretch>0</horstretch>
+                         <verstretch>0</verstretch>
+                        </sizepolicy>
+                       </property>
+                       <property name="toolTip">
+                        <string>Reset the description components into the default set</string>
+                       </property>
+                       <property name="text">
+                        <string>Reset Descriptions</string>
+                       </property>
+                      </widget>
+                     </item>
+                    </layout>
+                   </item>
+                  </layout>
+                 </widget>
+                </item>
                 <item row="0" column="0">
                  <widget class="QGroupBox" name="groupBox_6">
+                  <property name="toolTip">
+                   <string>Load/Save the current profile.</string>
+                  </property>
                   <property name="title">
                    <string>Profile:</string>
                   </property>
                   <layout class="QGridLayout" name="gridLayout_8">
+                   <item row="1" column="0">
+                    <widget class="QDialogButtonBox" name="profileButtonBox">
+                     <property name="toolTip">
+                      <string/>
+                     </property>
+                     <property name="standardButtons">
+                      <set>QDialogButtonBox::Open|QDialogButtonBox::Save</set>
+                     </property>
+                     <property name="centerButtons">
+                      <bool>true</bool>
+                     </property>
+                    </widget>
+                   </item>
                    <item row="0" column="0">
-                    <spacer name="verticalSpacer_16">
+                    <spacer name="verticalSpacer_7">
                      <property name="orientation">
                       <enum>Qt::Vertical</enum>
                      </property>
@@ -383,7 +523,7 @@
                     </spacer>
                    </item>
                    <item row="2" column="0">
-                    <spacer name="verticalSpacer_15">
+                    <spacer name="verticalSpacer_8">
                      <property name="orientation">
                       <enum>Qt::Vertical</enum>
                      </property>
@@ -398,141 +538,24 @@
                      </property>
                     </spacer>
                    </item>
-                   <item row="1" column="0">
-                    <widget class="QDialogButtonBox" name="profileButtonBox">
-                     <property name="standardButtons">
-                      <set>QDialogButtonBox::Open|QDialogButtonBox::Save</set>
-                     </property>
-                     <property name="centerButtons">
-                      <bool>true</bool>
-                     </property>
-                    </widget>
-                   </item>
                   </layout>
                  </widget>
                 </item>
-                <item row="1" column="0">
-                 <widget class="QGroupBox" name="componentGroupBox">
-                  <property name="title">
-                   <string>Components:</string>
+                <item row="1" column="1">
+                 <spacer name="verticalSpacer_9">
+                  <property name="orientation">
+                   <enum>Qt::Vertical</enum>
                   </property>
-                  <layout class="QGridLayout" name="gridLayout_11">
-                   <item row="0" column="0">
-                    <layout class="QHBoxLayout" name="horizontalLayout_10">
-                     <item>
-                      <widget class="QPushButton" name="groupsPushButton">
-                       <property name="text">
-                        <string>Groups ...</string>
-                       </property>
-                      </widget>
-                     </item>
-                     <item>
-                      <widget class="QPushButton" name="orderPushButton">
-                       <property name="text">
-                        <string>Order ...</string>
-                       </property>
-                      </widget>
-                     </item>
-                    </layout>
-                   </item>
-                   <item row="1" column="0">
-                    <layout class="QHBoxLayout" name="horizontalLayout_13">
-                     <item>
-                      <widget class="QPushButton" name="resetDescriptionsPushButton">
-                       <property name="text">
-                        <string>Reset Descriptions</string>
-                       </property>
-                      </widget>
-                     </item>
-                     <item>
-                      <widget class="QPushButton" name="errorsPushButton">
-                       <property name="text">
-                        <string>Warnings ...</string>
-                       </property>
-                      </widget>
-                     </item>
-                    </layout>
-                   </item>
-                  </layout>
-                 </widget>
-                </item>
-               </layout>
-              </widget>
-             </item>
-             <item>
-              <widget class="QFrame" name="tangoFrame">
-               <property name="frameShape">
-                <enum>QFrame::StyledPanel</enum>
-               </property>
-               <property name="frameShadow">
-                <enum>QFrame::Raised</enum>
-               </property>
-               <layout class="QVBoxLayout" name="verticalLayout_3">
-                <item>
-                 <widget class="QGroupBox" name="fileGroupBox">
-                  <property name="title">
-                   <string>Tango Servers:</string>
+                  <property name="sizeType">
+                   <enum>QSizePolicy::Maximum</enum>
                   </property>
-                  <layout class="QGridLayout" name="gridLayout_5">
-                   <item row="0" column="0">
-                    <layout class="QVBoxLayout" name="verticalLayout_7">
-                     <item>
-                      <layout class="QGridLayout" name="gridLayout_2">
-                       <item row="4" column="2">
-                        <widget class="QLineEdit" name="devWriterLineEdit"/>
-                       </item>
-                       <item row="1" column="2">
-                        <widget class="QLineEdit" name="mntServerLineEdit"/>
-                       </item>
-                       <item row="4" column="0">
-                        <widget class="QLabel" name="devWriterLabel">
-                         <property name="text">
-                          <string>Data Writer:</string>
-                         </property>
-                         <property name="buddy">
-                          <cstring>devWriterLineEdit</cstring>
-                         </property>
-                        </widget>
-                       </item>
-                       <item row="1" column="0">
-                        <widget class="QLabel" name="mntServerLabel">
-                         <property name="text">
-                          <string>Door:</string>
-                         </property>
-                         <property name="buddy">
-                          <cstring>mntServerLineEdit</cstring>
-                         </property>
-                        </widget>
-                       </item>
-                       <item row="3" column="0">
-                        <widget class="QLabel" name="devConfigLabel">
-                         <property name="text">
-                          <string>Config Server:</string>
-                         </property>
-                         <property name="buddy">
-                          <cstring>devConfigLineEdit</cstring>
-                         </property>
-                        </widget>
-                       </item>
-                       <item row="3" column="2">
-                        <widget class="QLineEdit" name="devConfigLineEdit"/>
-                       </item>
-                       <item row="2" column="0">
-                        <widget class="QLabel" name="label">
-                         <property name="text">
-                          <string>Selector:</string>
-                         </property>
-                        </widget>
-                       </item>
-                       <item row="2" column="2">
-                        <widget class="QLineEdit" name="devSettingsLineEdit"/>
-                       </item>
-                      </layout>
-                     </item>
-                    </layout>
-                   </item>
-                  </layout>
-                 </widget>
+                  <property name="sizeHint" stdset="0">
+                   <size>
+                    <width>20</width>
+                    <height>40</height>
+                   </size>
+                  </property>
+                 </spacer>
                 </item>
                </layout>
               </widget>
@@ -554,12 +577,18 @@
                  <layout class="QHBoxLayout" name="horizontalLayout_5">
                   <item>
                    <widget class="QGroupBox" name="groupBox_2">
+                    <property name="toolTip">
+                     <string>Load/Save the detector layout.</string>
+                    </property>
                     <property name="title">
                      <string>Layout:</string>
                     </property>
                     <layout class="QGridLayout" name="gridLayout_7">
                      <item row="1" column="0">
                       <widget class="QDialogButtonBox" name="layoutButtonBox">
+                       <property name="toolTip">
+                        <string/>
+                       </property>
                        <property name="standardButtons">
                         <set>QDialogButtonBox::Open|QDialogButtonBox::Save</set>
                        </property>
@@ -605,6 +634,9 @@
                   </item>
                   <item>
                    <widget class="QGroupBox" name="viewGroupBox">
+                    <property name="toolTip">
+                     <string>View parameters</string>
+                    </property>
                     <property name="title">
                      <string>View:</string>
                     </property>
@@ -612,23 +644,10 @@
                      <item row="0" column="0">
                       <layout class="QHBoxLayout" name="horizontalLayout">
                        <item>
-                        <spacer name="horizontalSpacer_4">
-                         <property name="orientation">
-                          <enum>Qt::Horizontal</enum>
-                         </property>
-                         <property name="sizeType">
-                          <enum>QSizePolicy::Maximum</enum>
-                         </property>
-                         <property name="sizeHint" stdset="0">
-                          <size>
-                           <width>40</width>
-                           <height>20</height>
-                          </size>
-                         </property>
-                        </spacer>
-                       </item>
-                       <item>
                         <widget class="QLabel" name="rowMaxLabel">
+                         <property name="toolTip">
+                          <string>Maximal number of component rows in the Detectors and Descriptions tabs.</string>
+                         </property>
                          <property name="text">
                           <string>Row Max.:</string>
                          </property>
@@ -642,9 +661,12 @@
                          <property name="orientation">
                           <enum>Qt::Horizontal</enum>
                          </property>
+                         <property name="sizeType">
+                          <enum>QSizePolicy::Maximum</enum>
+                         </property>
                          <property name="sizeHint" stdset="0">
                           <size>
-                           <width>40</width>
+                           <width>10</width>
                            <height>20</height>
                           </size>
                          </property>
@@ -652,6 +674,9 @@
                        </item>
                        <item>
                         <widget class="QCheckBox" name="statusCheckBox">
+                         <property name="toolTip">
+                          <string>Show the apply status in the bottom row</string>
+                         </property>
                          <property name="text">
                           <string>Status</string>
                          </property>
@@ -664,11 +689,27 @@
                          </property>
                          <property name="sizeHint" stdset="0">
                           <size>
-                           <width>40</width>
+                           <width>10</width>
                            <height>20</height>
                           </size>
                          </property>
                         </spacer>
+                       </item>
+                       <item>
+                        <widget class="QPushButton" name="infoPushButton">
+                         <property name="sizePolicy">
+                          <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+                           <horstretch>0</horstretch>
+                           <verstretch>0</verstretch>
+                          </sizepolicy>
+                         </property>
+                         <property name="toolTip">
+                          <string>Show information about used Tango Servers</string>
+                         </property>
+                         <property name="text">
+                          <string>Info ...</string>
+                         </property>
+                        </widget>
                        </item>
                       </layout>
                      </item>
@@ -679,6 +720,10 @@
                 </item>
                 <item>
                  <widget class="QGroupBox" name="frameGroupBox">
+                  <property name="toolTip">
+                   <string>Set a layout, names, numeric labels of Detectors tab device groups. 
+The layout is defined by square brackets nested in four levels: frames, columns, rows, groups. </string>
+                  </property>
                   <property name="title">
                    <string>Frames:</string>
                   </property>
@@ -691,12 +736,34 @@
                 </item>
                 <item>
                  <widget class="QGroupBox" name="groupGroupBox">
+                  <property name="toolTip">
+                   <string>Content of device groups from the Detectors tabs. 
+Its dictionary associates numeric frame labels of the device groups to a list of component items. 
+Component items are defined by list of names in a UNIX wildcard format, i.e. [&quot;eh1_c*&quot;,&quot;eh2_c*&quot;]. 
+ </string>
+                  </property>
                   <property name="title">
                    <string>Groups:</string>
                   </property>
                   <layout class="QGridLayout" name="gridLayout_13">
                    <item row="0" column="0">
                     <widget class="QLineEdit" name="groupLineEdit"/>
+                   </item>
+                   <item row="1" column="0">
+                    <spacer name="verticalSpacer_6">
+                     <property name="orientation">
+                      <enum>Qt::Vertical</enum>
+                     </property>
+                     <property name="sizeType">
+                      <enum>QSizePolicy::Expanding</enum>
+                     </property>
+                     <property name="sizeHint" stdset="0">
+                      <size>
+                       <width>20</width>
+                       <height>40</height>
+                      </size>
+                     </property>
+                    </spacer>
                    </item>
                   </layout>
                  </widget>
@@ -737,86 +804,124 @@
                 <property name="frameShadow">
                  <enum>QFrame::Raised</enum>
                 </property>
-                <layout class="QVBoxLayout" name="verticalLayout_8">
-                 <item>
-                  <widget class="QGroupBox" name="groupBox_5">
-                   <property name="title">
-                    <string>Checkboxes:</string>
-                   </property>
-                   <layout class="QGridLayout" name="gridLayout_15">
-                    <item row="1" column="0">
-                     <widget class="QComboBox" name="viewComboBox"/>
-                    </item>
-                    <item row="0" column="0">
-                     <spacer name="verticalSpacer_7">
-                      <property name="orientation">
-                       <enum>Qt::Vertical</enum>
-                      </property>
-                      <property name="sizeHint" stdset="0">
-                       <size>
-                        <width>20</width>
-                        <height>40</height>
-                       </size>
-                      </property>
-                     </spacer>
-                    </item>
-                   </layout>
-                  </widget>
-                 </item>
-                 <item>
-                  <spacer name="verticalSpacer_5">
-                   <property name="orientation">
-                    <enum>Qt::Vertical</enum>
-                   </property>
-                   <property name="sizeHint" stdset="0">
-                    <size>
-                     <width>20</width>
-                     <height>40</height>
-                    </size>
-                   </property>
-                  </spacer>
-                 </item>
-                 <item>
-                  <widget class="QGroupBox" name="groupBox_7">
-                   <property name="title">
-                    <string>Configuration Server:</string>
-                   </property>
-                   <layout class="QGridLayout" name="gridLayout_16">
-                    <item row="1" column="0">
-                     <widget class="QPushButton" name="devConfigPushButton">
-                      <property name="text">
-                       <string>Variables ...</string>
-                      </property>
-                     </widget>
-                    </item>
-                    <item row="0" column="0">
-                     <spacer name="verticalSpacer_6">
-                      <property name="orientation">
-                       <enum>Qt::Vertical</enum>
-                      </property>
-                      <property name="sizeHint" stdset="0">
-                       <size>
-                        <width>20</width>
-                        <height>40</height>
-                       </size>
-                      </property>
-                     </spacer>
-                    </item>
-                   </layout>
-                  </widget>
-                 </item>
-                 <item>
-                  <spacer name="verticalSpacer_3">
-                   <property name="orientation">
-                    <enum>Qt::Vertical</enum>
-                   </property>
-                   <property name="sizeHint" stdset="0">
-                    <size>
-                     <width>20</width>
-                     <height>40</height>
-                    </size>
-                   </property>
-                  </spacer>
+                <layout class="QGridLayout" name="gridLayout_5">
+                 <item row="0" column="0">
+                  <layout class="QVBoxLayout" name="verticalLayout_6">
+                   <item>
+                    <widget class="QGroupBox" name="fileGroupBox">
+                     <property name="toolTip">
+                      <string>Change the used Tango Servers</string>
+                     </property>
+                     <property name="title">
+                      <string>Tango Servers:</string>
+                     </property>
+                     <layout class="QGridLayout" name="gridLayout_17">
+                      <item row="0" column="0">
+                       <layout class="QVBoxLayout" name="verticalLayout_7">
+                        <item>
+                         <layout class="QGridLayout" name="gridLayout_2">
+                          <item row="4" column="2">
+                           <widget class="QLineEdit" name="devWriterLineEdit"/>
+                          </item>
+                          <item row="1" column="2">
+                           <widget class="QLineEdit" name="mntServerLineEdit"/>
+                          </item>
+                          <item row="4" column="0">
+                           <widget class="QLabel" name="devWriterLabel">
+                            <property name="text">
+                             <string>Data Writer:</string>
+                            </property>
+                            <property name="buddy">
+                             <cstring>devWriterLineEdit</cstring>
+                            </property>
+                           </widget>
+                          </item>
+                          <item row="1" column="0">
+                           <widget class="QLabel" name="mntServerLabel">
+                            <property name="text">
+                             <string>Door:</string>
+                            </property>
+                            <property name="buddy">
+                             <cstring>mntServerLineEdit</cstring>
+                            </property>
+                           </widget>
+                          </item>
+                          <item row="3" column="0">
+                           <widget class="QLabel" name="devConfigLabel">
+                            <property name="text">
+                             <string>Config Server:</string>
+                            </property>
+                            <property name="buddy">
+                             <cstring>devConfigLineEdit</cstring>
+                            </property>
+                           </widget>
+                          </item>
+                          <item row="3" column="2">
+                           <widget class="QLineEdit" name="devConfigLineEdit"/>
+                          </item>
+                          <item row="2" column="0">
+                           <widget class="QLabel" name="label">
+                            <property name="text">
+                             <string>Selector:</string>
+                            </property>
+                           </widget>
+                          </item>
+                          <item row="2" column="2">
+                           <widget class="QLineEdit" name="devSettingsLineEdit"/>
+                          </item>
+                         </layout>
+                        </item>
+                       </layout>
+                      </item>
+                      <item row="1" column="0">
+                       <spacer name="verticalSpacer_5">
+                        <property name="orientation">
+                         <enum>Qt::Vertical</enum>
+                        </property>
+                        <property name="sizeHint" stdset="0">
+                         <size>
+                          <width>20</width>
+                          <height>40</height>
+                         </size>
+                        </property>
+                       </spacer>
+                      </item>
+                     </layout>
+                    </widget>
+                   </item>
+                   <item>
+                    <widget class="QGroupBox" name="groupBox_7">
+                     <property name="toolTip">
+                      <string>Change configuration variables</string>
+                     </property>
+                     <property name="title">
+                      <string>Configuration Server:</string>
+                     </property>
+                     <layout class="QGridLayout" name="gridLayout_18">
+                      <item row="0" column="0">
+                       <widget class="QPushButton" name="devConfigPushButton">
+                        <property name="text">
+                         <string>Variables ...</string>
+                        </property>
+                       </widget>
+                      </item>
+                      <item row="1" column="0">
+                       <spacer name="verticalSpacer_4">
+                        <property name="orientation">
+                         <enum>Qt::Vertical</enum>
+                        </property>
+                        <property name="sizeHint" stdset="0">
+                         <size>
+                          <width>20</width>
+                          <height>40</height>
+                         </size>
+                        </property>
+                       </spacer>
+                      </item>
+                     </layout>
+                    </widget>
+                   </item>
+                  </layout>
                  </item>
                 </layout>
                </widget>
@@ -829,44 +934,65 @@
                 <property name="frameShadow">
                  <enum>QFrame::Raised</enum>
                 </property>
-                <layout class="QGridLayout" name="gridLayout_19">
+                <layout class="QGridLayout" name="gridLayout_16">
                  <item row="0" column="0">
-                  <widget class="QGroupBox" name="groupBox">
-                   <property name="title">
-                    <string>Dynamic Components:</string>
-                   </property>
-                   <layout class="QGridLayout" name="gridLayout_6">
-                    <item row="1" column="0">
-                     <layout class="QVBoxLayout" name="verticalLayout_2">
-                      <item>
-                       <layout class="QHBoxLayout" name="horizontalLayout_11">
+                  <layout class="QVBoxLayout" name="verticalLayout_8">
+                   <item>
+                    <widget class="QGroupBox" name="groupBox">
+                     <property name="toolTip">
+                      <string>Change properties of dynamic components</string>
+                     </property>
+                     <property name="title">
+                      <string>Dynamic Components:</string>
+                     </property>
+                     <layout class="QGridLayout" name="gridLayout_6">
+                      <item row="0" column="0">
+                       <layout class="QVBoxLayout" name="verticalLayout_2">
                         <item>
-                         <widget class="QLabel" name="dcPathLabel">
+                         <layout class="QHBoxLayout" name="horizontalLayout_11">
+                          <item>
+                           <widget class="QLabel" name="dcPathLabel">
+                            <property name="text">
+                             <string>Default NeXus Path:</string>
+                            </property>
+                            <property name="buddy">
+                             <cstring>dcPathLineEdit</cstring>
+                            </property>
+                           </widget>
+                          </item>
+                          <item>
+                           <widget class="QCheckBox" name="dcLinksCheckBox">
+                            <property name="layoutDirection">
+                             <enum>Qt::RightToLeft</enum>
+                            </property>
+                            <property name="text">
+                             <string>Links </string>
+                            </property>
+                           </widget>
+                          </item>
+                         </layout>
+                        </item>
+                        <item>
+                         <widget class="QLineEdit" name="dcPathLineEdit"/>
+                        </item>
+                        <item>
+                         <widget class="QPushButton" name="propPushButton">
                           <property name="text">
-                           <string>Default NeXus Path:</string>
-                          </property>
-                          <property name="buddy">
-                           <cstring>dcPathLineEdit</cstring>
+                           <string>Properties ...</string>
                           </property>
                          </widget>
                         </item>
                         <item>
-                         <widget class="QCheckBox" name="dcLinksCheckBox">
-                          <property name="layoutDirection">
-                           <enum>Qt::RightToLeft</enum>
-                          </property>
+                         <widget class="QPushButton" name="labelsPushButton">
                           <property name="text">
-                           <string>Links </string>
+                           <string>Labels ...</string>
                           </property>
                          </widget>
                         </item>
                        </layout>
                       </item>
-                      <item>
-                       <widget class="QLineEdit" name="dcPathLineEdit"/>
-                      </item>
-                      <item>
-                       <spacer name="verticalSpacer_8">
+                      <item row="1" column="0">
+                       <spacer name="verticalSpacer">
                         <property name="orientation">
                          <enum>Qt::Vertical</enum>
                         </property>
@@ -877,73 +1003,39 @@
                          </size>
                         </property>
                        </spacer>
-                      </item>
-                      <item>
-                       <widget class="QPushButton" name="propPushButton">
-                        <property name="text">
-                         <string>Properties ...</string>
-                        </property>
-                       </widget>
-                      </item>
-                      <item>
-                       <spacer name="verticalSpacer_2">
-                        <property name="orientation">
-                         <enum>Qt::Vertical</enum>
-                        </property>
-                        <property name="sizeType">
-                         <enum>QSizePolicy::Maximum</enum>
-                        </property>
-                        <property name="sizeHint" stdset="0">
-                         <size>
-                          <width>20</width>
-                          <height>40</height>
-                         </size>
-                        </property>
-                       </spacer>
-                      </item>
-                      <item>
-                       <widget class="QPushButton" name="labelsPushButton">
-                        <property name="text">
-                         <string>Labels ...</string>
-                        </property>
-                       </widget>
                       </item>
                      </layout>
-                    </item>
-                    <item row="0" column="0">
-                     <spacer name="verticalSpacer_4">
-                      <property name="orientation">
-                       <enum>Qt::Vertical</enum>
-                      </property>
-                      <property name="sizeType">
-                       <enum>QSizePolicy::Maximum</enum>
-                      </property>
-                      <property name="sizeHint" stdset="0">
-                       <size>
-                        <width>20</width>
-                        <height>20</height>
-                       </size>
-                      </property>
-                     </spacer>
-                    </item>
-                    <item row="2" column="0">
-                     <spacer name="verticalSpacer">
-                      <property name="orientation">
-                       <enum>Qt::Vertical</enum>
-                      </property>
-                      <property name="sizeType">
-                       <enum>QSizePolicy::Expanding</enum>
-                      </property>
-                      <property name="sizeHint" stdset="0">
-                       <size>
-                        <width>20</width>
-                        <height>40</height>
-                       </size>
-                      </property>
-                     </spacer>
-                    </item>
-                   </layout>
-                  </widget>
+                    </widget>
+                   </item>
+                   <item>
+                    <widget class="QGroupBox" name="groupBox_5">
+                     <property name="toolTip">
+                      <string>Change a widget type for selectable components</string>
+                     </property>
+                     <property name="title">
+                      <string>Checkboxes:</string>
+                     </property>
+                     <layout class="QGridLayout" name="gridLayout_15">
+                      <item row="0" column="0">
+                       <widget class="QComboBox" name="viewComboBox"/>
+                      </item>
+                      <item row="1" column="0">
+                       <spacer name="verticalSpacer_3">
+                        <property name="orientation">
+                         <enum>Qt::Vertical</enum>
+                        </property>
+                        <property name="sizeHint" stdset="0">
+                         <size>
+                          <width>20</width>
+                          <height>40</height>
+                         </size>
+                        </property>
+                       </spacer>
+                      </item>
+                     </layout>
+                    </widget>
+                   </item>
+                  </layout>
                  </item>
                 </layout>
                </widget>
@@ -983,28 +1075,29 @@
   <tabstop>mntTimerComboBox</tabstop>
   <tabstop>mntGrpComboBox</tabstop>
   <tabstop>mntGrpToolButton</tabstop>
+  <tabstop>orderToolButton</tabstop>
   <tabstop>othersEntryCheckBox</tabstop>
   <tabstop>profileButtonBox</tabstop>
   <tabstop>groupsPushButton</tabstop>
-  <tabstop>orderPushButton</tabstop>
-  <tabstop>resetDescriptionsPushButton</tabstop>
   <tabstop>errorsPushButton</tabstop>
+  <tabstop>resetDescriptionsPushButton</tabstop>
   <tabstop>layoutButtonBox</tabstop>
   <tabstop>rowMaxSpinBox</tabstop>
   <tabstop>statusCheckBox</tabstop>
+  <tabstop>infoPushButton</tabstop>
   <tabstop>frameLineEdit</tabstop>
   <tabstop>groupLineEdit</tabstop>
+  <tabstop>buttonBox</tabstop>
   <tabstop>mntServerLineEdit</tabstop>
   <tabstop>devSettingsLineEdit</tabstop>
   <tabstop>devConfigLineEdit</tabstop>
   <tabstop>devWriterLineEdit</tabstop>
-  <tabstop>buttonBox</tabstop>
-  <tabstop>viewComboBox</tabstop>
   <tabstop>devConfigPushButton</tabstop>
   <tabstop>dcLinksCheckBox</tabstop>
   <tabstop>dcPathLineEdit</tabstop>
   <tabstop>propPushButton</tabstop>
   <tabstop>labelsPushButton</tabstop>
+  <tabstop>viewComboBox</tabstop>
  </tabstops>
  <resources/>
  <connections/>

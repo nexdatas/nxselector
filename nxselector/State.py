@@ -71,7 +71,7 @@ class State(object):
             self.__mainlayout.addLayout(self.__cplayout)
             self.__mainlayout.addLayout(self.__dslayout)
 
-        self.iview = self.__addView("Others", self.rowMax,
+        self.iview = self.__addView("Other Optional", self.rowMax,
                                      self.__dslayout, not self.igroup)
         la = len(self.agroup)
         lm = len(self.mgroup)
