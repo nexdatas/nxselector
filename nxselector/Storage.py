@@ -268,7 +268,6 @@ class Storage(object):
         dform.createGUI()
         dform.exec_()
 
-
     def __errors(self):
         errors = self.state.fetchErrors()
         text = ""
@@ -296,7 +295,6 @@ class Storage(object):
                 self.ui.storage,
                 "NXSSelector: Descrption Component:",
                 "Tango Servers of Description Components are ON")
-            
 
     def __groups(self):
         dform = GroupsDlg(self.ui.storage)
@@ -528,7 +526,8 @@ class Storage(object):
             Qt.QMessageBox.Yes | Qt.QMessageBox.No)
         if replay == Qt.QMessageBox.Yes:
             self.disconnectSignals()
-            self.state.deleteMntGrp(str(self.ui.mntGrpComboBox.currentText()).lower())
+            self.state.deleteMntGrp(
+                str(self.ui.mntGrpComboBox.currentText()).lower())
             self.connectSignals()
             self.ui.storage.emit(Qt.SIGNAL("resetAll"))
         logger.debug("mntgrp deleted end")

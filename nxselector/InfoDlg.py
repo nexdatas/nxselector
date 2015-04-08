@@ -41,7 +41,6 @@ class InfoDlg(Qt.QDialog):
         self.loadUi()
         self.state = None
 
-
     def createGUI(self):
         if self.state:
             self.ui.writerLabel.setText(self.state.writerDevice)

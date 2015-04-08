@@ -410,7 +410,8 @@ class Selector(Qt.QDialog, TaurusBaseWidget):
             Qt.QDialogButtonBox.Close).setToolTip(
             "Close the Component Selector")
         self.ui.timerAddPushButton.setToolTip("Add a non-master timer")
-        self.ui.timerDelPushButton.setToolTip("Remove the last non-master timer ")
+        self.ui.timerDelPushButton.setToolTip(
+            "Remove the last non-master timer ")
         self.ui.profileButtonBox.button(
             Qt.QDialogButtonBox.Open).setToolTip(
             "Load a previously selected channels from a file.")
