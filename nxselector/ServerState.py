@@ -225,7 +225,7 @@ class ServerState(object):
         if not self.__dp:
             self.setServer()
 
-        jvalue = self.__dp.fetchEnvData()
+        jvalue = self.__command(self.__dp, "fetchEnvData")
         value = json.loads(jvalue)
 
         for var, attr in params.items():
@@ -247,7 +247,7 @@ class ServerState(object):
         for var, attr in params.items():
             value[var] = getattr(self, attr)
         jvalue = json.dumps(value)
-        self.scanID = self.__dp.storeEnvData(jvalue)
+        self.scanID = self.__command(self.__dp, "storeEnvData", jvalue)
         logger.debug("Store Env: %s" % (jvalue))
 
     def __storeFileData(self):
@@ -308,12 +308,12 @@ class ServerState(object):
     def fetchMntGrp(self):
         if not self.__dp:
             self.setServer()
-        self.__dp.fetchConfiguration()
+        self.__command(self.__dp, "fetchConfiguration")
 
     def switchMntGrp(self):
         if not self.__dp:
             self.setServer()
-        self.__dp.switchMntGrp()
+        self.__command(self.__dp, "switchMntGrp")
 
     ## update measurement group
     def updateMntGrp(self):
@@ -324,7 +324,7 @@ class ServerState(object):
         if not self.scanDir:
             raise Exception("ScanDir not defined")
         self.storeSettings()
-        mgconf = self.__dp.updateMntGrp()
+        mgconf = self.__command(self.__dp, "updateMntGrp")
         conf = {}
         conf['MntGrpConfigs'] = {}
         conf['ActiveMntGrp'] = self.mntgrp
@@ -334,22 +334,22 @@ class ServerState(object):
     def isMntGrpChanged(self):
         if not self.__dp:
             self.setServer()
-        return self.__dp.isMntGrpChanged()
+        return self.__command(self.__dp, "isMntGrpChanged")
 
     def importMntGrp(self):
         if not self.__dp:
             self.setServer()
-        return self.__dp.importMntGrp()
+        return self.__command(self.__dp, "importMntGrp")
 
     def createConfiguration(self):
         if not self.__dp:
             self.setServer()
-        return self.__dp.createConfiguration([])
+        return self.__command(self.__dp, "createConfiguration", [])
 
     def deleteMntGrp(self, name):
         if not self.__dp:
             self.setServer()
-        self.__dp.deleteMntGrp(str(name))
+        self.__command(self.__dp, "deleteMntGrp", str(name))
         self.avmglist = self.__getList("availableMeasurementGroups")
         if self.avmglist:
             self.mntgrp = self.avmglist[0]
@@ -357,7 +357,7 @@ class ServerState(object):
             self.fetchMntGrp()
 
     def mntGrpConfiguration(self):
-        mgconf = self.__dp.mntGrpConfiguration()
+        mgconf = self.__command(self.__dp, "mntGrpConfiguration")
         conf = {}
         conf['MntGrpConfigs'] = {}
         conf['ActiveMntGrp'] = self.mntgrp
@@ -370,7 +370,7 @@ class ServerState(object):
 
     def setConfiguration(self, conf):
         self.__dp.configuration = conf
-        self.__dp.updateMntGrp()
+        self.__command(self.__dp, "updateMntGrp")
         self.fetchSettings()
 
     def resetDescriptions(self):
@@ -378,28 +378,28 @@ class ServerState(object):
 #            aid = self.__dp.command_inout_asynch("updateControllers")
 #            self.__wait(self.__dp)
             try:
-                self.__dp.resetAutomaticComponents()
+                self.__command(self.__dp, "resetAutomaticComponents")
             except PyTango.CommunicationFailed as e:
                 if e[-1].reason == "API_DeviceTimedOut":
                     self.__wait(self.__dp)
                 else:
                     raise
         else:
-            self.__dp.resetAutomaticComponents()
+            self.__command(self.__dp, "resetAutomaticComponents")
 
     def updateControllers(self):
         if hasattr(self.__dp, "command_inout_asynch"):
 #            aid = self.__dp.command_inout_asynch("updateControllers")
 #            self.__wait(self.__dp)
             try:
-                self.__dp.updateControllers()
+                self.__command(self.__dp, "updateControllers")
             except PyTango.CommunicationFailed as e:
                 if e[-1].reason == "API_DeviceTimedOut":
                     self.__wait(self.__dp)
                 else:
                     raise
         else:
-            self.__dp.updateControllers()
+            self.__command(self.__dp, "updateControllers")
 
     def setServer(self):
 
@@ -420,6 +420,15 @@ class ServerState(object):
         return proxy
 
     @classmethod
+    def __command(cls, server, command, *var):
+        if not hasattr(server, "command_inout"):
+            return getattr(server, command)(*var)
+        elif var is None:
+            return server.command_inout(command)
+        else:
+            return server.command_inout(command, *var)
+
+    @classmethod
     def __wait(cls, proxy, counter=100):
         found = False
         cnt = 0
@@ -427,7 +436,7 @@ class ServerState(object):
             if cnt > 1:
                 time.sleep(0.01)
             try:
-                if proxy.state() != PyTango.DevState.RUNNING:
+                if cls.__command(proxy, "State") != PyTango.DevState.RUNNING:
                     found = True
             except (PyTango.DevFailed, PyTango.Except, PyTango.DevError):
                 time.sleep(0.01)
