@@ -27,6 +27,7 @@ try:
 except:
     from taurus.qt import Qt
 
+import sip
 import logging
 logger = logging.getLogger(__name__)
 
@@ -92,13 +93,13 @@ class CheckerView(Qt.QWidget):
     def __init__(self, parent=None):
         super(CheckerView, self).__init__(parent)
         self.model = None
-        self.layout = Qt.QGridLayout(self)
+        self.glayout = Qt.QGridLayout(self)
         self.widgets = []
         self.mapper = Qt.QSignalMapper(self)
         self.dmapper = None
         self.displays = []
-        self.connect(self.mapper, Qt.SIGNAL("mapped(QWidget*)"),
-                     self.checked)
+#        self.connect(self.mapper, Qt.SIGNAL("mapped(QWidget*)"),
+#                     self.checked)
         self.spacer = None
         self.widget = Qt.QCheckBox
         self.center = True
@@ -121,36 +122,68 @@ class CheckerView(Qt.QWidget):
 
     def setModel(self, model):
         self.model = model
-        self.connect(self.model,
-                     Qt.SIGNAL("dataChanged(QModelIndex,QModelIndex)"),
-                     self.updateState)
-        self.connect(self.model,
-                     Qt.SIGNAL("modelReset()"),
-                     self.updateState)
-        self.updateState()
+#        self.connect(self.model,
+#                     Qt.SIGNAL("dataChanged(QModelIndex,QModelIndex)"),
+#                     self.reset)
+#        self.connect(self.model,
+#                     Qt.SIGNAL("modelReset()"),
+#                     self.reset)
+        self.reset()
 
-    def reset(self):
-        self.hide()
-        if self.layout:
+    def clearLayout(self):
+#        print "CLEAR"
+        if self.glayout:
+#            print "LAY"
             self.widgets = []
             if self.dmapper:
                 self.displays = []
             self.spacer = None
-            child = self.layout.takeAt(0)
+            child = self.glayout.takeAt(0)
             while child:
-                self.layout.removeItem(child)
+                self.glayout.removeItem(child)
                 if isinstance(child, Qt.QWidgetItem):
-                    child.widget().hide()
-                    child.widget().close()
-                    self.layout.removeWidget(child.widget())
-                child = self.layout.takeAt(0)
-            self.mapper = Qt.QSignalMapper(self)
-            self.connect(self.mapper, Qt.SIGNAL("mapped(QWidget*)"),
-                         self.checked)
-            if self.dmapper:
-                self.dmapper = Qt.QSignalMapper(self)
-                self.connect(self.dmapper, Qt.SIGNAL("mapped(QWidget*)"),
-                             self.dchecked)
+                    w = child.widget()
+                    w.hide()
+                    w.close()
+                    w.setParent(None)
+                    self.glayout.removeWidget(w)
+                    if hasattr(w, "deleteLater"):
+                        w.deleteLater()
+#                        print "WL", type(w)
+#                    else:
+#                        print "WW", type(w)
+#                    print "DEL W", w    
+                    Qt.QObjectCleanupHandler().add(w)
+#                    sip.delete(w)
+                    del w    
+                    w = None
+#                else:
+#                    print "TYPE",type(child)
+#                    if hasattr(child, "widget"):
+#                        print "WTYPE",type(child.widget())
+#                child.setParent(None)
+#                Qt.QObjectCleanupHandler().add(child)
+                sip.delete(child)
+                del child    
+                child = self.glayout.takeAt(0)
+            print "COUNTS", self.glayout.count()
+            Qt.QWidget().setLayout(self.layout())
+            Qt.QObjectCleanupHandler().add(self.layout())
+            self.glayout = Qt.QGridLayout(self)
+
+    def connectMapper(self):
+        self.mapper = Qt.QSignalMapper(self)
+#            self.connect(self.mapper, Qt.SIGNAL("mapped(QWidget*)"),
+#                         self.checked)
+        if self.dmapper:
+            self.dmapper = Qt.QSignalMapper(self)
+#                self.connect(self.dmapper, Qt.SIGNAL("mapped(QWidget*)"),
+#                             self.dchecked)
+
+    def reset(self):
+        self.hide()
+        self.clearLayout()
+#        self.connectMapper()
         self.updateState()
         if self.selectedWidgetRow is not None:
             if len(self.widgets) > self.selectedWidgetRow:
@@ -177,7 +210,7 @@ class CheckerView(Qt.QWidget):
             for row in range(rowCount):
 
                 cb, ds = self.__setWidgets(row)
-                self.__setNameTips(row, cb)
+#                self.__setNameTips(row, cb)
                 self.__createGrid(row, cb, ds, rowNo)
 
             if not self.spacer:
@@ -185,7 +218,7 @@ class CheckerView(Qt.QWidget):
                                           Qt.QSizePolicy.Minimum,
 #                                         QSizePolicy.Expanding,
                                           Qt.QSizePolicy.Expanding)
-                self.layout.addItem(self.spacer)
+                self.glayout.addItem(self.spacer)
 
         self.update()
         self.updateGeometry()
@@ -211,25 +244,26 @@ class CheckerView(Qt.QWidget):
             if self.dmapper:
                 lrow = lrow + 1
                 lcol = 2 * lcol
-                if lrow == 1:
-                    self.layout.addWidget(
-                        Qt.QLabel(self.slabel), 0, lcol, 1, 1)
-                    self.layout.addWidget(
-                        Qt.QLabel(self.dlabel), 0, lcol + 1, 1, 1,
-                        Qt.Qt.AlignRight)
-                self.layout.addWidget(ds, lrow, lcol + 1, 1, 1,
-                                      Qt.Qt.AlignRight)
-
-            self.layout.addWidget(cb, lrow, lcol, 1, 1)
-            self.widgets.append(cb)
-            self.connect(cb, Qt.SIGNAL("clicked()"),
-                         self.mapper, Qt.SLOT("map()"))
-            self.mapper.setMapping(cb, cb)
-            if self.dmapper:
-                self.displays.append(ds)
-                self.connect(ds, Qt.SIGNAL("clicked()"),
-                             self.dmapper, Qt.SLOT("map()"))
-                self.dmapper.setMapping(ds, ds)
+#                if lrow == 1:
+#                    self.glayout.addWidget(
+#                        Qt.QLabel(self.slabel), 0, lcol, 1, 1)
+#                    self.glayout.addWidget(
+#                        Qt.QLabel(self.dlabel), 0, lcol + 1, 1, 1,
+#                        Qt.Qt.AlignRight)
+#                self.glayout.addWidget(ds, lrow, lcol + 1, 1, 1,
+#                                      Qt.Qt.AlignRight)
+#            print "ADD CB", cb    
+#            self.glayout.addWidget(cb, lrow, lcol, 1, 1)
+#            self.glayout.addWidget(Qt.QCheckBox(), lrow, lcol, 1, 1)
+#            self.widgets.append(cb)
+#            self.connect(cb, Qt.SIGNAL("clicked()"),
+#                         self.mapper, Qt.SLOT("map()"))
+#            self.mapper.setMapping(cb, cb)
+#            if self.dmapper:
+#                self.displays.append(ds)
+#                self.connect(ds, Qt.SIGNAL("clicked()"),
+#                             self.dmapper, Qt.SLOT("map()"))
+#                self.dmapper.setMapping(ds, ds)
 
     def __setWidgets(self, row):
         ind = self.model.index(row, 0)
@@ -308,8 +342,8 @@ class CheckDisView(CheckerView):
     def __init__(self, parent=None):
         super(CheckDisView, self).__init__(parent)
         self.dmapper = Qt.QSignalMapper(self)
-        self.connect(self.dmapper, Qt.SIGNAL("mapped(QWidget*)"),
-                     self.dchecked)
+#        self.connect(self.dmapper, Qt.SIGNAL("mapped(QWidget*)"),
+#                     self.dchecked)
         self.center = False
         self.dlabel = 'Dis.'
         self.slabel = 'Sel.'

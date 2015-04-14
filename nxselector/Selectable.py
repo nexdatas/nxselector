@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-#   This file is part of nexdatas - Tango Server for NeXus data writer
+#   This file is part of nexdatas - Tanog Server for NeXus data writer
 #
 #    Copyright (C) 2014-2015 DESY, Jan Kotanski <jkotan@mail.desy.de>
 #
@@ -50,7 +50,7 @@ class Selectable(object):
         self.userView = userView
         self.rowMax = rowMax
         self.__simpleMode = simpleMode
-        self.layout = None
+        self.glayout = None
 
         self.frames = None
         self.mgroups = None
@@ -126,17 +126,23 @@ class Selectable(object):
     def createGUI(self):
 
         self.ui.selectable.hide()
-        if self.layout:
-            child = self.layout.takeAt(0)
+        if self.glayout:
+            child = self.glayout.takeAt(0)
             while child:
-                self.layout.removeItem(child)
+                self.glayout.removeItem(child)
                 if isinstance(child, Qt.QWidgetItem):
                     child.widget().hide()
                     child.widget().close()
-                    self.layout.removeWidget(child.widget())
-                child = self.layout.takeAt(0)
+                    self.glayout.removeWidget(child.widget())
+                child = self.glayout.takeAt(0)
         else:
-            self.layout = Qt.QHBoxLayout(self.ui.selectable)
+            self.glayout = Qt.QHBoxLayout(self.ui.selectable)
+
+        if self.views:
+            for vw in self.views.values():
+                if hasattr(vw, "clearLayout") :
+                    vw.clearLayout()
+#                    print "CL", type(vw)
 
         self.views = {}
         frames = Frames(self.frames, DS in self.groups, CP in self.groups)
@@ -172,7 +178,7 @@ class Selectable(object):
                     layout_columns.addLayout(layout_groups)
 
             if layout_columns.count():
-                self.layout.addWidget(mframe)
+                self.glayout.addWidget(mframe)
             else:
                 mframe.hide()
         self.ui.selectable.update()
@@ -207,7 +213,7 @@ class Selectable(object):
         self.updateGroups()
         self.createGUI()
         self.setModels()
-        self.updateViews()
+#        self.updateViews()
         logger.debug("reset views end")
 
     def updateViews(self):

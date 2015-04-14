@@ -41,24 +41,24 @@ class Data(object):
     def __init__(self, ui, state=None, simpleMode=False):
         self.ui = ui
         self.state = state
-        self.layout = None
+        self.glayout = None
         self.__simpleMode = simpleMode
         self.form = EdListWg(self.ui.data)
 
     def createGUI(self):
         self.ui.data.hide()
 
-        if self.layout:
-            child = self.layout.takeAt(0)
+        if self.glayout:
+            child = self.glayout.takeAt(0)
             while child:
-                self.layout.removeItem(child)
+                self.glayout.removeItem(child)
                 if isinstance(child, Qt.QWidgetItem):
                     child.widget().hide()
                     child.widget().close()
-                    self.layout.removeWidget(child.widget())
-                child = self.layout.takeAt(0)
+                    self.glayout.removeWidget(child.widget())
+                child = self.glayout.takeAt(0)
         else:
-            self.layout = Qt.QHBoxLayout(self.ui.data)
+            self.glayout = Qt.QHBoxLayout(self.ui.data)
 
         if self.__simpleMode:
             self.form.disable = self.state.adminData
@@ -67,7 +67,7 @@ class Data(object):
         logger.debug("NAMES: %s " % names)
         self.form.available_names = names
         self.form.createGUI()
-        self.layout.addWidget(self.form)
+        self.glayout.addWidget(self.form)
         self.ui.data.update()
         if self.ui.tabWidget.currentWidget() == self.ui.data:
             self.ui.data.show()

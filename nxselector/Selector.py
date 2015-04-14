@@ -72,6 +72,12 @@ class Selector(Qt.QDialog, TaurusBaseWidget):
         self.__door = door
         self.__standalone = standalone
 
+        import gc
+#        gc.set_debug(gc.DEBUG_LEAK|gc.DEBUG_STATS)
+#        gc.set_debug(gc.DEBUG_STATS)
+#        gc.set_debug(gc.DEBUG_UNCOLLECTABLE | gc.DEBUG_INSTANCES  )
+#        gc.set_debug(gc.DEBUG_UNCOLLECTABLE | gc.DEBUG_OBJECTS | gc.DEBUG_COLLECTABLE | gc.DEBUG_INSTANCES  |gc.DEBUG_STATS)
+
         self.__progressFlag = False
         self.__doortoupdateFlag = False
         self.__servertoupdateFlag = False
@@ -617,7 +623,16 @@ class Selector(Qt.QDialog, TaurusBaseWidget):
                 self, "NXSSelector: Error in Resetting Selector Server",
                 text, str(value))
         for tab in self.tabs:
-            tab.reset()
+#            if tab in [self.selectable, self.automatic, self.data,
+#                       self.storage, self.preferences]:
+            if tab in [
+                self.selectable, 
+#                self.automatic, 
+#                self.data,
+#                self.storage, 
+#                self.preferences
+                ]:
+                tab.reset()
         logger.debug("reset selector ended")
 
     def closeReset(self):
@@ -671,11 +686,29 @@ class Selector(Qt.QDialog, TaurusBaseWidget):
 
     def resetClickAll(self):
         logger.debug("reset ALL")
-        self.runProgress([
-                "switchMntGrp",
-                "updateControllers",
-                "importMntGrp"
-                ])
+#        self.runProgress([
+#                "switchMntGrp",
+#                "updateControllers",
+#                "importMntGrp"
+#                ])
+        for i in range(100):
+#            self.state.switchMntGrp()
+#            self.state.updateControllers()
+#            self.state.importMntGrp()
+            print "RESET", i
+            self.closeReset()
+            print "RESET END"
+        import gc
+        print >> sys.stderr, gc.get_count()
+        gc.collect()
+#        print str(gc.get_objects())
+#        print gc.garbage
+        print >> sys.stderr, "2, ", gc.get_count()
+        print >> sys.stderr, len(gc.garbage)
+        from collections import Counter
+        print >> sys.stderr, Counter([type(g) for g in  gc.garbage])
+        print >> sys.stderr, "3, ", gc.get_count()
+
         logger.debug("reset ENDED")
 
     def resetAll(self):
