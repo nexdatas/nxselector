@@ -42,8 +42,8 @@ class Data(object):
         self.ui = ui
         self.state = state
         self.layout = None
-        self.form = None
         self.__simpleMode = simpleMode
+        self.form = EdListWg(self.ui.data)
 
     def createGUI(self):
         self.ui.data.hide()
@@ -60,7 +60,6 @@ class Data(object):
         else:
             self.layout = Qt.QHBoxLayout(self.ui.data)
 
-        self.form = EdListWg(self.ui.data)
         if self.__simpleMode:
             self.form.disable = self.state.adminData
         self.form.record = self.state.datarecord
