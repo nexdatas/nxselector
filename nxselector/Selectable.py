@@ -23,6 +23,7 @@
 
 import json
 import fnmatch
+import sip
 
 try:
     from taurus.external.qt import Qt
@@ -56,6 +57,11 @@ class Selectable(object):
         self.mgroups = None
         self.groups = {}
         self.views = {}
+        self.mframes = []
+        self.column_layouts = []
+        self.group_layouts = []
+        self.auto_layouts = []
+        self.groupboxes = []
 
     def updateGroups(self):
         self.groups = {}
@@ -123,37 +129,132 @@ class Selectable(object):
             pass
         return res
 
-    def createGUI(self):
-
-        self.ui.selectable.hide()
-        if self.glayout:
-            child = self.glayout.takeAt(0)
-            while child:
-                self.glayout.removeItem(child)
-                if isinstance(child, Qt.QWidgetItem):
-                    child.widget().hide()
-                    child.widget().close()
-                    self.glayout.removeWidget(child.widget())
-                child = self.glayout.takeAt(0)
-        else:
-            self.glayout = Qt.QHBoxLayout(self.ui.selectable)
-
+    def __clearFrames(self):
         if self.views:
             for vw in self.views.values():
                 if hasattr(vw, "clearLayout") :
                     vw.clearLayout()
 #                    print "CL", type(vw)
+                try:    
+                    vw.hide()
+                    vw.close()
+                    vw.setParent(None)
+                    Qt.QObjectCleanupHandler().add(vw)
+#                    sip.delete(fr)
+                    print "del view "
+                except Exception as e:
+                    print "ERROR view del ", str(e)
+                del vw
 
+        while self.auto_layouts:
+            la = self.auto_layouts.pop()
+            try:
+                Qt.QObjectCleanupHandler().add(la)
+                print "del auto"
+            except:
+                print "ERROR del auto"
+            del la
+
+        while self.groupboxes:
+            fr = self.groupboxes.pop()
+            try:
+                fr.hide()
+                fr.close()
+                fr.setParent(None)
+                Qt.QObjectCleanupHandler().add(fr)
+            #                    sip.delete(fr) 
+                print "del groupbox"
+            except:
+                print "ERROR del groupbox"
+            del fr
+
+        while self.group_layouts:
+            la = self.group_layouts.pop()
+            try:
+                Qt.QObjectCleanupHandler().add(la)
+                print "del gr"
+            except:
+                print "ERROR del gr"
+            del la
+
+        while self.column_layouts:
+            la = self.column_layouts.pop()
+            try:
+                Qt.QObjectCleanupHandler().add(la)
+                print "del col"
+            except:
+                print "ERROR del col"
+            del la
+
+        while self.mframes:
+            try:
+                fr = self.mframes.pop()
+                fr.hide()
+                fr.close()
+#                fr.setParent(None)
+#                Qt.QObjectCleanupHandler().add(fr)
+##                    sip.delete(fr)
+                print "del frame"
+            except:
+                 print "ERROR del frame"
+
+##            dangerous
+#            del fr
+
+    def __clearLayout(self):
         self.views = {}
+
+        if self.glayout: 
+            print "COUNTS", self.glayout.count()
+            for i in reversed(range(self.glayout.count())): 
+                print i
+                child = self.glayout.itemAt(i)
+                
+                print "child", child
+                self.glayout.removeItem(child)
+                if isinstance(child, Qt.QWidgetItem):
+                    w = child.widget()
+                    w.hide()
+                    w.close()
+                    w.setParent(None)
+                    self.glayout.removeWidget(w)
+                    if hasattr(w, "deleteLater"):
+                        w.deleteLater()
+                        print "WL", type(w)
+                    else:
+                        print "WW", type(w)
+                    Qt.QObjectCleanupHandler().add(w)
+                    del w    
+                    w = None
+                if child:
+                    sip.delete(child)
+                del child    
+            Qt.QWidget().setLayout(self.glayout)
+#            try:
+#                Qt.QObjectCleanupHandler().add(self.glayout)
+#                print "LAYOUT del OK"
+#            except:
+#                print "ERROR LAYOUT del"
+            self.glayout = None
+
+    def createGUI(self):
+
+        self.__clearFrames()
+        self.__clearLayout()
+        self.glayout = Qt.QHBoxLayout(self.ui.selectable)
+
         frames = Frames(self.frames, DS in self.groups, CP in self.groups)
         for frame in frames:
             mframe = Qt.QFrame(self.ui.selectable)
+            self.mframes.append(mframe)
             mframe.setFrameShape(Qt.QFrame.StyledPanel)
             mframe.setFrameShadow(Qt.QFrame.Raised)
             layout_columns = Qt.QHBoxLayout(mframe)
+            self.column_layouts.append(layout_columns)
 
             for column in frame:
                 layout_groups = Qt.QVBoxLayout()
+                self.group_layouts.append(layout_groups)
 
                 for group in column:
                     hide = False
@@ -165,22 +266,22 @@ class Selectable(object):
                         pass
                     if not hide:
                         mgroup = Qt.QGroupBox(mframe)
+                        self.groupboxes.append(mgroup)
                         mgroup.setTitle(group[0])
                         layout_auto = Qt.QGridLayout(mgroup)
+                        self.auto_layouts.append(layout_auto)
                         mview = self.userView(mgroup)
                         mview.rowMax = self.rowMax
 
                         layout_auto.addWidget(mview, 0, 0, 1, 1)
-                        layout_groups.addWidget(mgroup)
-
                         self.views[group[1]] = mview
+                        layout_groups.addWidget(mgroup)
                 if layout_groups.count():
                     layout_columns.addLayout(layout_groups)
-
             if layout_columns.count():
                 self.glayout.addWidget(mframe)
             else:
-                mframe.hide()
+                 mframe.hide()
         self.ui.selectable.update()
         if self.ui.tabWidget.currentWidget() == self.ui.selectable:
             self.ui.selectable.show()
@@ -213,7 +314,7 @@ class Selectable(object):
         self.updateGroups()
         self.createGUI()
         self.setModels()
-#        self.updateViews()
+        self.updateViews()
         logger.debug("reset views end")
 
     def updateViews(self):

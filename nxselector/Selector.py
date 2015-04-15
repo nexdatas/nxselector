@@ -691,14 +691,17 @@ class Selector(Qt.QDialog, TaurusBaseWidget):
 #                "updateControllers",
 #                "importMntGrp"
 #                ])
+        import gc
+#        for i in range(1):
         for i in range(100):
 #            self.state.switchMntGrp()
 #            self.state.updateControllers()
 #            self.state.importMntGrp()
             print "RESET", i
-            self.closeReset()
+#            self.closeReset()
+            self.reset()
+            gc.collect()
             print "RESET END"
-        import gc
         print >> sys.stderr, gc.get_count()
         gc.collect()
 #        print str(gc.get_objects())
