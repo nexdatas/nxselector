@@ -90,16 +90,16 @@ class OneTableView(Qt.QTableView):
 
 class CheckerView(Qt.QWidget):
 
+
     def __init__(self, parent=None):
         super(CheckerView, self).__init__(parent)
         self.model = None
         self.glayout = Qt.QGridLayout(self)
         self.widgets = []
-#        self.mapper = Qt.QSignalMapper(self)
+        self.mapper = Qt.QSignalMapper(self)
         self.dmapper = None
         self.displays = []
-#        self.connect(self.mapper, Qt.SIGNAL("mapped(QWidget*)"),
-#                     self.checked)
+        self.mapper.mapped.connect(self.checked)
         self.spacer = None
         self.widget = Qt.QCheckBox
         self.center = True
@@ -108,8 +108,18 @@ class CheckerView(Qt.QWidget):
         self.showLabels = True
         self.showNames = True
 
-    def checked(self, widget):
-        row = self.widgets.index(widget)
+
+    def close(self):
+        self.mapper.mapped.disconnect(self.checked)
+        if self.model:
+            self.model.dataChanged.disconnect(self.reset)
+            self.model.modelReset.disconnect(self.reset)
+            print "disconnected"
+        super(CheckerView, self).close()
+        
+    @Qt.pyqtSlot(int)
+    def checked(self, row):
+#        print "CHECKED", row
         self.selectedWidgetRow = row
         ind = self.model.index(row, 0)
         value = Qt.QVariant(self.widgets[row].isChecked())
@@ -118,16 +128,14 @@ class CheckerView(Qt.QWidget):
             if not value:
                 self.displays[row].setChecked(bool(False))
 
-#        self.model.setData(ind, value, Qt.Qt.CheckStateRole)
+        self.model.setData(ind, value, Qt.Qt.CheckStateRole)
 
     def setModel(self, model):
         self.model = model
-#        self.connect(self.model,
-#                     Qt.SIGNAL("dataChanged(QModelIndex,QModelIndex)"),
-#                     self.reset)
-#        self.connect(self.model,
-#                     Qt.SIGNAL("modelReset()"),
-#                     self.reset)
+        self.mapper.mapped.connect(self.checked)
+        print "connected"
+        self.model.dataChanged.connect(self.reset)
+        self.model.modelReset.connect(self.reset)
         self.reset()
 
     def clearLayout(self):
@@ -148,13 +156,10 @@ class CheckerView(Qt.QWidget):
             if self.dmapper:
                 self.displays = []
             self.spacer = None
-#            for i in reversed(range(self.glayout.count())): 
-#                print i
-#                child = self.glayout.itemAt(i)
-            print "VIEW COUNTS", self.glayout.count()
+#            print "VIEW COUNTS", self.glayout.count()
             child = self.glayout.takeAt(0)
             while child:
-                print "child View", child
+#                print "child View", child
                 self.glayout.removeItem(child)
                 if isinstance(child, Qt.QWidgetItem):
                     w = child.widget()
@@ -186,25 +191,26 @@ class CheckerView(Qt.QWidget):
             Qt.QWidget().setLayout(self.layout())
             Qt.QObjectCleanupHandler().add(self.layout())
             self.glayout = Qt.QGridLayout(self)
+            
+            
 
     def connectMapper(self):
-#        self.mapper = Qt.QSignalMapper(self)
-#            self.connect(self.mapper, Qt.SIGNAL("mapped(QWidget*)"),
-#                         self.checked)
-        if self.dmapper:
-            self.dmapper = Qt.QSignalMapper(self)
-#                self.connect(self.dmapper, Qt.SIGNAL("mapped(QWidget*)"),
-#                             self.dchecked)
+        if self.mapper:
+            self.mapper.mapped.disconnect(self.checked)
+        self.mapper = Qt.QSignalMapper(self)
+        self.mapper.mapped.connect(self.checked)
 
+    @Qt.pyqtSlot()
+    @Qt.pyqtSlot(Qt.QModelIndex, Qt.QModelIndex)
     def reset(self):
         self.hide()
         self.clearLayout()
-#        self.connectMapper()
+        self.connectMapper()
         self.updateState()
-#        if self.selectedWidgetRow is not None:
-#            if len(self.widgets) > self.selectedWidgetRow:
-#                self.widgets[self.selectedWidgetRow].setFocus()
-#            self.selectedWidgetRow = None
+        if self.selectedWidgetRow is not None:
+            if len(self.widgets) > self.selectedWidgetRow:
+                self.widgets[self.selectedWidgetRow].setFocus()
+            self.selectedWidgetRow = None
         self.show()
 
     def __findRowNumber(self, rowMax, rowCount):
@@ -226,16 +232,14 @@ class CheckerView(Qt.QWidget):
             for row in range(rowCount):
 
                 cb, ds = self.__setWidgets(row)
-#                self.__setNameTips(row, cb)
+                self.__setNameTips(row, cb)
                 self.__createGrid(row, cb, ds, rowNo)
 
             if not self.spacer:
-#            if not self.spacer or True:
                 self.spacer = Qt.QSpacerItem(10, 10,
                                           Qt.QSizePolicy.Minimum,
 #                                         QSizePolicy.Expanding,
                                           Qt.QSizePolicy.Expanding)
-#                print "SPACER", self.spacer
                 self.glayout.addItem(self.spacer)
 
         self.update()
@@ -262,26 +266,24 @@ class CheckerView(Qt.QWidget):
             if self.dmapper:
                 lrow = lrow + 1
                 lcol = 2 * lcol
-#                if lrow == 1:
-#                    self.glayout.addWidget(
-#                        Qt.QLabel(self.slabel), 0, lcol, 1, 1)
-#                    self.glayout.addWidget(
-#                        Qt.QLabel(self.dlabel), 0, lcol + 1, 1, 1,
-#                        Qt.Qt.AlignRight)
-#                self.glayout.addWidget(ds, lrow, lcol + 1, 1, 1,
-#                                      Qt.Qt.AlignRight)
-            print "ADD CB", cb    
+                if lrow == 1:
+                    self.glayout.addWidget(
+                        Qt.QLabel(self.slabel), 0, lcol, 1, 1)
+                    self.glayout.addWidget(
+                        Qt.QLabel(self.dlabel), 0, lcol + 1, 1, 1,
+                        Qt.Qt.AlignRight)
+                self.glayout.addWidget(ds, lrow, lcol + 1, 1, 1,
+                                      Qt.Qt.AlignRight)
             self.glayout.addWidget(cb, lrow, lcol, 1, 1)
-#            self.glayout.addWidget(Qt.QCheckBox(), lrow, lcol, 1, 1)
-#            self.widgets.append(cb)
-#            self.connect(cb, Qt.SIGNAL("clicked()"),
-#                         self.mapper, Qt.SLOT("map()"))
-#            self.mapper.setMapping(cb, cb)
-#            if self.dmapper:
-#                self.displays.append(ds)
-#                self.connect(ds, Qt.SIGNAL("clicked()"),
-#                             self.dmapper, Qt.SLOT("map()"))
-#                self.dmapper.setMapping(ds, ds)
+            self.widgets.append(cb)
+            self.connect(cb, Qt.SIGNAL("clicked()"),
+                         self.mapper, Qt.SLOT("map()"))
+            self.mapper.setMapping(cb, self.widgets.index(cb))
+            if self.dmapper:
+                self.displays.append(ds)
+                self.connect(ds, Qt.SIGNAL("clicked()"),
+                             self.dmapper, Qt.SLOT("map()"))
+                self.dmapper.setMapping(ds, self.displays.index(ds))
 
     def __setWidgets(self, row):
         ind = self.model.index(row, 0)
@@ -334,8 +336,7 @@ class CheckerView(Qt.QWidget):
             else:
                 cb.setText(str(name))
 
-#        text = self.model.data(ind, role=Qt.Qt.ToolTipRole)
-        text = None
+        text = self.model.data(ind, role=Qt.Qt.ToolTipRole)
         text = str(text) if text else ""
 
         if self.showLabels:
@@ -360,20 +361,31 @@ class CheckDisView(CheckerView):
 
     def __init__(self, parent=None):
         super(CheckDisView, self).__init__(parent)
-#        self.dmapper = Qt.QSignalMapper(self)
-#        self.connect(self.dmapper, Qt.SIGNAL("mapped(QWidget*)"),
-#                     self.dchecked)
+        self.dmapper = Qt.QSignalMapper(self)
+        self.dmapper.mapped.connect(self.dchecked)
         self.center = False
         self.dlabel = 'Dis.'
         self.slabel = 'Sel.'
 
-    def dchecked(self, widget):
-        row = self.displays.index(widget)
+    @Qt.pyqtSlot(int)
+    def dchecked(self, row):
+#        print "DCHECKED", row
         self.selectedWidgetRow = row
         ind = self.model.index(row, 2)
         value = Qt.QVariant(self.displays[row].isChecked())
-#        self.model.setData(ind, value, Qt.Qt.CheckStateRole)
+        self.model.setData(ind, value, Qt.Qt.CheckStateRole)
 
+    def connectMapper(self):
+        super(CheckDisView, self).connectMapper()
+        if self.dmapper:
+            self.dmapper.mapped.disconnect(self.dchecked)
+        self.dmapper = Qt.QSignalMapper(self)
+        self.dmapper.mapped.connect(self.dchecked)
+
+    def close(self):
+        self.dmapper.mapped.disconnect(self.dchecked)
+        print "DEL SIGNAL"
+        super(CheckDisView, self).close()
 
 class RadioView(CheckerView):
 
