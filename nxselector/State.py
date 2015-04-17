@@ -58,6 +58,29 @@ class State(object):
         self.mgroup = []
         self.mview = None
 
+    def updateGroups(self):
+        self.agroup = []
+        for cp in self.state.acpgroup.keys():
+            self.agroup.append(
+                CPElement(cp, self.state,
+                          group=self.state.acpgroup))
+
+        self.mgroup = []
+        mcpgroup = {}
+        for cp in self.state.mcplist:
+            mcpgroup[cp] = True
+        for cp in mcpgroup.keys():
+            self.mgroup.append(
+                CPElement(cp, self.state, group=mcpgroup))
+
+        self.igroup = []
+        icpgroup = {}
+        for ds in self.state.idslist:
+            icpgroup[ds] = True
+        for ds in icpgroup.keys():
+            self.igroup.append(
+                CPElement(ds, self.state, group=icpgroup))
+
     def createGUI(self):
 
         self.ui.state.hide()
@@ -124,28 +147,6 @@ class State(object):
             mframe.show()
         return mview
 
-    def updateGroups(self):
-        self.agroup = []
-        for cp in self.state.acpgroup.keys():
-            self.agroup.append(
-                CPElement(cp, self.state,
-                          group=self.state.acpgroup))
-
-        self.mgroup = []
-        mcpgroup = {}
-        for cp in self.state.mcplist:
-            mcpgroup[cp] = True
-        for cp in mcpgroup.keys():
-            self.mgroup.append(
-                CPElement(cp, self.state, group=mcpgroup))
-
-        self.igroup = []
-        icpgroup = {}
-        for ds in self.state.idslist:
-            icpgroup[ds] = True
-        for ds in icpgroup.keys():
-            self.igroup.append(
-                CPElement(ds, self.state, group=icpgroup))
 
     def setModels(self):
         md = ElementModel(self.agroup)

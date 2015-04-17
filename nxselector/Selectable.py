@@ -33,6 +33,7 @@ except:
 from .Element import DSElement, CPElement, CP, DS
 from .ElementModel import ElementModel
 from .Frames import Frames
+from .DynamicTools import DynamicTools
 
 from .Views import CheckerView
 
@@ -62,6 +63,7 @@ class Selectable(object):
         self.group_layouts = []
         self.auto_layouts = []
         self.groupboxes = []
+        self.models = []
 
     def updateGroups(self):
         self.groups = {}
@@ -130,117 +132,24 @@ class Selectable(object):
         return res
 
     def __clearFrames(self):
+
+        DynamicTools.cleanupObjects(self.models, "model")
         if self.views:
-            for vw in self.views.values():
-                if hasattr(vw, "clearLayout") :
-                    vw.clearLayout()
-#                    print "CL", type(vw)
-                try:    
-                    vw.hide()
-                    vw.close()
-                    vw.setParent(None)
-                    Qt.QObjectCleanupHandler().add(vw)
-#                    sip.delete(fr)
-                    print "del view "
-                except Exception as e:
-                    print "ERROR view del ", str(e)
-                del vw
+            views = list(self.views.values())
+            DynamicTools.cleanupWidgets(views, "groupbox") 
+            self.views = {}
+        DynamicTools.cleanupObjects(self.auto_layouts, "auto")
+        DynamicTools.cleanupWidgets(self.groupboxes, "groupbox")
+        DynamicTools.cleanupObjects(self.group_layouts, "group")
+        DynamicTools.cleanupObjects(self.column_layouts, "column")
+        DynamicTools.cleanupFrames(self.mframes, "frames")
+        DynamicTools.cleanupLayoutWithItems(self.glayout)
+        
 
-        while self.auto_layouts:
-            la = self.auto_layouts.pop()
-            try:
-                Qt.QObjectCleanupHandler().add(la)
-                print "del auto"
-            except:
-                print "ERROR del auto"
-            del la
-
-        while self.groupboxes:
-            fr = self.groupboxes.pop()
-            try:
-                fr.hide()
-                fr.close()
-                fr.setParent(None)
-                Qt.QObjectCleanupHandler().add(fr)
-            #                    sip.delete(fr) 
-                print "del groupbox"
-            except:
-                print "ERROR del groupbox"
-            del fr
-
-        while self.group_layouts:
-            la = self.group_layouts.pop()
-            try:
-                Qt.QObjectCleanupHandler().add(la)
-                print "del gr"
-            except:
-                print "ERROR del gr"
-            del la
-
-        while self.column_layouts:
-            la = self.column_layouts.pop()
-            try:
-                Qt.QObjectCleanupHandler().add(la)
-                print "del col"
-            except:
-                print "ERROR del col"
-            del la
-
-        while self.mframes:
-            try:
-                fr = self.mframes.pop()
-                fr.hide()
-                fr.close()
-#                fr.setParent(None)
-#                Qt.QObjectCleanupHandler().add(fr)
-##                    sip.delete(fr)
-                print "del frame"
-            except:
-                 print "ERROR del frame"
-
-##            dangerous
-#            del fr
-
-    def __clearLayout(self):
-        self.views = {}
-
-        if self.glayout: 
-            print "COUNTS", self.glayout.count()
-            for i in reversed(range(self.glayout.count())): 
-                print i
-                child = self.glayout.itemAt(i)
-                
-                print "child", child
-                self.glayout.removeItem(child)
-                if isinstance(child, Qt.QWidgetItem):
-                    w = child.widget()
-                    w.hide()
-                    w.close()
-                    w.setParent(None)
-                    self.glayout.removeWidget(w)
-                    if hasattr(w, "deleteLater"):
-                        w.deleteLater()
-                        print "WL", type(w)
-                    else:
-                        print "WW", type(w)
-                    Qt.QObjectCleanupHandler().add(w)
-                    del w    
-                    w = None
-                if child:
-                    sip.delete(child)
-                del child    
-            Qt.QWidget().setLayout(self.glayout)
-#            try:
-#                Qt.QObjectCleanupHandler().add(self.glayout)
-#                print "LAYOUT del OK"
-#            except:
-#                print "ERROR LAYOUT del"
-            self.glayout = None
 
     def createGUI(self):
 
         self.__clearFrames()
-        self.__clearLayout()
         self.glayout = Qt.QHBoxLayout(self.ui.selectable)
 
         frames = Frames(self.frames, DS in self.groups, CP in self.groups)
@@ -292,7 +201,7 @@ class Selectable(object):
                 md = ElementModel(self.groups[k])
             else:
                 md = ElementModel([])
-
+            self.models.append(md)    
             try:
                 ig = int(k)
                 if (self.__simpleMode & 2) and ig < 0:
@@ -301,10 +210,12 @@ class Selectable(object):
             except Exception:
                 pass
             self.views[k].setModel(md)
-            md.connect(md, Qt.SIGNAL("componentChecked"),
-                       self.updateViews)
-            md.connect(md, Qt.SIGNAL("dirty"),
-                       self.dirty)
+            ## testing
+            
+#            md.connect(md, Qt.SIGNAL("componentChecked"),
+#                       self.updateViews)
+#            md.connect(md, Qt.SIGNAL("dirty"),
+#                       self.dirty)
 
     def dirty(self):
         self.ui.selectable.emit(Qt.SIGNAL("dirty"))

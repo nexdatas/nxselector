@@ -114,7 +114,7 @@ class CheckerView(Qt.QWidget):
         if self.model:
             self.model.dataChanged.disconnect(self.reset)
             self.model.modelReset.disconnect(self.reset)
-            print "disconnected"
+#            print "disconnected"
         super(CheckerView, self).close()
         
     @Qt.pyqtSlot(int)
@@ -132,8 +132,7 @@ class CheckerView(Qt.QWidget):
 
     def setModel(self, model):
         self.model = model
-        self.mapper.mapped.connect(self.checked)
-        print "connected"
+#        print "connected"
         self.model.dataChanged.connect(self.reset)
         self.model.modelReset.connect(self.reset)
         self.reset()
@@ -142,15 +141,15 @@ class CheckerView(Qt.QWidget):
 #        print "CLEAR"
         if self.glayout:
 #            print "LAY"
-            for w in self.widgets:
-                w.hide()
-                w.close()
-                w.setParent(None)
-                if hasattr(w, "deleteLater"):
-                    w.deleteLater()
-                Qt.QObjectCleanupHandler().add(w)
-                del w    
-                w = None
+#            for w in self.widgets:
+#                w.hide()
+#                w.close()
+#                w.setParent(None)
+#                if hasattr(w, "deleteLater"):
+#                    w.deleteLater()
+#                Qt.QObjectCleanupHandler().add(w)
+#                del w    
+#                w = None
                 
             self.widgets = []
             if self.dmapper:
@@ -384,7 +383,7 @@ class CheckDisView(CheckerView):
 
     def close(self):
         self.dmapper.mapped.disconnect(self.dchecked)
-        print "DEL SIGNAL"
+#        print "DEL SIGNAL"
         super(CheckDisView, self).close()
 
 class RadioView(CheckerView):

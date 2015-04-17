@@ -37,6 +37,11 @@ NAME = range(1)
 ## main window class
 class ElementModel(Qt.QAbstractTableModel):
 
+    # dirty signal
+    dirty = Qt.pyqtSignal()
+    # componented checked signal
+    componentChecked = Qt.pyqtSignal()
+
     ## constructor
     # \param parent parent widget
     def __init__(self, group=None):
@@ -279,10 +284,9 @@ class ElementModel(Qt.QAbstractTableModel):
                     self.emit(
                         Qt.SIGNAL("dataChanged(QModelIndex, QModelIndex)"),
                               index, index3)
-#                    self.emit(Qt.SIGNAL("componentChecked"))
                     if device.eltype == CP:
-                        self.emit(Qt.SIGNAL("componentChecked"))
-                    self.emit(Qt.SIGNAL("dirty"))
+                        self.componentChecked.emit()
+                    self.dirty.emit()
                 return True
             elif column == 1:
                 if role == Qt.Qt.EditRole:
@@ -291,7 +295,7 @@ class ElementModel(Qt.QAbstractTableModel):
                     self.emit(
                         Qt.SIGNAL("dataChanged(QModelIndex, QModelIndex)"),
                               index, index)
-                    self.emit(Qt.SIGNAL("dirty"))
+                    self.dirty.emit()
                     return True
             elif column == 2:
                 if role == Qt.Qt.CheckStateRole:
@@ -302,8 +306,8 @@ class ElementModel(Qt.QAbstractTableModel):
                             "dataChanged(QModelIndex, QModelIndex)"),
                               index, index3)
                     if device.eltype == CP:
-                        self.emit(Qt.SIGNAL("componentChecked"))
-                    self.emit(Qt.SIGNAL("dirty"))
+                        self.componentChecked.emit()
+                    self.dirty.emit()
                     return True
         return False
 
