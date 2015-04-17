@@ -42,7 +42,9 @@ logger = logging.getLogger(__name__)
 
 
 ## main window class
-class Selectable(object):
+class Selectable(Qt.QObject):
+
+    dirty = Qt.pyqtSignal()
 
     ## constructor
     def __init__(self, ui, state=None, userView=CheckerView, rowMax=0,
@@ -211,14 +213,16 @@ class Selectable(object):
                 pass
             self.views[k].setModel(md)
             ## testing
-            
+
+            md.componentChecked.connect(self.updateViews)
 #            md.connect(md, Qt.SIGNAL("componentChecked"),
 #                       self.updateViews)
 #            md.connect(md, Qt.SIGNAL("dirty"),
 #                       self.dirty)
 
+    @Qt.pyqtSlot()
     def dirty(self):
-        self.ui.selectable.emit(Qt.SIGNAL("dirty"))
+        self.dirty.emit()
 
     def reset(self):
         logger.debug("reset views")
@@ -228,6 +232,7 @@ class Selectable(object):
         self.updateViews()
         logger.debug("reset views end")
 
+    @Qt.pyqtSlot()
     def updateViews(self):
         logger.debug("update views")
         for vw in self.views.values():

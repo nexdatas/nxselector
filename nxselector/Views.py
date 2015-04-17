@@ -30,7 +30,7 @@ except:
 import sip
 import logging
 logger = logging.getLogger(__name__)
-
+from .DynamicTools import DynamicTools
 
 class CheckerLabelWidget(Qt.QWidget):
     def __init__(self, parent=None):
@@ -116,7 +116,7 @@ class CheckerView(Qt.QWidget):
             self.model.modelReset.disconnect(self.reset)
 #            print "disconnected"
         super(CheckerView, self).close()
-        
+
     @Qt.pyqtSlot(int)
     def checked(self, row):
 #        print "CHECKED", row
@@ -140,58 +140,13 @@ class CheckerView(Qt.QWidget):
     def clearLayout(self):
 #        print "CLEAR"
         if self.glayout:
-#            print "LAY"
-#            for w in self.widgets:
-#                w.hide()
-#                w.close()
-#                w.setParent(None)
-#                if hasattr(w, "deleteLater"):
-#                    w.deleteLater()
-#                Qt.QObjectCleanupHandler().add(w)
-#                del w    
-#                w = None
-                
             self.widgets = []
             if self.dmapper:
                 self.displays = []
             self.spacer = None
-#            print "VIEW COUNTS", self.glayout.count()
-            child = self.glayout.takeAt(0)
-            while child:
-#                print "child View", child
-                self.glayout.removeItem(child)
-                if isinstance(child, Qt.QWidgetItem):
-                    w = child.widget()
-                    w.hide()
-                    w.close()
-                    w.setParent(None)
-                    self.glayout.removeWidget(w)
-                    if hasattr(w, "deleteLater"):
-                        w.deleteLater()
-#                        print "WL", type(w)
-#                    else:
-#                        print "WW", type(w)
-#                    print "DEL W", w    
-                    Qt.QObjectCleanupHandler().add(w)
-#                    sip.delete(w)
-                    del w    
-                    w = None
-#                else:
-#                    print "TYPE",type(child)
-#                    if hasattr(child, "widget"):
-#                        print "WTYPE",type(child.widget())
-#                child.setParent(None)
-#                Qt.QObjectCleanupHandler().add(child)
-                if child:
-                    sip.delete(child)
-                del child    
-                child = self.glayout.takeAt(0)
-#            print "COUNTS", self.glayout.count()
-            Qt.QWidget().setLayout(self.layout())
+            DynamicTools.cleanupLayoutWithItems(self.glayout)
             Qt.QObjectCleanupHandler().add(self.layout())
             self.glayout = Qt.QGridLayout(self)
-            
-            
 
     def connectMapper(self):
         if self.mapper:
