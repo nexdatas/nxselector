@@ -81,11 +81,10 @@ class EdDataDlg(Qt.QDialog):
 #            completer = Qt.QCompleter(self.available_names, self)
 #            self.ui.nameLineEdit.setCompleter(completer)
 
-        self.connect(self.ui.buttonBox, Qt.SIGNAL("accepted()"),
-                     self.accept)
-        self.connect(self.ui.buttonBox, Qt.SIGNAL("rejected()"),
-                     self.reject)
+        self.ui.buttonBox.accepted.connect(self.accept)
+        self.ui.buttonBox.rejected.connect(self.reject)
 
+    @Qt.pyqtSlot()
     def accept(self):
         self.name = unicode(self.ui.nameComboBox.currentText())
         self.isString = self.ui.stringCheckBox.isChecked()

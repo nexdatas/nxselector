@@ -51,11 +51,10 @@ class DynamicTools(object):
                     logger.debug("ERROR del %s" % label)
             del la
 
-
     @classmethod
     def cleanupWidgets(cls, widgets, label=None):
         while widgets:
-            if hasattr(widgets, "clearLayout") :
+            if hasattr(widgets, "clearLayout"):
                 wg.clearLayout()
             wg = widgets.pop()
             try:
@@ -87,9 +86,9 @@ class DynamicTools(object):
 
     @classmethod
     def cleanupLayoutWithItems(cls, layout):
-        if layout: 
+        if layout:
             logger.debug("COUNTS %s" % layout.count())
-            while layout.count(): 
+            while layout.count():
                 child = layout.itemAt(0)
                 layout.removeItem(child)
                 if isinstance(child, Qt.QWidgetItem):
@@ -104,10 +103,10 @@ class DynamicTools(object):
                     else:
                         logger.debug("WW %s" % type(w))
                     Qt.QObjectCleanupHandler().add(w)
-                    del w    
+                    del w
                     w = None
                 if child:
                     sip.delete(child)
-                del child    
+                del child
             Qt.QWidget().setLayout(layout)
 #            Qt.QObjectCleanupHandler().add(layout)

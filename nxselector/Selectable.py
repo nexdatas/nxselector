@@ -48,6 +48,8 @@ class Selectable(Qt.QObject):
     ## constructor
     def __init__(self, ui, state=None, userView=CheckerView, rowMax=0,
                  simpleMode=0):
+        super(Selectable, self).__init__()
+
         self.ui = ui
         self.state = state
         self.userView = userView
@@ -186,7 +188,7 @@ class Selectable(Qt.QObject):
             if layout_columns.count():
                 self.glayout.addWidget(mframe)
             else:
-                 mframe.hide()
+                mframe.hide()
         self.ui.selectable.update()
         if self.ui.tabWidget.currentWidget() == self.ui.selectable:
             self.ui.selectable.show()

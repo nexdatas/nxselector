@@ -43,6 +43,7 @@ class Data(Qt.QObject):
     ## constructor
     # \param settings frame settings
     def __init__(self, ui, state=None, simpleMode=False):
+        super(Data, self).__init__()
         self.ui = ui
         self.state = state
         self.glayout = None
@@ -52,7 +53,7 @@ class Data(Qt.QObject):
     def createGUI(self):
         self.ui.data.hide()
 
-        if self.glayout:  
+        if self.glayout:
             child = self.glayout.takeAt(0)
             while child:
                 self.glayout.removeItem(child)

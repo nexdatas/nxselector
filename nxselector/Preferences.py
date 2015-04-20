@@ -26,6 +26,7 @@ import PyTango
 import json
 
 from .MessageBox import MessageBox
+from .DynamicTools import DynamicTools
 try:
     from taurus.external.qt import Qt
 except:
@@ -50,11 +51,15 @@ logger = logging.getLogger(__name__)
 
 
 ## main window class
-class Preferences(object):
+class Preferences(Qt.QObject):
+
+    serverChanged = Qt.pyqtSignal()
+    layoutChanged = Qt.pyqtSignal(Qt.QString, Qt.QString)
 
     ## constructor
     # \param settings frame settings
     def __init__(self, ui, state=None):
+        super(Preferences, self).__init__()
         self.ui = ui
         self.state = state
 
@@ -119,6 +124,9 @@ class Preferences(object):
 
         self.maxHelp = 10
         self.layoutFile = os.getcwd()
+        self.completers = []
+
+        self.connectSignals()
 
     def __setmgroups(self, groups):
         try:
@@ -162,64 +170,53 @@ class Preferences(object):
                        doc='detector frames')
 
     def disconnectSignals(self):
-        self.ui.preferences.disconnect(
-            self.ui.devSettingsLineEdit,
-            Qt.SIGNAL("editingFinished()"),
+        self.ui.devSettingsLineEdit.editingFinished.disconnect(
             self.on_devSettingsLineEdit_editingFinished)
-
-        self.ui.preferences.disconnect(
-            self.ui.groupLineEdit,
-            Qt.SIGNAL("editingFinished()"),
+        self.ui.groupLineEdit.editingFinished.disconnect(
+            self.on_layoutLineEdits_editingFinished)
+        self.ui.frameLineEdit.editingFinished.disconnect(
             self.on_layoutLineEdits_editingFinished)
 
-        self.ui.preferences.disconnect(
-            self.ui.frameLineEdit,
-            Qt.SIGNAL("editingFinished()"),
-            self.on_layoutLineEdits_editingFinished)
-
-        self.ui.preferences.disconnect(
-            self.ui.layoutButtonBox.button(Qt.QDialogButtonBox.Open),
-            Qt.SIGNAL("pressed()"), self.layoutLoad)
-        self.ui.preferences.disconnect(
-            self.ui.layoutButtonBox.button(Qt.QDialogButtonBox.Save),
-            Qt.SIGNAL("pressed()"), self.layoutSave)
+        self.ui.layoutButtonBox.button(
+            Qt.QDialogButtonBox.Open).pressed.disconnect(self.layoutLoad)
+        self.ui.layoutButtonBox.button(
+            Qt.QDialogButtonBox.Save).pressed.disconnect(self.layoutSave)
 
     def connectSignals(self):
-        self.disconnectSignals()
-        self.ui.preferences.connect(
-            self.ui.frameLineEdit,
-            Qt.SIGNAL("editingFinished()"),
-            self.on_layoutLineEdits_editingFinished)
-
-        self.ui.preferences.connect(
-            self.ui.groupLineEdit,
-            Qt.SIGNAL("editingFinished()"),
-            self.on_layoutLineEdits_editingFinished)
-
-        self.ui.preferences.connect(
-            self.ui.devSettingsLineEdit,
-            Qt.SIGNAL("editingFinished()"),
+        self.ui.devSettingsLineEdit.editingFinished.connect(
             self.on_devSettingsLineEdit_editingFinished)
+        self.ui.groupLineEdit.editingFinished.connect(
+            self.on_layoutLineEdits_editingFinished)
+        self.ui.frameLineEdit.editingFinished.connect(
+            self.on_layoutLineEdits_editingFinished)
 
-        self.ui.preferences.connect(
-            self.ui.layoutButtonBox.button(Qt.QDialogButtonBox.Open),
-            Qt.SIGNAL("pressed()"), self.layoutLoad)
-        self.ui.preferences.connect(
-            self.ui.layoutButtonBox.button(Qt.QDialogButtonBox.Save),
-            Qt.SIGNAL("pressed()"), self.layoutSave)
+        self.ui.layoutButtonBox.button(
+            Qt.QDialogButtonBox.Open).pressed.connect(self.layoutLoad)
+        self.ui.layoutButtonBox.button(
+            Qt.QDialogButtonBox.Save).pressed.connect(self.layoutSave)
+
+    def __clearCompleters(self):
+        self.ui.groupLineEdit.setCompleter(None)
+        self.ui.devSettingsLineEdit.setCompleter(None)
+        self.ui.frameLineEdit.setCompleter(None)
+        DynamicTools.cleanupObjects(self.completers)
 
     def reset(self):
         logger.debug("reset preferences")
         self.disconnectSignals()
+        self.__clearCompleters()
         if self.ui.viewComboBox.count() != len(self.views.keys()):
             self.ui.viewComboBox.clear()
             self.ui.viewComboBox.addItems(sorted(self.views.keys()))
         completer = Qt.QCompleter(self.mgroupshelp, self.ui.preferences)
         self.ui.groupLineEdit.setCompleter(completer)
+        self.completers.append(completer)
         completer = Qt.QCompleter(self.serverhelp, self.ui.preferences)
         self.ui.devSettingsLineEdit.setCompleter(completer)
+        self.completers.append(completer)
         completer = Qt.QCompleter(self.frameshelp, self.ui.preferences)
         self.ui.frameLineEdit.setCompleter(completer)
+        self.completers.append(completer)
         self.updateForm()
         self.connectSignals()
         logger.debug("reset preferences ended")
@@ -259,12 +256,13 @@ class Preferences(object):
                 except Exception as e:
                     self.reset()
                 self.connectSignals()
-                self.ui.preferences.emit(Qt.SIGNAL("serverChanged()"))
+                self.serverChanged.emit()
             else:
                 self.ui.devSettingsLineEdit.setText(Qt.QString(
                         self.state.server if self.state.server else 'module'))
         self.connectSignals()
 
+    @Qt.pyqtSlot()
     def on_devSettingsLineEdit_editingFinished(self):
         logger.debug("on_devSettingsLineEdit_editingFinished")
         self.changeServer()
@@ -277,6 +275,7 @@ class Preferences(object):
         if self.maxHelp < len(hints):
             hints.pop(len(hints) - 1)
 
+    @Qt.pyqtSlot()
     def on_layoutLineEdits_editingFinished(self):
         logger.debug("on_layoutLineEdit_editingFinished")
         self.disconnectSignals()
@@ -301,8 +300,7 @@ class Preferences(object):
 
                 if oldframes != self.frames or oldgroups != self.mgroups:
                     self.connectSignals()
-                    self.ui.preferences.emit(
-                        Qt.SIGNAL("layoutChanged(QString,QString)"),
+                    self.layoutChanged.emit(
                         Qt.QString(frames), Qt.QString(groups))
         except Exception as e:
             text = MessageBox.getText("Problem in setting layout")
@@ -323,6 +321,7 @@ class Preferences(object):
     def apply(self):
         pass
 
+    @Qt.pyqtSlot()
     def layoutLoad(self):
         filename = str(
             Qt.QFileDialog.getOpenFileName(
@@ -348,9 +347,6 @@ class Preferences(object):
                     if "groups" in profile.keys():
                         self.ui.groupLineEdit.setText(
                             Qt.QString(profile["groups"]))
-                        self.ui.groupLineEdit.emit(
-                            Qt.SIGNAL("groupsChanged(QString)"),
-                            self.ui.groupLineEdit.text())
                         self.on_layoutLineEdits_editingFinished()
                     if "rowMax" in profile.keys():
                         self.ui.rowMaxSpinBox.setValue(
@@ -363,6 +359,7 @@ class Preferences(object):
                     "NXSSelector: Error during reading the file",
                     text, str(e))
 
+    @Qt.pyqtSlot()
     def layoutSave(self):
         try:
             filename = str(Qt.QFileDialog.getSaveFileName(

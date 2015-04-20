@@ -32,6 +32,7 @@ import logging
 logger = logging.getLogger(__name__)
 from .DynamicTools import DynamicTools
 
+
 class CheckerLabelWidget(Qt.QWidget):
     def __init__(self, parent=None):
         super(Qt.QWidget, self).__init__(parent)
@@ -75,6 +76,8 @@ class TableView(Qt.QTableView):
 
 class OneTableView(Qt.QTableView):
 
+    dirty = Qt.pyqtSignal()
+
     def __init__(self, parent=None):
         super(OneTableView, self).__init__(parent)
         self.verticalHeader().setVisible(False)
@@ -89,7 +92,6 @@ class OneTableView(Qt.QTableView):
 
 
 class CheckerView(Qt.QWidget):
-
 
     def __init__(self, parent=None):
         super(CheckerView, self).__init__(parent)
@@ -107,7 +109,6 @@ class CheckerView(Qt.QWidget):
         self.selectedWidgetRow = None
         self.showLabels = True
         self.showNames = True
-
 
     def close(self):
         self.mapper.mapped.disconnect(self.checked)
@@ -230,13 +231,18 @@ class CheckerView(Qt.QWidget):
                                       Qt.Qt.AlignRight)
             self.glayout.addWidget(cb, lrow, lcol, 1, 1)
             self.widgets.append(cb)
-            self.connect(cb, Qt.SIGNAL("clicked()"),
-                         self.mapper, Qt.SLOT("map()"))
+
+            if hasattr(cb, "clicked"):
+                cb.clicked.connect(self.mapper.map)
+#            self.connect(cb, Qt.SIGNAL("clicked()"),
+#                         self.mapper, Qt.SLOT("map()"))
             self.mapper.setMapping(cb, self.widgets.index(cb))
             if self.dmapper:
                 self.displays.append(ds)
-                self.connect(ds, Qt.SIGNAL("clicked()"),
-                             self.dmapper, Qt.SLOT("map()"))
+#                self.connect(ds, Qt.SIGNAL("clicked()"),
+#                             self.dmapper, Qt.SLOT("map()"))
+                if hasattr(ds, "clicked"):
+                    ds.clicked.connect(self.dmapper.map)
                 self.dmapper.setMapping(ds, self.displays.index(ds))
 
     def __setWidgets(self, row):
@@ -340,6 +346,7 @@ class CheckDisView(CheckerView):
         self.dmapper.mapped.disconnect(self.dchecked)
 #        print "DEL SIGNAL"
         super(CheckDisView, self).close()
+
 
 class RadioView(CheckerView):
 

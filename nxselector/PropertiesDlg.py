@@ -51,11 +51,9 @@ class PropertiesDlg(Qt.QDialog):
         layout.addWidget(self.widget)
         self.setLayout(layout)
 
-        self.connect(self.widget.ui.closePushButton,
-                     Qt.SIGNAL("clicked()"),
-                     self.accept)
+        self.widget.ui.closePushButton.clicked(self.accept)
         self.widget.ui.closePushButton.show()
-        self.connect(self.widget, Qt.SIGNAL("dirty"), self.__setDirty)
+        self.widget.dirty.connect(self.__setDirty)
 
     def __setDirty(self):
         self.dirty = True
@@ -64,6 +62,8 @@ class PropertiesDlg(Qt.QDialog):
 ## main window class
 @UILoadable(with_ui='ui')
 class PropertiesWg(Qt.QWidget):
+
+    dirty = Qt.pyqtSignal()
 
     ## constructor
     # \param parent parent widget
@@ -94,15 +94,10 @@ class PropertiesWg(Qt.QWidget):
         else:
             item = None
         self.__populateTable(item)
-        self.connect(self.ui.addPushButton, Qt.SIGNAL("clicked()"),
-                     self.__add)
-        self.connect(self.ui.editPushButton, Qt.SIGNAL("clicked()"),
-                     self.__edit)
-        self.connect(self.ui.tableWidget,
-                     Qt.SIGNAL("itemDoubleClicked(QTableWidgetItem*)"),
-                     self.__edit)
-        self.connect(self.ui.removePushButton, Qt.SIGNAL("clicked()"),
-                     self.__remove)
+        self.ui.addPushButton.clicked.connect(self.__add)
+        self.ui.editPushButton.clicked.connect(self.__edit)
+        self.ui.tableWidget.itemDoubleClicked.connect(self.__edit)
+        self.ui.removePushButton.clicked.connect(self.__remove)
 
     def __names(self):
         return sorted(set(self.paths.keys()) |
@@ -190,8 +185,9 @@ class PropertiesWg(Qt.QWidget):
                 self.links[name] = form.link
 
             self.__populateTable()
-            self.emit(Qt.SIGNAL("dirty"))
+            self.dirty.emit()
 
+    @Qt.pyqtSlot()
     def __add(self):
         dform = LDataDlg(self)
         dform.available_names = self.available_names
@@ -199,6 +195,7 @@ class PropertiesWg(Qt.QWidget):
         if dform.exec_():
             self.__updateTable(dform)
 
+    @Qt.pyqtSlot()
     def __edit(self):
         dform = LDataDlg(self)
         name = self.__currentName()
@@ -219,6 +216,7 @@ class PropertiesWg(Qt.QWidget):
         if dform.exec_():
             self.__updateTable(dform)
 
+    @Qt.pyqtSlot()
     def __remove(self):
         name = self.__currentName()
 
@@ -236,5 +234,5 @@ class PropertiesWg(Qt.QWidget):
         if name in self.paths.keys():
             self.paths.pop(name)
 
-        self.emit(Qt.SIGNAL("dirty"))
+        self.dirty.emit()
         self.__populateTable()

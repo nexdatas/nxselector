@@ -37,6 +37,7 @@ logger = logging.getLogger(__name__)
 
 OPTIONAL, MANDATORY, OTHERS = range(3)
 
+
 ## main window class
 class State(Qt.QObject):
 
@@ -45,6 +46,7 @@ class State(Qt.QObject):
     ## constructor
     # \param settings frame settings
     def __init__(self, ui, state=None, userView=CheckerView, rowMax=0):
+        super(State, self).__init__()
         self.ui = ui
         self.state = state
         self.userView = userView

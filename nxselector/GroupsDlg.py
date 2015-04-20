@@ -88,19 +88,18 @@ class GroupsDlg(Qt.QDialog):
                              self.beam_datasources,
                              "Preselectable DataSources:")
 
-        self.connect(self.ui.dcpTableView, Qt.SIGNAL("dirty"), self.__dirty)
-        self.connect(self.ui.ddsTableView, Qt.SIGNAL("dirty"), self.__dirty)
-        self.connect(self.ui.bcpTableView, Qt.SIGNAL("dirty"), self.__dirty)
-        self.connect(self.ui.bdsTableView, Qt.SIGNAL("dirty"), self.__dirty)
+        self.ui.dcpTableView.dirty.connect(self.__dirty)
+        self.ui.ddsTableView.dirty.connect(self.__dirty)
+        self.ui.bcpTableView.dirty.connect(self.__dirty)
+        self.ui.bdsTableView.dirty.connect(self.__dirty)
 
-        self.connect(self.ui.closeButtonBox.button(Qt.QDialogButtonBox.Close),
-                     Qt.SIGNAL("clicked()"),
-                     self.reject)
+        self.ui.closeButtonBox.button(
+            Qt.QDialogButtonBox.Close).clicked.connect(self.reject)
 
+    @Qt.pyqtSlot()
     def __dirty(self):
         self.dirty = True
         self.setWindowTitle("Component Groups *")
-
         logger.debug("changed")
 
     def __populateTable(self, view, group, eltype, dct, header):
@@ -111,5 +110,4 @@ class GroupsDlg(Qt.QDialog):
         md.autoEnable = False
         view.horizontalHeader().setVisible(True)
         view.setModel(md)
-        md.connect(md, Qt.SIGNAL("dirty"),
-                   self.__dirty)
+        md.dirty.connect(self.__dirty)

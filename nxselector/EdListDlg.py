@@ -58,10 +58,8 @@ class EdListDlg(Qt.QDialog):
         layout.addWidget(self.widget)
         self.setLayout(layout)
 
-        self.connect(
-            self.widget.ui.closeButtonBox.button(Qt.QDialogButtonBox.Close),
-            Qt.SIGNAL("clicked()"),
-            self.accept)
+        self.widget.ui.closeButtonBox.button(
+            Qt.QDialogButtonBox.Close).clicked.connect(self.accept)
         self.widget.ui.closePushButton.show()
         self.widget.dirty.connect(self.__setDirty)
 
@@ -103,7 +101,8 @@ class EdListWg(Qt.QWidget):
                 "&Add", Qt.QDialogButtonBox.ActionRole)
             self.ui.editPushButton = self.ui.addEditRemoveButtonBox.addButton(
                 "&Edit", Qt.QDialogButtonBox.ActionRole)
-            self.ui.removePushButton = self.ui.addEditRemoveButtonBox.addButton(
+            self.ui.removePushButton = \
+                self.ui.addEditRemoveButtonBox.addButton(
                 "&Remove", Qt.QDialogButtonBox.ActionRole)
 
         if self.record:

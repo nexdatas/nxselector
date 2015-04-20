@@ -69,20 +69,13 @@ class OrderDlg(Qt.QDialog):
         self.selected = list(set(self.channels) & set(self.selected))
 
         self.__populateList(item)
-        self.connect(self.ui.upPushButton, Qt.SIGNAL("clicked()"),
-                     self.__up)
-        self.connect(self.ui.downPushButton, Qt.SIGNAL("clicked()"),
-                     self.__down)
+        self.ui.upPushButton.clicked.connect(self.__up)
+        self.ui.downPushButton.clicked.connect(self.__down)
+        self.ui.selPushButton.clicked.connect(self.__setfilter)
 
-        self.connect(self.ui.selPushButton, Qt.SIGNAL("clicked()"),
-                     self.__setfilter)
-
-        self.connect(
-            self.ui.closeButtonBox.button(Qt.QDialogButtonBox.Close),
-            Qt.SIGNAL("clicked()"),
-            self.accept)
+        self.ui.closeButtonBox.button(
+            Qt.QDialogButtonBox.Close).clicked.connect(self.accept)
         self.ui.closePushButton.show()
-        self.connect(self, Qt.SIGNAL("dirty"), self.__setDirty)
 
     def __populateList(self, selectedChannel=None):
         selected = None
@@ -115,6 +108,7 @@ class OrderDlg(Qt.QDialog):
                     break
         return name
 
+    @Qt.pyqtSlot()
     def __up(self):
         name = self.__currentName()
         if not name:
@@ -127,9 +121,10 @@ class OrderDlg(Qt.QDialog):
                     nim1 -= 1
             self.channels[ni], self.channels[nim1] = \
                 self.channels[nim1], self.channels[ni]
-            self.emit(Qt.SIGNAL("dirty"))
             self.__populateList(name)
+            self.__setDirty()
 
+    @Qt.pyqtSlot()
     def __down(self):
         name = self.__currentName()
         if not name:
@@ -143,9 +138,10 @@ class OrderDlg(Qt.QDialog):
                     nip1 += 1
             self.channels[ni], self.channels[nip1] = \
                 self.channels[nip1], self.channels[ni]
-            self.emit(Qt.SIGNAL("dirty"))
             self.__populateList(name)
+            self.__setDirty()
 
+    @Qt.pyqtSlot()
     def __setfilter(self):
         self.onlyselected = bool(self.ui.selPushButton.isChecked())
         name = self.__currentName()
