@@ -35,6 +35,7 @@ logger = logging.getLogger(__name__)
 
 
 class EdListDlg(Qt.QDialog):
+
     ## constructor
     # \param parent parent widget
     def __init__(self, parent=None):
@@ -47,6 +48,7 @@ class EdListDlg(Qt.QDialog):
         self.disable = []
 
     def createGUI(self):
+        self.widget.dirty.disconnect(self.__setDirty)
         self.widget.simple = self.simple
         self.widget.available_names = self.available_names
         self.widget.headers = self.headers
@@ -61,8 +63,9 @@ class EdListDlg(Qt.QDialog):
             Qt.SIGNAL("clicked()"),
             self.accept)
         self.widget.ui.closePushButton.show()
-        self.connect(self.widget, Qt.SIGNAL("dirty"), self.__setDirty)
+        self.widget.dirty.connect(self.__setDirty)
 
+    @Qt.pyqtSlot()
     def __setDirty(self):
         self.dirty = True
 
@@ -70,6 +73,8 @@ class EdListDlg(Qt.QDialog):
 ## main window class
 @UILoadable(with_ui='ui')
 class EdListWg(Qt.QWidget):
+
+    dirty = Qt.pyqtSignal()
 
     ## constructor
     # \param parent parent widget
@@ -83,31 +88,33 @@ class EdListWg(Qt.QWidget):
         self.disable = []
 
     def createGUI(self):
+        if hasattr(self.ui, "addPushButton"):
+            self.ui.addPushButton.clicked.disconnect(self.__add)
+            self.ui.editPushButton.clicked.disconnect(self.__edit)
+            self.ui.tableWidget.itemDoubleClicked.disconnect(self.__edit)
+            self.ui.removePushButton.clicked.disconnect(self.__remove)
+
         self.ui.closePushButton = self.ui.closeButtonBox.button(
             Qt.QDialogButtonBox.Close)
 
         self.ui.closeButtonBox.button(Qt.QDialogButtonBox.Close).hide()
-        self.ui.addPushButton = self.ui.addEditRemoveButtonBox.addButton(
-            "&Add", Qt.QDialogButtonBox.ActionRole)
-        self.ui.editPushButton = self.ui.addEditRemoveButtonBox.addButton(
-            "&Edit", Qt.QDialogButtonBox.ActionRole)
-        self.ui.removePushButton = self.ui.addEditRemoveButtonBox.addButton(
-            "&Remove", Qt.QDialogButtonBox.ActionRole)
+        if not hasattr(self.ui, "addPushButton"):
+            self.ui.addPushButton = self.ui.addEditRemoveButtonBox.addButton(
+                "&Add", Qt.QDialogButtonBox.ActionRole)
+            self.ui.editPushButton = self.ui.addEditRemoveButtonBox.addButton(
+                "&Edit", Qt.QDialogButtonBox.ActionRole)
+            self.ui.removePushButton = self.ui.addEditRemoveButtonBox.addButton(
+                "&Remove", Qt.QDialogButtonBox.ActionRole)
 
         if self.record:
             item = sorted(self.record.keys())[0]
         else:
             item = None
         self.__populateTable(item)
-        self.connect(self.ui.addPushButton, Qt.SIGNAL("clicked()"),
-                     self.__add)
-        self.connect(self.ui.editPushButton, Qt.SIGNAL("clicked()"),
-                     self.__edit)
-        self.connect(self.ui.tableWidget,
-                     Qt.SIGNAL("itemDoubleClicked(QTableWidgetItem*)"),
-                     self.__edit)
-        self.connect(self.ui.removePushButton, Qt.SIGNAL("clicked()"),
-                     self.__remove)
+        self.ui.addPushButton.clicked.connect(self.__add)
+        self.ui.editPushButton.clicked.connect(self.__edit)
+        self.ui.tableWidget.itemDoubleClicked.connect(self.__edit)
+        self.ui.removePushButton.clicked.connect(self.__remove)
 
     def __populateTable(self, selected=None):
         self.ui.tableWidget.clear()
@@ -159,6 +166,7 @@ class EdListWg(Qt.QWidget):
             name = skeys[row]
         return name
 
+    @Qt.pyqtSlot()
     def __add(self):
         dform = EdDataDlg(self)
         dform.simple = self.simple
@@ -176,8 +184,9 @@ class EdListWg(Qt.QWidget):
 
             self.record[dform.name] = dform.value
             self.__populateTable()
-            self.emit(Qt.SIGNAL("dirty"))
+            self.dirty.emit()
 
+    @Qt.pyqtSlot()
     def __edit(self):
         name = self.__currentName()
         if name in self.disable:
@@ -198,8 +207,9 @@ class EdListWg(Qt.QWidget):
         if dform.exec_():
             self.record[dform.name] = dform.value
             self.__populateTable()
-            self.emit(Qt.SIGNAL("dirty"))
+            self.dirty.emit()
 
+    @Qt.pyqtSlot()
     def __remove(self):
         name = self.__currentName()
         if name in self.disable:
@@ -216,5 +226,5 @@ class EdListWg(Qt.QWidget):
             Qt.QMessageBox.Yes) == Qt.QMessageBox.No:
             return
         self.record.pop(name)
-        self.emit(Qt.SIGNAL("dirty"))
+        self.dirty.emit()
         self.__populateTable()

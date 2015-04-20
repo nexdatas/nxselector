@@ -367,9 +367,9 @@ class Selector(Qt.QDialog, TaurusBaseWidget):
                      Qt.SIGNAL("layoutChanged(QString,QString)"),
                      self.resetLayout)
 
-        self.connect(self.ui.preferences,
-                     Qt.SIGNAL("layoutChanged(QString,QString)"),
-                     self.resetLayout)
+#        self.connect(self.ui.preferences,
+#                     Qt.SIGNAL("layoutChanged(QString,QString)"),
+#                     self.resetLayout)
 
         self.connect(self.ui.viewComboBox,
                      Qt.SIGNAL("currentIndexChanged(int)"), self.resetViews)
@@ -452,6 +452,7 @@ class Selector(Qt.QDialog, TaurusBaseWidget):
         else:
             self.__servertoupdateFlag = False
 
+    @Qt.pyqtSlot()
     def setDirty(self, flag=True):
         self.__dirty = flag
         self.ui.statusLabel.hide()
@@ -626,10 +627,10 @@ class Selector(Qt.QDialog, TaurusBaseWidget):
 #            if tab in [self.selectable, self.automatic, self.data,
 #                       self.storage, self.preferences]:
             if tab in [
-                self.selectable, 
+#                self.selectable, 
 #                self.automatic, 
 #                self.data,
-#                self.storage, 
+                self.storage, 
 #                self.preferences
                 ]:
                 tab.reset()
@@ -704,7 +705,7 @@ class Selector(Qt.QDialog, TaurusBaseWidget):
             self.reset()
             gc.collect()
             print "OBJ", len(gc.get_objects())
-            print >> sys.stderr, Counter([type(g).__name__ for g in gc.get_objects()]).most_common(6)
+            print >> sys.stderr, Counter([type(g).__name__ for g in gc.get_objects()]).most_common(60)
             print "RESET END"
         print >> sys.stderr, gc.get_count()
         gc.collect()

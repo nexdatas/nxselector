@@ -23,7 +23,6 @@
 
 import json
 import fnmatch
-import sip
 
 try:
     from taurus.external.qt import Qt
@@ -118,8 +117,6 @@ class Selectable(Qt.QObject):
                 if CP not in self.groups:
                     self.groups[CP] = []
                 self.groups[CP].append(CPElement(cp, self.state))
-#        for k in self.groups.keys():
-#            self.groups[k] = sorted(self.groups[k])
 
     def __availableGroups(self):
         res = set()
@@ -134,11 +131,10 @@ class Selectable(Qt.QObject):
         return res
 
     def __clearFrames(self):
-
         DynamicTools.cleanupObjects(self.models, "model")
         if self.views:
             views = list(self.views.values())
-            DynamicTools.cleanupWidgets(views, "groupbox") 
+            DynamicTools.cleanupWidgets(views, "views")
             self.views = {}
         DynamicTools.cleanupObjects(self.auto_layouts, "auto")
         DynamicTools.cleanupWidgets(self.groupboxes, "groupbox")
@@ -146,8 +142,6 @@ class Selectable(Qt.QObject):
         DynamicTools.cleanupObjects(self.column_layouts, "column")
         DynamicTools.cleanupFrames(self.mframes, "frames")
         DynamicTools.cleanupLayoutWithItems(self.glayout)
-        
-
 
     def createGUI(self):
 
@@ -203,7 +197,7 @@ class Selectable(Qt.QObject):
                 md = ElementModel(self.groups[k])
             else:
                 md = ElementModel([])
-            self.models.append(md)    
+            self.models.append(md)
             try:
                 ig = int(k)
                 if (self.__simpleMode & 2) and ig < 0:
@@ -212,16 +206,12 @@ class Selectable(Qt.QObject):
             except Exception:
                 pass
             self.views[k].setModel(md)
-            ## testing
 
             md.componentChecked.connect(self.updateViews)
-#            md.connect(md, Qt.SIGNAL("componentChecked"),
-#                       self.updateViews)
-#            md.connect(md, Qt.SIGNAL("dirty"),
-#                       self.dirty)
+            md.dirty.connect(self.setDirty)
 
     @Qt.pyqtSlot()
-    def dirty(self):
+    def setDirty(self):
         self.dirty.emit()
 
     def reset(self):

@@ -28,13 +28,17 @@ except:
     from taurus.qt import Qt
 
 from .EdListDlg import EdListWg
+#from .DynamicTools import DynamicTools
+
 
 import logging
 logger = logging.getLogger(__name__)
 
 
 ## main window class
-class Data(object):
+class Data(Qt.QObject):
+
+    dirty = Qt.pyqtSignal()
 
     ## constructor
     # \param settings frame settings
@@ -48,7 +52,7 @@ class Data(object):
     def createGUI(self):
         self.ui.data.hide()
 
-        if self.glayout:
+        if self.glayout:  
             child = self.glayout.takeAt(0)
             while child:
                 self.glayout.removeItem(child)
@@ -57,6 +61,7 @@ class Data(object):
                     child.widget().close()
                     self.glayout.removeWidget(child.widget())
                 child = self.glayout.takeAt(0)
+            self.form.dirty.disconnect(self.__setDirty)
         else:
             self.glayout = Qt.QHBoxLayout(self.ui.data)
 
@@ -71,10 +76,11 @@ class Data(object):
         self.ui.data.update()
         if self.ui.tabWidget.currentWidget() == self.ui.data:
             self.ui.data.show()
-        self.ui.data.connect(self.form, Qt.SIGNAL("dirty"), self.__setDirty)
+        self.form.dirty.connect(self.__setDirty)
 
     def reset(self):
         self.createGUI()
 
+    @Qt.pyqtSlot()
     def __setDirty(self):
-        self.ui.data.emit(Qt.SIGNAL("dirty"))
+        self.dirty.emit()

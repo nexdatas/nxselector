@@ -30,13 +30,17 @@ except:
 from .Element import CPElement, DSElement
 from .ElementModel import ElementModel
 from .Views import CheckerView
+from .DynamicTools import DynamicTools
 
 import logging
 logger = logging.getLogger(__name__)
 
+OPTIONAL, MANDATORY, OTHERS = range(3)
 
 ## main window class
-class State(object):
+class State(Qt.QObject):
+
+    componentChecked = Qt.pyqtSignal()
 
     ## constructor
     # \param settings frame settings
@@ -45,18 +49,20 @@ class State(object):
         self.state = state
         self.userView = userView
         self.rowMax = rowMax
+
+        self.agroup = []
+        self.igroup = []
+        self.mgroup = []
+
+        self.mframes = []
+        self.group_layouts = []
+        self.auto_layouts = []
+        self.groupboxes = []
+        self.views = {}
+        self.models = []
         self.__cplayout = None
         self.__dslayout = None
         self.__mainlayout = None
-
-        self.agroup = []
-        self.aview = None
-
-        self.igroup = []
-        self.iview = None
-
-        self.mgroup = []
-        self.mview = None
 
     def updateGroups(self):
         self.agroup = []
@@ -81,45 +87,50 @@ class State(object):
             self.igroup.append(
                 CPElement(ds, self.state, group=icpgroup))
 
+    def __clearFrames(self):
+        DynamicTools.cleanupObjects(self.models, "model")
+        if self.views:
+            views = list(self.views.values())
+            DynamicTools.cleanupWidgets(views, "views")
+            self.views = {}
+        DynamicTools.cleanupObjects(self.auto_layouts, "auto")
+        DynamicTools.cleanupWidgets(self.groupboxes, "groupbox")
+        DynamicTools.cleanupObjects(self.group_layouts, "group")
+        DynamicTools.cleanupFrames(self.mframes, "frames")
+        DynamicTools.cleanupLayoutWithItems(self.__cplayout)
+        DynamicTools.cleanupLayoutWithItems(self.__dslayout)
+        DynamicTools.cleanupLayoutWithItems(self.__mainlayout)
+        self.__cplayout = None
+        self.__dslayout = None
+
     def createGUI(self):
 
         self.ui.state.hide()
         if self.__cplayout and self.__dslayout:
-            self.__clearLayout(self.__cplayout)
-            self.__clearLayout(self.__dslayout)
-        else:
-            self.__mainlayout = Qt.QHBoxLayout(self.ui.state)
-            self.__cplayout = Qt.QVBoxLayout()
-            self.__dslayout = Qt.QVBoxLayout()
-            self.__mainlayout.addLayout(self.__cplayout)
-            self.__mainlayout.addLayout(self.__dslayout)
+            self.__clearFrames()
+        self.__mainlayout = Qt.QHBoxLayout(self.ui.state)
+        self.__cplayout = Qt.QVBoxLayout()
+        self.__dslayout = Qt.QVBoxLayout()
+        self.__mainlayout.addLayout(self.__cplayout)
+        self.__mainlayout.addLayout(self.__dslayout)
 
-        self.iview = self.__addView("Other Optional", self.rowMax,
-                                     self.__dslayout, not self.igroup)
+        self.views[OTHERS] = self.__addView(
+            "Other Optional", self.rowMax,
+            self.__dslayout, not self.igroup)
+
         la = len(self.agroup)
         lm = len(self.mgroup)
         if la + lm:
             la, lm = [float(la) / (la + lm), float(lm) / (la + lm)]
 
-        self.aview = self.__addView("Optional",
-                                    max(1, int(la * (self.rowMax - 2))))
-        self.mview = self.__addView("Mandatory",
-                                    max(1, int(lm * (self.rowMax - 2))))
+        self.views[OPTIONAL] = self.__addView(
+            "Optional", max(1, int(la * (self.rowMax - 2))))
+        self.views[MANDATORY] = self.__addView(
+            "Mandatory", max(1, int(lm * (self.rowMax - 2))))
 
         self.ui.state.update()
         if self.ui.tabWidget.currentWidget() == self.ui.state:
             self.ui.state.show()
-
-    @classmethod
-    def __clearLayout(cls, layout):
-        child = layout.takeAt(0)
-        while child:
-            layout.removeItem(child)
-            if isinstance(child, Qt.QWidgetItem):
-                child.widget().hide()
-                child.widget().close()
-                layout.removeWidget(child.widget())
-            child = layout.takeAt(0)
 
     def __addView(self, label, rowMax, layout=None, hide=False):
         if layout is None:
@@ -127,11 +138,15 @@ class State(object):
         mframe = Qt.QFrame(self.ui.state)
         mframe.setFrameShape(Qt.QFrame.StyledPanel)
         mframe.setFrameShadow(Qt.QFrame.Raised)
+        self.mframes.append(mframe)
         layout_groups = Qt.QHBoxLayout(mframe)
+        self.group_layouts.append(layout_groups)
 
         mgroup = Qt.QGroupBox(mframe)
         mgroup.setTitle(label)
+        self.groupboxes.append(mgroup)
         layout_auto = Qt.QGridLayout(mgroup)
+        self.auto_layouts.append(layout_auto)
         mview = self.userView(mgroup)
         mview.rowMax = rowMax
         if hasattr(mview, 'dmapper'):
@@ -147,33 +162,32 @@ class State(object):
             mframe.show()
         return mview
 
-
     def setModels(self):
         md = ElementModel(self.agroup)
         md.enable = False
-        self.aview.setModel(md)
-        md.connect(md, Qt.SIGNAL("componentChecked"),
-                   self.__componentChecked)
+        self.models.append(md)
+        self.views[OPTIONAL].setModel(md)
+        md.componentChecked.connect(self.__componentChecked)
 
         md = ElementModel(self.mgroup)
         md.enable = False
-        self.mview.setModel(md)
-        md.connect(md, Qt.SIGNAL("componentChecked"),
-                   self.__componentChecked)
+        self.models.append(md)
+        self.views[MANDATORY].setModel(md)
+        md.componentChecked.connect(self.__componentChecked)
 
         md = ElementModel(self.igroup)
         md.enable = False
-        self.iview.setModel(md)
-        md.connect(md, Qt.SIGNAL("componentChecked"),
-                   self.__componentChecked)
+        self.models.append(md)
+        self.views[OTHERS].setModel(md)
+        md.componentChecked.connect(self.__componentChecked)
 
+    @Qt.pyqtSlot()
     def __componentChecked(self):
-        self.ui.state.emit(Qt.SIGNAL("componentChecked"))
+        self.componentChecked.emit()
 
     def updateViews(self):
-        self.aview.reset()
-        self.mview.reset()
-        self.iview.reset()
+        for vw in self.views.values():
+            vw.reset()
 
     def reset(self):
         self.updateGroups()
