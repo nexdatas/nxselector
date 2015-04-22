@@ -72,6 +72,7 @@ class Selector(Qt.QDialog, TaurusBaseWidget):
         self.__door = door
         self.__standalone = standalone
 
+        self.old = []
         import gc
 #        gc.set_debug(gc.DEBUG_LEAK|gc.DEBUG_STATS)
 #        gc.set_debug(gc.DEBUG_STATS)
@@ -212,6 +213,7 @@ class Selector(Qt.QDialog, TaurusBaseWidget):
         if self.__doortoupdateFlag:
             self.updateDoorName(self.__door)
 
+        self.waitForThread()
         logger.debug("settings END")
 
     ##  creates GUI
@@ -645,11 +647,14 @@ class Selector(Qt.QDialog, TaurusBaseWidget):
         self.reset()
         self.storage.updateMntGrpComboBox()
         self.setDirty(True)
-        self.__progress = None
+        if self.__progress:    
+            self.__progress.setParent(None)            
+            self.__progress = None
         if self.__servertoupdateFlag:
             self.updateServer(self.__model)
         if self.__doortoupdateFlag:
             self.updateDoorName(self.__door)
+        self.waitForThread()
         logger.debug("closing Progress ENDED")
         return status
 
@@ -657,6 +662,8 @@ class Selector(Qt.QDialog, TaurusBaseWidget):
         logger.debug("waiting for Thread")
         if self.__commandthread:
             self.__commandthread.wait()
+            self.__commandthread.setParent(None)
+            self.__commandthread = None
         logger.debug("waiting for Thread ENDED")
 
     def runProgress(self, commands, onclose="closeReset"):
@@ -677,34 +684,42 @@ class Selector(Qt.QDialog, TaurusBaseWidget):
 
     def resetClickAll(self):
         logger.debug("reset ALL")
-#        self.runProgress([
-#                "switchMntGrp",
-#                "updateControllers",
-#                "importMntGrp"
-#                ])
+        self.runProgress([
+                "switchMntGrp",
+                "updateControllers",
+                "importMntGrp"
+                ])
         from collections import Counter
         import gc
 #        for i in range(1):
 #        for i in range(100):
-        for i in range(1000):
-            self.state.switchMntGrp()
+#        for i in range(1000):
+#            self.state.switchMntGrp()
 #            self.state.updateControllers()
 #            self.state.importMntGrp()
-            print "RESET", i
-#            self.closeReset()
-            self.reset()
-            gc.collect()
-            print "OBJ", len(gc.get_objects())
-            print >> sys.stderr, Counter(
-                [type(g).__name__ for g in gc.get_objects()]).most_common(60)
-            print "RESET END"
+#            print "RESET", i
+##            self.closeReset()
+#            self.reset()
+#            gc.collect()
+#            print "OBJ", len(gc.get_objects())
+#            print >> sys.stderr, Counter(
+#                [type(g).__name__ for g in gc.get_objects()]).most_common(60)
+#            print "RESET END"
         print >> sys.stderr, gc.get_count()
         gc.collect()
-#        print str(gc.get_objects())
-#        print gc.garbage
+        print len(gc.get_objects())
+        print gc.garbage
         print >> sys.stderr, "2, ", gc.get_count()
         print >> sys.stderr, len(gc.garbage)
         print >> sys.stderr, str(Counter([type(g) for g in gc.garbage]))
+        mylist = Counter([type(g).__name__ for g in gc.get_objects()])
+#        print >> sys.stderr, mylist.most_common(60)
+        for el in mylist.most_common(200):
+            if el not in self.old:
+                print el,
+#            else:
+#                print "(%s)" % el,
+        self.old = mylist.most_common(200)
         print >> sys.stderr, "3, ", gc.get_count()
 
         logger.debug("reset ENDED")

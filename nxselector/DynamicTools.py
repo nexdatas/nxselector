@@ -21,7 +21,7 @@
 
 """ device Model """
 
-import sip
+#import sip
 import logging
 logger = logging.getLogger(__name__)
 
@@ -105,8 +105,8 @@ class DynamicTools(object):
                     Qt.QObjectCleanupHandler().add(w)
                     del w
                     w = None
-                if child:
-                    sip.delete(child)
+#                if child:
+#                    sip.delete(child)
                 del child
             Qt.QWidget().setLayout(layout)
 #            Qt.QObjectCleanupHandler().add(layout)
