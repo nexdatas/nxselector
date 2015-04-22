@@ -630,14 +630,15 @@ class Selector(Qt.QDialog, TaurusBaseWidget):
         self.reset()
         self.storage.updateMntGrpComboBox()
         self.setDirty(True)
-        if self.__progress:    
-            self.__progress.setParent(None)            
+        if self.__progress:
+            self.__progress.setParent(None)
             self.__progress = None
         if self.__servertoupdateFlag:
             self.updateServer(self.__model)
         if self.__doortoupdateFlag:
             self.updateDoorName(self.__door)
         self.waitForThread()
+        gc.collect()
         logger.debug("closing Progress ENDED")
         return status
 

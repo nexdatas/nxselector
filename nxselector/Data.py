@@ -66,6 +66,11 @@ class Data(Qt.QObject):
         else:
             self.glayout = Qt.QHBoxLayout(self.ui.data)
 
+        if self.form:
+            self.form.setParent(None)
+            Qt.QObjectCleanupHandler().add(self.form)
+        self.form = EdListWg(self.ui.data)
+
         if self.__simpleMode:
             self.form.disable = self.state.adminData
         self.form.record = self.state.datarecord

@@ -115,12 +115,10 @@ class CheckerView(Qt.QWidget):
         if self.model:
             self.model.dataChanged.disconnect(self.reset)
             self.model.modelReset.disconnect(self.reset)
-#            print "disconnected"
         super(CheckerView, self).close()
 
     @Qt.pyqtSlot(int)
     def checked(self, row):
-#        print "CHECKED", row
         self.selectedWidgetRow = row
         ind = self.model.index(row, 0)
         value = Qt.QVariant(self.widgets[row].isChecked())
@@ -133,13 +131,11 @@ class CheckerView(Qt.QWidget):
 
     def setModel(self, model):
         self.model = model
-#        print "connected"
         self.model.dataChanged.connect(self.reset)
         self.model.modelReset.connect(self.reset)
         self.reset()
 
     def clearLayout(self):
-#        print "CLEAR"
         if self.glayout:
             self.widgets = []
             if self.dmapper:
@@ -329,7 +325,6 @@ class CheckDisView(CheckerView):
 
     @Qt.pyqtSlot(int)
     def dchecked(self, row):
-#        print "DCHECKED", row
         self.selectedWidgetRow = row
         ind = self.model.index(row, 2)
         value = Qt.QVariant(self.displays[row].isChecked())
@@ -344,7 +339,6 @@ class CheckDisView(CheckerView):
 
     def close(self):
         self.dmapper.mapped.disconnect(self.dchecked)
-#        print "DEL SIGNAL"
         super(CheckDisView, self).close()
 
 

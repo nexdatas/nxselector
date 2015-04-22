@@ -1,4 +1,4 @@
-2015-04-XX Jan Kotanski <jankotan@gmail.com>
+2015-04-22 Jan Kotanski <jankotan@gmail.com>
 	* removing memory leaks from PyQt part
 	* tagged as 1.19.4
 

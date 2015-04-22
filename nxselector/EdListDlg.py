@@ -184,6 +184,7 @@ class EdListWg(Qt.QWidget):
             self.record[dform.name] = dform.value
             self.__populateTable()
             self.dirty.emit()
+        dform.setParent(None)
 
     @Qt.pyqtSlot()
     def __edit(self):
@@ -207,6 +208,7 @@ class EdListWg(Qt.QWidget):
             self.record[dform.name] = dform.value
             self.__populateTable()
             self.dirty.emit()
+        dform.setParent(None)
 
     @Qt.pyqtSlot()
     def __remove(self):
