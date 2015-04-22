@@ -118,7 +118,7 @@ class Selector(Qt.QDialog, TaurusBaseWidget):
         if self.__progress:
             self.__progress.reset()
             self.__progress.hide()
-        if self.__commandthread.error:
+        if self.__commandthread and self.__commandthread.error:
             text = MessageBox.getText(
                 "Problems in updating Channels",
                 self.__commandthread.error)
@@ -645,13 +645,14 @@ class Selector(Qt.QDialog, TaurusBaseWidget):
         logger.debug("waiting for Thread")
         if self.__commandthread:
             self.__commandthread.wait()
-            self.__commandthread.setParent(None)
-            self.__commandthread = None
         logger.debug("waiting for Thread ENDED")
 
     def runProgress(self, commands, onclose="closeReset"):
         if self.__progress:
             return
+        if self.__commandthread:
+            self.__commandthread.setParent(None)
+            self.__commandthread = None
         self.__commandthread = CommandThread(self.state, commands, self)
         oncloseaction = getattr(self, onclose)
         self.__commandthread.finished.connect(
