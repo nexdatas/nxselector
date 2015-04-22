@@ -68,3 +68,4 @@ class MessageBox(Qt.QObject):
         layout = msgBox.layout()
         layout.addItem(spacer, layout.rowCount(), 0, 1, layout.columnCount())
         ret = msgBox.exec_()
+        msgBox.setParent(None)

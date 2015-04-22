@@ -45,6 +45,7 @@ from .CommandThread import CommandThread
 from .MessageBox import MessageBox
 
 import logging
+import gc
 logger = logging.getLogger(__name__)
 
 
@@ -71,14 +72,6 @@ class Selector(Qt.QDialog, TaurusBaseWidget):
         self.__application = application
         self.__door = door
         self.__standalone = standalone
-
-        self.old = []
-        import gc
-#        gc.set_debug(gc.DEBUG_LEAK|gc.DEBUG_STATS)
-#        gc.set_debug(gc.DEBUG_STATS)
-#        gc.set_debug(gc.DEBUG_UNCOLLECTABLE | gc.DEBUG_INSTANCES  )
-#        gc.set_debug(gc.DEBUG_UNCOLLECTABLE | gc.DEBUG_OBJECTS \
-#    | gc.DEBUG_COLLECTABLE | gc.DEBUG_INSTANCES  |gc.DEBUG_STATS)
 
         self.__progressFlag = False
         self.__doortoupdateFlag = False
@@ -188,7 +181,6 @@ class Selector(Qt.QDialog, TaurusBaseWidget):
         self.automatic = State(
             self.ui, self.state,
             self.preferences.views["CheckBoxes Dis (U)"],
-#            self.preferences.views[self.userView],
             self.rowMax)
 
         self.data = Data(self.ui, self.state, self.simple or self.user)
@@ -616,16 +608,7 @@ class Selector(Qt.QDialog, TaurusBaseWidget):
                 self, "NXSSelector: Error in Resetting Selector Server",
                 text, str(value))
         for tab in self.tabs:
-#            if tab in [self.selectable, self.automatic, self.data,
-#                       self.storage, self.preferences]:
-            if tab in [
-                self.selectable,
-                self.automatic,
-                self.data,
-                self.storage,
-                self.preferences
-                ]:
-                tab.reset()
+            tab.reset()
         logger.debug("reset selector ended")
 
     def closeReset(self):
@@ -689,39 +672,6 @@ class Selector(Qt.QDialog, TaurusBaseWidget):
                 "updateControllers",
                 "importMntGrp"
                 ])
-        from collections import Counter
-        import gc
-#        for i in range(1):
-#        for i in range(100):
-#        for i in range(1000):
-#            self.state.switchMntGrp()
-#            self.state.updateControllers()
-#            self.state.importMntGrp()
-#            print "RESET", i
-##            self.closeReset()
-#            self.reset()
-#            gc.collect()
-#            print "OBJ", len(gc.get_objects())
-#            print >> sys.stderr, Counter(
-#                [type(g).__name__ for g in gc.get_objects()]).most_common(60)
-#            print "RESET END"
-        print >> sys.stderr, gc.get_count()
-        gc.collect()
-        print len(gc.get_objects())
-        print gc.garbage
-        print >> sys.stderr, "2, ", gc.get_count()
-        print >> sys.stderr, len(gc.garbage)
-        print >> sys.stderr, str(Counter([type(g) for g in gc.garbage]))
-        mylist = Counter([type(g).__name__ for g in gc.get_objects()])
-#        print >> sys.stderr, mylist.most_common(60)
-        for el in mylist.most_common(200):
-            if el not in self.old:
-                print el,
-#            else:
-#                print "(%s)" % el,
-        self.old = mylist.most_common(200)
-        print >> sys.stderr, "3, ", gc.get_count()
-
         logger.debug("reset ENDED")
 
     @Qt.pyqtSlot()
