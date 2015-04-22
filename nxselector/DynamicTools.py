@@ -21,7 +21,6 @@
 
 """ device Model """
 
-#import sip
 import logging
 logger = logging.getLogger(__name__)
 
@@ -81,8 +80,6 @@ class DynamicTools(object):
             except:
                 if label:
                     logger.debug("ERROR del %s" % label)
-##            dangerous
-#            del fr
 
     @classmethod
     def cleanupLayoutWithItems(cls, layout):
@@ -105,8 +102,5 @@ class DynamicTools(object):
                     Qt.QObjectCleanupHandler().add(w)
                     del w
                     w = None
-#                if child:
-#                    sip.delete(child)
                 del child
             Qt.QWidget().setLayout(layout)
-#            Qt.QObjectCleanupHandler().add(layout)
