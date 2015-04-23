@@ -142,7 +142,6 @@ class CheckerView(Qt.QWidget):
                 self.displays = []
             self.spacer = None
             DynamicTools.cleanupLayoutWithItems(self.glayout)
-            Qt.QObjectCleanupHandler().add(self.layout())
             self.glayout = Qt.QGridLayout(self)
 
     def connectMapper(self):

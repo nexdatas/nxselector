@@ -42,31 +42,31 @@ class DynamicTools(object):
         while objects:
             la = objects.pop()
             try:
-                Qt.QObjectCleanupHandler().add(la)
+                if hasattr(la, "deleteLater"):
+                    la.deleteLater()
                 if label:
                     logger.debug("del %s" % label)
             except:
                 if label:
                     logger.debug("ERROR del %s" % label)
-            del la
 
     @classmethod
     def cleanupWidgets(cls, widgets, label=None):
         while widgets:
-            if hasattr(widgets, "clearLayout"):
-                wg.clearLayout()
             wg = widgets.pop()
+            if hasattr(wg, "clearLayout"):
+                wg.clearLayout()
             try:
                 wg.hide()
                 wg.close()
-                wg.setParent(None)
-                Qt.QObjectCleanupHandler().add(wg)
+                if hasattr(wg, "deleteLater"):
+                    wg.deleteLater()
                 if label:
                     logger.debug("del %s" % label)
             except:
                 if label:
                     logger.debug("ERROR del %s" % label)
-            del wg
+#            del wg
 
     @classmethod
     def cleanupFrames(cls, frames, label=None):
@@ -92,15 +92,11 @@ class DynamicTools(object):
                     w = child.widget()
                     w.hide()
                     w.close()
-                    w.setParent(None)
                     layout.removeWidget(w)
                     if hasattr(w, "deleteLater"):
                         w.deleteLater()
                         logger.debug("WL %s" % type(w))
                     else:
                         logger.debug("WW %s" % type(w))
-                    Qt.QObjectCleanupHandler().add(w)
-                    del w
                     w = None
-                del child
             Qt.QWidget().setLayout(layout)

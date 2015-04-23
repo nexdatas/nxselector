@@ -58,8 +58,6 @@ class Data(Qt.QObject):
             while child:
                 self.glayout.removeItem(child)
                 if isinstance(child, Qt.QWidgetItem):
-                    child.widget().hide()
-                    child.widget().close()
                     self.glayout.removeWidget(child.widget())
                 child = self.glayout.takeAt(0)
             self.form.dirty.disconnect(self.__setDirty)
@@ -68,8 +66,6 @@ class Data(Qt.QObject):
 
         if self.form:
             self.form.setParent(None)
-            Qt.QObjectCleanupHandler().add(self.form)
-        self.form = EdListWg(self.ui.data)
 
         if self.__simpleMode:
             self.form.disable = self.state.adminData

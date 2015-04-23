@@ -215,7 +215,9 @@ class Selector(Qt.QDialog, TaurusBaseWidget):
         self.__setButtonBoxes()
         self.__hideWidgets()
         for tab in self.tabs:
-            tab.reset()
+#            if tab in [
+#                ]:
+                tab.reset()
 
         self.__setWidgetValues()
         self.__connectSignals()
@@ -608,6 +610,13 @@ class Selector(Qt.QDialog, TaurusBaseWidget):
                 self, "NXSSelector: Error in Resetting Selector Server",
                 text, str(value))
         for tab in self.tabs:
+#            if tab in [
+#                self.selectable,
+#                self.automatic,
+#                self.data,
+#                self.storage,
+#                self.preferences
+#                ]:
             tab.reset()
         logger.debug("reset selector ended")
 
@@ -674,6 +683,7 @@ class Selector(Qt.QDialog, TaurusBaseWidget):
                 "updateControllers",
                 "importMntGrp"
                 ])
+
         logger.debug("reset ENDED")
 
     @Qt.pyqtSlot()
