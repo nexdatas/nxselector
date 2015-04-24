@@ -60,56 +60,64 @@ class Storage(Qt.QObject):
         self.__simplemode = simplemode
         self.__moduleLabel = 'module'
         self.connectSignals()
+        self.__connected = True
+
 
     def connectTimerButtons(self):
         self.ui.timerDelPushButton.clicked.connect(self.__delTimer)
         self.ui.timerAddPushButton.clicked.connect(self.__addTimer)
 
     def disconnectSignals(self):
-        self.ui.fileScanDirToolButton.pressed.disconnect(self.__setDir)
-        self.ui.fileScanDirLineEdit.editingFinished.disconnect(self.apply)
-        self.ui.fileScanLineEdit.editingFinished.disconnect(self.apply)
-                                # measurement group
+        logger.debug("disconnect signals")
+        if self.__connected:
+            self.__connected = False
+            self.ui.fileScanDirToolButton.pressed.disconnect(self.__setDir)
+            self.ui.fileScanDirLineEdit.editingFinished.disconnect(self.__dirChanged)
+            self.ui.fileScanLineEdit.editingFinished.disconnect(self.__fileChanged)
+            # measurement group
+            
+            self.ui.mntTimerComboBox.currentIndexChanged.disconnect(self.apply)
+            for cb in self.__tWidgets:
+                cb.currentIndexChanged.disconnect(self.apply)
+                
+            if hasattr(self.ui, "timerDelPushButton"):
+                self.ui.timerDelPushButton.clicked.disconnect(self.__delTimer)
+                self.ui.timerAddPushButton.clicked.disconnect(self.__addTimer)
+            self.ui.mntGrpToolButton.pressed.disconnect(self.__mntgrp_deleted)
+            self.ui.mntGrpComboBox.currentIndexChanged.disconnect(
+                self.__mntgrp_changed)
+            self.ui.mntGrpComboBox.lineEdit().editingFinished.disconnect(
+                self.__mntgrp_edited)
+            self.ui.mntServerLineEdit.editingFinished.disconnect(self.apply)
 
-        self.ui.mntTimerComboBox.currentIndexChanged.disconnect(self.apply)
-        for cb in self.__tWidgets:
-            cb.currentIndexChanged.disconnect(self.apply)
+            # device group
+            self.ui.devWriterLineEdit.editingFinished.disconnect(self.apply)
+            self.ui.devConfigLineEdit.editingFinished.disconnect(self.apply)
 
-        if hasattr(self.ui, "timerDelPushButton"):
-            self.ui.timerDelPushButton.clicked.disconnect(self.__delTimer)
-            self.ui.timerAddPushButton.clicked.disconnect(self.__addTimer)
-        self.ui.mntGrpToolButton.pressed.disconnect(self.__mntgrp_deleted)
-        self.ui.mntGrpComboBox.currentIndexChanged.disconnect(
-            self.__mntgrp_changed)
-        self.ui.mntGrpComboBox.lineEdit().editingFinished.disconnect(
-            self.__mntgrp_edited)
-        self.ui.mntServerLineEdit.editingFinished.disconnect(self.apply)
+            # dynamic component group
+            self.ui.dcLinksCheckBox.clicked.disconnect(self.apply)
+            self.ui.dcPathLineEdit.editingFinished.disconnect(self.apply)
 
-        # device group
-        self.ui.devWriterLineEdit.editingFinished.disconnect(self.apply)
-        self.ui.devConfigLineEdit.editingFinished.disconnect(self.apply)
+            # others group
+            self.ui.othersEntryCheckBox.clicked.disconnect(self.apply)
+            self.ui.devConfigPushButton.clicked.disconnect(self.__variables)
+            self.ui.propPushButton.clicked.disconnect(self.__props)
+            self.ui.labelsPushButton.clicked.disconnect(self.__labels)
+            self.ui.orderToolButton.clicked.disconnect(self.__order)
 
-        # dynamic component group
-        self.ui.dcLinksCheckBox.clicked.disconnect(self.apply)
-        self.ui.dcPathLineEdit.editingFinished.disconnect(self.apply)
-
-        # others group
-        self.ui.othersEntryCheckBox.clicked.disconnect(self.apply)
-        self.ui.devConfigPushButton.clicked.disconnect(self.__variables)
-        self.ui.propPushButton.clicked.disconnect(self.__props)
-        self.ui.labelsPushButton.clicked.disconnect(self.__labels)
-        self.ui.orderToolButton.clicked.disconnect(self.__order)
-
-        self.ui.groupsPushButton.clicked.disconnect(self.__groups)
-        self.ui.resetDescriptionsPushButton.clicked.disconnect(
-            self.__resetDescriptions)
-        self.ui.errorsPushButton.clicked.disconnect(self.__errors)
-        self.ui.infoPushButton.clicked.disconnect(self.__info)
+            self.ui.groupsPushButton.clicked.disconnect(self.__groups)
+            self.ui.resetDescriptionsPushButton.clicked.disconnect(
+                self.__resetDescriptions)
+            self.ui.errorsPushButton.clicked.disconnect(self.__errors)
+            self.ui.infoPushButton.clicked.disconnect(self.__info)
+            logger.debug("disconnect signals END")
 
     def connectSignals(self):
+        logger.debug("connect signals")
+        self.__connected = True
         self.ui.fileScanDirToolButton.pressed.connect(self.__setDir)
-        self.ui.fileScanDirLineEdit.editingFinished.connect(self.apply)
-        self.ui.fileScanLineEdit.editingFinished.connect(self.apply)
+        self.ui.fileScanDirLineEdit.editingFinished.connect(self.__dirChanged)
+        self.ui.fileScanLineEdit.editingFinished.connect(self.__fileChanged)
                                 # measurement group
 
         self.ui.mntTimerComboBox.currentIndexChanged.connect(self.apply)
@@ -146,6 +154,7 @@ class Storage(Qt.QObject):
             self.__resetDescriptions)
         self.ui.errorsPushButton.clicked.connect(self.__errors)
         self.ui.infoPushButton.clicked.connect(self.__info)
+        logger.debug("connect signals END")
 
     def updateMntGrpComboBox(self):
         self.disconnectSignals()
@@ -495,6 +504,38 @@ class Storage(Qt.QObject):
         if str(dirname) and str(dirname) != str(self.state.scanDir):
             self.ui.fileScanDirLineEdit.setText(dirname)
             self.state.scanDir = str(dirname)
+            self.apply()
+
+    @Qt.pyqtSlot()
+    def __dirChanged(self):
+        dirname  = str(self.ui.fileScanDirLineEdit.text())
+        if self.state.scanDir != dirname:
+            self.apply()
+
+    @Qt.pyqtSlot()
+    def __fileChanged(self):
+        fnames = self.__fileNames(False)
+        if json.dumps(self.state.scanFile) !=  json.dumps(fnames):
+            self.apply()
+
+    def __fileNames(self, message=True):
+        files = str(self.ui.fileScanLineEdit.text())
+        sfiles =  files.replace(';', ' ').replace(',', ' ').split()
+        nxsfiles = []
+        for idx, f in enumerate(sfiles):
+            if f.split(".")[-1] == 'nxs':
+                nxsfiles.append(idx)
+
+        if message and len(nxsfiles) > 1 \
+                and self.state.writerDevice != str(self.__moduleLabel):
+            Qt.QMessageBox.warning(
+                self.ui.storage,
+                "To many 'nxs' scan files",
+                "Only %s will be used." % (sfiles[nxsfiles[0]]))
+
+            for f in reversed(nxsfiles[1:]):
+                sfiles.pop(f)
+        return sfiles
 
     @Qt.pyqtSlot()
     def apply(self):
@@ -520,21 +561,7 @@ class Storage(Qt.QObject):
 
         self.state.scanDir = str(self.ui.fileScanDirLineEdit.text())
 #        self.state.scanID = int(self.ui.fileScanIDSpinBox.value())
-        files = str(self.ui.fileScanLineEdit.text())
-        sfiles = files.replace(';', ' ').replace(',', ' ').split()
-        nxsfiles = []
-        for idx, f in enumerate(sfiles):
-            if f.split(".")[-1] == 'nxs':
-                nxsfiles.append(idx)
-        if len(nxsfiles) > 1 \
-                and self.state.writerDevice != str(self.__moduleLabel):
-            Qt.QMessageBox.warning(
-                self.ui.storage,
-                "To many 'nxs' scan files",
-                "Only %s will be used." % (sfiles[nxsfiles[0]]))
-
-            for f in reversed(nxsfiles[1:]):
-                sfiles.pop(f)
+        sfiles = self.__fileNames()
         self.state.scanFile = sfiles
 
         # dynamic component group
