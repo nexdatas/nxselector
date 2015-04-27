@@ -1,0 +1,118 @@
+#!/usr/bin/env python
+#   This file is part of nexdatas - Tango Server for NeXus data writer
+#
+#    Copyright (C) 2014-2015 DESY, Jan Kotanski <jkotan@mail.desy.de>
+#
+#    nexdatas is free software: you can redistribute it and/or modify
+#    it under the terms of the GNU General Public License as published by
+#    the Free Software Foundation, either version 3 of the License, or
+#    (at your option) any later version.
+#
+#    nexdatas is distributed in the hope that it will be useful,
+#    but WITHOUT ANY WARRANTY; without even the implied warranty of
+#    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#    GNU General Public License for more details.
+#
+#    You should have received a copy of the GNU General Public License
+#    along with nexdatas.  If not, see <http://www.gnu.org/licenses/>.
+## \package nxselector nexdatas
+## \file nxsscan
+# GUI for setting sardana scans with NeXus Recorder
+
+""" NXS Scan - GUI for setting sardana scans with NeXus Recorder"""
+
+
+import logging
+import sys
+import os
+from optparse import OptionParser
+
+import nxselector
+from nxselector.Selector import Selector
+from nxselector import __version__
+
+import nxselector.qrc as qrc
+
+
+logger = logging.getLogger(__name__)
+
+
+## the main function
+def main():
+
+    try:
+        from taurus.external.qt import Qt
+    except:
+        from taurus.qt import Qt
+
+    Qt.QResource.registerResource(
+        os.path.join(qrc.__path__[0], "resources.rcc"))
+
+    import taurus.qt.qtgui.application
+    Application = taurus.qt.qtgui.application.TaurusApplication
+
+    app = Application.instance()
+    standalone = app is None
+    server = None
+    expert = True
+
+    if standalone:
+        import taurus.core.util.argparse
+        parser = taurus.core.util.argparse.get_taurus_parser()
+
+        parser.add_option(
+            "-s", "--server", dest="server",
+            help="selector server")
+        parser.add_option(
+            "-d", "--door", dest="door",
+            help="door device name")
+        parser.add_option(
+            "-t", "--style", dest="style",
+            help="Qt style")
+        parser.add_option(
+            "-y", "--stylesheet", dest="stylesheet",
+            help="Qt stylesheet")
+        parser.add_option(
+            "-m", "--mode", dest="mode",
+            help="interface mode, i.e. simple, user, advanced, expert")
+        parser.add_option(
+            "", "--set-as-default-mode",
+            action="store_true",
+            default=False,
+            dest="setdefault",
+            help="set the current mode as default")
+
+        app = Application(
+            sys.argv,
+            cmd_line_parser=parser,
+            app_name="NXS Component Selector",
+            app_version=nxselector.__version__,
+            org_domain="desy.de",
+            org_name="DESY")
+
+        app.setWindowIcon(Qt.QIcon(":/configtools.png"))
+
+        (options, _) = parser.parse_args()
+        if options.style:
+            app.setStyle(options.style)
+        server = options.server
+        if options.stylesheet:
+            app.setStyle(options.stylesheet)
+        if options.mode:
+            umode = options.mode
+        else:
+            umode = None
+
+    form = Selector(server, standalone=True, umode=umode, 
+                    setdefault=options.setdefault,
+                    door=options.door)
+    form.show()
+
+    if standalone:
+        sys.exit(app.exec_())
+    else:
+        return form
+
+
+if __name__ == "__main__":
+    main()
