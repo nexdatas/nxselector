@@ -126,6 +126,7 @@ class Preferences(Qt.QObject):
         self.layoutFile = os.getcwd()
         self.completers = []
 
+        self.connected = False
         self.connectSignals()
 
     def __setmgroups(self, groups):
@@ -170,30 +171,35 @@ class Preferences(Qt.QObject):
                        doc='detector frames')
 
     def disconnectSignals(self):
-        self.ui.devSettingsLineEdit.editingFinished.disconnect(
-            self.on_devSettingsLineEdit_editingFinished)
-        self.ui.groupLineEdit.editingFinished.disconnect(
-            self.on_layoutLineEdits_editingFinished)
-        self.ui.frameLineEdit.editingFinished.disconnect(
-            self.on_layoutLineEdits_editingFinished)
+        if self.connected:
+            self.ui.devSettingsLineEdit.editingFinished.disconnect(
+                self.on_devSettingsLineEdit_editingFinished)
+            self.ui.groupLineEdit.editingFinished.disconnect(
+                self.on_layoutLineEdits_editingFinished)
+            self.ui.frameLineEdit.editingFinished.disconnect(
+                self.on_layoutLineEdits_editingFinished)
 
-        self.ui.layoutButtonBox.button(
-            Qt.QDialogButtonBox.Open).pressed.disconnect(self.layoutLoad)
-        self.ui.layoutButtonBox.button(
-            Qt.QDialogButtonBox.Save).pressed.disconnect(self.layoutSave)
+            self.ui.layoutButtonBox.button(
+                Qt.QDialogButtonBox.Open).pressed.disconnect(self.layoutLoad)
+            self.ui.layoutButtonBox.button(
+                Qt.QDialogButtonBox.Save).pressed.disconnect(self.layoutSave)
+        self.connected = False    
 
     def connectSignals(self):
-        self.ui.devSettingsLineEdit.editingFinished.connect(
-            self.on_devSettingsLineEdit_editingFinished)
-        self.ui.groupLineEdit.editingFinished.connect(
-            self.on_layoutLineEdits_editingFinished)
-        self.ui.frameLineEdit.editingFinished.connect(
-            self.on_layoutLineEdits_editingFinished)
-
-        self.ui.layoutButtonBox.button(
-            Qt.QDialogButtonBox.Open).pressed.connect(self.layoutLoad)
-        self.ui.layoutButtonBox.button(
-            Qt.QDialogButtonBox.Save).pressed.connect(self.layoutSave)
+        if not self.connected:
+            self.ui.devSettingsLineEdit.editingFinished.connect(
+                self.on_devSettingsLineEdit_editingFinished)
+            self.ui.groupLineEdit.editingFinished.connect(
+                self.on_layoutLineEdits_editingFinished)
+            self.ui.frameLineEdit.editingFinished.connect(
+                self.on_layoutLineEdits_editingFinished)
+            
+            self.ui.layoutButtonBox.button(
+                Qt.QDialogButtonBox.Open).pressed.connect(self.layoutLoad)
+            self.ui.layoutButtonBox.button(
+                Qt.QDialogButtonBox.Save).pressed.connect(self.layoutSave)
+        self.connected = True
+            
 
     def __clearCompleters(self):
         self.ui.groupLineEdit.setCompleter(None)
