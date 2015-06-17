@@ -183,7 +183,7 @@ class Preferences(Qt.QObject):
                 Qt.QDialogButtonBox.Open).pressed.disconnect(self.layoutLoad)
             self.ui.layoutButtonBox.button(
                 Qt.QDialogButtonBox.Save).pressed.disconnect(self.layoutSave)
-        self.connected = False    
+        self.connected = False
 
     def connectSignals(self):
         if not self.connected:
@@ -193,13 +193,12 @@ class Preferences(Qt.QObject):
                 self.on_layoutLineEdits_editingFinished)
             self.ui.frameLineEdit.editingFinished.connect(
                 self.on_layoutLineEdits_editingFinished)
-            
+
             self.ui.layoutButtonBox.button(
                 Qt.QDialogButtonBox.Open).pressed.connect(self.layoutLoad)
             self.ui.layoutButtonBox.button(
                 Qt.QDialogButtonBox.Save).pressed.connect(self.layoutSave)
         self.connected = True
-            
 
     def __clearCompleters(self):
         self.ui.groupLineEdit.setCompleter(None)

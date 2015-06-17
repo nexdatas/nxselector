@@ -62,7 +62,6 @@ class Storage(Qt.QObject):
         self.connectSignals()
         self.__connected = True
 
-
     def connectTimerButtons(self):
         self.ui.timerDelPushButton.clicked.connect(self.__delTimer)
         self.ui.timerAddPushButton.clicked.connect(self.__addTimer)
@@ -72,14 +71,16 @@ class Storage(Qt.QObject):
         if self.__connected:
             self.__connected = False
             self.ui.fileScanDirToolButton.pressed.disconnect(self.__setDir)
-            self.ui.fileScanDirLineEdit.editingFinished.disconnect(self.__dirChanged)
-            self.ui.fileScanLineEdit.editingFinished.disconnect(self.__fileChanged)
+            self.ui.fileScanDirLineEdit.editingFinished.disconnect(
+                self.__dirChanged)
+            self.ui.fileScanLineEdit.editingFinished.disconnect(
+                self.__fileChanged)
             # measurement group
-            
+
             self.ui.mntTimerComboBox.currentIndexChanged.disconnect(self.apply)
             for cb in self.__tWidgets:
                 cb.currentIndexChanged.disconnect(self.apply)
-                
+
             if hasattr(self.ui, "timerDelPushButton"):
                 self.ui.timerDelPushButton.clicked.disconnect(self.__delTimer)
                 self.ui.timerAddPushButton.clicked.disconnect(self.__addTimer)
@@ -508,19 +509,19 @@ class Storage(Qt.QObject):
 
     @Qt.pyqtSlot()
     def __dirChanged(self):
-        dirname  = str(self.ui.fileScanDirLineEdit.text())
+        dirname = str(self.ui.fileScanDirLineEdit.text())
         if self.state.scanDir != dirname:
             self.apply()
 
     @Qt.pyqtSlot()
     def __fileChanged(self):
         fnames = self.__fileNames(False)
-        if json.dumps(self.state.scanFile) !=  json.dumps(fnames):
+        if json.dumps(self.state.scanFile) != json.dumps(fnames):
             self.apply()
 
     def __fileNames(self, message=True):
         files = str(self.ui.fileScanLineEdit.text())
-        sfiles =  files.replace(';', ' ').replace(',', ' ').split()
+        sfiles = files.replace(';', ' ').replace(',', ' ').split()
         nxsfiles = []
         for idx, f in enumerate(sfiles):
             if f.split(".")[-1] == 'nxs':
