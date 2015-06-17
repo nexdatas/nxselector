@@ -316,7 +316,7 @@ class Storage(Qt.QObject):
             self.apply()
         logger.debug("ADD Timer end")
 
-    def __appendTimer(self):
+    def __appendTimer(self, connect=True):
         cb = Qt.QComboBox(self.ui.storage)
         self.__tWidgets.append(cb)
         if self.__layout is None:
@@ -324,7 +324,8 @@ class Storage(Qt.QObject):
             self.__layout.setContentsMargins(0, 0, 0, 0)
         self.__layout.addWidget(cb)
         cb.setEnabled(not self.__simplemode)
-        cb.currentIndexChanged.connect(self.apply)
+        if connect:
+            cb.currentIndexChanged.connect(self.apply)
 
     @Qt.pyqtSlot()
     def __delTimer(self):
@@ -391,12 +392,11 @@ class Storage(Qt.QObject):
             else:
                 sfile = self.state.scanFile
             self.ui.fileScanLineEdit.setText(sfile)
-
         self.__updateTimer(self.ui.mntTimerComboBox, 0)
         while self.state.timers is not None and \
                 len(self.state.timers) > len(self.__tWidgets) + 1:
             logger.debug("ADDING timer")
-            self.__appendTimer()
+            self.__appendTimer(connect=False)
         while self.state.timers and \
                 len(self.state.timers) < len(self.__tWidgets) + 1:
             logger.debug("removing timer")

@@ -64,6 +64,8 @@ class Selector(Qt.QDialog, TaurusBaseWidget):
         TaurusBaseWidget.__init__(self, 'NXSExpDescriptionEditor')
         self.setWindowFlags(Qt.Qt.Window)
         self.loadUi()
+        self.debug("SELECTOR load")
+        self.show()
         if umode != 'administrator':
             self.ui.tabWidget.removeTab(4)
         logger.debug("PARAMETERS: %s %s",
@@ -194,7 +196,7 @@ class Selector(Qt.QDialog, TaurusBaseWidget):
         if sg:
             self.restoreGeometry(sg)
 
-        self.resize(0, 0)
+#        self.resize(0, 0)
 
         self.title = 'NeXus Component Selector'
         self.__dirty = True
