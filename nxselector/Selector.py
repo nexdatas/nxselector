@@ -827,9 +827,28 @@ class Selector(Qt.QDialog, TaurusBaseWidget):
             value = traceback.format_exc()
             text = MessageBox.getText("Problems in resetting Server")
             self.setDirty(True)
+            if str(text).startswith("Exception: User Data not defined ["):
+                ctext = str(text).replace("Exception: User Data not defined ",
+                                          "").replace("'",'"').split('\n')[0].strip()
+                if ctext:
+                    self.defineMissingKeys(ctext)
             MessageBox.warning(
                 self,
                 "NXSSelector: Error in applying Selector Server settings",
                 text, str(value))
-
+            
+            
         logger.debug("apply END")
+
+    def defineMissingKeys(self, ctext):
+        missingkeys = json.loads(ctext)
+        if missingkeys:    
+            print "MIS", missingkeys
+        for key in missingkeys:    
+            self.state.datarecord[key] = ""
+        self.data.reset()    
+        if self.simple:    
+            self.ui.tabWidget.setCurrentIndex(1)
+        else:
+            self.ui.tabWidget.setCurrentIndex(2)
+            
