@@ -1,3 +1,7 @@
+2015-06-XX Jan Kotanski <jankotan@gmail.com>
+	* adding define missing keys
+	* tagged as 1.19.9
+
 2015-06-17 Jan Kotanski <jankotan@gmail.com>
 	* fix for connecting timer signals
 	* tagged as 1.19.8
