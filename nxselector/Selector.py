@@ -94,6 +94,7 @@ class Selector(Qt.QDialog, TaurusBaseWidget):
         self.__commandthread = None
 
         self.__resetServer(server)
+        self.__datatab = 2
 
     def __setmode(self, umode):
         ## expert mode
@@ -342,7 +343,8 @@ class Selector(Qt.QDialog, TaurusBaseWidget):
             self.ui.timerButtonFrame.setEnabled(False)
             self.ui.state.hide()
             self.ui.tabWidget.removeTab(1)
-            self.ui.tabWidget.setCurrentIndex(1)
+            self.__datatab -= 1
+            self.ui.tabWidget.setCurrentIndex(self.__datatab)
 
     def __connectSignals(self):
         self.ui.buttonBox.button(
@@ -828,27 +830,21 @@ class Selector(Qt.QDialog, TaurusBaseWidget):
             text = MessageBox.getText("Problems in resetting Server")
             self.setDirty(True)
             if str(text).startswith("Exception: User Data not defined ["):
-                ctext = str(text).replace("Exception: User Data not defined ",
-                                          "").replace("'",'"').split('\n')[0].strip()
-                if ctext:
-                    self.defineMissingKeys(ctext)
+                ctext = str(text).replace(
+                    "Exception: User Data not defined ", "").replace(
+                    "'", '"').split('\n')[0].strip()
+                self.defineMissingKeys(ctext)
             MessageBox.warning(
                 self,
                 "NXSSelector: Error in applying Selector Server settings",
                 text, str(value))
-            
-            
+
         logger.debug("apply END")
 
     def defineMissingKeys(self, ctext):
-        missingkeys = json.loads(ctext)
-        if missingkeys:    
-            print "MIS", missingkeys
-        for key in missingkeys:    
-            self.state.datarecord[key] = ""
-        self.data.reset()    
-        if self.simple:    
-            self.ui.tabWidget.setCurrentIndex(1)
-        else:
-            self.ui.tabWidget.setCurrentIndex(2)
-            
+        if ctext:
+            missingkeys = json.loads(ctext)
+            for key in missingkeys:
+                self.state.datarecord[key] = ""
+            self.data.reset()
+            self.ui.tabWidget.setCurrentIndex(self.__datatab)
