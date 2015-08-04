@@ -1,3 +1,7 @@
+2015-07-04 Jan Kotanski <jankotan@gmail.com>
+	* extra timers only from availableTimers
+	* tagged as 1.20.0
+
 2015-06-09 Jan Kotanski <jankotan@gmail.com>
 	* adding define missing keys
 	* tagged as 1.19.9

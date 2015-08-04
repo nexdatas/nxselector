@@ -96,6 +96,7 @@ class ServerState(object):
         self.labeltypes = {}
 
         self.errors = []
+        self.notimerresctriction = False
 
         try:
             self.setServer()
@@ -199,7 +200,13 @@ class ServerState(object):
 
         self.__fetchFileData()
         self.__fetchEnvData()
-        self.atlist = list(set(self.atlist) | set(self.timers))
+        if self.notimerresctriction:
+            ## old version to check
+            self.atlist = list(set(self.atlist) | set(self.timers))
+        else:
+            if self.timers:
+                self.atlist = list(set(self.atlist) | set([self.timers[0]]))
+            self.timers = [tm for tm in self.timers if tm in self.atlist]
 
     def __fetchFileData(self):
         self.timers = self.__importList("Timer", True)
