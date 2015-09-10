@@ -536,7 +536,7 @@ class Storage(Qt.QObject):
 
             for f in reversed(nxsfiles[1:]):
                 sfiles.pop(f)
-        return sfiles
+        return sfiles[0] if len(sfiles) == 1 else sfiles
 
     @Qt.pyqtSlot()
     def apply(self):
@@ -562,8 +562,7 @@ class Storage(Qt.QObject):
 
         self.state.scanDir = str(self.ui.fileScanDirLineEdit.text())
 #        self.state.scanID = int(self.ui.fileScanIDSpinBox.value())
-        sfiles = self.__fileNames()
-        self.state.scanFile = sfiles
+        self.state.scanFile = self.__fileNames()
 
         # dynamic component group
         self.state.dynamicComponents = True

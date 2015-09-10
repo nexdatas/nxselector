@@ -1,3 +1,7 @@
+2015-09-10 Jan Kotanski <jankotan@gmail.com>
+	* store ScanFile as string if only one
+	* tagged as 1.20.1
+
 2015-07-04 Jan Kotanski <jankotan@gmail.com>
 	* extra timers only from availableTimers
 	* tagged as 1.20.0

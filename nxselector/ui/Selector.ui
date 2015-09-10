@@ -739,7 +739,7 @@ Additionally user can add some additional data , e.g. comments.</string>
                           <string>Show information about used Tango Servers</string>
                          </property>
                          <property name="text">
-                          <string>Info ...</string>
+                          <string>Server Info ...</string>
                          </property>
                         </widget>
                        </item>
