@@ -1,3 +1,7 @@
+2015-09-22 Jan Kotanski <jankotan@gmail.com>
+	* fixes buttons in administrator mode
+	* tagged as 1.20.2
+
 2015-09-10 Jan Kotanski <jankotan@gmail.com>
 	* store ScanFile as string if only one
 	* tagged as 1.20.1

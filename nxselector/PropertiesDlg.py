@@ -51,7 +51,7 @@ class PropertiesDlg(Qt.QDialog):
         layout.addWidget(self.widget)
         self.setLayout(layout)
 
-        self.widget.ui.closePushButton.clicked(self.accept)
+        self.widget.ui.closePushButton.clicked.connect(self.accept)
         self.widget.ui.closePushButton.show()
         self.widget.dirty.connect(self.__setDirty)
 

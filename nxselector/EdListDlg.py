@@ -48,7 +48,7 @@ class EdListDlg(Qt.QDialog):
         self.disable = []
 
     def createGUI(self):
-        self.widget.dirty.disconnect(self.__setDirty)
+#        self.widget.dirty.disconnect(self.__setDirty)
         self.widget.simple = self.simple
         self.widget.available_names = self.available_names
         self.widget.headers = self.headers
