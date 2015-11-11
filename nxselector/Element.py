@@ -105,6 +105,8 @@ class DSElement(Element):
 
     def _getChecked(self):
         res = self.state.dsgroup
+        if self.name in self.state.timers:
+            return True
         if self.name in res.keys():
             return res[self.name]
         return False
@@ -132,9 +134,14 @@ class DSElement(Element):
             if self.name in nd:
                 if status:
                     nd.remove(self.name)
+                    if self.name in self.state.timers:
+                        dc[self.name] = True
             else:
                 if not status:
-                    nd.append(self.name)
+                    if self.name in self.state.timers:
+                        dc[self.name] = False
+                    else:
+                        nd.append(self.name)
                 else:
                     dc[self.name] = True
 
