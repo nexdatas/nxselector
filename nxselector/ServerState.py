@@ -196,7 +196,7 @@ class ServerState(object):
 
         self.vrcpdict = self.__loadDict("variableComponents")
         self.fullnames = self.__loadDict("fullDeviceNames")
-        self.adminData = self.__loadList("adminData", True)
+        self.admindata = self.__loadList("admindata", True)
 
         self.__fetchFileData()
         self.__fetchEnvData()

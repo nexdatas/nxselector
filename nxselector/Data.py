@@ -68,7 +68,7 @@ class Data(Qt.QObject):
             self.form.setParent(None)
 
         if self.__simpleMode:
-            self.form.disable = self.state.adminData
+            self.form.disable = self.state.admindata
         self.form.record = self.state.datarecord
         names = self.state.clientRecords()
         logger.debug("NAMES: %s " % names)
