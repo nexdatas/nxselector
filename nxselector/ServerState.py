@@ -70,6 +70,7 @@ class ServerState(object):
 
         self.dsgroup = {}
         self.labels = {}
+        self.properties = {}
         self.nodisplay = []
         self.cpgroup = {}
         self.acpgroup = {}
@@ -157,46 +158,62 @@ class ServerState(object):
         if not self.__dp:
             self.setServer()
         if not self.server:
-            self.__dp.exportAllEnv()
-        self.__conf = json.loads(self.__dp.configuration)
+            self.__dp.exportEnvProfile()
+        self.__conf = json.loads(self.__dp.profileConfiguration)
 
     def fetchErrors(self):
         if not self.__dp:
             self.setServer()
         self.errors = self.__loadList("descriptionErrors")
         return self.errors
+    
+    def setProperties(self):
+        if "label" in self.properties:
+            self.labels = self.properties["label"]
+        if "link" in self.properties:
+            self.labellinks = self.properties["link"]
+        if "nexus_path" in self.properties:
+            self.labelpaths = self.properties["nexus_path"]
+        if "shape" in self.properties:
+            self.labelshapes = self.properties["shape"]
+        if "data_type" in self.properties:
+            self.labeltypes = self.properties["data_type"]        
 
+    def getProperties(self):
+        self.properties["label"] = self.labels
+        self.properties["link"] = self.labellinks
+        self.properties["nexus_path"] = self.labelpaths
+        self.properties["shape"] = self.labelshapes
+        self.properties["data_type"] = self.labeltypes
+    
     ## fetches configuration setting from server
     def fetchSettings(self):
         self.__fetchConfiguration()
 
-        self.cpgroup = self.__importDict("ComponentGroup")
-        self.dsgroup = self.__importDict("DataSourceGroup")
-        self.acpgroup = self.__importDict("AutomaticComponentGroup")
-        self.labels = self.__importDict("Labels")
-        self.labellinks = self.__importDict("LabelLinks")
-        self.labelpaths = self.__importDict("LabelPaths")
-        self.labelshapes = self.__importDict("LabelShapes")
-        self.labeltypes = self.__importDict("LabelTypes")
-        self.datarecord = self.__importDict("DataRecord")
+        self.cpgroup = self.__importDict("ComponentSelection")
+        self.dsgroup = self.__importDict("DataSourceSelection")
+        self.acpgroup = self.__importDict("ComponentPreselection")
+        self.properties = self.__importDict("ChannelProperties")
+        self.setProperties()
+        self.datarecord = self.__importDict("UserData")
         self.configvars = self.__importDict("ConfigVariables")
 
-        self.nodisplay = self.__importList("HiddenElements", True)
+        self.nodisplay = self.__importList("UnplottedComponents", True)
         self.orderedchannels = self.__importList("OrderedChannels", True)
         self.idslist = self.__importList("InitDataSources", True)
 
         self.avcplist = self.__getList("availableComponents")
         self.avdslist = self.__getList("availableDataSources")
-        self.avmglist = self.__getList("availableMeasurementGroups")
+        self.avmglist = self.__getList("availableMntGrps")
         self.mcplist = self.__getList("mandatoryComponents")
 
-        self.acplist = self.__loadList("automaticComponents")
-        self.atlist = list(self.__loadList("availableTimers"))
-        self.description = self.__loadList("description", True)
+        self.acplist = self.__getList("preselectedComponents")
+        self.atlist = self.__getList("availableTimers")
+        self.description = self.__getList("componentDescription", True)
 
-        self.vrcpdict = self.__loadDict("variableComponents")
-        self.fullnames = self.__loadDict("fullDeviceNames")
-        self.admindata = self.__loadList("admindata", True)
+        self.vrcpdict = self.__getDict("variableComponents")
+        self.fullnames = self.__getDict("fullDeviceNames")
+        self.admindata = self.__getList("administratorDataNames")
 
         self.__fetchFileData()
         self.__fetchEnvData()
@@ -221,8 +238,8 @@ class ServerState(object):
         self.writerDevice = str(self.__importData("WriterDevice"))
 
         self.appendEntry = self.__importData("AppendEntry")
-        self.dynamicLinks = self.__importData("DynamicLinks")
-        self.dynamicPath = str(self.__importData("DynamicPath"))
+        self.dynamicLinks = self.__importData("DefaultDynamicLinks")
+        self.dynamicPath = str(self.__importData("DefaultDynamicPath"))
 
     def __fetchEnvData(self):
         params = {"ScanDir": "scanDir",
@@ -232,7 +249,7 @@ class ServerState(object):
         if not self.__dp:
             self.setServer()
 
-        jvalue = self.__command(self.__dp, "fetchEnvData")
+        jvalue = self.__command(self.__dp, "scanEnvVariables")
         value = json.loads(jvalue)
 
         for var, attr in params.items():
@@ -254,7 +271,7 @@ class ServerState(object):
         for var, attr in params.items():
             value[var] = getattr(self, attr)
         jvalue = json.dumps(value)
-        self.scanID = self.__command(self.__dp, "storeEnvData", jvalue)
+        self.scanID = self.__command(self.__dp, "setScanEnvVariables", jvalue)
         logger.debug("Store Env: %s" % (jvalue))
 
     def __storeFileData(self):
@@ -270,15 +287,15 @@ class ServerState(object):
         self.__exportList("Timer", self.timers)
         self.__exportData("AppendEntry", self.appendEntry)
         self.__exportData("DynamicComponents", self.dynamicComponents)
-        self.__exportData("DynamicLinks", self.dynamicLinks)
-        self.__exportData("DynamicPath", self.dynamicPath)
+        self.__exportData("DefaultDynamicLinks", self.dynamicLinks)
+        self.__exportData("DefaultDynamicPath", self.dynamicPath)
 
     def storeGroups(self):
         if not self.__dp:
             self.setServer()
-        self.__exportDict("DataSourceGroup", self.dsgroup)
-        self.__exportDict("ComponentGroup", self.cpgroup)
-        self.__exportDict("AutomaticComponentGroup", self.acpgroup)
+        self.__exportDict("DataSourceSelection", self.dsgroup)
+        self.__exportDict("ComponentSelection", self.cpgroup)
+        self.__exportDict("ComponentPreselection", self.acpgroup)
         self.__exportList("InitDataSources", self.idslist)
         self.__storeConfiguration()
 
@@ -288,39 +305,36 @@ class ServerState(object):
             self.setServer()
         self.__storeEnvData()
         self.__storeFileData()
-        self.__exportDict("DataSourceGroup", self.dsgroup)
-        self.__exportDict("ComponentGroup", self.cpgroup)
-        self.__exportDict("AutomaticComponentGroup", self.acpgroup)
+        self.__exportDict("DataSourceSelection", self.dsgroup)
+        self.__exportDict("ComponentSelection", self.cpgroup)
+        self.__exportDict("ComponentPreselection", self.acpgroup)
         self.__exportList("InitDataSources", self.idslist)
-        self.__exportDict("Labels", self.labels)
-        self.__exportDict("LabelLinks", self.labellinks)
-        self.__exportDict("LabelPaths", self.labelpaths)
-        self.__exportDict("LabelShapes", self.labelshapes)
-        self.__exportDict("LabelTypes", self.labeltypes)
-        self.__exportList("HiddenElements", self.nodisplay)
+        self.getProperties()
+        self.__exportDict("ChannelProperties", self.properties)
+        self.__exportList("UnplottedComponents", self.nodisplay)
         self.__exportList("OrderedChannels", self.orderedchannels)
-        self.__exportDict("DataRecord", self.datarecord)
+        self.__exportDict("UserData", self.datarecord)
         self.__exportDict("ConfigVariables", self.configvars)
         if not self.server:
-            self.__dp.exportAllEnv()
+            self.__dp.exportEnvProfile()
         self.__storeConfiguration()
 
     def __storeConfiguration(self):
         if not self.__dp:
             self.setServer()
-        self.__dp.configuration = str(json.dumps(self.__conf))
+        self.__dp.profileConfiguration = str(json.dumps(self.__conf))
         if not self.server:
-            self.__dp.exportAllEnv()
+            self.__dp.exportEnvProfile()
 
     def fetchMntGrp(self):
         if not self.__dp:
             self.setServer()
-        self.__command(self.__dp, "fetchConfiguration")
+        self.__command(self.__dp, "fetchProfile")
 
     def switchMntGrp(self):
         if not self.__dp:
             self.setServer()
-        self.__command(self.__dp, "switchMntGrp")
+        self.__command(self.__dp, "switchProfile")
 
     ## update measurement group
     def updateMntGrp(self):
@@ -341,7 +355,7 @@ class ServerState(object):
     def isMntGrpChanged(self):
         if not self.__dp:
             self.setServer()
-        return self.__command(self.__dp, "isMntGrpChanged")
+        return self.__command(self.__dp, "isMntGrpUpdated")
 
     def importMntGrp(self):
         if not self.__dp:
@@ -351,13 +365,13 @@ class ServerState(object):
     def createConfiguration(self):
         if not self.__dp:
             self.setServer()
-        return self.__command(self.__dp, "createConfiguration", [])
+        return self.__command(self.__dp, "createWriterConfiguration", [])
 
     def deleteMntGrp(self, name):
         if not self.__dp:
             self.setServer()
-        self.__command(self.__dp, "deleteMntGrp", str(name))
-        self.avmglist = self.__getList("availableMeasurementGroups")
+        self.__command(self.__dp, "deleteProfile", str(name))
+        self.avmglist = self.__getList("availableMntGrps")
         if self.avmglist:
             self.mntgrp = self.avmglist[0]
             self.storeData("mntGrp", self.mntgrp)
@@ -373,40 +387,40 @@ class ServerState(object):
 
     def getConfiguration(self):
         self.storeSettings()
-        return self.__dp.configuration
+        return self.__dp.profileConfiguration
 
     def setConfiguration(self, conf):
-        self.__dp.configuration = conf
+        self.__dp.profileConfiguration = conf
         self.__command(self.__dp, "updateMntGrp")
         self.fetchSettings()
 
     def resetDescriptions(self):
         if hasattr(self.__dp, "command_inout_asynch"):
-#            aid = self.__dp.command_inout_asynch("updateControllers")
+#            aid = self.__dp.command_inout_asynch("PreselectComponents")
 #            self.__wait(self.__dp)
             try:
-                self.__command(self.__dp, "resetAutomaticComponents")
+                self.__command(self.__dp, "resetPreselectedComponents")
             except PyTango.CommunicationFailed as e:
                 if e[-1].reason == "API_DeviceTimedOut":
                     self.__wait(self.__dp)
                 else:
                     raise
         else:
-            self.__command(self.__dp, "resetAutomaticComponents")
+            self.__command(self.__dp, "resetPreselectedComponents")
 
     def updateControllers(self):
         if hasattr(self.__dp, "command_inout_asynch"):
-#            aid = self.__dp.command_inout_asynch("updateControllers")
+#            aid = self.__dp.command_inout_asynch("PreselectComponents")
 #            self.__wait(self.__dp)
             try:
-                self.__command(self.__dp, "updateControllers")
+                self.__command(self.__dp, "PreselectComponents")
             except PyTango.CommunicationFailed as e:
                 if e[-1].reason == "API_DeviceTimedOut":
                     self.__wait(self.__dp)
                 else:
                     raise
         else:
-            self.__command(self.__dp, "updateControllers")
+            self.__command(self.__dp, "PreselectComponents")
 
     def setServer(self):
 
@@ -555,7 +569,7 @@ class ServerState(object):
         logger.debug(dc)
         return dc
 
-    def __getList(self, name):
+    def __getList(self, name, encoded=False):
         if not self.__dp:
             self.setServer()
         if self.server:
@@ -567,7 +581,27 @@ class ServerState(object):
         logger.debug(dc)
         res = []
         if dc:
+            if encoded:
+                dc = json.loads(dc)
             if isinstance(dc, (list, tuple)):
+                res = dc
+        logger.debug(" %s = %s" % (name, res))
+        return res
+
+    def __getDict(self, name):
+        if not self.__dp:
+            self.setServer()
+        if self.server:
+            self.__dp.ping()
+            dc = self.__dp.command_inout(name)
+        else:
+            dc = getattr(self.__dp, name)()
+
+        logger.debug(dc)
+        res = {}
+        if dc:
+            dc = json.loads(dc)
+            if isinstance(dc, (dict)):
                 res = dc
         logger.debug(" %s = %s" % (name, res))
         return res
