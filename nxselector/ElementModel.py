@@ -28,6 +28,7 @@ except:
 
 from .Element import DS, CP
 
+import json
 import logging
 logger = logging.getLogger(__name__)
 
@@ -117,7 +118,7 @@ class ElementModel(Qt.QAbstractTableModel):
                     contains[pr] = None
 
         if contains:
-            return contains
+            return json.dumps(contains)
 
     def __scanSources(self, device):
         desc = device.state.description
@@ -176,6 +177,7 @@ class ElementModel(Qt.QAbstractTableModel):
         if tdepends:
             text = "%s\n[%s]" % (text, tdepends)
         if prs:
+            prs = json.loads(prs)
             tt = " ".join("%s:\"%s\"" % (k, v) for (k, v) in prs.items() if v)
             if tt.strip():
                 text = "%s\n{%s}" % (text, tt.strip())

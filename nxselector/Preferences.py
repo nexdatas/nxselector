@@ -42,7 +42,10 @@ from .Views import (TableView, OneTableView,
                     LeftCheckerViewNN, LeftRadioViewNN,
                     CheckDisView, RadioDisView,
                     CheckDisViewNL, RadioDisViewNL,
-                    CheckDisViewNN, RadioDisViewNN
+                    CheckDisViewNN, RadioDisViewNN,
+                    CheckPropView, 
+                    CheckPropViewNL,
+                    CheckPropViewNN,
                     )
 from .ServerState import ServerState
 
@@ -114,10 +117,13 @@ class Preferences(Qt.QObject):
             "RadioButtons": LeftRadioViewNN,
             "Buttons": ButtonViewNN,
             "CheckBoxes Dis (A)": CheckDisView,
+            "CheckBoxes Prop (A)": CheckPropView,
             "RadioButtons Dis (A)": RadioDisView,
             "CheckBoxes Dis (N)": CheckDisViewNL,
+            "CheckBoxes Prop (N)": CheckPropViewNL,
             "RadioButtons Dis (N)": RadioDisViewNL,
             "CheckBoxes Dis": CheckDisViewNN,
+            "CheckBoxes Prop": CheckPropViewNN,
             "RadioButtons Dis": RadioDisViewNN,
             "CheckBoxes Dis (U)": CheckerLabelViewNN,
             }

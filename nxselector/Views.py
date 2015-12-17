@@ -29,13 +29,29 @@ except:
 
 import sip
 import logging
+import json
+
 logger = logging.getLogger(__name__)
 from .DynamicTools import DynamicTools
 
+class RightClickCheckBox(Qt.QCheckBox):
+
+    rightClick = Qt.pyqtSignal()
+
+    def __init__(self, parent=None):
+        super(RightClickCheckBox, self).__init__(parent)
+
+    @Qt.pyqtSlot()
+    def mousePressEvent(self, event):
+        super(RightClickCheckBox, self).mousePressEvent(event)
+        if event.button() == Qt.Qt.RightButton:
+            self.rightClick.emit()
+
 
 class CheckerLabelWidget(Qt.QWidget):
+
     def __init__(self, parent=None):
-        super(Qt.QWidget, self).__init__(parent)
+        super(CheckerLabelWidget, self).__init__(parent)
         self.checkBox = Qt.QCheckBox(self)
         self.label = Qt.QLabel(self)
         layout = Qt.QHBoxLayout()
@@ -99,6 +115,7 @@ class CheckerView(Qt.QWidget):
         self.glayout = Qt.QGridLayout(self)
         self.widgets = []
         self.mapper = Qt.QSignalMapper(self)
+        self.pmapper = None
         self.dmapper = None
         self.displays = []
         self.mapper.mapped.connect(self.checked)
@@ -229,16 +246,17 @@ class CheckerView(Qt.QWidget):
 
             if hasattr(cb, "clicked"):
                 cb.clicked.connect(self.mapper.map)
-#            self.connect(cb, Qt.SIGNAL("clicked()"),
-#                         self.mapper, Qt.SLOT("map()"))
             self.mapper.setMapping(cb, self.widgets.index(cb))
             if self.dmapper:
                 self.displays.append(ds)
-#                self.connect(ds, Qt.SIGNAL("clicked()"),
-#                             self.dmapper, Qt.SLOT("map()"))
                 if hasattr(ds, "clicked"):
                     ds.clicked.connect(self.dmapper.map)
                 self.dmapper.setMapping(ds, self.displays.index(ds))
+            if self.pmapper:
+                self.displays.append(ds)
+                if hasattr(cb, "rightClick"):
+                    cb.rightClick.connect(self.pmapper.map)
+                self.pmapper.setMapping(cb, self.widgets.index(cb))
 
     def __setWidgets(self, row):
         ind = self.model.index(row, 0)
@@ -339,6 +357,35 @@ class CheckDisView(CheckerView):
     def close(self):
         self.dmapper.mapped.disconnect(self.dchecked)
         super(CheckDisView, self).close()
+
+class CheckPropView(CheckDisView):
+
+    def __init__(self, parent=None):
+        super(CheckPropView, self).__init__(parent)
+        self.widget = RightClickCheckBox
+        self.pmapper = Qt.QSignalMapper(self)
+        self.pmapper.mapped.connect(self.pchecked)
+
+    @Qt.pyqtSlot(int)
+    def pchecked(self, row):
+        self.selectedWidgetRow = row
+        ind = self.model.index(row, 5)
+        props = self.model.data(ind, role=Qt.Qt.DisplayRole)
+        if props:
+            prs = json.loads(str(props))
+            print("Props %s" % prs)
+#        self.model.setData(ind, value, Qt.Qt.CheckStateRole)
+
+    def connectMapper(self):
+        super(CheckPropView, self).connectMapper()
+        if self.pmapper:
+            self.pmapper.mapped.disconnect(self.pchecked)
+        self.pmapper = Qt.QSignalMapper(self)
+        self.pmapper.mapped.connect(self.pchecked)
+
+    def close(self):
+        self.dmapper.mapped.disconnect(self.pchecked)
+        super(CheckPropView, self).close()
 
 
 class RadioView(CheckerView):
@@ -462,6 +509,12 @@ class CheckDisViewNL(CheckDisView):
         super(CheckDisViewNL, self).__init__(parent)
         self.showLabels = False
 
+class CheckPropViewNL(CheckPropView):
+
+    def __init__(self, parent=None):
+        super(CheckPropViewNL, self).__init__(parent)
+        self.showLabels = False
+
 
 class ButtonDisViewNL(ButtonDisView):
 
@@ -481,6 +534,12 @@ class CheckDisViewNN(CheckDisView):
 
     def __init__(self, parent=None):
         super(CheckDisViewNN, self).__init__(parent)
+        self.showNames = False
+
+class CheckPropViewNN(CheckPropView):
+
+    def __init__(self, parent=None):
+        super(CheckPropViewNN, self).__init__(parent)
         self.showNames = False
 
 
