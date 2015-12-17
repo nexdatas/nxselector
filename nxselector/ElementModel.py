@@ -55,7 +55,8 @@ class ElementModel(Qt.QAbstractTableModel):
         ## list of device elements
         self.group = []
         ## headers
-        self.headers = ["Element", "Label", "Display", "Scans", "Contains"]
+        self.headers = ["Element", "Label", "Display",
+                        "Scans", "Contains", "Properties"]
 
         if group:
             self.group = sorted(group, key=lambda x: x.name, reverse=False)
@@ -64,7 +65,7 @@ class ElementModel(Qt.QAbstractTableModel):
         return len(self.group)
 
     def columnCount(self, _=Qt.QModelIndex()):
-        return 5
+        return len(self.headers)
 
     def index(self, row, column, _=Qt.QModelIndex()):
         return self.createIndex(row, column)
@@ -93,6 +94,30 @@ class ElementModel(Qt.QAbstractTableModel):
                 return Qt.Qt.Unchecked
         else:
             return Qt.Qt.Unchecked
+
+    def __properties(self, device):
+        cpvrs = device.state.cpvrdict
+        cvars = device.state.configvars
+        props = device.state.properties
+        ochs = device.state.orderedchannels
+        chps = device.state.channelprops
+        dname = device.name
+
+        contains = dict()
+        if device.name in cpvrs.keys():
+            for vr in cpvrs[dname]:
+                contains[vr] = cvars[vr] if vr in cvars.keys() else None
+
+        if dname in ochs:
+            for pr in chps:
+                if props and pr in props.keys() and \
+                   props[pr] and dname in props[pr].keys():
+                    contains[pr] = props[pr][dname]
+                else:
+                    contains[pr] = None
+
+        if contains:
+            return contains
 
     def __scanSources(self, device):
         desc = device.state.description
@@ -144,11 +169,16 @@ class ElementModel(Qt.QAbstractTableModel):
     def __createTips(self, device, index):
         scans = self.__scanSources(device)
         depends = self.__descSources(device)
+        prs = self.__properties(device)
         tscans = self.__createList(scans)
         tdepends = self.__createList(depends)
         text = tscans if tscans else ""
         if tdepends:
             text = "%s\n[%s]" % (text, tdepends)
+        if prs:
+            tt = " ".join("%s:\"%s\"" % (k, v) for (k, v) in prs.items() if v)
+            if tt.strip():
+                text = "%s\n{%s}" % (text, tt.strip())
 
         if text.strip():
             return text
@@ -184,6 +214,10 @@ class ElementModel(Qt.QAbstractTableModel):
             if role == Qt.Qt.CheckStateRole:
                 return
             return Qt.QVariant(Qt.QString(self.__descSources(device)))
+        elif column == 5:
+            if role == Qt.Qt.CheckStateRole:
+                return
+            return Qt.QVariant(Qt.QString(str(self.__properties(device))))
         return Qt.QVariant()
 
     def headerData(self, section, _, role=Qt.Qt.DisplayRole):
@@ -271,6 +305,8 @@ class ElementModel(Qt.QAbstractTableModel):
             else:
                 flag &= ~Qt.Qt.ItemIsEnabled
                 return Qt.Qt.ItemFlags(flag)
+        elif column == 5:
+            return Qt.Qt.ItemFlags(flag | Qt.Qt.ItemIsEnabled)
 
     def setData(self, index, value, role=Qt.Qt.EditRole):
         if index.isValid() and 0 <= index.row() < len(self.group):

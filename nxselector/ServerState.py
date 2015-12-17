@@ -82,6 +82,7 @@ class ServerState(object):
         self.avdslist = []
         self.avmglist = []
         self.vrcpdict = {}
+        self.cpvrdict = {}
         self.idslist = []
         self.admindata = []
 
@@ -110,6 +111,8 @@ class ServerState(object):
 
         self.recorder_names = ['serialno', 'end_time', 'start_time',
                                'point_nb', 'timestamps']
+        self.channelprops = ["nexus_path", "link", "shape", "label",
+                             "data_type"]
 
     def __grepServer(self):
         server = None
@@ -166,7 +169,7 @@ class ServerState(object):
             self.setServer()
         self.errors = self.__loadList("descriptionErrors")
         return self.errors
-    
+
     def setProperties(self):
         if "label" in self.properties:
             self.labels = self.properties["label"]
@@ -177,15 +180,16 @@ class ServerState(object):
         if "shape" in self.properties:
             self.labelshapes = self.properties["shape"]
         if "data_type" in self.properties:
-            self.labeltypes = self.properties["data_type"]        
+            self.labeltypes = self.properties["data_type"]
 
     def getProperties(self):
+        print "PP", self.properties["label"] is self.labels
         self.properties["label"] = self.labels
         self.properties["link"] = self.labellinks
         self.properties["nexus_path"] = self.labelpaths
         self.properties["shape"] = self.labelshapes
         self.properties["data_type"] = self.labeltypes
-    
+
     ## fetches configuration setting from server
     def fetchSettings(self):
         self.__fetchConfiguration()
@@ -224,6 +228,14 @@ class ServerState(object):
             if self.timers:
                 self.atlist = list(set(self.atlist) | set([self.timers[0]]))
             self.timers = [tm for tm in self.timers if tm in self.atlist]
+
+        self.cpvrdict = {}
+        for vr,cps in self.vrcpdict.items():
+            for cp in cps:
+                if cp not in self.cpvrdict.keys():
+                    self.cpvrdict[cp] = set()
+                self.cpvrdict[cp].add(vr)
+
 
     def __fetchFileData(self):
         self.timers = self.__importList("Timer", True)
