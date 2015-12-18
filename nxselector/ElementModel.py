@@ -139,8 +139,7 @@ class ElementModel(Qt.QAbstractTableModel):
                 else:
                     contains[pr] = None
 
-        if contains:
-            return json.dumps(contains)
+        return json.dumps(contains)
 
     def __scanSources(self, device):
         desc = device.state.description
@@ -241,7 +240,7 @@ class ElementModel(Qt.QAbstractTableModel):
         elif column == 5:
             if role == Qt.Qt.CheckStateRole:
                 return
-            return Qt.QVariant(Qt.QString(str(self.__properties(device))))
+            return Qt.QVariant(Qt.QString(self.__properties(device)))
         return Qt.QVariant()
 
     def headerData(self, section, _, role=Qt.Qt.DisplayRole):
