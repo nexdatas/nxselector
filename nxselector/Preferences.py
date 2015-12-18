@@ -43,7 +43,7 @@ from .Views import (TableView, OneTableView,
                     CheckDisView, RadioDisView,
                     CheckDisViewNL, RadioDisViewNL,
                     CheckDisViewNN, RadioDisViewNN,
-                    CheckPropView, 
+                    CheckPropView,
                     CheckPropViewNL,
                     CheckPropViewNN,
                     )
@@ -126,7 +126,7 @@ class Preferences(Qt.QObject):
             "CheckBoxes Prop": CheckPropViewNN,
             "RadioButtons Dis": RadioDisViewNN,
             "CheckBoxes Dis (U)": CheckerLabelViewNN,
-            }
+        }
 
         self.maxHelp = 10
         self.layoutFile = os.getcwd()
@@ -149,7 +149,7 @@ class Preferences(Qt.QObject):
     def __getmgroups(self):
         return self.__mgroups
 
-      ## the json data string
+    ## the json data string
     mgroups = property(__getmgroups, __setmgroups,
                        doc='device groups')
 
@@ -172,9 +172,9 @@ class Preferences(Qt.QObject):
     def __getframes(self):
         return self.__frames
 
-      ## the json data string
+    ## the json data string
     frames = property(__getframes, __setframes,
-                       doc='detector frames')
+                      doc='detector frames')
 
     def disconnectSignals(self):
         if self.connected:
@@ -270,7 +270,7 @@ class Preferences(Qt.QObject):
                 self.serverChanged.emit()
             else:
                 self.ui.devSettingsLineEdit.setText(Qt.QString(
-                        self.state.server if self.state.server else 'module'))
+                    self.state.server if self.state.server else 'module'))
         self.connectSignals()
 
     @Qt.pyqtSlot()
@@ -374,10 +374,10 @@ class Preferences(Qt.QObject):
     def layoutSave(self):
         try:
             filename = str(Qt.QFileDialog.getSaveFileName(
-                    self.ui.storage,
-                    "Save Layout",
-                    self.layoutFile,
-                    "JSON files (*.json);;All files (*)"))
+                self.ui.storage,
+                "Save Layout",
+                self.layoutFile,
+                "JSON files (*.json);;All files (*)"))
             logger.debug("saving profile to %s" % filename)
             if filename:
                 if (len(filename) < 4 or filename[-4] != '.') and \

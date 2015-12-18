@@ -58,7 +58,6 @@ class LDataDlg(Qt.QDialog):
         self.names = {}
         self.widgets = {}
 
-        
     @classmethod
     def __linkText(cls, value):
         if isinstance(value, bool):
@@ -89,8 +88,8 @@ class LDataDlg(Qt.QDialog):
             completer = Qt.QCompleter(self.available_names, self)
             self.ui.labelLineEdit.setCompleter(completer)
         if self.variables:
-            self.addGrid()        
-            
+            self.addGrid()
+
     def addGrid(self):
         index = 0
         for nm, val in self.variables.items():
@@ -102,9 +101,9 @@ class LDataDlg(Qt.QDialog):
                 self.names[nm].setText(Qt.QString(str(val)))
             self.ui.varGridLayout.addWidget(self.widgets[nm], index, 1, 1, 1)
             index += 1
-            
+
     def addVariables(self, variables):
-        leftchannels = False 
+        leftchannels = False
         for sp in self.special:
             if sp in variables.keys():
                 leftchannels = True

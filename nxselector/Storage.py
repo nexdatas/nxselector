@@ -119,7 +119,7 @@ class Storage(Qt.QObject):
         self.ui.fileScanDirToolButton.pressed.connect(self.__setDir)
         self.ui.fileScanDirLineEdit.editingFinished.connect(self.__dirChanged)
         self.ui.fileScanLineEdit.editingFinished.connect(self.__fileChanged)
-                                # measurement group
+        # measurement group
 
         self.ui.mntTimerComboBox.currentIndexChanged.connect(self.apply)
         for cb in self.__tWidgets:
@@ -499,9 +499,9 @@ class Storage(Qt.QObject):
     @Qt.pyqtSlot()
     def __setDir(self):
         dirname = str(Qt.QFileDialog.getExistingDirectory(
-                self.ui.storage,
-                "Scan Directory",
-                self.state.scanDir))
+            self.ui.storage,
+            "Scan Directory",
+            self.state.scanDir))
         if str(dirname) and str(dirname) != str(self.state.scanDir):
             self.ui.fileScanDirLineEdit.setText(dirname)
             self.state.scanDir = str(dirname)

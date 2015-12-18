@@ -218,8 +218,6 @@ class Selector(Qt.QDialog, TaurusBaseWidget):
         self.__setButtonBoxes()
         self.__hideWidgets()
         for tab in self.tabs:
-#            if tab in [
-#                ]:
                 tab.reset()
 
         self.__setWidgetValues()
@@ -308,33 +306,20 @@ class Selector(Qt.QDialog, TaurusBaseWidget):
 
     def __hideWidgets(self):
         if not self.expert:
-#            self.ui.groupFrame.hide()
             self.ui.groupGroupBox.hide()
             self.ui.frameGroupBox.hide()
-#            self.ui.channelFrame.hide()
             self.ui.dynFrame.hide()
-#            self.ui.mntServerLabel.hide()
-#            self.ui.mntServerLineEdit.hide()#
-#            self.ui.devConfigLabel.hide()
-#            self.ui.devConfigLineEdit.hide()
-#            self.ui.devWriterLabel.hide()
-#            self.ui.devWriterLineEdit.hide()
             self.ui.devConfigPushButton.hide()
-#            self.ui.groupsPushButton.hide()
-#            self.ui.componentFrame.hide()
             self.ui.devSettingsLineEdit.setEnabled(False)
             self.ui.devWriterLineEdit.setEnabled(False)
             self.ui.devConfigLineEdit.setEnabled(False)
             self.ui.mntServerLineEdit.setEnabled(False)
         if self.user:
             self.ui.componentGroupBox.hide()
-#            self.ui.tangoFrame.hide()
             self.ui.mntGrpComboBox.setEnabled(False)
             self.ui.mntGrpToolButton.hide()
-#            self.ui.selectorFrame.hide()
             self.ui.viewServerFrame.hide()
             self.ui.viewGroupBox.hide()
-#            self.ui.viewFrame.hide()
         if self.simple:
             self.ui.orderToolButton.hide()
             self.ui.timerAddPushButton.hide()
@@ -388,16 +373,15 @@ class Selector(Qt.QDialog, TaurusBaseWidget):
             "Update the current measurement group" +
             " and set it into ActiveMntGrp.\n" +
             "Update preselection of description components "
-            )
+        )
         self.ui.buttonBox.button(
             Qt.QDialogButtonBox.Reset).setToolTip(
             "Reset local modifications " +
             "by fetching the current profile from the selector server\n" +
             "and making synchronization with the Active Measurement Group.\n" +
-            "Update preselection of description components "
-            )
+            "Update preselection of description components ")
         if self.ui.buttonBox.button(
-            Qt.QDialogButtonBox.Close):
+                Qt.QDialogButtonBox.Close):
             self.ui.buttonBox.button(
                 Qt.QDialogButtonBox.Close).setToolTip(
                 "Close the Component Selector")
@@ -412,12 +396,10 @@ class Selector(Qt.QDialog, TaurusBaseWidget):
             "Save the currently selected channels into a file.")
         self.ui.layoutButtonBox.button(
             Qt.QDialogButtonBox.Open).setToolTip(
-            "Load from a file a previously saved detector layout."
-            )
+            "Load from a file a previously saved detector layout.")
         self.ui.layoutButtonBox.button(
             Qt.QDialogButtonBox.Save).setToolTip(
-            "Save into a file the currently detector layout."
-            )
+            "Save into a file the currently detector layout.")
 
     def setModel(self, model):
         if str(model) != str(self.state.server):
@@ -598,7 +580,7 @@ class Selector(Qt.QDialog, TaurusBaseWidget):
         for tab in self.tabs:
             if not isinstance(tab, State):
                 tab.userView = self.preferences.views[
-                str(self.ui.viewComboBox.currentText())]
+                    str(self.ui.viewComboBox.currentText())]
             tab.reset()
         logger.debug("reset view end")
 
@@ -614,13 +596,13 @@ class Selector(Qt.QDialog, TaurusBaseWidget):
                 self, "NXSSelector: Error in Resetting Selector Server",
                 text, str(value))
         for tab in self.tabs:
-#            if tab in [
-#                self.selectable,
-#                self.automatic,
-#                self.data,
-#                self.storage,
-#                self.preferences
-#                ]:
+            #       if tab in [
+            #            self.selectable,
+            #            self.automatic,
+            #            self.data,
+            #            self.storage,
+            #            self.preferences
+            #        ]:
             tab.reset()
         logger.debug("reset selector ended")
 
@@ -683,10 +665,10 @@ class Selector(Qt.QDialog, TaurusBaseWidget):
     def resetClickAll(self):
         logger.debug("reset ALL")
         self.runProgress([
-                "switchMntGrp",
-                "updateControllers",
-                "importMntGrp"
-                ])
+            "switchMntGrp",
+            "updateControllers",
+            "importMntGrp"
+        ])
 
         logger.debug("reset ENDED")
 
@@ -694,7 +676,7 @@ class Selector(Qt.QDialog, TaurusBaseWidget):
     def resetAll(self):
         logger.debug("reset ALL")
         self.runProgress([
-                "updateControllers", "importMntGrp"])
+            "updateControllers", "importMntGrp"])
         logger.debug("reset ENDED")
 
     @Qt.pyqtSlot()
@@ -749,10 +731,10 @@ class Selector(Qt.QDialog, TaurusBaseWidget):
     def cnfLoad(self):
         try:
             filename = str(Qt.QFileDialog.getOpenFileName(
-                    self.ui.storage,
-                    "Load Profile",
-                    self.cnfFile,
-                    "JSON files (*.json);;All files (*)"))
+                self.ui.storage,
+                "Load Profile",
+                self.cnfFile,
+                "JSON files (*.json);;All files (*)"))
             logger.debug("loading configuration from %s" % filename)
             if filename:
                 self.cnfFile = filename
@@ -773,10 +755,10 @@ class Selector(Qt.QDialog, TaurusBaseWidget):
     def cnfSave(self):
         try:
             filename = str(Qt.QFileDialog.getSaveFileName(
-                    self.ui.storage,
-                    "Save Profile",
-                    self.cnfFile,
-                    "JSON files (*.json);;All files (*)"))
+                self.ui.storage,
+                "Save Profile",
+                self.cnfFile,
+                "JSON files (*.json);;All files (*)"))
             logger.debug("saving configuration to %s" % filename)
             if filename:
                 if (len(filename) < 4 or filename[-4] != '.') and \

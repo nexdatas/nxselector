@@ -48,7 +48,6 @@ class EdListDlg(Qt.QDialog):
         self.disable = []
 
     def createGUI(self):
-#        self.widget.dirty.disconnect(self.__setDirty)
         self.widget.simple = self.simple
         self.widget.available_names = self.available_names
         self.widget.headers = self.headers
@@ -103,7 +102,7 @@ class EdListWg(Qt.QWidget):
                 "&Edit", Qt.QDialogButtonBox.ActionRole)
             self.ui.removePushButton = \
                 self.ui.addEditRemoveButtonBox.addButton(
-                "&Remove", Qt.QDialogButtonBox.ActionRole)
+                    "&Remove", Qt.QDialogButtonBox.ActionRole)
 
         if self.record:
             item = sorted(self.record.keys())[0]
@@ -150,7 +149,7 @@ class EdListWg(Qt.QWidget):
         self.ui.tableWidget.setSelectionMode(
             Qt.QAbstractItemView.SingleSelection)
         self.ui.tableWidget.horizontalHeader(
-            ).setStretchLastSection(True)
+        ).setStretchLastSection(True)
         self.ui.tableWidget.setEditTriggers(
             Qt.QAbstractItemView.NoEditTriggers)
         if sitem is not None:
@@ -222,9 +221,10 @@ class EdListWg(Qt.QWidget):
             return
 
         if Qt.QMessageBox.question(
-            self, "Removing Data", "Would you like  to remove '%s'?" % name,
-            Qt.QMessageBox.Yes | Qt.QMessageBox.No,
-            Qt.QMessageBox.Yes) == Qt.QMessageBox.No:
+                self, "Removing Data",
+                "Would you like  to remove '%s'?" % name,
+                Qt.QMessageBox.Yes | Qt.QMessageBox.No,
+                Qt.QMessageBox.Yes) == Qt.QMessageBox.No:
             return
         self.record.pop(name)
         self.dirty.emit()

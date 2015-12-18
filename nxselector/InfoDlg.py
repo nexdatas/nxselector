@@ -47,4 +47,4 @@ class InfoDlg(Qt.QDialog):
             self.ui.configLabel.setText(self.state.configDevice)
             self.ui.doorLabel.setText(self.state.door)
             self.ui.selectorLabel.setText(Qt.QString(
-                    self.state.server if self.state.server else 'module'))
+                self.state.server if self.state.server else 'module'))

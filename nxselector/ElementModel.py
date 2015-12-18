@@ -72,15 +72,15 @@ class ElementModel(Qt.QAbstractTableModel):
         return self.createIndex(row, column)
 
     def __elementCheck(self, device, index):
-        if (not (self.flags(index) & Qt.Qt.ItemIsEnabled)
-            and self.enable) or device.checked:
+        if (not (self.flags(index) & Qt.Qt.ItemIsEnabled) and self.enable) \
+           or device.checked:
             return Qt.Qt.Checked
         else:
             return Qt.Qt.Unchecked
 
     def __displayCheck(self, device, index):
-        if (not (self.flags(index) & Qt.Qt.ItemIsEnabled)
-            and self.enable) or device.checked:
+        if (not (self.flags(index) & Qt.Qt.ItemIsEnabled) and self.enable) \
+           or device.checked:
             if device.eltype == DS:
                 dds = device.state.ddsdict
                 if device.name in dds.keys():
@@ -103,12 +103,11 @@ class ElementModel(Qt.QAbstractTableModel):
         for nm, val in prs.items():
             if nm not in props.keys():
                 props[nm] = {}
-            if val is not None:    
+            if val is not None:
                 props[nm][dname] = val
             elif dname in props[nm].keys():
                 props[nm].pop(dname)
         device.state.setProperties()
-        
 
     def __properties(self, device):
         cpvrs = device.state.cpvrdict
@@ -268,20 +267,22 @@ class ElementModel(Qt.QAbstractTableModel):
         if column == 0:
             if enable and enable2:
                 return Qt.Qt.ItemFlags(flag |
-                                    Qt.Qt.ItemIsEnabled |
-                                    Qt.Qt.ItemIsUserCheckable)
+                                       Qt.Qt.ItemIsEnabled |
+                                       Qt.Qt.ItemIsUserCheckable)
             else:
                 flag &= ~Qt.Qt.ItemIsEnabled
-                return Qt.Qt.ItemFlags(flag |
-                                    Qt.Qt.ItemIsUserCheckable
-                                    )
+                return Qt.Qt.ItemFlags(
+                    flag |
+                    Qt.Qt.ItemIsUserCheckable
+                )
         elif column == 1:
             flag &= ~Qt.Qt.ItemIsUserCheckable
             if not enable or not enable2:
                 flag &= ~Qt.Qt.ItemIsEnabled
-            return Qt.Qt.ItemFlags(flag |
-                                Qt.Qt.ItemIsEditable
-                                )
+            return Qt.Qt.ItemFlags(
+                flag |
+                Qt.Qt.ItemIsEditable
+            )
         if column == 2:
             if not self.disEnable:
                 flag &= ~Qt.Qt.ItemIsEnabled
@@ -335,7 +336,7 @@ class ElementModel(Qt.QAbstractTableModel):
 
                     self.emit(
                         Qt.SIGNAL("dataChanged(QModelIndex, QModelIndex)"),
-                              index, index3)
+                        index, index3)
                     if device.eltype == CP:
                         self.componentChecked.emit()
                     self.dirty.emit()
@@ -346,7 +347,7 @@ class ElementModel(Qt.QAbstractTableModel):
                     device.state.labels[device.name] = str(label)
                     self.emit(
                         Qt.SIGNAL("dataChanged(QModelIndex, QModelIndex)"),
-                              index, index)
+                        index, index)
                     self.dirty.emit()
                     return True
             elif column == 2:
@@ -354,9 +355,9 @@ class ElementModel(Qt.QAbstractTableModel):
                     index3 = self.index(index.row(), 2)
                     device.display = value
 
-                    self.emit(Qt.SIGNAL(
-                            "dataChanged(QModelIndex, QModelIndex)"),
-                              index, index3)
+                    self.emit(
+                        Qt.SIGNAL("dataChanged(QModelIndex, QModelIndex)"),
+                        index, index3)
                     if device.eltype == CP:
                         self.componentChecked.emit()
                     self.dirty.emit()
@@ -367,9 +368,9 @@ class ElementModel(Qt.QAbstractTableModel):
                         value = value.toString()
                     self.__setProperties(device, str(value))
                     index5 = self.index(index.row(), 5)
-                    self.emit(Qt.SIGNAL(
-                            "dataChanged(QModelIndex, QModelIndex)"),
-                              index, index5)
+                    self.emit(
+                        Qt.SIGNAL("dataChanged(QModelIndex, QModelIndex)"),
+                        index, index5)
                     self.dirty.emit()
                     return True
         return False

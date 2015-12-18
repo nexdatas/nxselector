@@ -101,9 +101,9 @@ class PropertiesWg(Qt.QWidget):
 
     def __names(self):
         return sorted(set(self.paths.keys()) |
-                       set(self.shapes.keys()) |
-                       set(self.links.keys()) |
-                       set(self.types.keys()))
+                      set(self.shapes.keys()) |
+                      set(self.links.keys()) |
+                      set(self.types.keys()))
 
     def __populateTable(self, selected=None):
         self.ui.tableWidget.clear()
@@ -147,7 +147,7 @@ class PropertiesWg(Qt.QWidget):
         self.ui.tableWidget.setSelectionMode(
             Qt.QAbstractItemView.SingleSelection)
         self.ui.tableWidget.horizontalHeader(
-            ).setStretchLastSection(True)
+        ).setStretchLastSection(True)
         self.ui.tableWidget.setEditTriggers(
             Qt.QAbstractItemView.NoEditTriggers)
         if sitem is not None:
@@ -221,9 +221,10 @@ class PropertiesWg(Qt.QWidget):
         name = self.__currentName()
 
         if Qt.QMessageBox.question(
-            self, "Removing Data", "Would you like  to remove '%s'?" % name,
-            Qt.QMessageBox.Yes | Qt.QMessageBox.No,
-            Qt.QMessageBox.Yes) == Qt.QMessageBox.No:
+                self, "Removing Data",
+                "Would you like  to remove '%s'?" % name,
+                Qt.QMessageBox.Yes | Qt.QMessageBox.No,
+                Qt.QMessageBox.Yes) == Qt.QMessageBox.No:
             return
         if name in self.types.keys():
             self.types.pop(name)

@@ -239,12 +239,11 @@ class ServerState(object):
             self.timers = [tm for tm in self.timers if tm in self.atlist]
 
         self.cpvrdict = {}
-        for vr,cps in self.vrcpdict.items():
+        for vr, cps in self.vrcpdict.items():
             for cp in cps:
                 if cp not in self.cpvrdict.keys():
                     self.cpvrdict[cp] = set()
                 self.cpvrdict[cp].add(vr)
-
 
     def __fetchFileData(self):
         self.timers = self.__importList("Timer", True)
@@ -282,7 +281,7 @@ class ServerState(object):
         params = {"ScanDir": "scanDir",
                   "ScanFile": "scanFile",
                   "NeXusSelectorDevice": "server",
-#                  "ScanID": "scanID"
+                  # "ScanID": "scanID"
                   }
 
         if not self.__dp:
@@ -417,8 +416,8 @@ class ServerState(object):
 
     def resetDescriptions(self):
         if hasattr(self.__dp, "command_inout_asynch"):
-#            aid = self.__dp.command_inout_asynch("PreselectComponents")
-#            self.__wait(self.__dp)
+            # aid = self.__dp.command_inout_asynch("PreselectComponents")
+            # self.__wait(self.__dp)
             try:
                 self.__command(self.__dp, "resetPreselectedComponents")
             except PyTango.CommunicationFailed as e:
@@ -431,8 +430,8 @@ class ServerState(object):
 
     def updateControllers(self):
         if hasattr(self.__dp, "command_inout_asynch"):
-#            aid = self.__dp.command_inout_asynch("PreselectComponents")
-#            self.__wait(self.__dp)
+            # aid = self.__dp.command_inout_asynch("PreselectComponents")
+            # self.__wait(self.__dp)
             try:
                 self.__command(self.__dp, "PreselectComponents")
             except PyTango.CommunicationFailed as e:
@@ -677,4 +676,4 @@ class ServerState(object):
 
     ## provides disable datasources
     cplist = property(__components,
-                       doc='provides selected components')
+                      doc='provides selected components')

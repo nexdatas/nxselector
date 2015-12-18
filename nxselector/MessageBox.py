@@ -47,7 +47,7 @@ class MessageBox(Qt.QObject):
             else:
                 text = str(error)
         except Exception as e:
-#            print(e)
+            #  print(e)
             pass
         return text
 
