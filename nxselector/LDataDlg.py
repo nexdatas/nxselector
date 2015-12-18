@@ -53,7 +53,12 @@ class LDataDlg(Qt.QDialog):
         self.dtype = ''
         self.link = None
         self.available_names = None
+        self.special = ["shape", "data_type", "nexus_path", "link"]
+        self.variables = {}
+        self.names = {}
+        self.widgets = {}
 
+        
     @classmethod
     def __linkText(cls, value):
         if isinstance(value, bool):
@@ -83,6 +88,32 @@ class LDataDlg(Qt.QDialog):
         if self.available_names:
             completer = Qt.QCompleter(self.available_names, self)
             self.ui.labelLineEdit.setCompleter(completer)
+        if self.variables:
+            self.addGrid()        
+            
+    def addGrid(self):
+        index = 0
+        for nm, val in self.variables.items():
+            self.names[nm] = Qt.QLabel(self.ui.varFrame)
+            self.names[nm].setText(Qt.QString(str(nm)))
+            self.ui.varGridLayout.addWidget(self.names[nm], index, 0, 1, 1)
+            self.widgets[nm] = Qt.QLineEdit(self.ui.varFrame)
+            if val is not None:
+                self.names[nm].setText(Qt.QString(str(val)))
+            self.ui.varGridLayout.addWidget(self.widgets[nm], index, 1, 1, 1)
+            index += 1
+            
+    def addVariables(self, variables):
+        leftchannels = False 
+        for sp in self.special:
+            if sp in variables.keys():
+                leftchannels = True
+        if not leftchannels:
+            self.ui.channelFrame.hide()
+
+        for vr, val in variables.items():
+            if vr not in self.special:
+                self.variables[vr] = val
 
     def accept(self):
         link = str(self.ui.linkComboBox.currentText())
@@ -102,7 +133,8 @@ class LDataDlg(Qt.QDialog):
                 self.shape = None
             else:
                 shape = json.loads(tshape)
-                assert isinstance(shape, list)
+                if not isinstance(shape, list):
+                    raise Exception("shape is not a list")
                 self.shape = shape
         except Exception as e:
             import traceback
@@ -115,7 +147,8 @@ class LDataDlg(Qt.QDialog):
             self.ui.shapeLineEdit.setFocus()
             return
 
-        self.dtype = unicode(self.ui.typeLineEdit.text())
+        for nm, wg in self.widgets.items():
+            self.variables[nm] = unicode(wg.text()) or None
 
         if not self.label:
             Qt.QMessageBox.warning(self, "Wrong Data", "Empty data label")

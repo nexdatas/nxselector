@@ -96,6 +96,20 @@ class ElementModel(Qt.QAbstractTableModel):
         else:
             return Qt.Qt.Unchecked
 
+    def __setProperties(self, device, variables):
+        props = device.state.properties
+        dname = device.name
+        prs = json.loads(variables)
+        for nm, val in prs.items():
+            if nm not in props.keys():
+                props[nm] = {}
+            if val is not None:    
+                props[nm][dname] = val
+            elif dname in props[nm].keys():
+                props[nm].pop(dname)
+        device.state.setProperties()
+        
+
     def __properties(self, device):
         cpvrs = device.state.cpvrdict
         cvars = device.state.configvars
@@ -178,9 +192,9 @@ class ElementModel(Qt.QAbstractTableModel):
             text = "%s\n[%s]" % (text, tdepends)
         if prs:
             prs = json.loads(prs)
-            tt = " ".join("%s:\"%s\"" % (k, v) for (k, v) in prs.items() if v)
+            tt = " ".join("%s=\"%s\"" % (k, v) for (k, v) in prs.items() if v)
             if tt.strip():
-                text = "%s\n{%s}" % (text, tt.strip())
+                text = "%s\n(%s)" % (text, tt.strip())
 
         if text.strip():
             return text
@@ -345,6 +359,17 @@ class ElementModel(Qt.QAbstractTableModel):
                               index, index3)
                     if device.eltype == CP:
                         self.componentChecked.emit()
+                    self.dirty.emit()
+                    return True
+            elif column == 5:
+                if role == Qt.Qt.EditRole:
+                    if hasattr(value, "toString"):
+                        value = value.toString()
+                    self.__setProperties(device, str(value))
+                    index5 = self.index(index.row(), 5)
+                    self.emit(Qt.SIGNAL(
+                            "dataChanged(QModelIndex, QModelIndex)"),
+                              index, index5)
                     self.dirty.emit()
                     return True
         return False

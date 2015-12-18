@@ -173,17 +173,26 @@ class ServerState(object):
     def setProperties(self):
         if "label" in self.properties:
             self.labels = self.properties["label"]
+        else:
+            self.labels = {}
         if "link" in self.properties:
             self.labellinks = self.properties["link"]
+        else:
+            self.labellinks = {}
         if "nexus_path" in self.properties:
             self.labelpaths = self.properties["nexus_path"]
+        else:
+            self.labelpaths = {}
         if "shape" in self.properties:
             self.labelshapes = self.properties["shape"]
+        else:
+            self.labelshapes = {}
         if "data_type" in self.properties:
             self.labeltypes = self.properties["data_type"]
+        else:
+            self.labeltypes = {}
 
     def getProperties(self):
-        print "PP", self.properties["label"] is self.labels
         self.properties["label"] = self.labels
         self.properties["link"] = self.labellinks
         self.properties["nexus_path"] = self.labelpaths

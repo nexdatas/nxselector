@@ -33,6 +33,8 @@ import json
 
 logger = logging.getLogger(__name__)
 from .DynamicTools import DynamicTools
+from .LDataDlg import LDataDlg
+
 
 class RightClickCheckBox(Qt.QCheckBox):
 
@@ -192,7 +194,7 @@ class CheckerView(Qt.QWidget):
         return rowNo
 
     def updateState(self):
-        if not self.model is None:
+        if self.model is not None:
             rowCount = self.model.rowCount()
             rowNo = self.__findRowNumber(self.rowMax, rowCount)
 
@@ -203,10 +205,10 @@ class CheckerView(Qt.QWidget):
                 self.__createGrid(row, cb, ds, rowNo)
 
             if not self.spacer:
-                self.spacer = Qt.QSpacerItem(10, 10,
-                                          Qt.QSizePolicy.Minimum,
-#                                         QSizePolicy.Expanding,
-                                          Qt.QSizePolicy.Expanding)
+                self.spacer = Qt.QSpacerItem(
+                    10, 10,
+                    Qt.QSizePolicy.Minimum,
+                    Qt.QSizePolicy.Expanding)
                 self.glayout.addItem(self.spacer)
 
         self.update()
@@ -240,7 +242,7 @@ class CheckerView(Qt.QWidget):
                         Qt.QLabel(self.dlabel), 0, lcol + 1, 1, 1,
                         Qt.Qt.AlignRight)
                 self.glayout.addWidget(ds, lrow, lcol + 1, 1, 1,
-                                      Qt.Qt.AlignRight)
+                                       Qt.Qt.AlignRight)
             self.glayout.addWidget(cb, lrow, lcol, 1, 1)
             self.widgets.append(cb)
 
@@ -293,8 +295,8 @@ class CheckerView(Qt.QWidget):
 
     def __setNameTips(self, row, cb):
         ind = self.model.index(row, 0)
-        ind1 = self.model.index(row, 1)
         name = self.model.data(ind, role=Qt.Qt.DisplayRole)
+        ind1 = self.model.index(row, 1)
         label = self.model.data(ind1, role=Qt.Qt.DisplayRole)
 
         if name:
@@ -302,8 +304,8 @@ class CheckerView(Qt.QWidget):
                     str(label).strip():
                 if self.showNames:
                     cb.setText("%s [%s]" % (
-                            str(label),
-                            str(name)))
+                        str(label),
+                        str(name)))
                 else:
                     cb.setText("%s" % (str(label)))
             else:
@@ -358,6 +360,7 @@ class CheckDisView(CheckerView):
         self.dmapper.mapped.disconnect(self.dchecked)
         super(CheckDisView, self).close()
 
+
 class CheckPropView(CheckDisView):
 
     def __init__(self, parent=None):
@@ -369,12 +372,33 @@ class CheckPropView(CheckDisView):
     @Qt.pyqtSlot(int)
     def pchecked(self, row):
         self.selectedWidgetRow = row
-        ind = self.model.index(row, 5)
-        props = self.model.data(ind, role=Qt.Qt.DisplayRole)
+        ind = self.model.index(row, 0)
+        name = self.model.data(ind, role=Qt.Qt.DisplayRole)
+        ind5 = self.model.index(row, 5)
+        props = self.model.data(ind5, role=Qt.Qt.DisplayRole)
+
         if props:
             prs = json.loads(str(props))
-            print("Props %s" % prs)
-#        self.model.setData(ind, value, Qt.Qt.CheckStateRole)
+            dform = LDataDlg(self)
+            dform.label = name
+            dform.dtype = prs["data_type"] if "data_type" in prs else None
+            dform.shape = prs["shape"] if "shape" in prs else None
+            dform.link = prs["link"] if "link" in prs else None
+            dform.path = prs["nexus_path"] if "nexus_path" in prs else None
+            dform.addVariables(prs)
+            dform.createGUI()
+
+            dform.ui.labelLineEdit.setEnabled(False)
+            if dform.exec_():
+                if "data_type" in prs:
+                    prs["data_type"] = dform.dtype or None
+                    prs["link"] = dform.link
+                    prs["shape"] = dform.shape
+                    prs["nexus_path"] = dform.shape or None
+                for nm, val in dform.variables.items():
+                    prs[nm] = val
+                self.model.setData(ind5, Qt.QVariant(
+                    Qt.QString(str(json.dumps(prs)))))
 
     def connectMapper(self):
         super(CheckPropView, self).connectMapper()
@@ -509,6 +533,7 @@ class CheckDisViewNL(CheckDisView):
         super(CheckDisViewNL, self).__init__(parent)
         self.showLabels = False
 
+
 class CheckPropViewNL(CheckPropView):
 
     def __init__(self, parent=None):
@@ -535,6 +560,7 @@ class CheckDisViewNN(CheckDisView):
     def __init__(self, parent=None):
         super(CheckDisViewNN, self).__init__(parent)
         self.showNames = False
+
 
 class CheckPropViewNN(CheckPropView):
 
