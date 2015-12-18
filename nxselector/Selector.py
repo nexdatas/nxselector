@@ -138,7 +138,7 @@ class Selector(Qt.QDialog, TaurusBaseWidget):
                 self.__umode = 'expert'
         self.__setmode(self.__umode)
         self.userView = settings.value('Preferences/UserView',
-                                       'CheckBoxes Dis')
+                                       'CheckBoxes Prop')
         self.rowMax = int(settings.value('Preferences/RowMax', 16))
         if not self.rowMax:
             self.rowMax = 16
