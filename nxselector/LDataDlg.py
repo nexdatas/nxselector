@@ -98,7 +98,7 @@ class LDataDlg(Qt.QDialog):
             self.ui.varGridLayout.addWidget(self.names[nm], index, 0, 1, 1)
             self.widgets[nm] = Qt.QLineEdit(self.ui.varFrame)
             if val is not None:
-                self.names[nm].setText(Qt.QString(str(val)))
+                self.widgets[nm].setText(Qt.QString(str(val)))
             self.ui.varGridLayout.addWidget(self.widgets[nm], index, 1, 1, 1)
             index += 1
 
@@ -109,7 +109,6 @@ class LDataDlg(Qt.QDialog):
                 leftchannels = True
         if not leftchannels:
             self.ui.channelFrame.hide()
-
         for vr, val in variables.items():
             if vr not in self.special:
                 self.variables[vr] = val

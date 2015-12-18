@@ -177,6 +177,7 @@ class Storage(Qt.QObject):
         dform.createGUI()
         dform.exec_()
         if dform.dirty:
+            self.resetViews.emit()
             self.dirty.emit()
 
     @Qt.pyqtSlot()
@@ -305,6 +306,7 @@ class Storage(Qt.QObject):
         dform.createGUI()
         dform.exec_()
         if dform.dirty:
+            self.resetViews.emit()
             self.dirty.emit()
 
     @Qt.pyqtSlot()

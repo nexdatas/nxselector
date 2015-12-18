@@ -99,14 +99,22 @@ class ElementModel(Qt.QAbstractTableModel):
     def __setProperties(self, device, variables):
         props = device.state.properties
         dname = device.name
+        cpvrs = device.state.cpvrdict
+        cvars = device.state.configvars
         prs = json.loads(variables)
         for nm, val in prs.items():
-            if nm not in props.keys():
-                props[nm] = {}
-            if val is not None:
-                props[nm][dname] = val
-            elif dname in props[nm].keys():
-                props[nm].pop(dname)
+            if dname in cpvrs.keys() and nm in cpvrs[dname]:
+                if val is not None:
+                    cvars[nm] = val
+                elif nm in cvars:
+                    cvars.pop(nm)
+            else:
+                if nm not in props.keys():
+                    props[nm] = {}
+                if val is not None:
+                    props[nm][dname] = val
+                elif dname in props[nm].keys():
+                    props[nm].pop(dname)
         device.state.setProperties()
 
     def __properties(self, device):
@@ -115,12 +123,13 @@ class ElementModel(Qt.QAbstractTableModel):
         props = device.state.properties
         ochs = device.state.orderedchannels
         chps = device.state.channelprops
+        admindata = device.state.admindata
         dname = device.name
-
         contains = dict()
-        if device.name in cpvrs.keys():
+        if dname in cpvrs.keys():
             for vr in cpvrs[dname]:
-                contains[vr] = cvars[vr] if vr in cvars.keys() else None
+                if vr not in admindata:
+                    contains[vr] = cvars[vr] if vr in cvars.keys() else None
 
         if dname in ochs:
             for pr in chps:
