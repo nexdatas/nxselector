@@ -1,3 +1,7 @@
+2016-01-04 Jan Kotanski <jankotan@gmail.com>
+	* adding version check for NXSRecSelector
+	* tagged as 1.23.0
+
 2015-11-11 Jan Kotanski <jankotan@gmail.com>
 	* changes timer selection
 	* dedicated to use with NXSRecSelector 1.22.0 or above
