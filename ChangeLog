@@ -1,4 +1,8 @@
 2016-01-05 Jan Kotanski <jankotan@gmail.com>
+	* block context menu for checkerView
+	* tagged as 2.0.2
+
+2016-01-05 Jan Kotanski <jankotan@gmail.com>
 	* add version check for NXSRecSelector
 	* tagged as 2.0.1
 

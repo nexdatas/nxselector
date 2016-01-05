@@ -128,6 +128,7 @@ class CheckerView(Qt.QWidget):
         self.selectedWidgetRow = None
         self.showLabels = True
         self.showNames = True
+        self.setContextMenuPolicy(Qt.Qt.PreventContextMenu)
 
     def close(self):
         self.mapper.mapped.disconnect(self.checked)
