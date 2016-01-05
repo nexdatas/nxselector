@@ -453,8 +453,8 @@ class ServerState(object):
         else:
             from nxsrecconfig import Settings
             self.__dp = Settings.Settings()
-        cnfmajor = int(str(self.__dp.version).split(".")[0])
-        if cnfmajor < 2:
+        if not hasattr(self.__dp, "version") or \
+           int(str(self.__dp.version).split(".")[0]) < 2:
             raise Exception("NXSRecSelector (%s) version below 2.0.0" %
                             (self.server or "module"))
 
