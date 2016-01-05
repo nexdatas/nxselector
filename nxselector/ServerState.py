@@ -419,10 +419,11 @@ class ServerState(object):
         else:
             from nxsrecconfig import Settings
             self.__dp = Settings.Settings()
-        cnfmajor = int(str(self.__dp.version).split(".")[0])
-        if cnfmajor > 1:
-            raise Exception("NXSRecSelector (%s) version 2.0.0 or above" %
-                            (self.server or "module"))
+        if hasattr(self.__dp, "version"):
+            cnfmajor = int(str(self.__dp.version).split(".")[0])
+            if cnfmajor > 1:
+                raise Exception("NXSRecSelector (%s) version 2.0.0 or above" %
+                                (self.server or "module"))
 
     @classmethod
     def __openProxy(cls, server):
