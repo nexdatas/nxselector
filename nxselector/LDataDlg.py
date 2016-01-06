@@ -68,15 +68,15 @@ class LDataDlg(Qt.QDialog):
         return "Default"
 
     def createGUI(self):
-        self.ui.labelLineEdit.setText(Qt.QString(str(self.label)))
-        self.ui.pathLineEdit.setText(Qt.QString(str(self.path)))
+        self.ui.labelLineEdit.setText(Qt.QString(str(self.label or "")))
+        self.ui.pathLineEdit.setText(Qt.QString(str(self.path or "")))
         if self.shape is None:
             shape = ''
         else:
             shape = self.shape
         self.ui.shapeLineEdit.setText(
             Qt.QString(str(shape)))
-        self.ui.typeLineEdit.setText(Qt.QString(str(self.dtype)))
+        self.ui.typeLineEdit.setText(Qt.QString(str(self.dtype or "")))
 
         cid = self.ui.linkComboBox.findText(
             Qt.QString(self.__linkText(self.link)))
@@ -98,7 +98,7 @@ class LDataDlg(Qt.QDialog):
             self.ui.varGridLayout.addWidget(self.names[nm], index, 0, 1, 1)
             self.widgets[nm] = Qt.QLineEdit(self.ui.varFrame)
             if val is not None:
-                self.widgets[nm].setText(Qt.QString(str(val)))
+                self.widgets[nm].setText(Qt.QString(str(val or "")))
             self.ui.varGridLayout.addWidget(self.widgets[nm], index, 1, 1, 1)
             index += 1
 

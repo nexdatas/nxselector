@@ -1,3 +1,7 @@
+2016-01-06 Jan Kotanski <jankotan@gmail.com>
+	* fix properies widget with empty type and path
+	* tagged as 2.0.3
+
 2016-01-05 Jan Kotanski <jankotan@gmail.com>
 	* block context menu for checkerView
 	* tagged as 2.0.2
