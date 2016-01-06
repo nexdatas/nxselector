@@ -24,4 +24,4 @@ GUI for setting Sardana NeXus Recorder
 """
 
 ## version of the application
-__version__ = "1.23.0"
+__version__ = "1.23.1"
