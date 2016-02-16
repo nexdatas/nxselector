@@ -1,4 +1,8 @@
 2016-01-06 Jan Kotanski <jankotan@gmail.com>
+	* improve group widget
+	* tagged as 2.1.0
+
+2016-01-06 Jan Kotanski <jankotan@gmail.com>
 	* fix properies widget with empty type and path
 	* tagged as 2.0.3
 
