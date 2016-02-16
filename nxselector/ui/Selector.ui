@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>664</width>
-    <height>576</height>
+    <width>711</width>
+    <height>595</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -430,9 +430,9 @@ Additionally user can add some additional data , e.g. comments.</string>
                   </property>
                   <layout class="QGridLayout" name="gridLayout_11">
                    <item row="1" column="0">
-                    <layout class="QHBoxLayout" name="horizontalLayout_10">
-                     <item>
-                      <widget class="QPushButton" name="groupsPushButton">
+                    <layout class="QGridLayout" name="gridLayout_19">
+                     <item row="0" column="0">
+                      <widget class="QPushButton" name="detGroupsPushButton">
                        <property name="sizePolicy">
                         <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
                          <horstretch>0</horstretch>
@@ -440,14 +440,14 @@ Additionally user can add some additional data , e.g. comments.</string>
                         </sizepolicy>
                        </property>
                        <property name="toolTip">
-                        <string>Change the available components in the Detectors and/or Descriptions tabs</string>
+                        <string>Change the available components in the Detectors tab</string>
                        </property>
                        <property name="text">
-                        <string>Groups ...</string>
+                        <string>Detectors ...</string>
                        </property>
                       </widget>
                      </item>
-                     <item>
+                     <item row="1" column="1">
                       <widget class="QPushButton" name="errorsPushButton">
                        <property name="sizePolicy">
                         <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
@@ -463,7 +463,17 @@ Additionally user can add some additional data , e.g. comments.</string>
                        </property>
                       </widget>
                      </item>
-                     <item>
+                     <item row="1" column="0">
+                      <widget class="QPushButton" name="desGroupsPushButton">
+                       <property name="toolTip">
+                        <string>Change the available components in the Descriptions tab</string>
+                       </property>
+                       <property name="text">
+                        <string>Descriptions...</string>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="0" column="1">
                       <widget class="QPushButton" name="resetDescriptionsPushButton">
                        <property name="sizePolicy">
                         <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
@@ -1142,9 +1152,7 @@ Component items are defined by list of names in a UNIX wildcard format, i.e. [&q
   <tabstop>orderToolButton</tabstop>
   <tabstop>othersEntryCheckBox</tabstop>
   <tabstop>profileButtonBox</tabstop>
-  <tabstop>groupsPushButton</tabstop>
-  <tabstop>errorsPushButton</tabstop>
-  <tabstop>resetDescriptionsPushButton</tabstop>
+  <tabstop>detGroupsPushButton</tabstop>
   <tabstop>layoutButtonBox</tabstop>
   <tabstop>rowMaxSpinBox</tabstop>
   <tabstop>statusCheckBox</tabstop>

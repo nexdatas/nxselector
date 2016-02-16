@@ -106,7 +106,8 @@ class Storage(Qt.QObject):
             self.ui.labelsPushButton.clicked.disconnect(self.__labels)
             self.ui.orderToolButton.clicked.disconnect(self.__order)
 
-            self.ui.groupsPushButton.clicked.disconnect(self.__groups)
+            self.ui.detGroupsPushButton.clicked.disconnect(self.__detgroups)
+            self.ui.desGroupsPushButton.clicked.disconnect(self.__desgroups)
             self.ui.resetDescriptionsPushButton.clicked.disconnect(
                 self.__resetDescriptions)
             self.ui.errorsPushButton.clicked.disconnect(self.__errors)
@@ -150,7 +151,8 @@ class Storage(Qt.QObject):
         self.ui.labelsPushButton.clicked.connect(self.__labels)
         self.ui.orderToolButton.clicked.connect(self.__order)
 
-        self.ui.groupsPushButton.clicked.connect(self.__groups)
+        self.ui.detGroupsPushButton.clicked.connect(self.__detgroups)
+        self.ui.desGroupsPushButton.clicked.connect(self.__desgroups)
         self.ui.resetDescriptionsPushButton.clicked.connect(
             self.__resetDescriptions)
         self.ui.errorsPushButton.clicked.connect(self.__errors)
@@ -254,31 +256,60 @@ class Storage(Qt.QObject):
                 "Tango Servers of Description Components are ON")
 
     @Qt.pyqtSlot()
-    def __groups(self):
+    def __detgroups(self):
         dform = GroupsDlg(self.ui.storage)
         dform.state = self.state
-        dform.det_components = dict((cp, False) for cp in self.state.avcplist)
-        dform.det_components.update(
-            dict((cp, True) for cp in self.state.cpgroup.keys()))
-        dform.det_datasources = dict((cp, False) for cp in self.state.avdslist)
-        dform.det_datasources.update(
-            dict((cp, True) for cp in self.state.dsgroup.keys()))
-        dform.beam_components = dict((cp, False) for cp in self.state.avcplist)
-        dform.beam_components.update(
-            dict((cp, True) for cp in self.state.acpgroup.keys()))
-        dform.beam_datasources = dict(
-            (cp, False) for cp in self.state.avdslist)
-        dform.beam_datasources.update(
-            dict((cp, True) for cp in self.state.idslist))
+        hidden = set(self.state.mcplist)
+        hidden.update(set(self.state.orderedchannels))
+        hidden.update(
+            [cp for cp in self.state.acpgroup.keys()
+             if self.state.acpgroup[cp]])
+
+        dform.components = dict((cp, False) for cp in self.state.avcplist
+                                    if cp not in hidden and not cp.startswith("__"))
+        dform.components.update(
+            dict((cp, True) for cp in self.state.cpgroup.keys()
+                 if cp not in hidden and not cp.startswith("__")))
+        dform.datasources = dict((cp, False) for cp in self.state.avdslist
+                                     if cp not in hidden and not cp.startswith("__"))
+        dform.datasources.update(
+            dict((cp, True) for cp in self.state.dsgroup.keys()
+                 if cp not in hidden and not cp.startswith("__")))
 
         dform.createGUI()
         dform.exec_()
         if dform.dirty:
-            self.__updateGroup(self.state.cpgroup, dform.det_components)
-            self.__updateGroup(self.state.dsgroup, dform.det_datasources)
-            self.__updateGroup(self.state.acpgroup, dform.beam_components)
-            self.state.idslist = self.__createList(dform.beam_datasources)
+            self.__updateGroup(self.state.cpgroup, dform.components)
+            self.__updateGroup(self.state.dsgroup, dform.datasources)
             self.updateGroups.emit()
+
+    @Qt.pyqtSlot()
+    def __desgroups(self):
+        dform = GroupsDlg(self.ui.storage)
+        dform.title = "Preselectable Description Elements"
+        dform.state = self.state
+        hidden = set(self.state.mcplist)
+        dform.components = dict(
+            (cp, False) for cp in self.state.avcplist
+            if cp not in hidden and not cp.startswith("__"))
+        dform.components.update(
+            dict((cp, True) for cp in self.state.acpgroup.keys()
+                 if cp not in hidden and not cp.startswith("__")))
+        dform.datasources = dict(
+            (cp, False) for cp in self.state.avdslist
+            if cp not in hidden and not cp.startswith("__"))
+        dform.datasources.update(
+            dict((cp, True) for cp in self.state.idslist
+                 if cp not in hidden and not cp.startswith("__")))
+
+        dform.createGUI()
+        dform.exec_()
+        if dform.dirty:
+            self.__updateGroup(self.state.acpgroup, dform.components)
+            self.state.idslist = self.__createList(dform.datasources)
+            self.updateGroups.emit()
+
+
 
     def __updateGroup(self, group, dct):
         for k, st in dct.items():

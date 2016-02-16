@@ -44,19 +44,14 @@ class GroupsDlg(Qt.QDialog):
         super(GroupsDlg, self).__init__(parent)
         self.loadUi()
         self.dirty = False
-        self.det_components = {}
-        self.det_datasources = {}
-        self.beam_components = {}
-        self.beam_datasources = {}
+        self.components = {}
+        self.datasources = {}
         self.dcpchanged = False
         self.ddschanged = False
-        self.bcpchanged = False
-        self.bdschanged = False
         self.dcpgroup = []
         self.ddsgroup = []
-        self.bcpgroup = []
-        self.bdsgroup = []
         self.state = None
+        self.title = "Selectable Detector Elements"
 
     def __createViews(self, widget, cpview, dsview):
         gridLayout_3 = Qt.QGridLayout(widget)
@@ -66,32 +61,20 @@ class GroupsDlg(Qt.QDialog):
         gridLayout_3.addLayout(gridLayout, 0, 0, 1, 1)
 
     def createGUI(self):
-        self.setWindowTitle("Component Groups")
+        self.setWindowTitle(self.title)
         self.ui.dcpTableView = OneTableView(self.ui.detector)
         self.ui.ddsTableView = OneTableView(self.ui.detector)
-        self.ui.bcpTableView = OneTableView(self.ui.beamline)
-        self.ui.bdsTableView = OneTableView(self.ui.beamline)
 
         self.__createViews(self.ui.detector,
                            self.ui.dcpTableView, self.ui.ddsTableView)
-        self.__createViews(self.ui.beamline,
-                           self.ui.bcpTableView, self.ui.bdsTableView)
 
         self.__populateTable(self.ui.dcpTableView, self.dcpgroup, CP,
-                             self.det_components, "Selectable Components:")
+                             self.components, "Components:")
         self.__populateTable(self.ui.ddsTableView, self.ddsgroup, DS,
-                             self.det_datasources, "Selectable DataSources:")
-        self.__populateTable(self.ui.bcpTableView, self.bcpgroup, CP,
-                             self.beam_components,
-                             "Preselectable Components:")
-        self.__populateTable(self.ui.bdsTableView, self.bdsgroup, DS,
-                             self.beam_datasources,
-                             "Preselectable DataSources:")
+                             self.datasources, "DataSources:")
 
         self.ui.dcpTableView.dirty.connect(self.__dirty)
         self.ui.ddsTableView.dirty.connect(self.__dirty)
-        self.ui.bcpTableView.dirty.connect(self.__dirty)
-        self.ui.bdsTableView.dirty.connect(self.__dirty)
 
         self.ui.closeButtonBox.button(
             Qt.QDialogButtonBox.Close).clicked.connect(self.reject)

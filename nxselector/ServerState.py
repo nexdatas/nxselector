@@ -645,9 +645,10 @@ class ServerState(object):
                                 if len(vl) > 0 and vl[0] == 'STEP':
                                     dds[ds] = cp
                                     break
-        for timer in self.timers:
-            if timer not in dds.keys():
-                dds[timer] = ''
+        if self.timers:
+            for timer in self.timers:
+                if timer not in dds.keys():
+                    dds[timer] = ''
         return dds
 
     def clientRecords(self):

@@ -17,21 +17,13 @@
    <item row="0" column="0">
     <layout class="QVBoxLayout" name="verticalLayout">
      <item>
-      <widget class="QTabWidget" name="tabWidget">
-       <property name="currentIndex">
-        <number>0</number>
+      <widget class="QFrame" name="detector">
+       <property name="frameShape">
+        <enum>QFrame::StyledPanel</enum>
        </property>
-       <widget class="QWidget" name="detector">
-        <attribute name="title">
-         <string>Detectors</string>
-        </attribute>
-        <zorder>closeButtonBox</zorder>
-       </widget>
-       <widget class="QWidget" name="beamline">
-        <attribute name="title">
-         <string>Descriptions</string>
-        </attribute>
-       </widget>
+       <property name="frameShadow">
+        <enum>QFrame::Raised</enum>
+       </property>
       </widget>
      </item>
      <item>
