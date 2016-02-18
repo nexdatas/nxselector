@@ -272,6 +272,7 @@ class Storage(Qt.QObject):
         dform.state = self.state
         ##DAC  to be hidden via reselector property 
         hidden = set(self.state.mcplist)
+        hidden.update(self.state.mutedChannels)
         hidden.update(set(self.state.orderedchannels))
         hidden.update(set(self.state.acqchannels)
                       - set(self.state.motors)
@@ -314,6 +315,7 @@ class Storage(Qt.QObject):
         dform.title = "Preselectable Description Elements"
         dform.state = self.state
         hidden = set(self.state.mcplist)
+        hidden.update(self.state.mutedChannels)
 
         stcomps =  self.state.stepComponents()
         nostcomps = set(self.state.avcplist) - set(self.state.stepComponents())

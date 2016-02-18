@@ -68,8 +68,7 @@ class Selector(Qt.QDialog, TaurusBaseWidget):
         self.show()
         if umode != 'administrator':
             self.ui.tabWidget.removeTab(4)
-        logger.debug("PARAMETERS: %s %s",
-                     server, parent)
+        logger.debug("PARAMETERS: %s %s", server, parent)
         self.__organization = organization
         self.__application = application
         self.__door = door
@@ -162,8 +161,7 @@ class Selector(Qt.QDialog, TaurusBaseWidget):
         self.preferences.mgroups = settings.value(
             'Preferences/Groups', '{}')
         self.preferences.frames = settings.value(
-            'Preferences/Frames',
-            '[]')
+            'Preferences/Frames', '[]')
         self.preferences.mgroupshelp = settings.value(
             'Preferences/GroupsHints',
             self.preferences.mgroupshelp)

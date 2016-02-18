@@ -225,6 +225,7 @@ class ServerState(object):
         self.acplist = self.__getList("preselectedComponents")
         self.atlist = self.__getList("availableTimers")
         self.description = self.__getList("componentDescription", True)
+        self.mutedChannels = self.__getList("mutedChannels")
 
         self.vrcpdict = self.__getDict("variableComponents")
         self.fullnames = self.__getDict("fullDeviceNames")
