@@ -146,6 +146,8 @@ class Selector(Qt.QDialog, TaurusBaseWidget):
                                                 2))
         self.cnfFile = str(settings.value("Selector/CnfFile", "./"))
 
+        self.__addButtonBoxes()
+
         ## user interface
         self.preferences = Preferences(self.ui, self.state)
         if self.userView not in self.preferences.views:
@@ -224,7 +226,7 @@ class Selector(Qt.QDialog, TaurusBaseWidget):
         self.__connectSignals()
         self.__addTips()
 
-    def __setButtonBoxes(self):
+    def __addButtonBoxes(self):
         if not self.__standalone:
             self.ui.mntServerLineEdit.hide()
             self.ui.mntServerLabel.hide()
@@ -240,10 +242,25 @@ class Selector(Qt.QDialog, TaurusBaseWidget):
         self.ui.clearAllPushButton = self.ui.buttonBox.addButton(
             Qt.QDialogButtonBox.RestoreDefaults)
         self.ui.clearAllPushButton.setText("ClearAll")
+
+        self.ui.loadProfilePushButton = self.ui.buttonBox.addButton(
+            Qt.QDialogButtonBox.Open)
+        self.ui.loadProfilePushButton.setText("Load")
+
+        self.ui.saveProfilePushButton = self.ui.buttonBox.addButton(
+            Qt.QDialogButtonBox.Save)
+
+        self.ui.groupsPushButton = self.ui.buttonBox.addButton(
+            Qt.QDialogButtonBox.Retry)
+        self.ui.groupsPushButton.setText("Det. Content")
+
+
         self.ui.statusLabel = self.ui.buttonBox.addButton(
             "", Qt.QDialogButtonBox.ActionRole)
         self.ui.statusLabel.setEnabled(False)
         self.ui.buttonBox.setCenterButtons(True)
+
+    def __setButtonBoxes(self):
 
         flayout = Qt.QHBoxLayout(self.ui.timerButtonFrame)
         flayout.setContentsMargins(0, 0, 0, 0)
@@ -261,15 +278,6 @@ class Selector(Qt.QDialog, TaurusBaseWidget):
             Qt.QDialogButtonBox.Open).setText("Load")
         self.ui.layoutButtonBox.button(
             Qt.QDialogButtonBox.Save).setText("Save")
-        self.ui.profileButtonBox.button(
-            Qt.QDialogButtonBox.Open).setText("&Load")
-
-        layout = self.ui.profileButtonBox.layout()
-        for i in range(layout.count()):
-            spacer = layout.itemAt(i)
-            if isinstance(spacer, Qt.QSpacerItem):
-                spacer.changeSize(
-                    0, 0, Qt.QSizePolicy.Minimum)
 
         layout = self.ui.layoutButtonBox.layout()
         for i in range(layout.count()):
@@ -339,12 +347,10 @@ class Selector(Qt.QDialog, TaurusBaseWidget):
         if self.__standalone:
             self.ui.buttonBox.button(
                 Qt.QDialogButtonBox.Close).pressed.connect(self.close)
-        self.ui.clearAllPushButton.pressed.connect(self.__clearAllClicked)
+        self.ui.clearAllPushButton.pressed.connect(self.__restore)
 
-        self.ui.profileButtonBox.button(
-            Qt.QDialogButtonBox.Open).pressed.connect(self.cnfLoad)
-        self.ui.profileButtonBox.button(
-            Qt.QDialogButtonBox.Save).pressed.connect(self.cnfSave)
+        self.ui.loadProfilePushButton.pressed.connect(self.cnfLoad)
+        self.ui.saveProfilePushButton.pressed.connect(self.cnfSave)
 
         self.preferences.serverChanged.connect(self.resetServer)
         self.preferences.layoutChanged.connect(self.resetLayout)
@@ -359,9 +365,9 @@ class Selector(Qt.QDialog, TaurusBaseWidget):
         self.data.dirty.connect(self.setDirty)
         self.storage.dirty.connect(self.setDirty)
         self.storage.resetViews.connect(self.resetViews)
-        self.storage.resetDescriptions.connect(self.resetDescriptions)
         self.storage.resetAll.connect(self.resetAll)
         self.storage.updateGroups.connect(self.updateGroups)
+        self.ui.tabWidget.currentChanged.connect(self.__tabChanged)
 
     def __addTips(self):
         self.ui.buttonBox.button(
@@ -388,11 +394,9 @@ class Selector(Qt.QDialog, TaurusBaseWidget):
         self.ui.timerAddPushButton.setToolTip("Add a non-master timer")
         self.ui.timerDelPushButton.setToolTip(
             "Remove the last non-master timer ")
-        self.ui.profileButtonBox.button(
-            Qt.QDialogButtonBox.Open).setToolTip(
+        self.ui.loadProfilePushButton.setToolTip(
             "Load a previously selected channels from a file.")
-        self.ui.profileButtonBox.button(
-            Qt.QDialogButtonBox.Save).setToolTip(
+        self.ui.saveProfilePushButton.setToolTip(
             "Save the currently selected channels into a file.")
         self.ui.layoutButtonBox.button(
             Qt.QDialogButtonBox.Open).setToolTip(
@@ -400,6 +404,8 @@ class Selector(Qt.QDialog, TaurusBaseWidget):
         self.ui.layoutButtonBox.button(
             Qt.QDialogButtonBox.Save).setToolTip(
             "Save into a file the currently detector layout.")
+        self.ui.groupsPushButton.setToolTip(
+            "Change the available components in the Detectors tab")
 
     def setModel(self, model):
         if str(model) != str(self.state.server):
@@ -481,6 +487,7 @@ class Selector(Qt.QDialog, TaurusBaseWidget):
                 self.state.storeData("door", self.__door)
         self.runProgress(["updateControllers", "fetchSettings"],
                          "settings")
+#        self.storage.showErrors()
 
     @Qt.pyqtSlot()
     def __componentChanged(self):
@@ -669,7 +676,7 @@ class Selector(Qt.QDialog, TaurusBaseWidget):
             "updateControllers",
             "importMntGrp"
         ])
-
+        self.storage.showErrors()
         logger.debug("reset ENDED")
 
     @Qt.pyqtSlot()
@@ -677,12 +684,13 @@ class Selector(Qt.QDialog, TaurusBaseWidget):
         logger.debug("reset ALL")
         self.runProgress([
             "updateControllers", "importMntGrp"])
+        self.storage.showErrors()
         logger.debug("reset ENDED")
 
-    @Qt.pyqtSlot()
     def resetDescriptions(self):
         logger.debug("reset Descriptions")
         self.runProgress(["resetDescriptions", "importMntGrp"])
+        self.storage.showErrors()
         logger.debug("reset Descriptions ENDED")
 
     def resetConfiguration(self, expconf):
@@ -719,6 +727,13 @@ class Selector(Qt.QDialog, TaurusBaseWidget):
         self.resetClickAll()
 
     @Qt.pyqtSlot()
+    def __restore(self):
+        index = self.ui.tabWidget.currentIndex()
+        if index == 0:
+            self.__clearAllClicked()
+        elif index == 1:
+            self.resetDescriptions()
+
     def __clearAllClicked(self):
         for ds in self.state.dsgroup.keys():
             self.state.dsgroup[ds] = False
@@ -787,6 +802,29 @@ class Selector(Qt.QDialog, TaurusBaseWidget):
         self.apply()
 
     @Qt.pyqtSlot(int)
+    def __tabChanged(self, index):
+        if index == 0:
+            self.ui.groupsPushButton.setText("Det. Content")
+            self.ui.groupsPushButton.show()
+            self.ui.groupsPushButton.setToolTip(
+                "Change the available components in the Detectors tab")
+            self.ui.clearAllPushButton.setText("ClearAll")
+            self.ui.clearAllPushButton.setToolTip("Deselect all detector components")
+            self.ui.clearAllPushButton.show()
+        elif index == 1:
+            self.ui.groupsPushButton.setText("Desc. Content")
+            self.ui.groupsPushButton.show()
+            self.ui.groupsPushButton.setToolTip(
+                "Change the available components in the Descriptions tab")
+            self.ui.clearAllPushButton.setText("Restore Desc.")
+            self.ui.clearAllPushButton.setToolTip(
+                "Reset the description components into the default set")
+            self.ui.clearAllPushButton.show()
+        else:
+            self.ui.clearAllPushButton.hide()
+            self.ui.groupsPushButton.hide()
+
+    @Qt.pyqtSlot(int)
     def __displayStatusChanged(self, state):
         self.displayStatus = state
         self.setDirty(self.__dirty)
@@ -806,6 +844,7 @@ class Selector(Qt.QDialog, TaurusBaseWidget):
             self.runProgress(["updateControllers", "importMntGrp",
                               "createConfiguration"],
                              "closeApply")
+            self.storage.showErrors()
         except Exception as e:
             import traceback
             value = traceback.format_exc()

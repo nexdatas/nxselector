@@ -1,3 +1,9 @@
+2016-02-XX Jan Kotanski <jankotan@gmail.com>
+	* dedicated to use with NXSRecSelector 2.2.0 or above
+	* move buttons from Configuration into buttonbox
+	* improve group filters
+	* tagged as 2.2.0
+
 2016-02-16 Jan Kotanski <jankotan@gmail.com>
 	* improve group widget
 	* tagged as 2.1.0

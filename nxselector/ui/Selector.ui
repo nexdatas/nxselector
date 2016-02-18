@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>711</width>
-    <height>595</height>
+    <width>921</width>
+    <height>519</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -362,6 +362,15 @@ into separate entries identified by the current Scan ID.</string>
        <property name="toolTip">
         <string/>
        </property>
+       <property name="whatsThis">
+        <string/>
+       </property>
+       <property name="layoutDirection">
+        <enum>Qt::LeftToRight</enum>
+       </property>
+       <property name="tabPosition">
+        <enum>QTabWidget::North</enum>
+       </property>
        <property name="currentIndex">
         <number>0</number>
        </property>
@@ -420,79 +429,60 @@ Additionally user can add some additional data , e.g. comments.</string>
                 <enum>QFrame::Raised</enum>
                </property>
                <layout class="QGridLayout" name="gridLayout_10">
-                <item row="0" column="1">
-                 <widget class="QGroupBox" name="componentGroupBox">
+                <item row="1" column="2">
+                 <widget class="QGroupBox" name="viewGroupBox">
                   <property name="toolTip">
-                   <string>Profile parameters</string>
+                   <string>View parameters</string>
                   </property>
                   <property name="title">
-                   <string>Components:</string>
+                   <string>View:</string>
                   </property>
-                  <layout class="QGridLayout" name="gridLayout_11">
+                  <layout class="QGridLayout" name="gridLayout_3">
                    <item row="1" column="0">
-                    <layout class="QGridLayout" name="gridLayout_19">
-                     <item row="0" column="0">
-                      <widget class="QPushButton" name="detGroupsPushButton">
-                       <property name="sizePolicy">
-                        <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
-                         <horstretch>0</horstretch>
-                         <verstretch>0</verstretch>
-                        </sizepolicy>
-                       </property>
+                    <layout class="QHBoxLayout" name="horizontalLayout">
+                     <item>
+                      <widget class="QLabel" name="rowMaxLabel">
                        <property name="toolTip">
-                        <string>Change the available components in the Detectors tab</string>
+                        <string>Maximal number of component rows in the Detectors and Descriptions tabs.</string>
                        </property>
                        <property name="text">
-                        <string>Detectors ...</string>
+                        <string>Row Max.:</string>
                        </property>
                       </widget>
                      </item>
-                     <item row="1" column="1">
-                      <widget class="QPushButton" name="errorsPushButton">
-                       <property name="sizePolicy">
-                        <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
-                         <horstretch>0</horstretch>
-                         <verstretch>0</verstretch>
-                        </sizepolicy>
-                       </property>
-                       <property name="toolTip">
-                        <string>Show warning for description components which are deselected</string>
-                       </property>
-                       <property name="text">
-                        <string>Warnings ...</string>
-                       </property>
-                      </widget>
+                     <item>
+                      <widget class="QSpinBox" name="rowMaxSpinBox"/>
                      </item>
-                     <item row="1" column="0">
-                      <widget class="QPushButton" name="desGroupsPushButton">
-                       <property name="toolTip">
-                        <string>Change the available components in the Descriptions tab</string>
+                     <item>
+                      <spacer name="horizontalSpacer">
+                       <property name="orientation">
+                        <enum>Qt::Horizontal</enum>
                        </property>
-                       <property name="text">
-                        <string>Descriptions...</string>
+                       <property name="sizeType">
+                        <enum>QSizePolicy::Maximum</enum>
                        </property>
-                      </widget>
+                       <property name="sizeHint" stdset="0">
+                        <size>
+                         <width>10</width>
+                         <height>20</height>
+                        </size>
+                       </property>
+                      </spacer>
                      </item>
-                     <item row="0" column="1">
-                      <widget class="QPushButton" name="resetDescriptionsPushButton">
-                       <property name="sizePolicy">
-                        <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
-                         <horstretch>0</horstretch>
-                         <verstretch>0</verstretch>
-                        </sizepolicy>
-                       </property>
+                     <item>
+                      <widget class="QCheckBox" name="statusCheckBox">
                        <property name="toolTip">
-                        <string>Reset the description components into the default set</string>
+                        <string>Show the apply status in the bottom row</string>
                        </property>
                        <property name="text">
-                        <string>Reset Descriptions</string>
+                        <string>Status</string>
                        </property>
                       </widget>
                      </item>
                     </layout>
                    </item>
                    <item row="0" column="0">
-                    <spacer name="verticalSpacer_2">
+                    <spacer name="verticalSpacer_11">
                      <property name="orientation">
                       <enum>Qt::Vertical</enum>
                      </property>
@@ -508,64 +498,7 @@ Additionally user can add some additional data , e.g. comments.</string>
                     </spacer>
                    </item>
                    <item row="2" column="0">
-                    <spacer name="verticalSpacer_10">
-                     <property name="orientation">
-                      <enum>Qt::Vertical</enum>
-                     </property>
-                     <property name="sizeType">
-                      <enum>QSizePolicy::Maximum</enum>
-                     </property>
-                     <property name="sizeHint" stdset="0">
-                      <size>
-                       <width>20</width>
-                       <height>40</height>
-                      </size>
-                     </property>
-                    </spacer>
-                   </item>
-                  </layout>
-                 </widget>
-                </item>
-                <item row="0" column="0">
-                 <widget class="QGroupBox" name="groupBox_6">
-                  <property name="toolTip">
-                   <string>Load/Save the current profile.</string>
-                  </property>
-                  <property name="title">
-                   <string>Profile:</string>
-                  </property>
-                  <layout class="QGridLayout" name="gridLayout_8">
-                   <item row="1" column="0">
-                    <widget class="QDialogButtonBox" name="profileButtonBox">
-                     <property name="toolTip">
-                      <string/>
-                     </property>
-                     <property name="standardButtons">
-                      <set>QDialogButtonBox::Open|QDialogButtonBox::Save</set>
-                     </property>
-                     <property name="centerButtons">
-                      <bool>true</bool>
-                     </property>
-                    </widget>
-                   </item>
-                   <item row="0" column="0">
-                    <spacer name="verticalSpacer_7">
-                     <property name="orientation">
-                      <enum>Qt::Vertical</enum>
-                     </property>
-                     <property name="sizeType">
-                      <enum>QSizePolicy::Maximum</enum>
-                     </property>
-                     <property name="sizeHint" stdset="0">
-                      <size>
-                       <width>20</width>
-                       <height>20</height>
-                      </size>
-                     </property>
-                    </spacer>
-                   </item>
-                   <item row="2" column="0">
-                    <spacer name="verticalSpacer_8">
+                    <spacer name="verticalSpacer_12">
                      <property name="orientation">
                       <enum>Qt::Vertical</enum>
                      </property>
@@ -584,6 +517,112 @@ Additionally user can add some additional data , e.g. comments.</string>
                  </widget>
                 </item>
                 <item row="1" column="1">
+                 <widget class="QGroupBox" name="componentGroupBox">
+                  <property name="toolTip">
+                   <string>Profile parameters</string>
+                  </property>
+                  <property name="title">
+                   <string>Info:</string>
+                  </property>
+                  <layout class="QGridLayout" name="gridLayout_8">
+                   <item row="0" column="0">
+                    <spacer name="verticalSpacer_2">
+                     <property name="orientation">
+                      <enum>Qt::Vertical</enum>
+                     </property>
+                     <property name="sizeType">
+                      <enum>QSizePolicy::Maximum</enum>
+                     </property>
+                     <property name="sizeHint" stdset="0">
+                      <size>
+                       <width>20</width>
+                       <height>20</height>
+                      </size>
+                     </property>
+                    </spacer>
+                   </item>
+                   <item row="1" column="0" colspan="2">
+                    <layout class="QHBoxLayout" name="horizontalLayout_10">
+                     <item>
+                      <widget class="QPushButton" name="infoPushButton">
+                       <property name="sizePolicy">
+                        <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+                         <horstretch>0</horstretch>
+                         <verstretch>0</verstretch>
+                        </sizepolicy>
+                       </property>
+                       <property name="toolTip">
+                        <string>Show information about used Tango Servers</string>
+                       </property>
+                       <property name="text">
+                        <string>Server ...</string>
+                       </property>
+                      </widget>
+                     </item>
+                     <item>
+                      <spacer name="horizontalSpacer_2">
+                       <property name="orientation">
+                        <enum>Qt::Horizontal</enum>
+                       </property>
+                       <property name="sizeHint" stdset="0">
+                        <size>
+                         <width>10</width>
+                         <height>20</height>
+                        </size>
+                       </property>
+                      </spacer>
+                     </item>
+                     <item>
+                      <widget class="QPushButton" name="errorsPushButton">
+                       <property name="sizePolicy">
+                        <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+                         <horstretch>0</horstretch>
+                         <verstretch>0</verstretch>
+                        </sizepolicy>
+                       </property>
+                       <property name="toolTip">
+                        <string>Show warning for description components which are deselected</string>
+                       </property>
+                       <property name="text">
+                        <string>Warnings ...</string>
+                       </property>
+                      </widget>
+                     </item>
+                     <item>
+                      <spacer name="horizontalSpacer_4">
+                       <property name="orientation">
+                        <enum>Qt::Horizontal</enum>
+                       </property>
+                       <property name="sizeHint" stdset="0">
+                        <size>
+                         <width>40</width>
+                         <height>20</height>
+                        </size>
+                       </property>
+                      </spacer>
+                     </item>
+                    </layout>
+                   </item>
+                   <item row="2" column="1">
+                    <spacer name="verticalSpacer_10">
+                     <property name="orientation">
+                      <enum>Qt::Vertical</enum>
+                     </property>
+                     <property name="sizeType">
+                      <enum>QSizePolicy::Maximum</enum>
+                     </property>
+                     <property name="sizeHint" stdset="0">
+                      <size>
+                       <width>20</width>
+                       <height>40</height>
+                      </size>
+                     </property>
+                    </spacer>
+                   </item>
+                  </layout>
+                 </widget>
+                </item>
+                <item row="2" column="1">
                  <spacer name="verticalSpacer_9">
                   <property name="orientation">
                    <enum>Qt::Vertical</enum>
@@ -598,6 +637,85 @@ Additionally user can add some additional data , e.g. comments.</string>
                    </size>
                   </property>
                  </spacer>
+                </item>
+                <item row="1" column="0">
+                 <widget class="QGroupBox" name="groupBox_2">
+                  <property name="toolTip">
+                   <string>Load/Save the detector layout.</string>
+                  </property>
+                  <property name="title">
+                   <string>Layout:</string>
+                  </property>
+                  <layout class="QGridLayout" name="gridLayout_7">
+                   <item row="1" column="0">
+                    <widget class="QDialogButtonBox" name="layoutButtonBox">
+                     <property name="sizePolicy">
+                      <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+                       <horstretch>0</horstretch>
+                       <verstretch>0</verstretch>
+                      </sizepolicy>
+                     </property>
+                     <property name="toolTip">
+                      <string/>
+                     </property>
+                     <property name="standardButtons">
+                      <set>QDialogButtonBox::Open|QDialogButtonBox::Save</set>
+                     </property>
+                     <property name="centerButtons">
+                      <bool>true</bool>
+                     </property>
+                    </widget>
+                   </item>
+                   <item row="0" column="0">
+                    <spacer name="verticalSpacer_14">
+                     <property name="orientation">
+                      <enum>Qt::Vertical</enum>
+                     </property>
+                     <property name="sizeType">
+                      <enum>QSizePolicy::Maximum</enum>
+                     </property>
+                     <property name="sizeHint" stdset="0">
+                      <size>
+                       <width>20</width>
+                       <height>20</height>
+                      </size>
+                     </property>
+                    </spacer>
+                   </item>
+                   <item row="2" column="0">
+                    <spacer name="verticalSpacer_21">
+                     <property name="orientation">
+                      <enum>Qt::Vertical</enum>
+                     </property>
+                     <property name="sizeType">
+                      <enum>QSizePolicy::Maximum</enum>
+                     </property>
+                     <property name="sizeHint" stdset="0">
+                      <size>
+                       <width>20</width>
+                       <height>40</height>
+                      </size>
+                     </property>
+                    </spacer>
+                   </item>
+                   <item row="1" column="1">
+                    <spacer name="horizontalSpacer_6">
+                     <property name="orientation">
+                      <enum>Qt::Horizontal</enum>
+                     </property>
+                     <property name="sizeType">
+                      <enum>QSizePolicy::Preferred</enum>
+                     </property>
+                     <property name="sizeHint" stdset="0">
+                      <size>
+                       <width>40</width>
+                       <height>20</height>
+                      </size>
+                     </property>
+                    </spacer>
+                   </item>
+                  </layout>
+                 </widget>
                 </item>
                </layout>
               </widget>
@@ -616,181 +734,7 @@ Additionally user can add some additional data , e.g. comments.</string>
               <item row="0" column="0">
                <layout class="QVBoxLayout" name="verticalLayout_4">
                 <item>
-                 <layout class="QHBoxLayout" name="horizontalLayout_5">
-                  <item>
-                   <widget class="QGroupBox" name="groupBox_2">
-                    <property name="toolTip">
-                     <string>Load/Save the detector layout.</string>
-                    </property>
-                    <property name="title">
-                     <string>Layout:</string>
-                    </property>
-                    <layout class="QGridLayout" name="gridLayout_7">
-                     <item row="1" column="0">
-                      <widget class="QDialogButtonBox" name="layoutButtonBox">
-                       <property name="toolTip">
-                        <string/>
-                       </property>
-                       <property name="standardButtons">
-                        <set>QDialogButtonBox::Open|QDialogButtonBox::Save</set>
-                       </property>
-                       <property name="centerButtons">
-                        <bool>true</bool>
-                       </property>
-                      </widget>
-                     </item>
-                     <item row="2" column="0">
-                      <spacer name="verticalSpacer_21">
-                       <property name="orientation">
-                        <enum>Qt::Vertical</enum>
-                       </property>
-                       <property name="sizeType">
-                        <enum>QSizePolicy::Maximum</enum>
-                       </property>
-                       <property name="sizeHint" stdset="0">
-                        <size>
-                         <width>20</width>
-                         <height>40</height>
-                        </size>
-                       </property>
-                      </spacer>
-                     </item>
-                     <item row="0" column="0">
-                      <spacer name="verticalSpacer_14">
-                       <property name="orientation">
-                        <enum>Qt::Vertical</enum>
-                       </property>
-                       <property name="sizeType">
-                        <enum>QSizePolicy::Maximum</enum>
-                       </property>
-                       <property name="sizeHint" stdset="0">
-                        <size>
-                         <width>20</width>
-                         <height>20</height>
-                        </size>
-                       </property>
-                      </spacer>
-                     </item>
-                    </layout>
-                   </widget>
-                  </item>
-                  <item>
-                   <widget class="QGroupBox" name="viewGroupBox">
-                    <property name="toolTip">
-                     <string>View parameters</string>
-                    </property>
-                    <property name="title">
-                     <string>View:</string>
-                    </property>
-                    <layout class="QGridLayout" name="gridLayout_3">
-                     <item row="1" column="0">
-                      <layout class="QHBoxLayout" name="horizontalLayout">
-                       <item>
-                        <widget class="QLabel" name="rowMaxLabel">
-                         <property name="toolTip">
-                          <string>Maximal number of component rows in the Detectors and Descriptions tabs.</string>
-                         </property>
-                         <property name="text">
-                          <string>Row Max.:</string>
-                         </property>
-                        </widget>
-                       </item>
-                       <item>
-                        <widget class="QSpinBox" name="rowMaxSpinBox"/>
-                       </item>
-                       <item>
-                        <spacer name="horizontalSpacer">
-                         <property name="orientation">
-                          <enum>Qt::Horizontal</enum>
-                         </property>
-                         <property name="sizeType">
-                          <enum>QSizePolicy::Maximum</enum>
-                         </property>
-                         <property name="sizeHint" stdset="0">
-                          <size>
-                           <width>10</width>
-                           <height>20</height>
-                          </size>
-                         </property>
-                        </spacer>
-                       </item>
-                       <item>
-                        <widget class="QCheckBox" name="statusCheckBox">
-                         <property name="toolTip">
-                          <string>Show the apply status in the bottom row</string>
-                         </property>
-                         <property name="text">
-                          <string>Status</string>
-                         </property>
-                        </widget>
-                       </item>
-                       <item>
-                        <spacer name="horizontalSpacer_2">
-                         <property name="orientation">
-                          <enum>Qt::Horizontal</enum>
-                         </property>
-                         <property name="sizeHint" stdset="0">
-                          <size>
-                           <width>10</width>
-                           <height>20</height>
-                          </size>
-                         </property>
-                        </spacer>
-                       </item>
-                       <item>
-                        <widget class="QPushButton" name="infoPushButton">
-                         <property name="sizePolicy">
-                          <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
-                           <horstretch>0</horstretch>
-                           <verstretch>0</verstretch>
-                          </sizepolicy>
-                         </property>
-                         <property name="toolTip">
-                          <string>Show information about used Tango Servers</string>
-                         </property>
-                         <property name="text">
-                          <string>Server Info ...</string>
-                         </property>
-                        </widget>
-                       </item>
-                      </layout>
-                     </item>
-                     <item row="0" column="0">
-                      <spacer name="verticalSpacer_11">
-                       <property name="orientation">
-                        <enum>Qt::Vertical</enum>
-                       </property>
-                       <property name="sizeType">
-                        <enum>QSizePolicy::Maximum</enum>
-                       </property>
-                       <property name="sizeHint" stdset="0">
-                        <size>
-                         <width>20</width>
-                         <height>20</height>
-                        </size>
-                       </property>
-                      </spacer>
-                     </item>
-                     <item row="2" column="0">
-                      <spacer name="verticalSpacer_12">
-                       <property name="orientation">
-                        <enum>Qt::Vertical</enum>
-                       </property>
-                       <property name="sizeType">
-                        <enum>QSizePolicy::Maximum</enum>
-                       </property>
-                       <property name="sizeHint" stdset="0">
-                        <size>
-                         <width>20</width>
-                         <height>40</height>
-                        </size>
-                       </property>
-                      </spacer>
-                     </item>
-                    </layout>
-                   </widget>
-                  </item>
-                 </layout>
+                 <layout class="QHBoxLayout" name="horizontalLayout_5"/>
                 </item>
                 <item>
                  <widget class="QGroupBox" name="frameGroupBox">
@@ -1151,12 +1095,9 @@ Component items are defined by list of names in a UNIX wildcard format, i.e. [&q
   <tabstop>mntGrpToolButton</tabstop>
   <tabstop>orderToolButton</tabstop>
   <tabstop>othersEntryCheckBox</tabstop>
-  <tabstop>profileButtonBox</tabstop>
-  <tabstop>detGroupsPushButton</tabstop>
   <tabstop>layoutButtonBox</tabstop>
   <tabstop>rowMaxSpinBox</tabstop>
   <tabstop>statusCheckBox</tabstop>
-  <tabstop>infoPushButton</tabstop>
   <tabstop>frameLineEdit</tabstop>
   <tabstop>groupLineEdit</tabstop>
   <tabstop>buttonBox</tabstop>

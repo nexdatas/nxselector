@@ -45,7 +45,6 @@ class Storage(Qt.QObject):
     resetViews = Qt.pyqtSignal()
     resetAll = Qt.pyqtSignal()
     updateGroups = Qt.pyqtSignal()
-    resetDescriptions = Qt.pyqtSignal()
 
     ## constructor
     # \param settings frame settings
@@ -75,6 +74,10 @@ class Storage(Qt.QObject):
                 self.__dirChanged)
             self.ui.fileScanLineEdit.editingFinished.disconnect(
                 self.__fileChanged)
+            self.ui.fileScanDirLineEdit.textEdited.disconnect(
+                self.__dirty)
+            self.ui.fileScanLineEdit.textEdited.disconnect(
+                self.__dirty)
             # measurement group
 
             self.ui.mntTimerComboBox.currentIndexChanged.disconnect(self.apply)
@@ -106,10 +109,7 @@ class Storage(Qt.QObject):
             self.ui.labelsPushButton.clicked.disconnect(self.__labels)
             self.ui.orderToolButton.clicked.disconnect(self.__order)
 
-            self.ui.detGroupsPushButton.clicked.disconnect(self.__detgroups)
-            self.ui.desGroupsPushButton.clicked.disconnect(self.__desgroups)
-            self.ui.resetDescriptionsPushButton.clicked.disconnect(
-                self.__resetDescriptions)
+            self.ui.groupsPushButton.clicked.disconnect(self.__groups)
             self.ui.errorsPushButton.clicked.disconnect(self.__errors)
             self.ui.infoPushButton.clicked.disconnect(self.__info)
             logger.debug("disconnect signals END")
@@ -120,6 +120,8 @@ class Storage(Qt.QObject):
         self.ui.fileScanDirToolButton.pressed.connect(self.__setDir)
         self.ui.fileScanDirLineEdit.editingFinished.connect(self.__dirChanged)
         self.ui.fileScanLineEdit.editingFinished.connect(self.__fileChanged)
+        self.ui.fileScanDirLineEdit.textEdited.connect(self.__dirty)
+        self.ui.fileScanLineEdit.textEdited.connect(self.__dirty)
         # measurement group
 
         self.ui.mntTimerComboBox.currentIndexChanged.connect(self.apply)
@@ -151,10 +153,7 @@ class Storage(Qt.QObject):
         self.ui.labelsPushButton.clicked.connect(self.__labels)
         self.ui.orderToolButton.clicked.connect(self.__order)
 
-        self.ui.detGroupsPushButton.clicked.connect(self.__detgroups)
-        self.ui.desGroupsPushButton.clicked.connect(self.__desgroups)
-        self.ui.resetDescriptionsPushButton.clicked.connect(
-            self.__resetDescriptions)
+        self.ui.groupsPushButton.clicked.connect(self.__groups)
         self.ui.errorsPushButton.clicked.connect(self.__errors)
         self.ui.infoPushButton.clicked.connect(self.__info)
         logger.debug("connect signals END")
@@ -205,7 +204,7 @@ class Storage(Qt.QObject):
                  if self.state.cpgroup[cp]])
             | set([ds for ds in self.state.dsgroup.keys()
                    if self.state.dsgroup[ds]])
-            | set(self.state.timers))
+            | set(self.state.timers or []))
         dform.onlyselected = self.__onlyselected
 
         dform.createGUI()
@@ -216,26 +215,26 @@ class Storage(Qt.QObject):
             self.dirty.emit()
 
     @Qt.pyqtSlot()
-    def __resetDescriptions(self):
-        self.resetDescriptions.emit()
-
-    @Qt.pyqtSlot()
     def __info(self):
         dform = InfoDlg(self.ui.storage)
         dform.state = self.state
         dform.createGUI()
         dform.exec_()
 
-    @Qt.pyqtSlot()
-    def __errors(self):
-        errors = self.state.fetchErrors()
+    def showErrors(self, errors=None):
+        if errors is None:
+            errors = self.state.fetchErrors()
         text = ""
         details = ""
+        comps = ""
         for er in errors:
             try:
                 jer = json.loads(er)
-                ler = "" + str(jer["component"]) + " with " + \
-                    str(jer["datasource"]) + "\n"
+                if comps:
+                    comps += ", "
+                comps += "'" + str(jer["component"]) + "'"
+                ler = "'" + str(jer["component"]) + "' because of '" + \
+                    str(jer["datasource"]) + "'\n"
                 der = "" + str(jer["component"]) + "(" + \
                     str(jer["datasource"]) + "):\n" \
                     + str(jer["message"]) + "\n"
@@ -247,35 +246,61 @@ class Storage(Qt.QObject):
         if errors:
             MessageBox.warning(
                 self.ui.storage,
-                "NXSSelector: Errors in Descrption Component:",
+                "NXSSelector: Component: %s will not be stored" % comps,
                 str(text), "%s" % str(details))
-        else:
+        
+    @Qt.pyqtSlot()
+    def __errors(self):
+        errors = self.state.fetchErrors()
+        self.showErrors(errors)
+        if not errors:
             Qt.QMessageBox.information(
                 self.ui.storage,
                 "NXSSelector: Descrption Component:",
                 "Tango Servers of Description Components are ON")
 
     @Qt.pyqtSlot()
+    def __groups(self):
+        index = self.ui.tabWidget.currentIndex()
+        if index == 0:
+            self.__detgroups()
+        elif index == 1:
+            self.__descgroups()
+
     def __detgroups(self):
         dform = GroupsDlg(self.ui.storage)
         dform.state = self.state
+        ##DAC  to be hidden via reselector property 
         hidden = set(self.state.mcplist)
         hidden.update(set(self.state.orderedchannels))
-        hidden.update(
-            [cp for cp in self.state.acpgroup.keys()
-             if self.state.acpgroup[cp]])
+        hidden.update(set(self.state.acqchannels)
+                      - set(self.state.motors)
+                      - set(self.state.ioregisters))
+        hidden.update([cp for cp in self.state.acpgroup.keys()
+                       if self.state.acpgroup[cp]])
 
-        dform.components = dict((cp, False) for cp in self.state.avcplist
-                                    if cp not in hidden and not cp.startswith("__"))
+        stcomps =  self.state.stepComponents()
+        dform.components = dict(
+            (cp, False) for cp in stcomps
+            if cp not in hidden and not cp.startswith("__"))
         dform.components.update(
             dict((cp, True) for cp in self.state.cpgroup.keys()
-                 if cp not in hidden and not cp.startswith("__")))
-        dform.datasources = dict((cp, False) for cp in self.state.avdslist
-                                     if cp not in hidden and not cp.startswith("__"))
+                 if self.state.cpgroup[cp]))
+
+        
+        cldsources = self.state.clientDataSources()
+        
+        hidden.update(
+            set(cldsources)
+            - set(self.state.motors)
+            - set(self.state.ioregisters))
+        dform.datasources = dict(
+            (cp, False) for cp in self.state.avdslist
+            if cp not in hidden and not cp.startswith("__"))
         dform.datasources.update(
             dict((cp, True) for cp in self.state.dsgroup.keys()
-                 if cp not in hidden and not cp.startswith("__")))
-
+                 if self.state.dsgroup[cp]))
+        
         dform.createGUI()
         dform.exec_()
         if dform.dirty:
@@ -283,24 +308,33 @@ class Storage(Qt.QObject):
             self.__updateGroup(self.state.dsgroup, dform.datasources)
             self.updateGroups.emit()
 
-    @Qt.pyqtSlot()
-    def __desgroups(self):
+            
+    def __descgroups(self):
         dform = GroupsDlg(self.ui.storage)
         dform.title = "Preselectable Description Elements"
         dform.state = self.state
         hidden = set(self.state.mcplist)
+
+        stcomps =  self.state.stepComponents()
+        nostcomps = set(self.state.avcplist) - set(self.state.stepComponents())
         dform.components = dict(
-            (cp, False) for cp in self.state.avcplist
+            (cp, False) for cp in nostcomps 
             if cp not in hidden and not cp.startswith("__"))
         dform.components.update(
             dict((cp, True) for cp in self.state.acpgroup.keys()
-                 if cp not in hidden and not cp.startswith("__")))
+                 if self.state.acpgroup[cp]))
+
+        cldsources = self.state.clientDataSources()
+        hidden.update(
+            set(cldsources)
+            - set(self.state.motors)
+            - set(self.state.ioregisters))
+
         dform.datasources = dict(
             (cp, False) for cp in self.state.avdslist
             if cp not in hidden and not cp.startswith("__"))
         dform.datasources.update(
-            dict((cp, True) for cp in self.state.idslist
-                 if cp not in hidden and not cp.startswith("__")))
+            dict((cp, True) for cp in self.state.idslist))
 
         dform.createGUI()
         dform.exec_()
@@ -539,6 +573,10 @@ class Storage(Qt.QObject):
             self.ui.fileScanDirLineEdit.setText(dirname)
             self.state.scanDir = str(dirname)
             self.apply()
+
+    @Qt.pyqtSlot()
+    def __dirty(self):
+        self.dirty.emit()
 
     @Qt.pyqtSlot()
     def __dirChanged(self):

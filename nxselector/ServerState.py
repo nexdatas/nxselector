@@ -217,6 +217,8 @@ class ServerState(object):
 
         self.avcplist = self.__getList("availableComponents")
         self.avdslist = self.__getList("availableDataSources")
+        self.dsdescription = self.__getList(
+            "datasourceDescription", argin=self.avdslist)
         self.avmglist = self.__getList("availableMntGrps")
         self.mcplist = self.__getList("mandatoryComponents")
 
@@ -227,6 +229,13 @@ class ServerState(object):
         self.vrcpdict = self.__getDict("variableComponents")
         self.fullnames = self.__getDict("fullDeviceNames")
         self.admindata = self.__getList("administratorDataNames")
+
+        self.motors = self.__getList(
+            "poolElementNames", argin='MotorList')
+        self.acqchannels = self.__getList(
+            "poolElementNames", argin='AcqChannelList')
+        self.ioregisters = self.__getList(
+            "poolElementNames", argin='IORegisterList')
 
         self.__fetchFileData()
         self.__fetchEnvData()
@@ -593,14 +602,21 @@ class ServerState(object):
         logger.debug(dc)
         return dc
 
-    def __getList(self, name, encoded=False):
+    def __getList(self, name, encoded=False, argin=None):
         if not self.__dp:
             self.setServer()
         if self.server:
             self.__dp.ping()
-            dc = self.__dp.command_inout(name)
+            if argin is None:
+                dc = self.__dp.command_inout(name)
+            else:
+                dc = self.__dp.command_inout(name, argin)
+                
         else:
-            dc = getattr(self.__dp, name)()
+            if argin is None:
+                dc = getattr(self.__dp, name)()
+            else:    
+                dc = getattr(self.__dp, name)(argin)
 
         logger.debug(dc)
         res = []
@@ -668,6 +684,33 @@ class ServerState(object):
         return list(set(dds.values()) - set(self.fullnames.values()) -
                     set(self.recorder_names))
 
+    def stepComponents(self):
+        res = self.description
+        cpset = set()
+        for cpg in res:
+            for cp, dss in cpg.items():
+                if isinstance(dss, dict):
+                    for values in dss.values():
+                        for vl in values:
+                            if len(vl) > 0 and vl[0] == 'STEP':
+                                cpset.add(cp)
+                                break
+                        else:
+                            continue
+                        break
+        return list(cpset) 
+
+    def clientDataSources(self):
+        res = self.dsdescription
+        dsset = set()
+        for jdsg in res:
+            dsg = json.loads(jdsg)
+            if isinstance(dsg, dict):
+                if dsg['dstype'] == 'CLIENT':
+                    dsset.add(dsg['dsname'])
+        return list(dsset)
+       
+    
     ## provides disable datasources
     ddsdict = property(__disableDataSources,
                        doc='provides disable datasources')
