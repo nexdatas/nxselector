@@ -58,6 +58,7 @@ class Preferences(Qt.QObject):
 
     serverChanged = Qt.pyqtSignal()
     layoutChanged = Qt.pyqtSignal(Qt.QString, Qt.QString)
+    dirty = Qt.pyqtSignal()
 
     ## constructor
     # \param settings frame settings
@@ -180,6 +181,7 @@ class Preferences(Qt.QObject):
         if self.connected:
             self.ui.devSettingsLineEdit.editingFinished.disconnect(
                 self.on_devSettingsLineEdit_editingFinished)
+            self.ui.devSettingsLineEdit.textEdited.disconnect(self.__dirty)
             self.ui.groupLineEdit.editingFinished.disconnect(
                 self.on_layoutLineEdits_editingFinished)
             self.ui.frameLineEdit.editingFinished.disconnect(
@@ -195,6 +197,7 @@ class Preferences(Qt.QObject):
         if not self.connected:
             self.ui.devSettingsLineEdit.editingFinished.connect(
                 self.on_devSettingsLineEdit_editingFinished)
+            self.ui.devSettingsLineEdit.textEdited.connect(self.__dirty)
             self.ui.groupLineEdit.editingFinished.connect(
                 self.on_layoutLineEdits_editingFinished)
             self.ui.frameLineEdit.editingFinished.connect(
@@ -369,6 +372,10 @@ class Preferences(Qt.QObject):
                     self.ui.preferences,
                     "NXSSelector: Error during reading the file",
                     text, str(e))
+
+    @Qt.pyqtSlot()
+    def __dirty(self):
+        self.dirty.emit()
 
     @Qt.pyqtSlot()
     def layoutSave(self):

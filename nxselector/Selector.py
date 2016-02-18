@@ -359,6 +359,7 @@ class Selector(Qt.QDialog, TaurusBaseWidget):
             self.__displayStatusChanged)
 
         self.selectable.dirty.connect(self.setDirty)
+        self.preferences.dirty.connect(self.setDirty)
         self.automatic.componentChecked.connect(self.__componentChanged)
         self.data.dirty.connect(self.setDirty)
         self.storage.dirty.connect(self.setDirty)

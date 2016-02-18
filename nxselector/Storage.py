@@ -93,14 +93,20 @@ class Storage(Qt.QObject):
             self.ui.mntGrpComboBox.lineEdit().editingFinished.disconnect(
                 self.__mntgrp_edited)
             self.ui.mntServerLineEdit.editingFinished.disconnect(self.apply)
+            self.ui.mntGrpComboBox.lineEdit().textEdited.disconnect(
+                self.__dirty)
+            self.ui.mntServerLineEdit.textEdited.disconnect(self.__dirty)
 
             # device group
             self.ui.devWriterLineEdit.editingFinished.disconnect(self.apply)
             self.ui.devConfigLineEdit.editingFinished.disconnect(self.apply)
+            self.ui.devWriterLineEdit.textEdited.disconnect(self.__dirty)
+            self.ui.devConfigLineEdit.textEdited.disconnect(self.__dirty)
 
             # dynamic component group
             self.ui.dcLinksCheckBox.clicked.disconnect(self.apply)
             self.ui.dcPathLineEdit.editingFinished.disconnect(self.apply)
+            self.ui.dcPathLineEdit.textEdited.disconnect(self.__dirty)
 
             # others group
             self.ui.othersEntryCheckBox.clicked.disconnect(self.apply)
@@ -137,14 +143,20 @@ class Storage(Qt.QObject):
         self.ui.mntGrpComboBox.lineEdit().editingFinished.connect(
             self.__mntgrp_edited)
         self.ui.mntServerLineEdit.editingFinished.connect(self.apply)
+        self.ui.mntGrpComboBox.lineEdit().textEdited.connect(
+            self.__dirty)
+        self.ui.mntServerLineEdit.textEdited.connect(self.__dirty)
 
         # device group
         self.ui.devWriterLineEdit.editingFinished.connect(self.apply)
         self.ui.devConfigLineEdit.editingFinished.connect(self.apply)
+        self.ui.devWriterLineEdit.textEdited.connect(self.__dirty)
+        self.ui.devConfigLineEdit.textEdited.connect(self.__dirty)
 
         # dynamic component group
         self.ui.dcLinksCheckBox.clicked.connect(self.apply)
         self.ui.dcPathLineEdit.editingFinished.connect(self.apply)
+        self.ui.dcPathLineEdit.textEdited.connect(self.__dirty)
 
         # others group
         self.ui.othersEntryCheckBox.clicked.connect(self.apply)
@@ -246,7 +258,7 @@ class Storage(Qt.QObject):
         if errors:
             MessageBox.warning(
                 self.ui.storage,
-                "NXSSelector: Component: %s will not be stored" % comps,
+                "NXSSelector: Descriptive Component(s): %s will not be stored" % comps,
                 str(text), "%s" % str(details))
         
     @Qt.pyqtSlot()
