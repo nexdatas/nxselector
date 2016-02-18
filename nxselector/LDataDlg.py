@@ -140,7 +140,7 @@ class LDataDlg(Qt.QDialog):
             text = MessageBox.getText("Wrong structure of Shape")
             MessageBox.warning(
                 self,
-                "NXSSelector: Wrong Data",
+                "NXSelector: Wrong Data",
                 text, str(value))
             self.ui.shapeLineEdit.setFocus()
             return

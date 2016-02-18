@@ -25,7 +25,6 @@ try:
     from taurus.external.qt import Qt
 except:
     from taurus.qt import Qt
-
 from .EdListDlg import EdListDlg
 from .GroupsDlg import GroupsDlg
 from .InfoDlg import InfoDlg
@@ -258,9 +257,9 @@ class Storage(Qt.QObject):
         if errors:
             MessageBox.warning(
                 self.ui.storage,
-                "NXSSelector: Descriptive Component(s): %s will not be stored" % comps,
+                "NXSelector: Descriptive Component(s): %s will not be stored" % comps,
                 str(text), "%s" % str(details))
-        
+
     @Qt.pyqtSlot()
     def __errors(self):
         errors = self.state.fetchErrors()
@@ -268,7 +267,7 @@ class Storage(Qt.QObject):
         if not errors:
             Qt.QMessageBox.information(
                 self.ui.storage,
-                "NXSSelector: Descrption Component:",
+                "NXSelector: Descrption Component:",
                 "Tango Servers of Description Components are ON")
 
     @Qt.pyqtSlot()
@@ -282,7 +281,7 @@ class Storage(Qt.QObject):
     def __detgroups(self):
         dform = GroupsDlg(self.ui.storage)
         dform.state = self.state
-        ##DAC  to be hidden via reselector property 
+        ##DAC  to be hidden via reselector property
         hidden = set(self.state.mcplist)
         hidden.update(self.state.mutedChannels)
         hidden.update(set(self.state.orderedchannels))
@@ -298,11 +297,12 @@ class Storage(Qt.QObject):
             if cp not in hidden and not cp.startswith("__"))
         dform.components.update(
             dict((cp, True) for cp in self.state.cpgroup.keys()
-                 if self.state.cpgroup[cp]))
+                 if self.state.cpgroup[cp] or
+                 cp not in hidden and not cp.startswith("__")))
 
-        
+
         cldsources = self.state.clientDataSources()
-        
+
         hidden.update(
             set(cldsources)
             - set(self.state.motors)
@@ -312,8 +312,9 @@ class Storage(Qt.QObject):
             if cp not in hidden and not cp.startswith("__"))
         dform.datasources.update(
             dict((cp, True) for cp in self.state.dsgroup.keys()
-                 if self.state.dsgroup[cp]))
-        
+                 if self.state.dsgroup[cp]
+                 or cp not in hidden and not cp.startswith("__")))
+
         dform.createGUI()
         dform.exec_()
         if dform.dirty:
@@ -321,7 +322,7 @@ class Storage(Qt.QObject):
             self.__updateGroup(self.state.dsgroup, dform.datasources)
             self.updateGroups.emit()
 
-            
+
     def __descgroups(self):
         dform = GroupsDlg(self.ui.storage)
         dform.title = "Preselectable Description Elements"
@@ -332,11 +333,12 @@ class Storage(Qt.QObject):
         stcomps =  self.state.stepComponents()
         nostcomps = set(self.state.avcplist) - set(self.state.stepComponents())
         dform.components = dict(
-            (cp, False) for cp in nostcomps 
+            (cp, False) for cp in nostcomps
             if cp not in hidden and not cp.startswith("__"))
         dform.components.update(
             dict((cp, True) for cp in self.state.acpgroup.keys()
-                 if self.state.acpgroup[cp]))
+                 if self.state.acpgroup[cp]
+                 or cp not in hidden and not cp.startswith("__")))
 
         cldsources = self.state.clientDataSources()
         hidden.update(
@@ -565,7 +567,7 @@ class Storage(Qt.QObject):
         logger.debug("mntgrp deleted")
         replay = Qt.QMessageBox.question(
             self.ui.storage,
-            "NXSSelector: ",
+            "NXSelector: ",
             "Would you like to delete %s Measurement Group? "
             % self.ui.mntGrpComboBox.currentText(),
             Qt.QMessageBox.Yes | Qt.QMessageBox.No)

@@ -320,7 +320,7 @@ class Preferences(Qt.QObject):
             text = MessageBox.getText("Problem in setting layout")
             MessageBox.warning(
                 self.ui.preferences,
-                "NXSSelector: Error during settings layout",
+                "NXSelector: Error during settings layout",
                 text, str(e))
             logger.debug(str(e))
             self.reset()
@@ -370,7 +370,7 @@ class Preferences(Qt.QObject):
                 text = MessageBox.getText("Problem in reading the layout")
                 MessageBox.warning(
                     self.ui.preferences,
-                    "NXSSelector: Error during reading the file",
+                    "NXSelector: Error during reading the file",
                     text, str(e))
 
     @Qt.pyqtSlot()
@@ -404,5 +404,5 @@ class Preferences(Qt.QObject):
             text = MessageBox.getText("Problem in saving the layout")
             MessageBox.warning(
                 self.ui.preferences,
-                "NXSSelector: Error during saving the file",
+                "NXSelector: Error during saving the file",
                 text, str(e))

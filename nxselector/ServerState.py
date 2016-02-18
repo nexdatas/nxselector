@@ -450,7 +450,7 @@ class ServerState(object):
                 else:
                     raise
         else:
-            self.__command(self.__dp, "PreselectComponents")
+            self.__command(self.__dp, "preselectComponents")
 
     def setServer(self):
 

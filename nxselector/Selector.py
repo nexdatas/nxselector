@@ -125,7 +125,7 @@ class Selector(Qt.QDialog, TaurusBaseWidget):
                 "Problems in updating Channels",
                 self.__commandthread.error)
             MessageBox.warning(
-                self, "NXSSelector: Error in Setting Selector Server", text,
+                self, "NXSelector: Error in Setting Selector Server", text,
                 "%s" % str(self.__commandthread.error))
             self.__commandthread.error = None
 
@@ -478,7 +478,7 @@ class Selector(Qt.QDialog, TaurusBaseWidget):
             text = MessageBox.getText(
                 "Problems in resetting Server")
             MessageBox.warning(
-                self, "NXSSelector: Error in Setting Selector Server",
+                self, "NXSelector: Error in Setting Selector Server",
                 text, str(value))
             self.state = ServerState("")
             self.state.setServer()
@@ -599,7 +599,7 @@ class Selector(Qt.QDialog, TaurusBaseWidget):
             value = traceback.format_exc()
             text = MessageBox.getText("Problems in resetting Server")
             MessageBox.warning(
-                self, "NXSSelector: Error in Resetting Selector Server",
+                self, "NXSelector: Error in Resetting Selector Server",
                 text, str(value))
         for tab in self.tabs:
             #       if tab in [
@@ -623,7 +623,7 @@ class Selector(Qt.QDialog, TaurusBaseWidget):
                 self.__commandthread.error)
             MessageBox.warning(
                 self,
-                "NXSSelector: Error in updating Selector Server Channels",
+                "NXSelector: Error in updating Selector Server Channels",
                 text,
                 "%s" % str(self.__commandthread.error))
             self.__commandthread.error = None
@@ -699,7 +699,7 @@ class Selector(Qt.QDialog, TaurusBaseWidget):
         if conf != econf:
             replay = Qt.QMessageBox.question(
                 self.ui.preferences,
-                "NXSSelector: Configuration "
+                "NXSelector: Configuration "
                 "of Measument Group has been changed.",
                 "Would you like to update the changes? ",
                 Qt.QMessageBox.Yes | Qt.QMessageBox.No)
@@ -762,7 +762,7 @@ class Selector(Qt.QDialog, TaurusBaseWidget):
             text = MessageBox.getText("Problems in loading profile")
             MessageBox.warning(
                 self,
-                "NXSSelector: Error in loading Selector Server profile",
+                "NXSelector: Error in loading Selector Server profile",
                 text, str(value))
 
     @Qt.pyqtSlot()
@@ -792,7 +792,7 @@ class Selector(Qt.QDialog, TaurusBaseWidget):
             text = MessageBox.getText("Problems in saving profile")
             MessageBox.warning(
                 self,
-                "NXSSelector: Error in saving Selector Server profile",
+                "NXSelector: Error in saving Selector Server profile",
                 text, str(value))
 
     @Qt.pyqtSlot()
@@ -815,7 +815,7 @@ class Selector(Qt.QDialog, TaurusBaseWidget):
             self.ui.groupsPushButton.show()
             self.ui.groupsPushButton.setToolTip(
                 "Change the available components in the Descriptions tab")
-            self.ui.clearAllPushButton.setText("Restore Desc.")
+            self.ui.clearAllPushButton.setText("Reset Desc.")
             self.ui.clearAllPushButton.setToolTip(
                 "Reset the description components into the default set")
             self.ui.clearAllPushButton.show()
@@ -856,7 +856,7 @@ class Selector(Qt.QDialog, TaurusBaseWidget):
                 self.defineMissingKeys(ctext)
             MessageBox.warning(
                 self,
-                "NXSSelector: Error in applying Selector Server settings",
+                "NXSelector: Error in applying Selector Server settings",
                 text, str(value))
 
         logger.debug("apply END")
