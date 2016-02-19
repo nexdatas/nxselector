@@ -1,4 +1,8 @@
 2016-02-19 Jan Kotanski <jankotan@gmail.com>
+	* move disable mntgrp into simple mode
+	* tagged as 2.2.2
+
+2016-02-19 Jan Kotanski <jankotan@gmail.com>
 	* fix setModel
 	* tagged as 2.2.1
 

@@ -55,14 +55,14 @@ class Selector(Qt.QDialog, TaurusBaseWidget):
     def __init__(self, server=None, door=None,
                  standalone=False, umode=None,
                  setdefault=False,
-                 organization='DESY', application='NXS Component Selector',
+                 organization='DESY',
+                 application='NXS Component Selector',
                  parent=None):
         Qt.QWidget.__init__(self, parent)
         TaurusBaseWidget.__init__(self, 'NXSExpDescriptionEditor')
         self.setWindowFlags(Qt.Qt.Window)
         self.loadUi()
         self.debug("SELECTOR load")
-        self.show()
         if umode != 'administrator':
             self.ui.tabWidget.removeTab(4)
         logger.debug("PARAMETERS: %s %s", server, parent)
@@ -318,12 +318,12 @@ class Selector(Qt.QDialog, TaurusBaseWidget):
             self.ui.mntServerLineEdit.setEnabled(False)
         if self.user:
             self.ui.componentGroupBox.hide()
-            self.ui.mntGrpComboBox.setEnabled(False)
             self.ui.mntGrpToolButton.hide()
             self.ui.viewServerFrame.hide()
             self.ui.viewGroupBox.hide()
             self.ui.tabWidget.removeTab(3)
         if self.simple:
+            self.ui.mntGrpComboBox.setEnabled(False)
             self.ui.orderToolButton.hide()
             self.ui.timerAddPushButton.hide()
             self.ui.timerDelPushButton.hide()
@@ -484,7 +484,6 @@ class Selector(Qt.QDialog, TaurusBaseWidget):
                 self.state.storeData("door", self.__door)
         self.runProgress(["updateControllers", "fetchSettings"],
                          "settings")
-#        self.storage.showErrors()
 
     @Qt.pyqtSlot()
     def __componentChanged(self):
@@ -672,8 +671,7 @@ class Selector(Qt.QDialog, TaurusBaseWidget):
     @Qt.pyqtSlot()
     def resetAll(self):
         logger.debug("reset ALL")
-        self.runProgress([
-            "updateControllers", "importMntGrp"])
+        self.runProgress(["updateControllers", "importMntGrp"])
         self.storage.showErrors()
         logger.debug("reset ENDED")
 
