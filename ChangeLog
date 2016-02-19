@@ -1,4 +1,8 @@
 2016-02-19 Jan Kotanski <jankotan@gmail.com>
+	* fix setModel
+	* tagged as 2.2.1
+
+2016-02-19 Jan Kotanski <jankotan@gmail.com>
 	* add support for muted channels
 	* move buttons from Configuration into buttonbox
 	* improve group filters

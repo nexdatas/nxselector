@@ -626,7 +626,7 @@ class Selector(Qt.QDialog, TaurusBaseWidget):
             self.__progress.setParent(None)
             self.__progress = None
         if self.__servertoupdateFlag:
-            self.updateServer(self.__model)
+            self.setModel(self.__model)
         if self.__doortoupdateFlag:
             self.updateDoorName(self.__door)
         self.waitForThread()

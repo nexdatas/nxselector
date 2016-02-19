@@ -357,13 +357,16 @@ class Storage(Qt.QObject):
             self.dirty.emit()
 
     def __updateGroup(self, group, dct):
-
+        ddsdict = self.state.ddsdict.keys()
         for k, st in group.items():
-            if k not in dct.keys() and k not in self.state.orderedchannels:
+            if k not in dct.keys() \
+               and k not in self.state.orderedchannels \
+               and k not in ddsdict:
                 group.pop(k)
         for k, st in dct.items():
             if k in group.keys():
-                if st is False:
+                if st is False \
+                   and k not in ddsdict:
                     group.pop(k)
             else:
                 if st is True:
