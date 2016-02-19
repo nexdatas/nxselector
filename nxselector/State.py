@@ -27,7 +27,7 @@ try:
 except:
     from taurus.qt import Qt
 
-from .Element import CPElement, DSElement
+from .Element import CPElement
 from .ElementModel import ElementModel
 from .Views import CheckerView
 from .DynamicTools import DynamicTools
@@ -46,7 +46,7 @@ class State(Qt.QObject):
     ## constructor
     # \param settings frame settings
     def __init__(self, ui, state=None, userView=CheckerView, rowMax=0):
-        super(State, self).__init__()
+        Qt.QObject.__init__(self)
         self.ui = ui
         self.state = state
         self.userView = userView

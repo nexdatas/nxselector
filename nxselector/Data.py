@@ -43,7 +43,7 @@ class Data(Qt.QObject):
     ## constructor
     # \param settings frame settings
     def __init__(self, ui, state=None, simpleMode=False):
-        super(Data, self).__init__()
+        Qt.QObject.__init__(self)
         self.ui = ui
         self.state = state
         self.glayout = None

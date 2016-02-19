@@ -37,8 +37,8 @@ logger = logging.getLogger(__name__)
 class OrderDlg(Qt.QDialog):
     ## constructor
     # \param parent parent widget
-    def __init__(self, parent=None):
-        super(OrderDlg, self).__init__(parent)
+    def __init__(self, parent=None): 
+        Qt.QDialog.__init__(self, parent)
         self.loadUi()
         self.dirty = False
         self.channels = []

@@ -48,7 +48,7 @@ class Storage(Qt.QObject):
     ## constructor
     # \param settings frame settings
     def __init__(self, ui, state=None, simplemode=False):
-        super(Storage, self).__init__()
+        Qt.QObject.__init__(self)
 
         self.ui = ui
         self.state = state
@@ -328,7 +328,6 @@ class Storage(Qt.QObject):
         hidden = set(self.state.mcplist)
         hidden.update(self.state.mutedChannels)
 
-        stcomps = self.state.stepComponents()
         nostcomps = set(self.state.avcplist) - set(self.state.stepComponents())
         dform.components = dict(
             (cp, False) for cp in nostcomps
@@ -354,7 +353,8 @@ class Storage(Qt.QObject):
         if dform.dirty:
             self.__updateGroup(self.state.acpgroup, dform.components)
             self.state.idslist = self.__createList(dform.datasources)
-            self.updateGroups.emit()
+            self.resetViews.emit()
+            self.dirty.emit()
 
     def __updateGroup(self, group, dct):
 

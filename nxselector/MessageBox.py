@@ -46,8 +46,7 @@ class MessageBox(Qt.QObject):
                 text = str("\n".join(["%s " % (err.desc) for err in error]))
             else:
                 text = str(error)
-        except Exception as e:
-            #  print(e)
+        except Exception:
             pass
         return text
 
@@ -61,11 +60,9 @@ class MessageBox(Qt.QObject):
         if icon is None:
             icon = Qt.QMessageBox.Warning
         msgBox.setIcon(icon)
-#        msgBox.setSizeGripEnabled(True)
-#        msgBox.setMinimumWidth(12000)
         spacer = Qt.QSpacerItem(800, 0, Qt.QSizePolicy.Minimum,
                                 Qt.QSizePolicy.Expanding)
         layout = msgBox.layout()
         layout.addItem(spacer, layout.rowCount(), 0, 1, layout.columnCount())
-        ret = msgBox.exec_()
+        _ = msgBox.exec_()
         msgBox.setParent(None)

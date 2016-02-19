@@ -21,10 +21,7 @@
 
 """ main window application dialog """
 
-import sys
-import PyTango
 import json
-import time
 
 try:
     from taurus.external.qt import Qt
@@ -473,7 +470,7 @@ class Selector(Qt.QDialog, TaurusBaseWidget):
             self.state = ServerState(server)
             if self.__door:
                 self.state.storeData("door", self.__door)
-        except Exception as e:
+        except Exception:
             import traceback
             value = traceback.format_exc()
             text = MessageBox.getText(
@@ -595,7 +592,7 @@ class Selector(Qt.QDialog, TaurusBaseWidget):
         logger.debug("reset selector")
         try:
             self.state.fetchSettings()
-        except Exception as e:
+        except Exception:
             import traceback
             value = traceback.format_exc()
             text = MessageBox.getText("Problems in resetting Server")
@@ -603,13 +600,6 @@ class Selector(Qt.QDialog, TaurusBaseWidget):
                 self, "NXSelector: Error in Resetting Selector Server",
                 text, str(value))
         for tab in self.tabs:
-            #       if tab in [
-            #            self.selectable,
-            #            self.automatic,
-            #            self.data,
-            #            self.storage,
-            #            self.preferences
-            #        ]:
             tab.reset()
         logger.debug("reset selector ended")
 
@@ -757,7 +747,7 @@ class Selector(Qt.QDialog, TaurusBaseWidget):
 
                 self.state.setConfiguration(jconf)
                 self.apply()
-        except Exception as e:
+        except Exception:
             import traceback
             value = traceback.format_exc()
             text = MessageBox.getText("Problems in loading profile")
@@ -787,7 +777,7 @@ class Selector(Qt.QDialog, TaurusBaseWidget):
                     myfile.write(jconf)
                 self.resetAll()
 
-        except Exception as e:
+        except Exception:
             import traceback
             value = traceback.format_exc()
             text = MessageBox.getText("Problems in saving profile")
@@ -819,7 +809,8 @@ class Selector(Qt.QDialog, TaurusBaseWidget):
                 "Change the available components in the Descriptions tab")
             self.ui.clearAllPushButton.setText("Reset Desc.")
             self.ui.clearAllPushButton.setToolTip(
-                "Reset the description components into the default set")
+                "Reset profile and the description components "
+                "into the default set")
             self.ui.clearAllPushButton.show()
         else:
             self.ui.clearAllPushButton.hide()
@@ -846,7 +837,7 @@ class Selector(Qt.QDialog, TaurusBaseWidget):
                               "createConfiguration"],
                              "closeApply")
             self.storage.showErrors()
-        except Exception as e:
+        except Exception:
             import traceback
             value = traceback.format_exc()
             text = MessageBox.getText("Problems in resetting Server")

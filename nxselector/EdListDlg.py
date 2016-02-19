@@ -39,7 +39,7 @@ class EdListDlg(Qt.QDialog):
     ## constructor
     # \param parent parent widget
     def __init__(self, parent=None):
-        super(EdListDlg, self).__init__(parent)
+        Qt.QDialog.__init__(self, parent)
         self.widget = EdListWg(self)
         self.simple = False
         self.dirty = False
@@ -76,7 +76,7 @@ class EdListWg(Qt.QWidget):
     ## constructor
     # \param parent parent widget
     def __init__(self, parent=None):
-        super(EdListWg, self).__init__(parent)
+        Qt.QWidget.__init__(self, parent)
         self.loadUi()
         self.simple = False
         self.record = {}

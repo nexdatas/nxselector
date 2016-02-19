@@ -32,7 +32,7 @@ except:
 
 class CommandThread(Qt.QThread):
     def __init__(self, instance, commands, parent):
-        super(CommandThread, self).__init__(parent)
+        Qt.QThread.__init__(self, parent)
         self.instance = instance
         self.commands = list(commands)
         self.error = None

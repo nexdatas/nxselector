@@ -41,7 +41,7 @@ class GroupsDlg(Qt.QDialog):
     ## constructor
     # \param parent parent widget
     def __init__(self, parent=None):
-        super(GroupsDlg, self).__init__(parent)
+        Qt.QDialog.__init__(self, parent)
         self.loadUi()
         self.dirty = False
         self.components = {}
@@ -86,7 +86,7 @@ class GroupsDlg(Qt.QDialog):
         logger.debug("changed")
 
     def __populateTable(self, view, group, eltype, dct, header):
-        for el, sl in dct.items():
+        for el in dct.keys():
             group.append(GElement(el, eltype, self.state, dct))
         md = ElementModel(group)
         md.headers = [header]

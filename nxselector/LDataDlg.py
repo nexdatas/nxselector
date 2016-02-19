@@ -45,7 +45,7 @@ class LDataDlg(Qt.QDialog):
     ## constructor
     # \param parent parent widget
     def __init__(self, parent=None):
-        super(LDataDlg, self).__init__(parent)
+        Qt.QDialog.__init__(self, parent)
         self.loadUi()
         self.label = ''
         self.path = ''
@@ -134,7 +134,7 @@ class LDataDlg(Qt.QDialog):
                 if not isinstance(shape, list):
                     raise Exception("shape is not a list")
                 self.shape = shape
-        except Exception as e:
+        except Exception:
             import traceback
             value = traceback.format_exc()
             text = MessageBox.getText("Wrong structure of Shape")

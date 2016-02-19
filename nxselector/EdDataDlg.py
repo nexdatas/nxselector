@@ -43,7 +43,7 @@ class EdDataDlg(Qt.QDialog):
     ## constructor
     # \param parent parent widget
     def __init__(self, parent=None):
-        super(EdDataDlg, self).__init__(parent)
+        Qt.QDialog.__init__(self, parent)
         self.loadUi()
         self.simple = False
         self.name = ''

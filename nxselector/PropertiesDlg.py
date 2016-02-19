@@ -39,7 +39,7 @@ class PropertiesDlg(Qt.QDialog):
     ## constructor
     # \param parent parent widget
     def __init__(self, parent=None):
-        super(PropertiesDlg, self).__init__(parent)
+        Qt.QDialog.__init__(self, parent)
         self.widget = PropertiesWg(self)
         self.dirty = False
         self.available_names = None
@@ -68,7 +68,7 @@ class PropertiesWg(Qt.QWidget):
     ## constructor
     # \param parent parent widget
     def __init__(self, parent=None):
-        super(PropertiesWg, self).__init__(parent)
+        Qt.QWidget.__init__(self, parent)
         self.loadUi(filename='EdListWg.ui')
         self.simple = False
         self.paths = {}

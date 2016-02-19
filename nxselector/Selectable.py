@@ -48,7 +48,7 @@ class Selectable(Qt.QObject):
     ## constructor
     def __init__(self, ui, state=None, userView=CheckerView, rowMax=0,
                  simpleMode=0):
-        super(Selectable, self).__init__()
+        Qt.QObject.__init__(self)
 
         self.ui = ui
         self.state = state

@@ -46,7 +46,7 @@ class ElementModel(Qt.QAbstractTableModel):
     ## constructor
     # \param parent parent widget
     def __init__(self, group=None):
-        super(ElementModel, self).__init__()
+        Qt.QAbstractTableModel.__init__(self)
         ## if enable selection for user
         self.enable = True
         ## if enable selection for user
@@ -208,7 +208,7 @@ class ElementModel(Qt.QAbstractTableModel):
 
     def data(self, index, role=Qt.Qt.DisplayRole):
         if not index.isValid() or \
-                not (0 <= index.row() < len(self.group)):
+                not 0 <= index.row() < len(self.group):
             return
         device = self.group[index.row()]
         column = index.column()
@@ -387,7 +387,7 @@ class ElementModel(Qt.QAbstractTableModel):
 class ElementDelegate(Qt.QStyledItemDelegate):
 
     def __init__(self, parent=None):
-        super(ElementDelegate, self).__init__(parent)
+        Qt.QStyledItemDelegate.__init__(self, parent)
 
     def createEditor(self, parent, option, index):
         if index.column() == 0:

@@ -47,7 +47,6 @@ from .Views import (TableView, OneTableView,
                     CheckPropViewNL,
                     CheckPropViewNN,
                     )
-from .ServerState import ServerState
 
 import logging
 logger = logging.getLogger(__name__)
@@ -63,7 +62,7 @@ class Preferences(Qt.QObject):
     ## constructor
     # \param settings frame settings
     def __init__(self, ui, state=None):
-        super(Preferences, self).__init__()
+        Qt.QObject.__init__(self)
         self.ui = ui
         self.state = state
 
@@ -139,7 +138,7 @@ class Preferences(Qt.QObject):
     def __setmgroups(self, groups):
         try:
             lgroups = json.loads(groups)
-            for k, gr in lgroups.items():
+            for gr in lgroups.values():
                 for i in range(len(gr)):
                     if isinstance(gr[i], list) and gr[i]:
                         gr[i] = gr[i][0]
@@ -267,7 +266,7 @@ class Preferences(Qt.QObject):
                             self.state.setServer()
                             self.state.fetchSettings()
                             self.addHint(server, self.serverhelp)
-                except Exception as e:
+                except Exception:
                     self.reset()
                 self.connectSignals()
                 self.serverChanged.emit()
