@@ -612,11 +612,11 @@ class ServerState(object):
                 dc = self.__dp.command_inout(name)
             else:
                 dc = self.__dp.command_inout(name, argin)
-                
+
         else:
             if argin is None:
                 dc = getattr(self.__dp, name)()
-            else:    
+            else:
                 dc = getattr(self.__dp, name)(argin)
 
         logger.debug(dc)
@@ -699,7 +699,7 @@ class ServerState(object):
                         else:
                             continue
                         break
-        return list(cpset) 
+        return list(cpset)
 
     def clientDataSources(self):
         res = self.dsdescription
@@ -710,8 +710,7 @@ class ServerState(object):
                 if dsg['dstype'] == 'CLIENT':
                     dsset.add(dsg['dsname'])
         return list(dsset)
-       
-    
+
     ## provides disable datasources
     ddsdict = property(__disableDataSources,
                        doc='provides disable datasources')

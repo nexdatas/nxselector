@@ -72,6 +72,9 @@ class Element(object):
     def __str__(self):
         return (self.name, self.eltype, self.state)
 
+    def __repr__(self):
+        return "(%s,%s)" % (self.name, self.eltype)
+
 
 ## datasource element class
 class GElement(Element):

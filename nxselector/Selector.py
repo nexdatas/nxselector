@@ -252,7 +252,6 @@ class Selector(Qt.QDialog, TaurusBaseWidget):
             Qt.QDialogButtonBox.Retry)
         self.ui.groupsPushButton.setText("Det. Content")
 
-
         self.ui.statusLabel = self.ui.buttonBox.addButton(
             "", Qt.QDialogButtonBox.ActionRole)
         self.ui.statusLabel.setEnabled(False)
@@ -326,6 +325,7 @@ class Selector(Qt.QDialog, TaurusBaseWidget):
             self.ui.mntGrpToolButton.hide()
             self.ui.viewServerFrame.hide()
             self.ui.viewGroupBox.hide()
+            self.ui.tabWidget.removeTab(3)
         if self.simple:
             self.ui.orderToolButton.hide()
             self.ui.timerAddPushButton.hide()
@@ -333,6 +333,7 @@ class Selector(Qt.QDialog, TaurusBaseWidget):
             self.ui.mntTimerComboBox.setEnabled(False)
             self.ui.timerButtonFrame.setEnabled(False)
             self.ui.state.hide()
+            self.ui.tabWidget.removeTab(3)
             self.ui.tabWidget.removeTab(1)
             self.__datatab -= 1
             self.ui.tabWidget.setCurrentIndex(self.__datatab)
@@ -808,7 +809,8 @@ class Selector(Qt.QDialog, TaurusBaseWidget):
             self.ui.groupsPushButton.setToolTip(
                 "Change the available components in the Detectors tab")
             self.ui.clearAllPushButton.setText("ClearAll")
-            self.ui.clearAllPushButton.setToolTip("Deselect all detector components")
+            self.ui.clearAllPushButton.setToolTip(
+                "Deselect all detector components")
             self.ui.clearAllPushButton.show()
         elif index == 1:
             self.ui.groupsPushButton.setText("Desc. Content")

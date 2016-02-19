@@ -257,7 +257,8 @@ class Storage(Qt.QObject):
         if errors:
             MessageBox.warning(
                 self.ui.storage,
-                "NXSelector: Descriptive Component(s): %s will not be stored" % comps,
+                "NXSelector: Descriptive Component(s): "
+                "%s will not be stored" % comps,
                 str(text), "%s" % str(details))
 
     @Qt.pyqtSlot()
@@ -291,15 +292,13 @@ class Storage(Qt.QObject):
         hidden.update([cp for cp in self.state.acpgroup.keys()
                        if self.state.acpgroup[cp]])
 
-        stcomps =  self.state.stepComponents()
+        stcomps = self.state.stepComponents()
         dform.components = dict(
             (cp, False) for cp in stcomps
             if cp not in hidden and not cp.startswith("__"))
         dform.components.update(
             dict((cp, True) for cp in self.state.cpgroup.keys()
-                 if self.state.cpgroup[cp] or
-                 cp not in hidden and not cp.startswith("__")))
-
+                 if (cp not in hidden and not cp.startswith("__"))))
 
         cldsources = self.state.clientDataSources()
 
@@ -312,16 +311,15 @@ class Storage(Qt.QObject):
             if cp not in hidden and not cp.startswith("__"))
         dform.datasources.update(
             dict((cp, True) for cp in self.state.dsgroup.keys()
-                 if self.state.dsgroup[cp]
-                 or cp not in hidden and not cp.startswith("__")))
+                 if (cp not in hidden and not cp.startswith("__"))))
 
         dform.createGUI()
         dform.exec_()
         if dform.dirty:
             self.__updateGroup(self.state.cpgroup, dform.components)
             self.__updateGroup(self.state.dsgroup, dform.datasources)
-            self.updateGroups.emit()
-
+            self.resetViews.emit()
+            self.dirty.emit()
 
     def __descgroups(self):
         dform = GroupsDlg(self.ui.storage)
@@ -330,15 +328,14 @@ class Storage(Qt.QObject):
         hidden = set(self.state.mcplist)
         hidden.update(self.state.mutedChannels)
 
-        stcomps =  self.state.stepComponents()
+        stcomps = self.state.stepComponents()
         nostcomps = set(self.state.avcplist) - set(self.state.stepComponents())
         dform.components = dict(
             (cp, False) for cp in nostcomps
             if cp not in hidden and not cp.startswith("__"))
         dform.components.update(
             dict((cp, True) for cp in self.state.acpgroup.keys()
-                 if self.state.acpgroup[cp]
-                 or cp not in hidden and not cp.startswith("__")))
+                 if (cp not in hidden and not cp.startswith("__"))))
 
         cldsources = self.state.clientDataSources()
         hidden.update(
@@ -359,9 +356,11 @@ class Storage(Qt.QObject):
             self.state.idslist = self.__createList(dform.datasources)
             self.updateGroups.emit()
 
-
-
     def __updateGroup(self, group, dct):
+
+        for k, st in group.items():
+            if k not in dct.keys() and k not in self.state.orderedchannels:
+                group.pop(k)
         for k, st in dct.items():
             if k in group.keys():
                 if st is False:
