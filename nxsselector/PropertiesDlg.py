@@ -15,7 +15,7 @@
 #
 #    You should have received a copy of the GNU General Public License
 #    along with nexdatas.  If not, see <http://www.gnu.org/licenses/>.
-## \package nxselector nexdatas
+## \package nxsselector nexdatas
 ## \file PropertiesDlg.py
 # label dialog
 

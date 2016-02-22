@@ -1,4 +1,9 @@
 2016-02-19 Jan Kotanski <jankotan@gmail.com>
+	* change nxselector into nxsselector module
+	* change nxscomp_selector into nxselector script
+	* tagged as 2.3.0
+
+2016-02-19 Jan Kotanski <jankotan@gmail.com>
 	* move disable mntgrp into simple mode
 	* tagged as 2.2.2
 

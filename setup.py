@@ -15,7 +15,7 @@
 #
 #    You should have received a copy of the GNU General Public License
 #    along with nexdatas.  If not, see <http://www.gnu.org/licenses/>.
-## \package nxselector nexdatas
+## \package nxsselector nexdatas
 ## \file setup.py
 # GUI for setting NeXus Sardana Recorder
 
@@ -31,7 +31,7 @@ from distutils.command.install_scripts import install_scripts
 import shutil
 
 ## package name
-TOOL = "nxselector"
+TOOL = "nxsselector"
 ## package instance
 ITOOL = __import__(TOOL)
 
@@ -42,7 +42,7 @@ def read(fname):
 
 UIDIR = os.path.join(TOOL, "ui")
 QRCDIR = os.path.join(TOOL, "qrc")
-SCRIPTS = ['nxscomp_selector']
+SCRIPTS = ['nxselector']
 
 
 ## ui and qrc builder for python
@@ -124,13 +124,13 @@ def get_scripts(scripts):
         return scripts + [sc + '.pyw' for sc in scripts]
     return scripts
 
-package_data = {'nxselector': ['ui/*.ui', 'qrc/*.rcc']
+package_data = {'nxsselector': ['ui/*.ui', 'qrc/*.rcc']
                 }
 
 
 ## metadata for distutils
 SETUPDATA = dict(
-    name="nxselector",
+    name="nxsselector",
     version=ITOOL.__version__,
     author="Jan Kotanski",
     author_email="jankotan@gmail.com",

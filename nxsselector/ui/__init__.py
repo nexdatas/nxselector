@@ -15,6 +15,6 @@
 #
 #    You should have received a copy of the GNU General Public License
 #    along with nexdatas.  If not, see <http://www.gnu.org/licenses/>.
-## \package nxselector.ui nexdatas
-## \file nxselector/ui/__init__.py
+## \package nxsselector.ui nexdatas
+## \file nxsselector/ui/__init__.py
 # package constructor

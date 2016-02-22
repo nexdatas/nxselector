@@ -15,7 +15,7 @@
 #
 #    You should have received a copy of the GNU General Public License
 #    along with nexdatas.  If not, see <http://www.gnu.org/licenses/>.
-## \package nxselecto nexdatas
+## \package nxsselector nexdatas
 ## \file ElementModel.py
 # Element Model
 

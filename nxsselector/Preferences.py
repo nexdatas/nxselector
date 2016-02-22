@@ -15,7 +15,7 @@
 #
 #    You should have received a copy of the GNU General Public License
 #    along with nexdatas.  If not, see <http://www.gnu.org/licenses/>.
-## \package nxselector nexdatas
+## \package nxsselector nexdatas
 ## \file Preferences.py
 # preferences tab
 
@@ -70,7 +70,8 @@ class Preferences(Qt.QObject):
         self.frameshelp = [
             Qt.QString(
                 '[[[["Components",1],["Timers",5]]],[[["Counters", 4]],'
-                + '[["ADC",3]],[["VFC",7]]],[[["MCA/SCA",6],["Others",0]]]]'),
+                + '[["ADC",3]],[["VFC",7]]],'
+                + '[[["MCA/SCA",6],["Additional",0]]]]'),
             Qt.QString('[[[["Components",1],["Timers",5]]],[[["Counters", 4]],'
                        + '[["ADC",3]]],[[["MCA/SCA",6],["Devices",0]]]]'),
             Qt.QString('[[[["Counters", 4]],[["Channels",0]]],'

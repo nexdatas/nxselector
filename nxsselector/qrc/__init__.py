@@ -15,13 +15,6 @@
 #
 #    You should have received a copy of the GNU General Public License
 #    along with nexdatas.  If not, see <http://www.gnu.org/licenses/>.
-## \package nxselector nexdatas
-## \file nxselector/__init__.py
+## \package nxsselector.qrc nexdatas
+## \file nxsselector/qrc/__init__.py
 # package constructor
-
-""" --- NXS Selector --
-GUI for setting Sardana NeXus Recorder
-"""
-
-## version of the application
-__version__ = "2.2.2"

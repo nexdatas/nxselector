@@ -15,7 +15,7 @@
 #
 #    You should have received a copy of the GNU General Public License
 #    along with nexdatas.  If not, see <http://www.gnu.org/licenses/>.
-## \package nxselector nexdatas
+## \package nxsselector nexdatas
 ## \file nxsscan
 # GUI for setting sardana scans with NeXus Recorder
 
@@ -27,11 +27,11 @@ import sys
 import os
 from optparse import OptionParser
 
-import nxselector
-from nxselector.Selector import Selector
-from nxselector import __version__
+import nxsselector
+from nxsselector.Selector import Selector
+from nxsselector import __version__
 
-import nxselector.qrc as qrc
+import nxsselector.qrc as qrc
 
 
 logger = logging.getLogger(__name__)
@@ -86,7 +86,7 @@ def main():
             sys.argv,
             cmd_line_parser=parser,
             app_name="NXS Component Selector",
-            app_version=nxselector.__version__,
+            app_version=nxsselector.__version__,
             org_domain="desy.de",
             org_name="DESY")
 
@@ -103,7 +103,7 @@ def main():
         else:
             umode = None
 
-    form = Selector(server, standalone=True, umode=umode, 
+    form = Selector(server, standalone=True, umode=umode,
                     setdefault=options.setdefault,
                     door=options.door)
     form.show()

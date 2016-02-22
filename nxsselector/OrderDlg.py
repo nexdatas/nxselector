@@ -15,7 +15,7 @@
 #
 #    You should have received a copy of the GNU General Public License
 #    along with nexdatas.  If not, see <http://www.gnu.org/licenses/>.
-## \package nxselector nexdatas
+## \package nxsselector nexdatas
 ## \file OrderDlg.py
 # editable list dialog
 
@@ -37,7 +37,7 @@ logger = logging.getLogger(__name__)
 class OrderDlg(Qt.QDialog):
     ## constructor
     # \param parent parent widget
-    def __init__(self, parent=None): 
+    def __init__(self, parent=None):
         Qt.QDialog.__init__(self, parent)
         self.loadUi()
         self.dirty = False

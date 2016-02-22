@@ -247,7 +247,7 @@ class Selector(Qt.QDialog, TaurusBaseWidget):
 
         self.ui.groupsPushButton = self.ui.buttonBox.addButton(
             Qt.QDialogButtonBox.Retry)
-        self.ui.groupsPushButton.setText("Det. Content")
+        self.ui.groupsPushButton.setText("Others")
 
         self.ui.statusLabel = self.ui.buttonBox.addButton(
             "", Qt.QDialogButtonBox.ActionRole)
@@ -381,7 +381,7 @@ class Selector(Qt.QDialog, TaurusBaseWidget):
             Qt.QDialogButtonBox.Reset).setToolTip(
             "Reset local modifications " +
             "by fetching the current profile from the selector server\n" +
-            "and making synchronization with the Active Measurement Group.\n" +
+            "and updating the profile by the Active Measurement Group.\n" +
             "Update preselection of description components ")
         if self.ui.buttonBox.button(
                 Qt.QDialogButtonBox.Close):
@@ -392,9 +392,9 @@ class Selector(Qt.QDialog, TaurusBaseWidget):
         self.ui.timerDelPushButton.setToolTip(
             "Remove the last non-master timer ")
         self.ui.loadProfilePushButton.setToolTip(
-            "Load a previously selected channels from a file.")
+            "Load a profile with previously selected channels from a file.")
         self.ui.saveProfilePushButton.setToolTip(
-            "Save the currently selected channels into a file.")
+            "Save the current profile with the selected channels into a file.")
         self.ui.layoutButtonBox.button(
             Qt.QDialogButtonBox.Open).setToolTip(
             "Load from a file a previously saved detector layout.")
@@ -792,7 +792,7 @@ class Selector(Qt.QDialog, TaurusBaseWidget):
     @Qt.pyqtSlot(int)
     def __tabChanged(self, index):
         if index == 0:
-            self.ui.groupsPushButton.setText("Det. Content")
+            self.ui.groupsPushButton.setText("Others")
             self.ui.groupsPushButton.show()
             self.ui.groupsPushButton.setToolTip(
                 "Change the available components in the Detectors tab")
@@ -801,7 +801,7 @@ class Selector(Qt.QDialog, TaurusBaseWidget):
                 "Deselect all detector components")
             self.ui.clearAllPushButton.show()
         elif index == 1:
-            self.ui.groupsPushButton.setText("Desc. Content")
+            self.ui.groupsPushButton.setText("Others")
             self.ui.groupsPushButton.show()
             self.ui.groupsPushButton.setToolTip(
                 "Change the available components in the Descriptions tab")
