@@ -381,7 +381,7 @@ into separate entries identified by the current Scan ID.</string>
         <property name="toolTip">
          <string>Detector components: selectable by the user.
 This components contain datasources usually written in the STEP mode.
-The set of detector components can be defined in the Configuration/Group widget.</string>
+The set of detector components can be change by pressing Others.</string>
         </property>
         <attribute name="title">
          <string>Detectors</string>
@@ -391,7 +391,7 @@ The set of detector components can be defined in the Configuration/Group widget.
         <property name="toolTip">
          <string>Description components: preselected for the specific discipline.
 This components contain motor datasources usually written in the INIT or FINAL mode.
-The set of description components can be defined in the Configuration/Group widget.</string>
+The set of description components can be change by pressing Others.</string>
         </property>
         <attribute name="title">
          <string>Descriptions</string>
