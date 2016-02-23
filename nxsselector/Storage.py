@@ -316,8 +316,8 @@ class Storage(Qt.QObject):
         dform.createGUI()
         dform.exec_()
         if dform.dirty:
-            self.__updateGroup(self.state.cpgroup, dform.components)
-            self.__updateGroup(self.state.dsgroup, dform.datasources)
+            self.__updateGroup(self.state.cpgroup, dform.components, False)
+            self.__updateGroup(self.state.dsgroup, dform.datasources, False)
             self.resetViews.emit()
             self.dirty.emit()
 
@@ -351,12 +351,12 @@ class Storage(Qt.QObject):
         dform.createGUI()
         dform.exec_()
         if dform.dirty:
-            self.__updateGroup(self.state.acpgroup, dform.components)
+            self.__updateGroup(self.state.acpgroup, dform.components, True)
             self.state.idslist = self.__createList(dform.datasources)
             self.resetViews.emit()
             self.dirty.emit()
 
-    def __updateGroup(self, group, dct):
+    def __updateGroup(self, group, dct, dvalue=False):
         ddsdict = self.state.ddsdict.keys()
         for k, st in group.items():
             if k not in dct.keys() \
@@ -370,7 +370,7 @@ class Storage(Qt.QObject):
                     group.pop(k)
             else:
                 if st is True:
-                    group[k] = False
+                    group[k] = dvalue
 
     def __createList(self, dct):
         return [k for (k, st) in dct.items() if st is True]

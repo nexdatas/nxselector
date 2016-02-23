@@ -115,6 +115,8 @@ class State(Qt.QObject):
         self.__dslayout = Qt.QVBoxLayout()
         self.__mainlayout.addLayout(self.__cplayout)
         self.__mainlayout.addLayout(self.__dslayout)
+        self.__mainlayout.setStretchFactor(self.__cplayout, 3)
+        self.__mainlayout.setStretchFactor(self.__dslayout, 1)
 
         self.views[OTHERS] = self.__addView(
             "Other Optional", self.rowMax,

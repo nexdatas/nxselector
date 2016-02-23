@@ -408,7 +408,7 @@ class CheckPropView(CheckDisView):
         self.pmapper.mapped.connect(self.pchecked)
 
     def close(self):
-        self.dmapper.mapped.disconnect(self.pchecked)
+        self.pmapper.mapped.disconnect(self.pchecked)
         CheckDisView.close(self)
 
 
