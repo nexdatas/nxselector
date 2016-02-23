@@ -255,7 +255,6 @@ class CheckerView(Qt.QWidget):
                     ds.clicked.connect(self.dmapper.map)
                 self.dmapper.setMapping(ds, self.displays.index(ds))
             if self.pmapper:
-                self.displays.append(ds)
                 if hasattr(cb, "rightClick"):
                     cb.rightClick.connect(self.pmapper.map)
                 self.pmapper.setMapping(cb, self.widgets.index(cb))
