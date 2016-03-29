@@ -1,3 +1,7 @@
+2016-03-29 Jan Kotanski <jankotan@gmail.com>
+	* fix for fetching dataSourceDescription
+	* tagged as 2.3.2
+
 2016-02-23 Jan Kotanski <jankotan@gmail.com>
 	* fix for CheckPropView
 	* add stretchFactors for descriptions

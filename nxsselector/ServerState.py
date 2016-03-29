@@ -218,7 +218,7 @@ class ServerState(object):
         self.avcplist = self.__getList("availableComponents")
         self.avdslist = self.__getList("availableDataSources")
         self.dsdescription = self.__getList(
-            "datasourceDescription", argin=self.avdslist)
+            "dataSourceDescription", argin=self.avdslist)
         self.avmglist = self.__getList("availableMntGrps")
         self.mcplist = self.__getList("mandatoryComponents")
 
