@@ -82,12 +82,10 @@ class State(Qt.QObject):
                 CPElement(cp, self.state, group=mcpgroup))
 
         self.igroup = []
-        icpgroup = {}
-        for ds in self.state.idslist:
-            icpgroup[ds] = True
-        for ds in icpgroup.keys():
+        for ds in self.state.idsgroup.keys():
             self.igroup.append(
-                CPElement(ds, self.state, group=icpgroup))
+                CPElement(ds, self.state,
+                          group=self.state.idsgroup))
 
     def __clearFrames(self):
         DynamicTools.cleanupObjects(self.models, "model")

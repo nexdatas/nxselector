@@ -83,7 +83,7 @@ class ServerState(object):
         self.avmglist = []
         self.vrcpdict = {}
         self.cpvrdict = {}
-        self.idslist = []
+        self.idsgroup = {}
         self.admindata = []
 
         self.orderedchannels = []
@@ -213,7 +213,7 @@ class ServerState(object):
 
         self.nodisplay = self.__importList("UnplottedComponents", True)
         self.orderedchannels = self.__importList("OrderedChannels", True)
-        self.idslist = self.__importList("InitDataSources", True)
+        self.idsgroup = self.__importDict("DataSourcePreselection")
 
         self.avcplist = self.__getList("availableComponents")
         self.avdslist = self.__getList("availableDataSources")
@@ -326,7 +326,7 @@ class ServerState(object):
         self.__exportDict("DataSourceSelection", self.dsgroup)
         self.__exportDict("ComponentSelection", self.cpgroup)
         self.__exportDict("ComponentPreselection", self.acpgroup)
-        self.__exportList("InitDataSources", self.idslist)
+        self.__exportDict("DataSourcePreselection", self.idsgroup)
         self.__storeConfiguration()
 
     ## stores configuration settings on server
@@ -338,7 +338,7 @@ class ServerState(object):
         self.__exportDict("DataSourceSelection", self.dsgroup)
         self.__exportDict("ComponentSelection", self.cpgroup)
         self.__exportDict("ComponentPreselection", self.acpgroup)
-        self.__exportList("InitDataSources", self.idslist)
+        self.__exportDict("DataSourcePreselection", self.idsgroup)
         self.getProperties()
         self.__exportDict("ChannelProperties", self.properties)
         self.__exportList("UnplottedComponents", self.nodisplay)

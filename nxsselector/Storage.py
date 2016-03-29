@@ -345,14 +345,13 @@ class Storage(Qt.QObject):
         dform.datasources = dict(
             (cp, False) for cp in self.state.avdslist
             if cp not in hidden and not cp.startswith("__"))
-        dform.datasources.update(
-            dict((cp, True) for cp in self.state.idslist))
+        dform.datasources.update(self.state.idsgroup)
 
         dform.createGUI()
         dform.exec_()
         if dform.dirty:
             self.__updateGroup(self.state.acpgroup, dform.components, True)
-            self.state.idslist = self.__createList(dform.datasources)
+            self.__updateGroup(self.state.idsgroup, dform.datasources, True)
             self.resetViews.emit()
             self.dirty.emit()
 
