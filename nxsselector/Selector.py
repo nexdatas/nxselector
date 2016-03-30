@@ -33,9 +33,9 @@ from taurus.qt.qtgui.util.ui import UILoadable
 from taurus.qt.qtgui.base import TaurusBaseWidget
 from .ServerState import ServerState
 
-from .Selectable import Selectable
+from .Detectors import Detectors
 from .Preferences import Preferences
-from .State import State
+from .Descriptions import Descriptions
 from .Data import Data
 from .Storage import Storage
 from .CommandThread import CommandThread
@@ -150,7 +150,7 @@ class Selector(Qt.QDialog, TaurusBaseWidget):
             self.userView = 'CheckBoxes Dis'
         self.storage = Storage(self.ui, self.state, self.simple)
 
-        self.selectable = Selectable(
+        self.detectors = Detectors(
             self.ui, self.state,
             self.preferences.views[self.userView],
             self.rowMax, int(self.simple) + 2 * int(self.user))
@@ -176,16 +176,17 @@ class Selector(Qt.QDialog, TaurusBaseWidget):
         self.preferences.layoutFile = str(
             settings.value("Preferences/LayoutFile", "./"))
 
-        self.selectable.mgroups = str(self.preferences.mgroups)
-        self.selectable.frames = str(self.preferences.frames)
-        self.automatic = State(
+        self.detectors.mgroups = str(self.preferences.mgroups)
+        self.detectors.frames = str(self.preferences.frames)
+        self.descriptions = Descriptions(
             self.ui, self.state,
+            self.preferences.views["CentralCheckBoxes"],
             self.preferences.views["CheckBoxes Dis (U)"],
             self.rowMax)
 
         self.data = Data(self.ui, self.state, self.simple or self.user)
 
-        self.tabs = [self.selectable, self.automatic, self.data,
+        self.tabs = [self.detectors, self.descriptions, self.data,
                      self.storage, self.preferences]
 
         self.createGUI()
@@ -329,7 +330,7 @@ class Selector(Qt.QDialog, TaurusBaseWidget):
             self.ui.timerDelPushButton.hide()
             self.ui.mntTimerComboBox.setEnabled(False)
             self.ui.timerButtonFrame.setEnabled(False)
-            self.ui.state.hide()
+            self.ui.descriptions.hide()
             self.ui.tabWidget.removeTab(3)
             self.ui.tabWidget.removeTab(1)
             self.__datatab -= 1
@@ -356,9 +357,9 @@ class Selector(Qt.QDialog, TaurusBaseWidget):
         self.ui.statusCheckBox.stateChanged.connect(
             self.__displayStatusChanged)
 
-        self.selectable.dirty.connect(self.setDirty)
+        self.detectors.dirty.connect(self.setDirty)
         self.preferences.dirty.connect(self.setDirty)
-        self.automatic.componentChecked.connect(self.__componentChanged)
+        self.descriptions.componentChecked.connect(self.__componentChanged)
         self.data.dirty.connect(self.setDirty)
         self.storage.dirty.connect(self.setDirty)
         self.storage.resetViews.connect(self.resetViews)
@@ -488,7 +489,7 @@ class Selector(Qt.QDialog, TaurusBaseWidget):
     @Qt.pyqtSlot()
     def __componentChanged(self):
         self.setDirty()
-        self.selectable.updateViews()
+        self.detectors.updateViews()
 
     @Qt.pyqtSlot()
     def setDirty(self, flag=True):
@@ -557,8 +558,8 @@ class Selector(Qt.QDialog, TaurusBaseWidget):
     @Qt.pyqtSlot(Qt.QString, Qt.QString)
     def resetLayout(self, frames, groups):
         logger.debug("reset layout")
-        self.selectable.frames = str(frames)
-        self.selectable.mgroups = str(groups)
+        self.detectors.frames = str(frames)
+        self.detectors.mgroups = str(groups)
         self.resetViews()
         logger.debug("reset layout ended")
 
@@ -581,7 +582,7 @@ class Selector(Qt.QDialog, TaurusBaseWidget):
     def resetViews(self):
         logger.debug("reset view")
         for tab in self.tabs:
-            if not isinstance(tab, State):
+            if not isinstance(tab, Descriptions):
                 tab.userView = self.preferences.views[
                     str(self.ui.viewComboBox.currentText())]
             tab.reset()

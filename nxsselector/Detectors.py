@@ -16,7 +16,7 @@
 #    You should have received a copy of the GNU General Public License
 #    along with nexdatas.  If not, see <http://www.gnu.org/licenses/>.
 ## \package nxsselector nexdatas
-## \file Selectable.py
+## \file Detectors.py
 # selactable tab
 
 """ selactable tab """
@@ -41,7 +41,7 @@ logger = logging.getLogger(__name__)
 
 
 ## main window class
-class Selectable(Qt.QObject):
+class Detectors(Qt.QObject):
 
     dirty = Qt.pyqtSignal()
 
@@ -148,11 +148,11 @@ class Selectable(Qt.QObject):
     def createGUI(self):
 
         self.__clearFrames()
-        self.glayout = Qt.QHBoxLayout(self.ui.selectable)
+        self.glayout = Qt.QHBoxLayout(self.ui.detectors)
 
         frames = Frames(self.frames, DS in self.groups, CP in self.groups)
         for frame in frames:
-            mframe = Qt.QFrame(self.ui.selectable)
+            mframe = Qt.QFrame(self.ui.detectors)
             self.mframes.append(mframe)
             mframe.setFrameShape(Qt.QFrame.StyledPanel)
             mframe.setFrameShadow(Qt.QFrame.Raised)
@@ -189,9 +189,9 @@ class Selectable(Qt.QObject):
                 self.glayout.addWidget(mframe)
             else:
                 mframe.hide()
-        self.ui.selectable.update()
-        if self.ui.tabWidget.currentWidget() == self.ui.selectable:
-            self.ui.selectable.show()
+        self.ui.detectors.update()
+        if self.ui.tabWidget.currentWidget() == self.ui.detectors:
+            self.ui.detectors.show()
 
     def setModels(self):
         for k in self.views.keys():

@@ -49,9 +49,9 @@ class ElementModel(Qt.QAbstractTableModel):
         Qt.QAbstractTableModel.__init__(self)
         ## if enable selection for user
         self.enable = True
-        ## if enable selection for user
+        ## if display enable selection for user
         self.disEnable = True
-        ## if auto enable
+        ## if  enable (group widget)
         self.autoEnable = True
         ## list of device elements
         self.group = []
@@ -72,14 +72,14 @@ class ElementModel(Qt.QAbstractTableModel):
         return self.createIndex(row, column)
 
     def __elementCheck(self, device, index):
-        if (not (self.flags(index) & Qt.Qt.ItemIsEnabled) and self.enable) \
+        if (not (self.flags(index) & Qt.Qt.ItemIsEnabled) and self.enable and device.enable) \
            or device.checked:
             return Qt.Qt.Checked
         else:
             return Qt.Qt.Unchecked
 
     def __displayCheck(self, device, index):
-        if (not (self.flags(index) & Qt.Qt.ItemIsEnabled) and self.enable) \
+        if (not (self.flags(index) & Qt.Qt.ItemIsEnabled) and self.enable and device.enable) \
            or device.checked:
             if device.eltype == DS:
                 dds = device.state.ddsdict
@@ -254,10 +254,10 @@ class ElementModel(Qt.QAbstractTableModel):
         if not index.isValid():
             return Qt.Qt.ItemIsEnabled
 
-        enable2 = self.enable
         enable = True
         comp = None
         device = self.group[index.row()]
+        enable2 = self.enable and device.enable
         flag = Qt.QAbstractTableModel.flags(self, index)
         column = index.column()
         if device.eltype == DS:
@@ -269,7 +269,7 @@ class ElementModel(Qt.QAbstractTableModel):
         elif device.eltype == CP:
             mcp = device.state.mcplist
             acp = device.state.acplist
-            if (device.name in mcp or device.name in acp) and self.autoEnable:
+            if device.name in mcp and self.autoEnable:
                 enable2 = False
                 flag &= ~Qt.Qt.ItemIsEnabled
         if column == 0:
@@ -341,7 +341,6 @@ class ElementModel(Qt.QAbstractTableModel):
                 if role == Qt.Qt.CheckStateRole:
                     index3 = self.index(index.row(), 2)
                     device.checked = value
-
                     self.emit(
                         Qt.SIGNAL("dataChanged(QModelIndex, QModelIndex)"),
                         index, index3)

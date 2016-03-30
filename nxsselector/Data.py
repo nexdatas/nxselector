@@ -17,9 +17,9 @@
 #    along with nexdatas.  If not, see <http://www.gnu.org/licenses/>.
 ## \package nxsselector nexdatas
 ## \file Data.py
-# automatic tab
+# user data tab
 
-""" automatic tab """
+""" user data tab """
 
 
 try:

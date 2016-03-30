@@ -54,6 +54,14 @@ class Element(object):
     checked = property(__getChecked, __setChecked,
                        doc='check status')
 
+    def __getEnable(self):
+        return self._getEnable()
+
+    def _getEnable(self):
+        return True
+
+    enable = property(__getEnable, doc='check status')
+
     def __getDisplay(self):
         return self._getDisplay()
 
@@ -76,7 +84,7 @@ class Element(object):
         return "(%s,%s)" % (self.name, self.eltype)
 
 
-## datasource element class
+## group element class
 class GElement(Element):
 
     ## constructor
@@ -165,13 +173,20 @@ class CPElement(Element):
         super(CPElement, self).__init__(name, CP, state)
         self.group = group
 
+    def _getEnable(self):
+        if self.name in self.group.keys():
+            vl = self.group[self.name]
+            if vl is None:
+                return False
+        return True
+
     def _getChecked(self):
         if not self.group:
             res = self.state.cpgroup
         else:
             res = self.group
         if self.name in res.keys():
-            return res[self.name]
+            return res[self.name] is True
         return False
 
     def _setChecked(self, status):

@@ -1,3 +1,7 @@
+2016-03-XX Jan Kotanski <jankotan@gmail.com>
+	* add checkability to description elements
+	* tagged as 3.0.0
+
 2016-03-29 Jan Kotanski <jankotan@gmail.com>
 	* fix for fetching dataSourceDescription
 	* tagged as 2.3.2

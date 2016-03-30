@@ -16,10 +16,10 @@
 #    You should have received a copy of the GNU General Public License
 #    along with nexdatas.  If not, see <http://www.gnu.org/licenses/>.
 ## \package nxsselector nexdatas
-## \file State.py
-# automatic tab
+## \file Descriptions.py
+# descriptions tab
 
-""" automatic tab """
+""" descriptions tab """
 
 
 try:
@@ -39,17 +39,19 @@ OPTIONAL, MANDATORY, OTHERS = range(3)
 
 
 ## main window class
-class State(Qt.QObject):
+class Descriptions(Qt.QObject):
 
     componentChecked = Qt.pyqtSignal()
 
     ## constructor
     # \param settings frame settings
-    def __init__(self, ui, state=None, userView=CheckerView, rowMax=0):
+    def __init__(self, ui, state=None, userView=CheckerView,
+                 mandUserView=CheckerView, rowMax=0):
         Qt.QObject.__init__(self)
         self.ui = ui
         self.state = state
         self.userView = userView
+        self.mandUserView = mandUserView
         self.rowMax = rowMax
 
         self.agroup = []
@@ -105,19 +107,20 @@ class State(Qt.QObject):
 
     def createGUI(self):
 
-        self.ui.state.hide()
+        self.ui.descriptions.hide()
         if self.__cplayout and self.__dslayout:
             self.__clearFrames()
-        self.__mainlayout = Qt.QHBoxLayout(self.ui.state)
+        self.__mainlayout = Qt.QHBoxLayout(self.ui.descriptions)
         self.__cplayout = Qt.QVBoxLayout()
         self.__dslayout = Qt.QVBoxLayout()
         self.__mainlayout.addLayout(self.__cplayout)
         self.__mainlayout.addLayout(self.__dslayout)
         self.__mainlayout.setStretchFactor(self.__cplayout, 3)
-        self.__mainlayout.setStretchFactor(self.__dslayout, 1)
+        self.__mainlayout.setStretchFactor(
+            self.__dslayout, 1 if self.igroup else 0)
 
         self.views[OTHERS] = self.__addView(
-            "Other Optional", self.rowMax,
+            "Other Optional", self.userView, self.rowMax,
             self.__dslayout, not self.igroup)
 
         la = len(self.agroup)
@@ -126,18 +129,19 @@ class State(Qt.QObject):
             la, lm = [float(la) / (la + lm), float(lm) / (la + lm)]
 
         self.views[OPTIONAL] = self.__addView(
-            "Optional", max(1, int(la * (self.rowMax - 2))))
+            "Optional", self.userView, max(1, int(la * (self.rowMax - 2))))
         self.views[MANDATORY] = self.__addView(
-            "Mandatory", max(1, int(lm * (self.rowMax - 2))))
+            "Mandatory", self.mandUserView,
+            max(1, int(lm * (self.rowMax - 2))))
 
-        self.ui.state.update()
-        if self.ui.tabWidget.currentWidget() == self.ui.state:
-            self.ui.state.show()
+        self.ui.descriptions.update()
+        if self.ui.tabWidget.currentWidget() == self.ui.descriptions:
+            self.ui.descriptions.show()
 
-    def __addView(self, label, rowMax, layout=None, hide=False):
+    def __addView(self, label, view, rowMax, layout=None, hide=False):
         if layout is None:
             layout = self.__cplayout
-        mframe = Qt.QFrame(self.ui.state)
+        mframe = Qt.QFrame(self.ui.descriptions)
         mframe.setFrameShape(Qt.QFrame.StyledPanel)
         mframe.setFrameShadow(Qt.QFrame.Raised)
         self.mframes.append(mframe)
@@ -149,7 +153,7 @@ class State(Qt.QObject):
         self.groupboxes.append(mgroup)
         layout_auto = Qt.QGridLayout(mgroup)
         self.auto_layouts.append(layout_auto)
-        mview = self.userView(mgroup)
+        mview = view(mgroup)
         mview.rowMax = rowMax
         if hasattr(mview, 'dmapper'):
             mview.dmapper = None
@@ -166,7 +170,7 @@ class State(Qt.QObject):
 
     def setModels(self):
         md = ElementModel(self.agroup)
-        md.enable = False
+#        md.enable = False
         self.models.append(md)
         self.views[OPTIONAL].setModel(md)
         md.componentChecked.connect(self.__componentChecked)
@@ -178,7 +182,7 @@ class State(Qt.QObject):
         md.componentChecked.connect(self.__componentChecked)
 
         md = ElementModel(self.igroup)
-        md.enable = False
+#        md.enable = False
         self.models.append(md)
         self.views[OTHERS].setModel(md)
         md.componentChecked.connect(self.__componentChecked)

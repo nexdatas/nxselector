@@ -377,7 +377,7 @@ into separate entries identified by the current Scan ID.</string>
        <property name="tabsClosable">
         <bool>false</bool>
        </property>
-       <widget class="QWidget" name="selectable">
+       <widget class="QWidget" name="detectors">
         <property name="toolTip">
          <string>Detector components: selectable by the user.
 This components contain datasources usually written in the STEP mode.
@@ -387,7 +387,7 @@ The set of detector components can be change by pressing Others.</string>
          <string>Detectors</string>
         </attribute>
        </widget>
-       <widget class="QWidget" name="state">
+       <widget class="QWidget" name="descriptions">
         <property name="toolTip">
          <string>Description components: preselected for the specific discipline.
 This components contain motor datasources usually written in the INIT or FINAL mode.
