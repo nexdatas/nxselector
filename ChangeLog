@@ -1,4 +1,5 @@
-2016-03-XX Jan Kotanski <jankotan@gmail.com>
+2016-04-01 Jan Kotanski <jankotan@gmail.com>
+	* dedicated to use with NXSRecSelector 3.0.0 or above
 	* add checkability to description elements
 	* fix alignment of description frames
 	* tagged as 3.0.0
