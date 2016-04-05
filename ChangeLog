@@ -1,3 +1,7 @@
+2016-04-05 Jan Kotanski <jankotan@gmail.com>
+	* fix for nonexisting group
+	* tagged as 3.0.1
+
 2016-04-01 Jan Kotanski <jankotan@gmail.com>
 	* dedicated to use with NXSRecSelector 3.0.0 or above
 	* add checkability to description elements

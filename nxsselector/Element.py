@@ -174,7 +174,7 @@ class CPElement(Element):
         self.group = group
 
     def _getEnable(self):
-        if self.name in self.group.keys():
+        if self.group and self.name in self.group.keys():
             vl = self.group[self.name]
             if vl is None:
                 return False
