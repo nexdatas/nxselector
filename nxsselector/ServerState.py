@@ -110,7 +110,9 @@ class ServerState(object):
         logger.debug("DP %s" % type(self.__dp))
 
         self.recorder_names = ['serialno', 'end_time', 'start_time',
-                               'point_nb', 'timestamps']
+                               'point_nb', 'timestamps', 'scan_title',
+                               'filename'
+                               ]
         self.channelprops = ["nexus_path", "link", "shape", "label",
                              "data_type"]
 
