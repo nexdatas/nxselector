@@ -481,7 +481,7 @@ class ServerState(object):
                     ms = "%s:%s/%s" % (self.__dp.get_db_host(),
                                        self.__dp.get_db_port(),
                                        ms)
-                    
+
                 msp = self.__openProxy(ms)
                 host = msp.get_db_host()
                 port = msp.get_db_port()
@@ -501,7 +501,7 @@ class ServerState(object):
                             break
                 return status
 
-        
+
     @classmethod
     def __openProxy(cls, server):
         proxy = PyTango.DeviceProxy(server)
