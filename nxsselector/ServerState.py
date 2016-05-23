@@ -470,6 +470,38 @@ class ServerState(object):
             raise Exception("NXSRecSelector (%s) version below 2.0.0" %
                             (self.server or "module"))
 
+
+    def isDoorFromMacroServer(self, door):
+        if not self.__dp:
+            self.setServer()
+        if hasattr(self.__dp, "macroServer"):
+            ms = str(self.__dp.macroServer)
+            if ms:
+                if ':' not in ms:
+                    ms = "%s:%s/%s" % (self.__dp.get_db_host(),
+                                       self.__dp.get_db_port(),
+                                       ms)
+                    
+                msp = self.__openProxy(ms)
+                host = msp.get_db_host()
+                port = msp.get_db_port()
+                doors = msp.doorList
+                print "DOORS", doors
+                if door in doors:
+                    return True
+                status = False
+                for mdoor in doors:
+                    if ':' in door and ':' not in mdoor:
+                        if door == "%s:%s/%s" % (host, port, mdoor):
+                            status = True
+                            break
+                    elif ':' not in door and ':' in mdoor:
+                        if mdoor == "%s:%s/%s" % (host, port, door):
+                            status = True
+                            break
+                return status
+
+        
     @classmethod
     def __openProxy(cls, server):
         proxy = PyTango.DeviceProxy(server)

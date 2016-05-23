@@ -661,8 +661,16 @@ class Selector(Qt.QDialog, TaurusBaseWidget):
 
     def resetClickAll(self):
         logger.debug("reset ALL")
+        self.state.switchMntGrp()
+        if self.isDoorFromMacroServer(self.__door):
+            action = askreplace()
+            if action == update:
+                self.__door = self.state.door
+                self.emit(Qt.SIGNAL('doorName'), str(self.state.door))
+            elif action == replace:
+                self.updateDoorName(self.__door)
         self.runProgress([
-            "switchMntGrp",
+#            "switchMntGrp",
             "updateControllers",
             "importMntGrp"
         ])
