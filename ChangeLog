@@ -1,5 +1,6 @@
 2016-05-24 Jan Kotanski <jankotan@gmail.com>
 	* add door synchronization
+	* dedicated to use with NXSRecSelector 3.4.0 or above
 	* tagged as 3.2.0
 
 2016-04-12 Jan Kotanski <jankotan@gmail.com>
