@@ -1,3 +1,7 @@
+2016-05-24 Jan Kotanski <jankotan@gmail.com>
+	* add door synchronization
+	* tagged as 3.2.0
+
 2016-04-12 Jan Kotanski <jankotan@gmail.com>
 	* add filename and scan_title into configuration variables
 	* tagged as 3.1.0
