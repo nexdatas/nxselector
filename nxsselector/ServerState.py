@@ -455,7 +455,6 @@ class ServerState(object):
             self.__command(self.__dp, "preselectComponents")
 
     def setServer(self):
-
         if self.server:
             self.__dp = self.__openProxy(self.server)
             self.__dp.set_timeout_millis(self.__timeout)
@@ -469,7 +468,6 @@ class ServerState(object):
            int(str(self.__dp.version).split(".")[0]) < 2:
             raise Exception("NXSRecSelector (%s) version below 2.0.0" %
                             (self.server or "module"))
-
 
     def isDoorFromMacroServer(self, door):
         if not self.__dp:
@@ -486,7 +484,6 @@ class ServerState(object):
                 host = msp.get_db_host()
                 port = msp.get_db_port()
                 doors = msp.doorList
-                print "DOORS", doors
                 if door in doors:
                     return True
                 status = False
@@ -500,7 +497,6 @@ class ServerState(object):
                             status = True
                             break
                 return status
-
 
     @classmethod
     def __openProxy(cls, server):

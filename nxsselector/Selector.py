@@ -552,7 +552,7 @@ class Selector(Qt.QDialog, TaurusBaseWidget):
     def resetServer(self):
         logger.debug("reset server")
         self.state.setServer()
-        self.resetAll()
+        self._resetAll()
         logger.debug("reset server ended")
 
     @Qt.pyqtSlot(Qt.QString, Qt.QString)
@@ -576,7 +576,7 @@ class Selector(Qt.QDialog, TaurusBaseWidget):
     def updateGroups(self):
         ## QProgressDialog to be added
         self.state.storeGroups()
-        self.resetAll()
+        self._resetAll()
 
     @Qt.pyqtSlot()
     def resetViews(self):
@@ -662,23 +662,40 @@ class Selector(Qt.QDialog, TaurusBaseWidget):
     def resetClickAll(self):
         logger.debug("reset ALL")
         self.state.switchMntGrp()
-        if self.isDoorFromMacroServer(self.__door):
-            action = askreplace()
-            if action == update:
-                self.__door = self.state.door
-                self.emit(Qt.SIGNAL('doorName'), str(self.state.door))
-            elif action == replace:
-                self.updateDoorName(self.__door)
+        self._synchDoor()
         self.runProgress([
-#            "switchMntGrp",
             "updateControllers",
             "importMntGrp"
         ])
         self.storage.showErrors()
         logger.debug("reset ENDED")
 
+    def _synchDoor(self):
+        if not self.__door:
+            self.__door = self.state.door
+        elif not self.state.isDoorFromMacroServer(self.__door):
+            replay = Qt.QMessageBox.question(
+                self.ui.preferences,
+                "NXSelector: The New Measurement Group"
+                "was created for not the current MacroServer.",
+                "Would you like to apply change or the current MacroServer"
+                " or reset door in the new measurement group? ",
+                Qt.QMessageBox.Apply | Qt.QMessageBox.Reset
+                | Qt.QMessageBox.Close)
+            if replay == Qt.QMessageBox.Apply:
+                self.__door = self.state.door
+                self.emit(Qt.SIGNAL('doorName'), str(self.state.door))
+            elif replay == Qt.QMessageBox.Reset:
+                self.updateDoorName(self.__door)
+        else:
+            self.updateDoorName(self.__door)
+
     @Qt.pyqtSlot()
     def resetAll(self):
+        self._synchDoor()
+        self._resetAll()
+
+    def _resetAll(self):
         logger.debug("reset ALL")
         self.runProgress(["updateControllers", "importMntGrp"])
         self.storage.showErrors()
@@ -702,7 +719,7 @@ class Selector(Qt.QDialog, TaurusBaseWidget):
                 "Would you like to update the changes? ",
                 Qt.QMessageBox.Yes | Qt.QMessageBox.No)
             if replay == Qt.QMessageBox.Yes:
-                self.resetAll()
+                self._resetAll()
         logger.debug("reset Configuration END")
 
     def updateDoorName(self, door):
@@ -782,7 +799,7 @@ class Selector(Qt.QDialog, TaurusBaseWidget):
 
                 with open(filename, 'w') as myfile:
                     myfile.write(jconf)
-                self.resetAll()
+                self._resetAll()
 
         except Exception:
             import traceback
