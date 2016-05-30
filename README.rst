@@ -1,6 +1,6 @@
-======================
-NXS Component Designer
-======================
+=======================================
+Welcome to nxselector's documentation!
+=======================================
 
 Authors: Jan Kotanski
 

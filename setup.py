@@ -15,9 +15,7 @@
 #
 #    You should have received a copy of the GNU General Public License
 #    along with nexdatas.  If not, see <http://www.gnu.org/licenses/>.
-## \package nxsselector nexdatas
-## \file setup.py
-# GUI for setting NeXus Sardana Recorder
+
 
 """ setup.py for NXS Component Designer """
 
@@ -30,14 +28,19 @@ from distutils.command.clean import clean
 from distutils.command.install_scripts import install_scripts
 import shutil
 
-## package name
+#: package name
 TOOL = "nxsselector"
-## package instance
+#: package instance
 ITOOL = __import__(TOOL)
 
 
-## reading a file
+from sphinx.setup_command import BuildDoc
+
 def read(fname):
+    """ read the file 
+
+    :param fname: readme file name
+    """
     return open(os.path.join(os.path.dirname(__file__), fname)).read()
 
 UIDIR = os.path.join(TOOL, "ui")
@@ -45,14 +48,17 @@ QRCDIR = os.path.join(TOOL, "qrc")
 SCRIPTS = ['nxselector']
 
 
-## ui and qrc builder for python
 class toolBuild(build):
+    """ ui and qrc builder for python
+    """
 
-    ## creates the python qrc files
-    # \param qfile qrc file name
-    # \param path  qrc file path
     @classmethod
     def makeqrc(cls, qfile, path):
+        """  creates the python qrc files
+        
+        :param qfile: qrc file name
+        :param path:  qrc file path
+        """
         qrcfile = os.path.join(path, "%s.qrc" % qfile)
         rccfile = os.path.join(path, "%s.rcc" % qfile)
 
@@ -63,9 +69,11 @@ class toolBuild(build):
             print >> sys.stderr, "Error: Cannot build  %s" % (rccfile)
 
 
-    ## runner
-    # \brief It is running during building
     def run(self):
+        """ runner
+
+        :\brief: It is running during building
+        """
 
         try:
             qfiles = [(qfile[:-4], QRCDIR) for qfile
@@ -82,12 +90,15 @@ class toolBuild(build):
         build.run(self)
 
 
-## cleaner for python
 class toolClean(clean):
+    """ cleaner for python
+    """
 
-    ## runner
-    # \brief It is running during cleaning
     def run(self):
+        """ runner
+        
+        :brief: It is running during cleaning
+        """
 
         cfiles = [os.path.join(TOOL, cfile) for cfile
                   in os.listdir("%s" % TOOL) if cfile.endswith('.pyc')]
@@ -118,17 +129,25 @@ class toolClean(clean):
         clean.run(self)
 
 
-## provides windows scripts
 def get_scripts(scripts):
+    """ provides windows names of python scripts
+
+    :param scripts: list of script names
+    """
     if get_platform()[:3] == 'win':
         return scripts + [sc + '.pyw' for sc in scripts]
     return scripts
 
-package_data = {'nxsselector': ['ui/*.ui', 'qrc/*.rcc']
-                }
+package_data = {
+    'nxsselector': ['ui/*.ui', 'qrc/*.rcc']
+}
+
+release = ITOOL.__version__
+version = ".".join(release.split(".")[:2])
+name = "NXSConfigServer"
 
 
-## metadata for distutils
+#: metadata for distutils
 SETUPDATA = dict(
     name="nxsselector",
     version=ITOOL.__version__,
@@ -145,8 +164,14 @@ SETUPDATA = dict(
     packages=[TOOL, UIDIR, QRCDIR],
     package_data=package_data,
     scripts=get_scripts(SCRIPTS),
-    long_description=read('README'),
-    cmdclass={"build": toolBuild, "clean": toolClean}
+    cmdclass={"build": toolBuild, "clean": toolClean,
+              'build_sphinx': BuildDoc},
+    command_options={
+        'build_sphinx': {
+            'project': ('setup.py', name),
+            'version': ('setup.py', version),
+            'release': ('setup.py', release)}},
+    long_description=read('README.rst')
 )
 
 
