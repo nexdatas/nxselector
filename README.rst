@@ -171,7 +171,7 @@ or from Spock by
 
    p09/door/haspp09.01 [1]: nxselector
 
-.. _fig_detectors:
+.. _Figure_1.1:
    
 .. figure:: png/detectors_23.png
    :alt: Component Selector: Detectors
@@ -187,7 +187,7 @@ Configuration of the each hardware device for the NeXus files is described insid
 
 .. For more details about NeXus configuration components and their data sources see Section 10.7
 
-:ref:`fig_detectors` displays the Detectors tab of the Component Selector including the available device components. Composite components are the one with multiple data sources. Simple components are distributed in the frames labelled Counters, ADC, MCA, etc. Components are selected by activating the *Sel.* checkbox. If the *Dis.* checkbox is enabled, the output of the device is displayed during the scan for monitoring purposes.
+:ref:`Figure_1.1` displays the Detectors tab of the Component Selector including the available device components. Composite components are the one with multiple data sources. Simple components are distributed in the frames labelled Counters, ADC, MCA, etc. Components are selected by activating the *Sel.* checkbox. If the *Dis.* checkbox is enabled, the output of the device is displayed during the scan for monitoring purposes.
 
 Simple components may be part of composite components. As a consequence, selecting a composite component may implicitly select one or more simple components. This dependency has to be visible for the users. Therefore, simple components being implicitly selected are deactivated and their font colour changes to grey. The user may also move the mouse over a composite component to inspect the contents.
 
