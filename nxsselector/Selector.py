@@ -411,9 +411,9 @@ class Selector(Qt.QDialog, TaurusBaseWidget):
                 self.__model = model
                 self.__servertoupdateFlag = True
             elif self.__servertoupdateFlag:
+                self.__servertoupdateFlag = False
                 self.ui.devSettingsLineEdit.setText(model)
                 self.preferences.changeServer(False)
-                self.__servertoupdateFlag = False
                 logger.debug("change ServerName %s " % model)
         else:
             self.__servertoupdateFlag = False
@@ -728,10 +728,10 @@ class Selector(Qt.QDialog, TaurusBaseWidget):
             self.__door = door
             self.__doortoupdateFlag = True
         elif str(door) != str(self.state.door):
+            self.__doortoupdateFlag = False
             self.ui.mntServerLineEdit.setText(door)
             self.storage.apply()
             logger.debug("change DoorName %s " % door)
-            self.__doortoupdateFlag = False
 
         logger.debug("update DoorName END")
 
