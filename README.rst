@@ -1,4 +1,3 @@
-=======================================
 Welcome to nxselector's documentation!
 =======================================
 
@@ -71,9 +70,9 @@ and
 
 .. code:: bash
 
-	  $ apt-get install python-sardana-nxsrecorder
+	  $ apt-get install python-sardana-nxsrecorder nxstaurusgui
 
-for the Sardana NeXus recorder.
+for NeXus recorder and MacroGUI packages.
 
 -------------------
 Setting environment
@@ -153,6 +152,72 @@ If the `RecoderPath` property of MacroServer is not set one can do it by
 
 where the path should point the `sardananxsrecorder` package.
 
+General overview
+================
+
+----------------
+Device Selection
+----------------
+
+Every measurement requires devices to be selected. The Component Selector (CS) is a graphical user interface serving this purpose. It is launched from a Linux terminal by
+
+.. code:: bash
+
+   haspp09% nxselector
+
+or from Spock by
+
+.. code:: bash
+
+   p09/door/haspp09.01 [1]: nxselector
+
+
+.. figure:: png/detectors_23.png
+   :alt: Component Selector: Detectors
+
+   Figure 1.1: Component Selector: Detectors
+
+Configuration of the each hardware device for the NeXus files is described inside a configution string, i.e. a configuration component. The employed configuration concept is inspired by the following hardware/configuration correspondences:
+
+|    measurement <=> file
+|    experimental setup <=> NeXus configuration
+|    hardware device <=> component
+|    device attribute, e.g. counter reading, motor position <=> data source
+
+Figure 1.1 displays the Detectors tab of the Component Selector including the available device components. Composite components are the one with multiple data sources. Simple components are distributed in the frames labelled Counters, ADC, MCA, etc. Components are selected by activating the *Sel.* checkbox. If the *Dis.* checkbox is enabled, the output of the device is displayed during the scan for monitoring purposes.
+
+Simple components may be part of composite components. As a consequence, selecting a composite component may implicitly select one or more simple components. This dependency has to be visible for the users. Therefore, simple components being implicitly selected are deactivated and their font colour changes to grey. The user may also move the mouse over a composite component to inspect the contents.
+
+Ideally all devices are contained in components ensuring that they have sensible NeXus paths and meaningful metadata associated with them. In practice this is not always possible. Consider a counter module with 32 channels. Some of them are permanently connected to specific detectors. It is an easy task to create components for these inputs. However, during the course of a beamtime, it may happen that a researcher needs to record some other signal. Depending on the circumstances it may be impossible to create a new component immediately. Still the new signal has to be recorded. In order to handle this situation, dynamical components have been introduced. They are automatically created whenever a selected device is not covered by a component.
+
+In the upper part of the Selector window the user sets Scan File, Scan Directory and if consecutive scans are appended to one file or stored separately. To use NeXus Sardana Recorder the file extension has to be set to *.nxs* , *.nx* , *.h5*, *.ndf*. **Before the scan all the changes has to be confirmed by the Apply button**. Its action updates settings of the active Sardana measurement group and configuration of the Component Selector.
+
+The Others button of Detectors allows for the user to add simple devices into the measurement group. Its attribute values will be stored for each the scan point.
+
+After devices have been selected and applied the state of all tabs is stored into a profile in the NeXuS Configuration Server. The **profile** contains setting informations, i.e. selected components, user data and file settings, required to prepare configuration for the NeXus writer. The profile extends its measurement group so they share the same name. It is possible to create several profiles. A required profile can be loaded to restore a particular device selection. It is done automatically by changing *MntGrp* in the Selector.
+
+Moreover, by pressing the *Save* or *Load* buttons, the user can save to a file or load the current scan profile. This way, the researcher can easily switch from one data acquisition setup to another. 
+
+.. figure:: png/descriptions_23.png
+   :alt: Component Selector: Descriptions
+
+   Figure 1.2: Component Selector: Descriptions
+
+The Descriptions tab, Figure 1.2, displays components containing metadata which are stored only before or after the scan. They are divided into two groups: the Mandatory beamline-specific components and the Optional discipline-specific components. The Mandatory beamline group describes the source device and the facility. The Optional discipline group contains information about the spatial arrangement of the experimental setup, mainly motor positions. The user can select or deselect the optional components from the current profile.
+
+Moreover, the Reset Desc. button of Descriptions sets a group of descriptive components to the default one, i.e. defined in the DefaultAutomaticComponents property of the current NXSRecSelector server.
+
+The Others button of Descriptions allows for the user to add simple devices into the profile descriptions, i.e. Other Optional. Its attribute values will be stored before the scan point.
+
+During appling the selected profile informations from Descriptive components are also stored in the PreScanSnapshot door environment variable. This helps to store the metadata informations by other Sardana recorders. 
+
+.. figure:: png/udata_23.png
+   :alt: Component Selector: NeXus User Data
+
+   Figure 10.3: Component Selector: NeXus User Data
+
+
+   
 -----
 Icons
 -----
