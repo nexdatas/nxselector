@@ -179,13 +179,14 @@ or from Spock by
    Figure 1.1: Component Selector: Detectors
 
 Configuration of the each hardware device for the NeXus files is described inside a configution string, i.e. a configuration component. The employed configuration concept is inspired by the following hardware/configuration correspondences:
+.. For more details about NeXus configuration components and their data sources see Section 10.7
 
 |    *measurement* <=> *file*
 |    *experimental setup* <=> *NeXus configuration*
 |    *hardware device* <=> *component*
 |    *device attribute*, e.g. counter reading, motor position <=> *data source*
 
-.. For more details about NeXus configuration components and their data sources see Section 10.7
+
 
 :ref:`Figure_1.1` displays the Detectors tab of the Component Selector including the available device components. Composite components are the one with multiple data sources. Simple components are distributed in the frames labelled Counters, ADC, MCA, etc. Components are selected by activating the *Sel.* checkbox. If the *Dis.* checkbox is enabled, the output of the device is displayed during the scan for monitoring purposes.
 
