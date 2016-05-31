@@ -171,6 +171,8 @@ or from Spock by
 
    p09/door/haspp09.01 [1]: nxselector
 
+.. <div id="id1"/>
+
 .. _Figure_1.1:
    
 .. figure:: png/detectors_23.png
@@ -199,6 +201,7 @@ The Others button of Detectors allows for the user to add simple devices into th
 After devices have been selected and applied the state of all tabs is stored into a profile in the NeXuS Configuration Server. The **profile** contains setting informations, i.e. selected components, user data and file settings, required to prepare configuration for the NeXus writer. The profile extends its measurement group so they share the same name. It is possible to create several profiles. A required profile can be loaded to restore a particular device selection. It is done automatically by changing *MntGrp* in the Selector.
 
 Moreover, by pressing the *Save* or *Load* buttons, the user can save to a file or load the current scan profile. This way, the researcher can easily switch from one data acquisition setup to another. 
+
 
 .. _Figure_1.2:
 
