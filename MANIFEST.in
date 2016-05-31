@@ -1,3 +1,4 @@
+include README.rst
 include COPYRIGHT
 include man/nxselector.1
 include nxsselector/images/network_folder.png
