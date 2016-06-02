@@ -17,7 +17,7 @@
 #    along with nexdatas.  If not, see <http://www.gnu.org/licenses/>.
 
 
-""" setup.py for NXS Component Designer """
+""" setup.py for setting NeXus Sardana Recorder """
 
 import os
 import sys
