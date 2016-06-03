@@ -342,9 +342,7 @@ class ElementModel(Qt.QAbstractTableModel):
                     index3 = self.index(index.row(), 2)
                     device.checked = value
                     self.emit(
-                        Qt.SIGNAL(
-                            "dataChanged(const QModelIndex &, "
-                            "const QModelIndex &)"),
+                        Qt.SIGNAL("dataChanged(QModelIndex, QModelIndex)"),
                         index, index3)
                     if device.eltype == CP:
                         self.componentChecked.emit()
@@ -355,8 +353,7 @@ class ElementModel(Qt.QAbstractTableModel):
                     label = value.toString()
                     device.state.labels[device.name] = str(label)
                     self.emit(
-                        Qt.SIGNAL("dataChanged(const QModelIndex &,"
-                                  " const QModelIndex &)"),
+                        Qt.SIGNAL("dataChanged(QModelIndex, QModelIndex)"),
                         index, index)
                     self.dirty.emit()
                     return True
@@ -366,8 +363,7 @@ class ElementModel(Qt.QAbstractTableModel):
                     device.display = value
 
                     self.emit(
-                        Qt.SIGNAL("dataChanged(const QModelIndex &,"
-                                  " const QModelIndex &)"),
+                        Qt.SIGNAL("dataChanged(QModelIndex, QModelIndex)"),
                         index, index3)
                     if device.eltype == CP:
                         self.componentChecked.emit()
@@ -380,8 +376,7 @@ class ElementModel(Qt.QAbstractTableModel):
                     self.__setProperties(device, str(value))
                     index5 = self.index(index.row(), 5)
                     self.emit(
-                        Qt.SIGNAL("dataChanged(const QModelIndex &,"
-                                  " const QModelIndex &)"),
+                        Qt.SIGNAL("dataChanged(QModelIndex, QModelIndex)"),
                         index, index5)
                     self.dirty.emit()
                     return True
