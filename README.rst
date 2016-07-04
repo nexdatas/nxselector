@@ -9,7 +9,7 @@ as well as datasources which constitute the XML configuration strings of
 Nexus Data Writer via Sardana NeXus Recorder.
 
 | Source code: https://github.com/nexdatas/selector
-| Web page: http://www.desy.de/~jkotan/nxselector
+| Web page:  https://nexdatas.github.io/selector
 
 
 
@@ -26,7 +26,7 @@ From sources
 
 Download the latest version of NeXuS Configuration Server from
 
-    https://github.com/jkotan/nexdatas/selector/
+    https://github.com/nexdatas/selector
 
 Extract the sources and run
 
