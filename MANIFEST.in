@@ -1,6 +1,0 @@
-include README.rst
-include COPYRIGHT
-include man/nxselector.1
-include nxsselector/images/network_folder.png
-include nxsselector/qrc/resources.qrc
-exclude nxsselector/qrc/resources.rcc
