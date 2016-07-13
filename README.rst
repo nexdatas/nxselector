@@ -10,7 +10,7 @@ Nexus Data Writer via Sardana NeXus Recorder.
 
 | Source code: https://github.com/nexdatas/selector
 | Web page:  https://nexdatas.github.io/selector
-
+| NexDaTaS Web page: https://nexdatas.github.io
 
 
 ------------

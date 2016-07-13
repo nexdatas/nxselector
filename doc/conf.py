@@ -15,6 +15,9 @@
 import sys
 import os
 
+# import sphinx_rtd_theme
+import sphinx_bootstrap_theme
+
 # If extensions (or modules to document with autodoc) are in another directory,
 # add these directories to sys.path here. If the directory is relative to the
 # documentation root, use os.path.abspath to make it absolute, like shown here.
@@ -109,15 +112,101 @@ pygments_style = 'sphinx'
 #html_theme = 'agogo'
 #html_theme = 'haiku'
 #html_theme = 'nature'
-html_theme = 'sphinxdoc'
+#html_theme = 'sphinxdoc'
+# html_theme = 'sphinx_rtd_theme'
+html_theme = 'bootstrap'
 
 # Theme options are theme-specific and customize the look and feel of a theme
 # further.  For a list of options available for each theme, see the
 # documentation.
 #html_theme_options = {}
+html_theme_options = {
+    # Navigation bar title. (Default: ``project`` value)
+    # 'navbar_title': "Demo",
+
+    # Tab name for entire site. (Default: "Site")
+    # 'navbar_site_name': "Site",
+
+    # A list of tuples containing pages or urls to link to.
+    # Valid tuples should be in the following forms:
+    #    (name, page)                 # a link to a page
+    #    (name, "/aa/bb", 1)          # a link to an arbitrary relative url
+    #    (name, "http://example.com", True) # arbitrary absolute url
+    # Note the "1" or "True" value above as the third argument to indicate
+    # an arbitrary url.
+    # 'navbar_links': [
+    #     ("Examples", "examples"),
+    #    ("Link", "http://example.com", True),
+    # ],
+
+    # Render the next and previous page links in navbar. (Default: true)
+    # 'navbar_sidebarrel': True,
+
+    # Render the current pages TOC in the navbar. (Default: true)
+    # 'navbar_pagenav': True,
+
+    # Tab name for the current pages TOC. (Default: "Page")
+    # 'navbar_pagenav_name': "Page",
+
+    # Global TOC depth for "site" navbar tab. (Default: 1)
+    # Switching to -1 shows all levels.
+    'globaltoc_depth': 2,
+    # 'globaltoc_depth': -1,
+
+    # Include hidden TOCs in Site navbar?
+    #
+    # Note: If this is "false", you cannot have mixed ``:hidden:`` and
+    # non-hidden ``toctree`` directives in the same page, or else the build
+    # will break.
+    #
+    # Values: "true" (default) or "false"
+    # 'globaltoc_includehidden': "true",
+
+    # HTML navbar class (Default: "navbar") to attach to <div> element.
+    # For black navbar, do "navbar navbar-inverse"
+    # 'navbar_class': "navbar navbar-inverse",
+    # 'navbar_class': "navbar navbar-light",
+    
+    # Fix navigation bar to top of page?
+    # Values: "true" (default) or "false"
+    # 'navbar_fixed_top': "true",
+
+    # Location of link to source.
+    # Options are "nav" (default), "footer" or anything else to exclude.
+    # 'source_link_position': "nav",
+    'source_link_position': "none",
+
+    # Bootswatch (http://bootswatch.com/) theme.
+    #
+    # Options are nothing (default) or the name of a valid theme
+    # such as "amelia" or "cosmo".
+    # 'bootswatch_theme': "readable",
+    # 'bootswatch_theme': "spacelab",
+    # 'bootswatch_theme': "simplex",
+    # 'bootswatch_theme': "sandstone",
+    # 'bootswatch_theme': "flatly",
+    # 'bootswatch_theme': "cerulean",
+    # 'bootswatch_theme': "united",
+    # 'bootswatch_theme': "cosmo",
+    ## 'bootswatch_theme': "amelia",
+    # 'bootswatch_theme': "cyborg",
+    # 'bootswatch_theme': "journal",
+    # 'bootswatch_theme': "slate",
+    # 'bootswatch_theme': "spruce",
+    # 'bootswatch_theme': "superhero",
+    # 'bootswatch_theme': "lumen",
+    # 'bootswatch_theme': "paper",
+    # 'bootswatch_theme': "yeti",
+
+    # Choose Bootstrap version.
+    # Values: "3" (default) or "2" (in quotes)
+    'bootstrap_version': "3",
+}
 
 # Add any paths that contain custom themes here, relative to this directory.
 #html_theme_path = []
+# html_theme_path = [sphinx_rtd_theme.get_html_theme_path()]
+html_theme_path = sphinx_bootstrap_theme.get_html_theme_path()
 
 # The name for this set of Sphinx documents.  If None, it defaults to
 # "<project> v<release> documentation".
