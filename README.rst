@@ -19,14 +19,14 @@ Installation
 
 Install the dependencies:
 
-    Sardana, PyTango, sphinx, Taurus, NXSRecSelector
+|    Sardana, PyTango, sphinx, Taurus, NXSRecSelector
 
 From sources
 ^^^^^^^^^^^^
 
 Download the latest version of NeXuS Configuration Server from
 
-    https://github.com/nexdatas/selector
+|    https://github.com/nexdatas/selector
 
 Extract the sources and run
 
