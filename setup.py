@@ -144,7 +144,7 @@ package_data = {
 
 release = ITOOL.__version__
 version = ".".join(release.split(".")[:2])
-name = "NXSConfigServer"
+name = "NXS Component Selector"
 
 
 #: metadata for distutils
