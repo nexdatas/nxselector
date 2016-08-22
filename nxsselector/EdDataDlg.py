@@ -15,8 +15,6 @@
 #
 #    You should have received a copy of the GNU General Public License
 #    along with nexdatas.  If not, see <http://www.gnu.org/licenses/>.
-## \package nxsselector nexdatas
-## \file EdDataDlg.py
 # editable data dialog
 
 """  editable data dialog """
@@ -30,29 +28,43 @@ except:
 
 from taurus.qt.qtgui.util.ui import UILoadable
 
-#from .ui.ui_eddatadlg import Ui_EdDataDlg
-
 import logging
+#: (:obj:`logging.Logger`) logger object
 logger = logging.getLogger(__name__)
 
 
-## main window class
 @UILoadable(with_ui='ui')
 class EdDataDlg(Qt.QDialog):
+    """ editable data dialog
+    """
 
-    ## constructor
-    # \param parent parent widget
     def __init__(self, parent=None):
+        """ constructor
+
+        :param parent: parent object
+        :type parent: :class:`taurus.qt.Qt.QObject`
+        """
         Qt.QDialog.__init__(self, parent)
         self.loadUi()
+        #: (:obj:`bool`) dialog simple version
         self.simple = False
+        #: (:obj:`str`) data name
         self.name = ''
+        #: (:obj:`str` or `any`) data values
         self.value = ''
+        #: (:obj:`bool`) if value is string
         self.isString = True
+        #: (:obj:`list` <:obj:`str`> ) table headers
         self.headers = []
+        #: (:obj:`list` <:obj:`str`> ) available data names
         self.available_names = None
 
     def setText(self, text):
+        """ sets text into name QComboBox
+
+        :param text: data name
+        :type text: :obj:`str`
+        """
         if str(text) not in self.available_names:
             self.ui.nameComboBox.addItem(str(text))
         ind = self.ui.nameComboBox.findText(str(text))
@@ -60,6 +72,8 @@ class EdDataDlg(Qt.QDialog):
         self.ui.nameComboBox.setEditText(str(text))
 
     def createGUI(self):
+        """ creates widget GUI
+        """
         if self.available_names:
             self.ui.nameComboBox.clear()
             for an in self.available_names:
@@ -86,6 +100,8 @@ class EdDataDlg(Qt.QDialog):
 
     @Qt.pyqtSlot()
     def accept(self):
+        """ checks if dialog is filled in correctly and accepts it
+        """
         self.name = unicode(self.ui.nameComboBox.currentText())
         self.isString = self.ui.stringCheckBox.isChecked()
         self.value = unicode(self.ui.valueTextEdit.toPlainText())

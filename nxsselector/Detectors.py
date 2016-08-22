@@ -15,11 +15,9 @@
 #
 #    You should have received a copy of the GNU General Public License
 #    along with nexdatas.  If not, see <http://www.gnu.org/licenses/>.
-## \package nxsselector nexdatas
-## \file Detectors.py
 # selactable tab
 
-""" selactable tab """
+""" detector component tab """
 
 import json
 import fnmatch
@@ -37,38 +35,84 @@ from .DynamicTools import DynamicTools
 from .Views import CheckerView
 
 import logging
+#: (:obj:`logging.Logger`) logger object
 logger = logging.getLogger(__name__)
 
 
-## main window class
 class Detectors(Qt.QObject):
+    """ detector component tab widget
+    """
 
+    #: (:class:`taurus.qt.Qt.pyqtSignal`) dirty signal
     dirty = Qt.pyqtSignal()
 
-    ## constructor
     def __init__(self, ui, state=None, userView=CheckerView, rowMax=0,
                  simpleMode=0):
+        """ constructor
+
+        :param ui: ui instance
+        :type ui: :class:`taurus.qt.qtgui.util.ui.__UI`
+        :param state: server state
+        :type state: :class:`nxsselector.ServerState.ServerState`
+        :param userView: widget for description optional components
+        :type userView: :class:`taurus.qt.Qt.QWidget`
+        :param rowMax: maximal row number in component column view
+        :type rowMax: :obj:`int`
+        :param simpleMode: if simple display mode
+        :type simpleMode: :obj:`bool`
+        """
+
         Qt.QObject.__init__(self)
 
+        #: (:class:`taurus.qt.qtgui.util.ui.__UI`) ui instance
         self.ui = ui
+        #: (:class:`nxsselector.ServerState.ServerState`) server state
         self.state = state
+        #: (:class:`taurus.qt.Qt.QWidget`) \
+        #:     widget for description optional components
         self.userView = userView
+        #: (:obj:`int`) maximal row number in component column view
         self.rowMax = rowMax
+        #: (:obj:`bool`) if simple view mode
         self.__simpleMode = simpleMode
+        #: (:class:`taurus.qt.Qt.QLayout`) component layout
         self.glayout = None
-
+        #: (:obj:`str`)  JSON dictionary as \
+        #: with nested list frames [[[[group_name, group_id ], ...], ...], ...]
         self.frames = None
+        #: (:obj:`str`)  JSON dictionary as \
+        #: (:obj:`dict` <:obj:`int`, :obj:`list` <:obj:`str`> >) \
+        #:    component group filters
         self.mgroups = None
+        #: (:obj:`dict` <:obj:`int`, :class:`taurus.qt.Qt.QWidget`>) \
+        #:    (OPTIONAL, MANDATORY, OTHERS) component views
         self.groups = {}
+        #: (:obj:`dict` <:obj:`int`, :class:`taurus.qt.Qt.QWidget`>) \
+        #:    (OPTIONAL, MANDATORY, OTHERS) component views
         self.views = {}
+        #: (:obj:`list` <:class:`taurus.qt.Qt.QFrame`>) \
+        #:  list of component group frames
         self.mframes = []
+        #: (:obj:`list` <:class:`taurus.qt.Qt.QLayout`>) \
+        #:  list of column layouts
         self.column_layouts = []
+        #: (:obj:`list` <:class:`taurus.qt.Qt.QLayout`>) \
+        #:  list of  group layouts
         self.group_layouts = []
+        #: (:obj:`list` <:class:`taurus.qt.Qt.QLayout`>) \
+        #:  list of widget layouts
         self.auto_layouts = []
+        #: (:obj:`list` <:class:`taurus.qt.Qt.QGroupBox`>) \
+        #:  list of component group boxes
         self.groupboxes = []
+        #: (:obj:`list` <:class:`nxsselector.ElementModel.ElementModel`>) \
+        #:    element model list
         self.models = []
 
     def updateGroups(self):
+        """ filters component/datasource selection state
+        """
+
         self.groups = {}
         ucp = set()
         uds = set()
@@ -121,6 +165,11 @@ class Detectors(Qt.QObject):
                 self.groups[CP].append(CPElement(cp, self.state))
 
     def __availableGroups(self):
+        """ provides a set of Frames with available groups
+
+        :returns: set of Frames with available groups
+        :rtype: :obj:`set` <:obj:`nxsselector.Frames.Frames`>
+        """
         res = set()
         try:
             frames = Frames(self.frames)
@@ -133,6 +182,8 @@ class Detectors(Qt.QObject):
         return res
 
     def __clearFrames(self):
+        """ clears component frames
+        """
         DynamicTools.cleanupObjects(self.models, "model")
         if self.views:
             views = list(self.views.values())
@@ -146,6 +197,8 @@ class Detectors(Qt.QObject):
         DynamicTools.cleanupLayoutWithItems(self.glayout)
 
     def createGUI(self):
+        """ creates widget GUI
+        """
 
         self.__clearFrames()
         self.glayout = Qt.QHBoxLayout(self.ui.detectors)
@@ -194,6 +247,8 @@ class Detectors(Qt.QObject):
             self.ui.detectors.show()
 
     def setModels(self):
+        """ sets view models
+        """
         for k in self.views.keys():
             if k in self.groups.keys():
                 md = ElementModel(self.groups[k])
@@ -214,9 +269,13 @@ class Detectors(Qt.QObject):
 
     @Qt.pyqtSlot()
     def setDirty(self):
+        """ emits the `dirty` signal
+        """
         self.dirty.emit()
 
     def reset(self):
+        """ recreates widget GUI
+        """
         logger.debug("reset views")
         self.updateGroups()
         self.createGUI()
@@ -226,6 +285,8 @@ class Detectors(Qt.QObject):
 
     @Qt.pyqtSlot()
     def updateViews(self):
+        """ resets frame views
+        """
         logger.debug("update views")
         for vw in self.views.values():
             vw.reset()

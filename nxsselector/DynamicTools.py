@@ -15,13 +15,12 @@
 #
 #    You should have received a copy of the GNU General Public License
 #    along with nexdatas.  If not, see <http://www.gnu.org/licenses/>.
-## \package nxsselector nexdatas
-## \file DynamicTools.py
 # DynamicTools
 
-""" device Model """
+""" dynamic widget tools """
 
 import logging
+#: (:obj:`logging.Logger`) logger object
 logger = logging.getLogger(__name__)
 
 try:
@@ -30,15 +29,19 @@ except:
     from taurus.qt import Qt
 
 
-## element class
 class DynamicTools(object):
-
-    ## constructor
-    def __init__(self):
-        pass
+    """  dynamic widget tools """
 
     @classmethod
     def cleanupObjects(cls, objects, label=None):
+        """ cleans up qt objects
+
+        :param objects: qt objects to be cleaned up
+        :type objects: :obj:`list` <:class:`taurus.qt.Qt.QObject`>
+        :param label: qt objects label
+        :type label: :obj:`str`
+        """
+
         while objects:
             la = objects.pop()
             try:
@@ -52,6 +55,13 @@ class DynamicTools(object):
 
     @classmethod
     def cleanupWidgets(cls, widgets, label=None):
+        """ cleans up qt widgets
+
+        :param widgets: qt widgets to be cleaned up
+        :type widgets: :obj:`list` <:class:`taurus.qt.Qt.QWidget`>
+        :param label: qt object label
+        :type label: :obj:`str`
+        """
         while widgets:
             wg = widgets.pop()
             if hasattr(wg, "clearLayout"):
@@ -66,10 +76,16 @@ class DynamicTools(object):
             except:
                 if label:
                     logger.debug("ERROR del %s" % label)
-#            del wg
 
     @classmethod
     def cleanupFrames(cls, frames, label=None):
+        """ cleans up qt widgets
+
+        :param frames: qt frames to be cleaned up
+        :type frames: :obj:`list` <:class:`taurus.qt.Qt.QFrame`>
+        :param label: qt object label
+        :type label: :obj:`str`
+        """
         while frames:
             fr = frames.pop()
             try:
@@ -83,6 +99,11 @@ class DynamicTools(object):
 
     @classmethod
     def cleanupLayoutWithItems(cls, layout):
+        """ cleans up qt layout with its items
+
+        :param layout: qt layout to be cleaned up
+        :type layout: :class:`taurus.qt.Qt.QLayout`>
+        """
         if layout:
             logger.debug("COUNTS %s" % layout.count())
             while layout.count():

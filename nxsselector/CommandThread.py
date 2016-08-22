@@ -15,13 +15,12 @@
 #
 #    You should have received a copy of the GNU General Public License
 #    along with nexdatas.  If not, see <http://www.gnu.org/licenses/>.
-## \package nxsselector nexdatas
-## \file CommandThread.py
 # command thread
 
 """ command thread """
 
 import logging
+#: (:obj:`logging.Logger`) logger object
 logger = logging.getLogger(__name__)
 
 try:
@@ -31,13 +30,31 @@ except:
 
 
 class CommandThread(Qt.QThread):
+    """ thread which executes a list of commands
+    """
+
     def __init__(self, instance, commands, parent):
+        """ thread contructor
+
+        :param instance: command instance
+        :type instance: :obj:`instanceobj` or :obj:`type`
+        :param commands: a list of commands
+        :type commands: :obj:`list` <:obj:`str`>
+        :param parent: thread parent object
+        :type parent: :class:`taurus.qt.Qt.QObject`
+        """
+
         Qt.QThread.__init__(self, parent)
+        #: (:obj:`instanceobj` or :obj:`type`) command instance
         self.instance = instance
+        #: (:obj:`list` <:obj:`str`>) a list of commands
         self.commands = list(commands)
+        #: (:obj:`Exception`) error thrown by the executed command
         self.error = None
 
     def run(self):
+        """ run thread method
+        """
         try:
             for cmd in self.commands:
                 getattr(self.instance, cmd)()

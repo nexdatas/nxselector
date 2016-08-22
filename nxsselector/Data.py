@@ -15,8 +15,6 @@
 #
 #    You should have received a copy of the GNU General Public License
 #    along with nexdatas.  If not, see <http://www.gnu.org/licenses/>.
-## \package nxsselector nexdatas
-## \file Data.py
 # user data tab
 
 """ user data tab """
@@ -28,29 +26,45 @@ except:
     from taurus.qt import Qt
 
 from .EdListDlg import EdListWg
-#from .DynamicTools import DynamicTools
 
 
 import logging
+#: (:obj:`logging.Logger`) logger object
 logger = logging.getLogger(__name__)
 
 
-## main window class
 class Data(Qt.QObject):
+    """ User data tab widget
+    """
 
+    #: (:class:`taurus.qt.Qt.pyqtSignal`) dirty signal
     dirty = Qt.pyqtSignal()
 
-    ## constructor
-    # \param settings frame settings
     def __init__(self, ui, state=None, simpleMode=False):
+        """ constructor
+
+        :param ui: ui instance
+        :type ui: :class:`taurus.qt.qtgui.util.ui.__UI`
+        :param state: server state
+        :type state: :class:`nxsselector.ServerState.ServerState`
+        :param simpleMode: if simple display mode
+        :type simpleMode: :obj:`bool`
+        """
         Qt.QObject.__init__(self)
+        #: (:class:`taurus.qt.qtgui.util.ui.__UI`) ui instance
         self.ui = ui
+        #: (:class:`nxsselector.ServerState.ServerState`) server state
         self.state = state
+        #: (:class:`taurus.qt.Qt.QLayout`)
         self.glayout = None
+        #: (:obj:`bool`) if simple view mode
         self.__simpleMode = simpleMode
+        #: (:class:`nxsselector.EdListWg.EdListWg`) table editing widget
         self.form = EdListWg(self.ui.data)
 
     def createGUI(self):
+        """ creates widget GUI
+        """
         self.ui.data.hide()
 
         if self.glayout:
@@ -81,8 +95,12 @@ class Data(Qt.QObject):
         self.form.dirty.connect(self.__setDirty)
 
     def reset(self):
+        """ recreates widget GUI
+        """
         self.createGUI()
 
     @Qt.pyqtSlot()
     def __setDirty(self):
+        """ emits the `dirty` signal
+        """
         self.dirty.emit()
