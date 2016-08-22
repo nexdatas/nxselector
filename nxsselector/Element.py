@@ -15,63 +15,122 @@
 #
 #    You should have received a copy of the GNU General Public License
 #    along with nexdatas.  If not, see <http://www.gnu.org/licenses/>.
-## \package nxsselector nexdatas
-## \file Element.py
 # Element
 
 """ device Model """
 
 import logging
+#: (:obj:`logging.Logger`) logger object
 logger = logging.getLogger(__name__)
 
+#: (:obj:`int`) datasource=0, component=1  element types
 DS, CP = range(2)
 
 
-## element class
 class Element(object):
+    """ element class
+    """
 
-    ## constructor
-    # \param name element name
-    # \param eltype element type, i.e. DS or CP
-    # \param state recorder settings state
     def __init__(self, name, eltype, state):
+        """ constructor
+
+        :param name: element name
+        :type name: :obj:`str`
+        :param eltype: element type, i.e. DS=0 or CP=1
+        :type eltype: :obj:`int`
+        :param state: server state
+        :type state: :class:`nxsselector.ServerState.ServerState`
+        """
+        #: (:obj:`str`) element name
         self.name = name
+        #: (:obj:`int`) element type, i.e. DS=0 or CP=1
         self.eltype = eltype
+        #: (:class:`nxsselector.ServerState.ServerState`) server state
         self.state = state
 
     def __getChecked(self):
+        """ getter for checked flag
+
+        :returns: if element is checked
+        :rtype: :obj:`bool` or `None`
+        """
         return self._getChecked()
 
     def __setChecked(self, status):
+        """ setter for checked flag
+
+        :param status: check status
+        :type: :obj:`bool` or `None`
+        """
         self._setChecked(status)
 
     def _getChecked(self):
+        """ virtual getter for checked flag
+
+        :returns: if element is checked
+        :rtype: :obj:`bool` or `None`
+        """
         pass
 
     def _setChecked(self, _):
+        """ virtual setter for checked flag
+
+        :param status: check status
+        :type: :obj:`bool` or `None`
+        """
         pass
 
     checked = property(__getChecked, __setChecked,
                        doc='check status')
 
     def __getEnable(self):
+        """ getter for enable flag
+
+        :returns: if element is enable
+        :rtype: :obj:`bool`
+        """
         return self._getEnable()
 
     def _getEnable(self):
+        """ virtual getter for enable flag
+
+        :returns: if element is enable
+        :rtype: :obj:`bool`
+        """
         return True
 
     enable = property(__getEnable, doc='check status')
 
     def __getDisplay(self):
+        """ getter for display flag
+
+        :returns: if element should be displayed
+        :rtype: :obj:`bool`
+        """
         return self._getDisplay()
 
     def __setDisplay(self, status):
+        """ setter for display flag
+
+        :param status: display status
+        :type: :obj:`bool` or `None`
+        """
         self._setDisplay(status)
 
     def _getDisplay(self):
+        """ virtual getter for display flag
+
+        :returns: if element should be displayed
+        :rtype: :obj:`bool`
+        """
         pass
 
     def _setDisplay(self, _):
+        """ virtual setter for display flag
+
+        :param status: display status
+        :type: :obj:`bool` or `None`
+        """
         pass
 
     display = property(__getDisplay, __setDisplay,
@@ -84,37 +143,67 @@ class Element(object):
         return "(%s,%s)" % (self.name, self.eltype)
 
 
-## group element class
 class GElement(Element):
+    """ group element class
+    """
 
-    ## constructor
-    # \param parent parent widget
-    # \param eltype element type, i.e. DS or CP
-    # \param state recorder settings state
     def __init__(self, name, eltype, state, dct):
+        """ constructor
+
+        :param name: element name
+        :type name: :obj:`str`
+        :param eltype: element type, i.e. DS=0 or CP=1
+        :type eltype: :obj:`int`
+        :param state: server state
+        :type state: :class:`nxsselector.ServerState.ServerState`
+        :param dct: element selection group
+        :type dct: :obj:`dict` <:obj:`str`, :obj:`bool` or `None`>
+        """
         super(GElement, self).__init__(name, eltype, state)
+        #: (:obj:`dict` <:obj:`str`, :obj:`bool` or `None`> ) \
+        #:     element selection group
         self.group = dct
 
     def _getChecked(self):
+        """ getter for checked flag
+
+        :returns: if element is checked
+        :rtype: :obj:`bool` or `None`
+        """
         if self.name in self.group.keys():
             return self.group[self.name]
         return False
 
     def _setChecked(self, status):
+        """ setter for checked flag
+
+        :param status: check status
+        :type: :obj:`bool` or `None`
+        """
         logger.debug("Changed: %s to %s" % (self.name, status))
         self.group[self.name] = bool(status)
 
 
-## datasource element class
 class DSElement(Element):
+    """ datasource element class
+    """
 
-    ## constructor
-    # \param parent parent widget
-    # \param state recorder settings state
     def __init__(self, name, state):
+        """ constructor
+
+        :param name: element name
+        :type name: :obj:`str`
+        :param state: server state
+        :type state: :class:`nxsselector.ServerState.ServerState`
+        """
         super(DSElement, self).__init__(name, DS, state)
 
     def _getChecked(self):
+        """ getter for checked flag
+
+        :returns: if element is checked
+        :rtype: :obj:`bool` or `None`
+        """
         res = self.state.dsgroup
         timers = self.state.timers or []
         if self.name in timers:
@@ -124,6 +213,11 @@ class DSElement(Element):
         return False
 
     def _setChecked(self, status):
+        """ setter for checked flag
+
+        :param status: check status
+        :type: :obj:`bool` or `None`
+        """
         dc = self.state.dsgroup
         dc[self.name] = status
         if not status:
@@ -132,6 +226,11 @@ class DSElement(Element):
                 nd.remove(self.name)
 
     def _getDisplay(self):
+        """ getter for display flag
+
+        :returns: if element should be displayed
+        :rtype: :obj:`bool`
+        """
         res = self.state.dsgroup
         nd = self.state.nodisplay
         if self.name not in nd:
@@ -140,6 +239,11 @@ class DSElement(Element):
         return False
 
     def _setDisplay(self, status):
+        """ setter for display flag
+
+        :param status: display status
+        :type: :obj:`bool` or `None`
+        """
         dc = self.state.dsgroup
         nd = self.state.nodisplay
         timers = self.state.timers or []
@@ -163,17 +267,29 @@ class DSElement(Element):
                 nd.remove(self.name)
 
 
-## datasource element class
 class CPElement(Element):
+    """ datasource element class
+    """
 
-    ## constructor
-    # \param parent parent widget
-    # \param state recorder settings state
     def __init__(self, name, state, group=None):
+        """ constructor
+
+        :param name: element name
+        :type name: :obj:`str`
+        :param state: server state
+        :type state: :class:`nxsselector.ServerState.ServerState`
+        :param group: element selection group
+        :type group: :obj:`dict` <:obj:`str`, :obj:`bool` or `None`>
+        """
         super(CPElement, self).__init__(name, CP, state)
         self.group = group
 
     def _getEnable(self):
+        """ getter for enable flag
+
+        :returns: if element is enable
+        :rtype: :obj:`bool`
+        """
         if self.group and self.name in self.group.keys():
             vl = self.group[self.name]
             if vl is None:
@@ -181,6 +297,11 @@ class CPElement(Element):
         return True
 
     def _getChecked(self):
+        """ getter for checked flag
+
+        :returns: if element is checked
+        :rtype: :obj:`bool` or `None`
+        """
         if not self.group:
             res = self.state.cpgroup
         else:
@@ -190,6 +311,11 @@ class CPElement(Element):
         return False
 
     def _setChecked(self, status):
+        """ setter for checked flag
+
+        :param status: check status
+        :type: :obj:`bool` or `None`
+        """
         if not self.group:
             dc = self.state.cpgroup
         else:
@@ -201,6 +327,11 @@ class CPElement(Element):
                 nd.remove(self.name)
 
     def _getDisplay(self):
+        """ getter for display flag
+
+        :returns: if element should be displayed
+        :rtype: :obj:`bool`
+        """
         res = self.state.cpgroup
         nd = self.state.nodisplay
         res = self.state.acpgroup
@@ -220,6 +351,11 @@ class CPElement(Element):
         return False
 
     def _setDisplay(self, status):
+        """ setter for display flag
+
+        :param status: display status
+        :type: :obj:`bool` or `None`
+        """
         dc = self.state.cpgroup
         mc = self.state.mcplist
         ac = self.state.acpgroup

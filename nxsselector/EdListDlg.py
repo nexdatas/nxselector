@@ -15,8 +15,6 @@
 #
 #    You should have received a copy of the GNU General Public License
 #    along with nexdatas.  If not, see <http://www.gnu.org/licenses/>.
-## \package nxsselector nexdatas
-## \file EdListDlg.py
 # editable list dialog
 
 """  editable list dialog """
@@ -31,23 +29,37 @@ from taurus.qt.qtgui.util.ui import UILoadable
 from .EdDataDlg import EdDataDlg
 
 import logging
+#: (:obj:`logging.Logger`) logger object
 logger = logging.getLogger(__name__)
 
 
 class EdListDlg(Qt.QDialog):
+    """  editable list dialog
+    """
 
-    ## constructor
-    # \param parent parent widget
     def __init__(self, parent=None):
+        """ constructor
+
+        :param parent: parent object
+        :type parent: :class:`taurus.qt.Qt.QObject`
+        """
         Qt.QDialog.__init__(self, parent)
+        #: (:class:`nxselector.EdListWg.EdListWg`)  dialog widget
         self.widget = EdListWg(self)
+        #: (:obj:`bool`) simple view
         self.simple = False
+        #: (:obj:`bool`) dirty flag
         self.dirty = False
+        #: (:obj:`list` <:obj:`str`>) available names
         self.available_names = None
+        #: (:obj:`list` <:obj:`str`>) table headers
         self.headers = ["Name", "Value"]
+        #: (:obj:`list` <:obj:`str`>) disable names
         self.disable = []
 
     def createGUI(self):
+        """ creates widget GUI
+        """
         self.widget.simple = self.simple
         self.widget.available_names = self.available_names
         self.widget.headers = self.headers
@@ -64,27 +76,40 @@ class EdListDlg(Qt.QDialog):
 
     @Qt.pyqtSlot()
     def __setDirty(self):
+        """ set dirty flag """
         self.dirty = True
 
 
-## main window class
 @UILoadable(with_ui='ui')
 class EdListWg(Qt.QWidget):
+    """  editable list widget
+    """
 
+    #: (:class:`taurus.qt.Qt.pyqtSignal`) dirty signal
     dirty = Qt.pyqtSignal()
 
-    ## constructor
-    # \param parent parent widget
     def __init__(self, parent=None):
+        """ constructor
+
+        :param parent: parent object
+        :type parent: :class:`taurus.qt.Qt.QObject`
+        """
         Qt.QWidget.__init__(self, parent)
         self.loadUi()
+        #: (:obj:`bool`) simple view flag
         self.simple = False
+        #: (:obj:`dict` <:obj:`str`, `any`>) data (name, value) dictionary
         self.record = {}
+        #: (:obj:`list` <:obj:`str`>) available names
         self.available_names = None
+        #: (:obj:`list` <:obj:`str`>) table headers
         self.headers = ["Name", "Value"]
+        #: (:obj:`list` <:obj:`str`>) disable names
         self.disable = []
 
     def createGUI(self):
+        """ creates widget GUI
+        """
         if hasattr(self.ui, "addPushButton"):
             self.ui.addPushButton.clicked.disconnect(self.__add)
             self.ui.editPushButton.clicked.disconnect(self.__edit)
@@ -115,6 +140,11 @@ class EdListWg(Qt.QWidget):
         self.ui.removePushButton.clicked.connect(self.__remove)
 
     def __populateTable(self, selected=None):
+        """ populate table records
+
+        :param selected: name of selected item
+        :type selected: :obj:`str`
+        """
         self.ui.tableWidget.clear()
         sitem = None
         self.ui.tableWidget.setSortingEnabled(False)
@@ -157,6 +187,11 @@ class EdListWg(Qt.QWidget):
             self.ui.tableWidget.setCurrentItem(sitem)
 
     def __currentName(self):
+        """ provides currently selected name
+
+        :returns: currently selected name
+        :rtype: :obj:`str`
+        """
         name = None
         row = self.ui.tableWidget.currentRow()
         skeys = sorted(self.record.keys())
@@ -166,6 +201,8 @@ class EdListWg(Qt.QWidget):
 
     @Qt.pyqtSlot()
     def __add(self):
+        """ adds a new record into the table
+        """
         dform = EdDataDlg(self)
         dform.simple = self.simple
         dform.headers = self.headers
@@ -187,6 +224,8 @@ class EdListWg(Qt.QWidget):
 
     @Qt.pyqtSlot()
     def __edit(self):
+        """ edits the current record in the table
+        """
         name = self.__currentName()
         if name in self.disable:
             Qt.QMessageBox.information(
@@ -211,6 +250,8 @@ class EdListWg(Qt.QWidget):
 
     @Qt.pyqtSlot()
     def __remove(self):
+        """ removes the current record from the table
+        """
         name = self.__currentName()
         if name in self.disable:
             Qt.QMessageBox.information(
