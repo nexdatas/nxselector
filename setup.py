@@ -28,9 +28,9 @@ from distutils.command.clean import clean
 from distutils.command.install_scripts import install_scripts
 import shutil
 
-#: package name
+#: (:obj:`str`) package name
 TOOL = "nxsselector"
-#: package instance
+#: (:obj:`str`) package instance
 ITOOL = __import__(TOOL)
 
 
@@ -40,11 +40,15 @@ def read(fname):
     """ read the file 
 
     :param fname: readme file name
+    :type fname: :obj:`str`
     """
     return open(os.path.join(os.path.dirname(__file__), fname)).read()
 
+#: (:obj:`str`) .ui file directory
 UIDIR = os.path.join(TOOL, "ui")
+#: (:obj:`str`) .qrc file directory
 QRCDIR = os.path.join(TOOL, "qrc")
+#: (:obj:`list` < :obj:`str` >) executable scripts
 SCRIPTS = ['nxselector']
 
 
@@ -57,7 +61,9 @@ class toolBuild(build):
         """  creates the python qrc files
         
         :param qfile: qrc file name
+        :type qfile: :obj:`str`
         :param path:  qrc file path
+        :type path: :obj:`str`
         """
         qrcfile = os.path.join(path, "%s.qrc" % qfile)
         rccfile = os.path.join(path, "%s.rcc" % qfile)
@@ -133,21 +139,26 @@ def get_scripts(scripts):
     """ provides windows names of python scripts
 
     :param scripts: list of script names
+    :type scripts: :obj:`list` <:obj:`str`>
     """
     if get_platform()[:3] == 'win':
         return scripts + [sc + '.pyw' for sc in scripts]
     return scripts
 
+#: (:obj:`dict` <:obj:`str`, :obj:`list` <:obj:`str`> > ) package data
 package_data = {
     'nxsselector': ['ui/*.ui', 'qrc/*.rcc']
 }
 
+#: (:obj:`str`) full release number
 release = ITOOL.__version__
+#: (:obj:`str`) release version number
 version = ".".join(release.split(".")[:2])
+#: (:obj:`str`) program name
 name = "NXS Component Selector"
 
 
-#: metadata for distutils
+#: (:obj:`dict` <:obj:`str`, `any`>) metadata for distutils
 SETUPDATA = dict(
     name="nxsselector",
     version=ITOOL.__version__,
