@@ -15,8 +15,6 @@
 #
 #    You should have received a copy of the GNU General Public License
 #    along with nexdatas.  If not, see <http://www.gnu.org/licenses/>.
-## \package nxsselector nexdatas
-## \file OrderDlg.py
 # editable list dialog
 
 """  editable list dialog """
@@ -30,25 +28,39 @@ from taurus.qt.qtgui.util.ui import UILoadable
 
 
 import logging
+#: (:obj:`logging.Logger`) logger object
 logger = logging.getLogger(__name__)
 
 
 @UILoadable(with_ui='ui')
 class OrderDlg(Qt.QDialog):
-    ## constructor
-    # \param parent parent widget
+    """  editable list dialog with order of channels"""
+
     def __init__(self, parent=None):
+        """ constructor
+
+        :param parent: parent object
+        :type parent: :class:`taurus.qt.Qt.QObject`
+        """
         Qt.QDialog.__init__(self, parent)
         self.loadUi()
+        #: (:obj:`bool`) dirty flag
         self.dirty = False
+        #: (:obj:`list` <:obj:`str`>) all channels channels
         self.channels = []
+        #: (:obj:`list` <:obj:`str`>) selected channels
         self.selected = []
+        #: (:obj:`bool`) order only selected channels
         self.onlyselected = False
 
     def __setDirty(self):
+        """ sets dirty to True
+        """
         self.dirty = True
 
     def createGUI(self):
+        """ creates GUI
+        """
         self.ui.closePushButton = self.ui.closeButtonBox.button(
             Qt.QDialogButtonBox.Close)
 
@@ -78,6 +90,11 @@ class OrderDlg(Qt.QDialog):
         self.ui.closePushButton.show()
 
     def __populateList(self, selectedChannel=None):
+        """ populates the group list
+
+        :param selectedChannel: selected channel
+        :type selectedChannel: :obj:`str`
+        """
         selected = None
         self.ui.listWidget.clear()
         for ch in self.channels:
@@ -93,6 +110,11 @@ class OrderDlg(Qt.QDialog):
                 self.ui.listWidget.setCurrentItem(selected)
 
     def __currentName(self):
+        """ provides a name of the currently selected channel
+
+        :returns: name of the currently selected channel
+        :rtype: :obj:`str`
+        """
         name = None
         row = self.ui.listWidget.currentRow()
         if not self.onlyselected:
@@ -110,6 +132,8 @@ class OrderDlg(Qt.QDialog):
 
     @Qt.pyqtSlot()
     def __up(self):
+        """ moves currently selected channel up
+        """
         name = self.__currentName()
         if not name:
             return
@@ -126,6 +150,8 @@ class OrderDlg(Qt.QDialog):
 
     @Qt.pyqtSlot()
     def __down(self):
+        """ moves currently selected channel down
+        """
         name = self.__currentName()
         if not name:
             return
@@ -143,6 +169,8 @@ class OrderDlg(Qt.QDialog):
 
     @Qt.pyqtSlot()
     def __setfilter(self):
+        """ sets only selected channel filter according to selPushButton
+        """
         self.onlyselected = bool(self.ui.selPushButton.isChecked())
         name = self.__currentName()
         self.__populateList(name)

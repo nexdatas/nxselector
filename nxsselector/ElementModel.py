@@ -15,8 +15,6 @@
 #
 #    You should have received a copy of the GNU General Public License
 #    along with nexdatas.  If not, see <http://www.gnu.org/licenses/>.
-## \package nxsselector nexdatas
-## \file ElementModel.py
 # Element Model
 
 """ device Model """
@@ -30,32 +28,39 @@ from .Element import DS, CP
 
 import json
 import logging
+#: (:obj:`logging.Logger`) logger object
 logger = logging.getLogger(__name__)
 
+#: (:obj:) name=0
 NAME = range(1)
 
 
-## main window class
 class ElementModel(Qt.QAbstractTableModel):
+    """ element model
+    """
 
-    # dirty signal
+    #: (:class:`taurus.qt.Qt.pyqtSignal`) dirty signal
     dirty = Qt.pyqtSignal()
-    # componented checked signal
+    #: (:class:`taurus.qt.Qt.pyqtSignal`) component checked signal
     componentChecked = Qt.pyqtSignal()
 
-    ## constructor
-    # \param parent parent widget
     def __init__(self, group=None):
+        """ consturctor
+
+        :param group: list of device elements
+        :type group: :obj:`list` <:class:`nxsselector.Element.Element`>
+        """
         Qt.QAbstractTableModel.__init__(self)
-        ## if enable selection for user
+        #: (:obj:`bool`) if enable selection for user
         self.enable = True
-        ## if display enable selection for user
+        #: (:obj:`bool`) if display enable selection for user
         self.disEnable = True
-        ## if  enable (group widget)
+        #: (:obj:`bool`) if  enable (group widget)
         self.autoEnable = True
-        ## list of device elements
+        #: (:obj:`list` <:class:`nxsselector.Element.Element`>) \
+        #:    list of device elements
         self.group = []
-        ## headers
+        #: (:obj:`list` <:obj:`str`>) headers
         self.headers = ["Element", "Label", "Display",
                         "Scans", "Contains", "Properties"]
 
@@ -63,15 +68,44 @@ class ElementModel(Qt.QAbstractTableModel):
             self.group = sorted(group, key=lambda x: x.name, reverse=False)
 
     def rowCount(self, _=Qt.QModelIndex()):
+        """ provides number of model rows
+
+        :returns: number of model rows
+        :rtype: :obj:`int`
+        """
         return len(self.group)
 
     def columnCount(self, _=Qt.QModelIndex()):
+        """ provides number of model columns
+
+        :returns: number of model columns
+        :rtype: :obj:`int`
+        """
         return len(self.headers)
 
     def index(self, row, column, _=Qt.QModelIndex()):
+        """ creates a new index from the given parameters
+
+        :param row: element row
+        :type row: :obj:`int`
+        :param column: element column
+        :type column: :obj:`int`
+        :returns: created index
+        :rtype: :class:`taurus.qt.Qt.QModelIndex`
+        """
+
         return self.createIndex(row, column)
 
     def __elementCheck(self, device, index):
+        """ provides device check status
+
+        :param device: device element
+        :type device: :class:`nxsselector.Element.Element`
+        :param index: element index
+        :type index: :class:`taurus.qt.Qt.QModelIndex`
+        :returns: check status
+        :rtype: :class:`taurus.qt.Qt.Qt.CheckState`
+        """
         if (not (self.flags(index) & Qt.Qt.ItemIsEnabled) and self.enable and device.enable) \
            or device.checked:
             return Qt.Qt.Checked
@@ -79,6 +113,15 @@ class ElementModel(Qt.QAbstractTableModel):
             return Qt.Qt.Unchecked
 
     def __displayCheck(self, device, index):
+        """ provides device display status
+
+        :param device: device element
+        :type device: :class:`nxsselector.Element.Element`
+        :param index: element index
+        :type index: :class:`taurus.qt.Qt.QModelIndex`
+        :returns: display status
+        :rtype: :class:`taurus.qt.Qt.Qt.CheckState`
+        """
         if (not (self.flags(index) & Qt.Qt.ItemIsEnabled) and self.enable and device.enable) \
            or device.checked:
             if device.eltype == DS:
@@ -97,6 +140,13 @@ class ElementModel(Qt.QAbstractTableModel):
             return Qt.Qt.Unchecked
 
     def __setProperties(self, device, variables):
+        """ sets device properties
+
+        :param device: device element
+        :type device: :class:`nxsselector.Element.Element`
+        :param variables: (name, value) json dictionary with properties
+        :type variables: :obj:`str`
+        """
         props = device.state.properties
         dname = device.name
         cpvrs = device.state.cpvrdict
@@ -118,6 +168,13 @@ class ElementModel(Qt.QAbstractTableModel):
         device.state.setProperties()
 
     def __properties(self, device):
+        """ provides device properties
+
+        :param device: device element
+        :type device: :class:`nxsselector.Element.Element`
+        :returns: (name, value) json dictionary with properties
+        :rtype: :obj:`str`
+        """
         cpvrs = device.state.cpvrdict
         cvars = device.state.configvars
         props = device.state.properties
@@ -142,6 +199,13 @@ class ElementModel(Qt.QAbstractTableModel):
         return json.dumps(contains)
 
     def __scanSources(self, device):
+        """ provides device scan datasources
+
+        :param device: device element
+        :type device: :class:`nxsselector.Element.Element`
+        :returns: string list of scan datasources separated by spaces
+        :rtype: :obj:`str`
+        """
         desc = device.state.description
         contains = set()
         for cpg in desc:
@@ -157,6 +221,13 @@ class ElementModel(Qt.QAbstractTableModel):
             return " ".join([str(c) for c in sorted(contains)])
 
     def __descSources(self, device):
+        """ provides device description datasources
+
+        :param device: device element
+        :type device: :class:`nxsselector.Element.Element`
+        :returns: string list of datasources datasources separated by spaces
+        :rtype: :obj:`str`
+        """
         desc = device.state.description
         contains = set()
         for cpg in desc:
@@ -173,7 +244,14 @@ class ElementModel(Qt.QAbstractTableModel):
 
     @classmethod
     def __createList(cls, text, words=7):
-        lst = str(text).split() if text else ''
+        """ creates a comma separated list from the text
+
+        :param text: the given text
+        :type device: :obj:`str`
+        :returns: comma separated list from the text
+        :rtype: :obj:`str`
+        """
+        lst = str(text).split() if text else []
         cnt = 0
         st = ""
         for sl in lst[:-1]:
@@ -189,6 +267,15 @@ class ElementModel(Qt.QAbstractTableModel):
         return st
 
     def __createTips(self, device, index):
+        """ creates device tips
+
+        :param device: device element
+        :type device: :class:`nxsselector.Element.Element`
+        :param index: element index
+        :type index: :class:`taurus.qt.Qt.QModelIndex`
+        :returns: device tips
+        :rtype: :obj:`str`
+        """
         scans = self.__scanSources(device)
         depends = self.__descSources(device)
         prs = self.__properties(device)
@@ -207,6 +294,15 @@ class ElementModel(Qt.QAbstractTableModel):
             return text
 
     def data(self, index, role=Qt.Qt.DisplayRole):
+        """ provides model data
+
+        :param index: element index
+        :type index: :class:`taurus.qt.Qt.QModelIndex`
+        :param role: data model role
+        :type role: :class:`taurus.qt.Qt.Qt.ItemDataRole`
+        :returns: model data
+        :rtype: `str:class:`taurus.qt.Qt.Qt.QVariant`
+        """
         if not index.isValid() or \
                 not 0 <= index.row() < len(self.group):
             return
@@ -244,6 +340,15 @@ class ElementModel(Qt.QAbstractTableModel):
         return Qt.QVariant()
 
     def headerData(self, section, _, role=Qt.Qt.DisplayRole):
+        """ provides model data header
+
+        :param section: section number
+        :type section: :obj:`int`
+        :param role: data model role
+        :type role: :class:`taurus.qt.Qt.Qt.ItemDataRole`
+        :returns: model data header
+        :rtype: `str:class:`taurus.qt.Qt.Qt.QVariant`
+        """
         if role != Qt.Qt.DisplayRole:
             return Qt.QVariant()
         if section >= 0 and section < len(self.headers):
@@ -251,6 +356,13 @@ class ElementModel(Qt.QAbstractTableModel):
         return Qt.QVariant(int(section + 1))
 
     def flags(self, index):
+        """ provides model data flag
+
+        :param index: element index
+        :type index: :class:`taurus.qt.Qt.QModelIndex`
+        :returns: model data flag
+        :rtype: `str:class:`taurus.qt.Qt.Qt.ItemFlag`
+        """
         if not index.isValid():
             return Qt.Qt.ItemIsEnabled
 
@@ -334,6 +446,17 @@ class ElementModel(Qt.QAbstractTableModel):
             return Qt.Qt.ItemFlags(flag | Qt.Qt.ItemIsEnabled)
 
     def setData(self, index, value, role=Qt.Qt.EditRole):
+        """ sets model data
+
+        :param index: element index
+        :type index: :class:`taurus.qt.Qt.QModelIndex`
+        :param value: element value
+        :type value: :class:`taurus.qt.Qt.Qt.QVariant`
+        :param role: data model role
+        :type role: :class:`taurus.qt.Qt.Qt.ItemDataRole`
+        :returns: if data fas set
+        :rtype: :obj:`str`
+        """
         if index.isValid() and 0 <= index.row() < len(self.group):
             device = self.group[index.row()]
             column = index.column()
@@ -384,11 +507,29 @@ class ElementModel(Qt.QAbstractTableModel):
 
 
 class ElementDelegate(Qt.QStyledItemDelegate):
+    """ element delegate
+    """
 
     def __init__(self, parent=None):
+        """ constructor
+
+        :param parent: parent object
+        :type parent: :class:`taurus.qt.Qt.QObject`
+        """
         Qt.QStyledItemDelegate.__init__(self, parent)
 
     def createEditor(self, parent, option, index):
+        """ created editor
+
+        :param parent: parent object
+        :type parent: :class:`taurus.qt.Qt.QObject`
+        :param option: editor option
+        :type option: :class:`taurus.qt.Qt.QStyleOptionViewItem`
+        :param index: element index
+        :type index: :class:`taurus.qt.Qt.QModelIndex`
+        :returns: created editor
+        :rtype: :class:`taurus.qt.Qt.QWidget`
+        """
         if index.column() == 0:
             editor = Qt.QCheckBox(parent)
             return editor

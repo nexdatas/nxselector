@@ -15,8 +15,6 @@
 #
 #    You should have received a copy of the GNU General Public License
 #    along with nexdatas.  If not, see <http://www.gnu.org/licenses/>.
-## \package nxsselector nexdatas
-## \file Frames.py
 # Class with frames
 
 """ main window application dialog """
@@ -24,27 +22,50 @@
 import json
 
 import logging
+#: (:obj:`logging.Logger`) logger object
 logger = logging.getLogger(__name__)
 
 from .Element import CP, DS
 
 
-## main window class
 class Frames(object):
+    """ element group frames
+    """
 
-    ## constructor
-    # \param settings frame settings
     def __init__(self, settings=None, ds=False, cp=False):
+        """ constructor
 
+        :param settings: frame settings
+        :type settings: :obj:`list` < :obj:`list` < :obj:`list` \
+                         [:obj:`str`, :obj:`int`] > > >
+        :param ds: if datasource default frame
+        :type ds: :obj:`bool`
+        :param cp: if component default frame
+        :type cp: :obj:`bool`
+        """
+        #: (:obj:`int`) datasource frame id
         self.dsid = None
+        #: (:obj:`int`) component frame id
         self.cpid = None
+        #: (:obj:`dict` <:obj:`int`, :obj:`str`>) (id, label) group dictionary
         self.__dct = None
         self.__settings = None
+        #: ([[[:obj:`str`, :obj:`int`]]]) default datasource frame config
         self.defaultds = [[["Channels", 0]]]
+        #: ([[[:obj:`str`, :obj:`int]`]]) default component frame config
         self.defaultcp = [[["Components", 1]]]
         self.set(settings, ds, cp)
 
     def set(self, settings, ds=False, cp=False):
+        """ sets frame
+
+        :param settings: frame settings
+        :type settings: frame settings
+        :param ds: if datasource frame
+        :type ds: :obj:`bool`
+        :param cp: if component frame
+        :type cp: :obj:`bool`
+        """
         if settings:
             mysettings = json.loads(settings)
         else:
@@ -86,6 +107,8 @@ class Frames(object):
         logger.debug(self.ids())
 
     def __makedict(self):
+        """ create group dictionary
+        """
         for frame in self.__settings:
             for column in frame:
                 for group in column:
@@ -94,13 +117,32 @@ class Frames(object):
                     self.__dct[group[1]] = (group[0])
 
     def __iter__(self):
+        """ provides frame iterator
+
+        :returns: frame iterator
+        :rtype: listiterator
+        """
         return iter(self.__settings)
 
     def name(self, fid):
+        """ provides frame label from id
+
+        :param fid: frame id
+        :type fid: :obj:`int`
+        :returns: frame label
+        :rtype: :obj:`str`
+        """
         if fid in self.__dct.keys():
             return self.__dct[fid][0]
 
     def ids(self, name=None):
+        """ provides frame id from label
+
+        :parama name: frame label
+        :type name: :obj:`str`
+        :returns: frame id
+        :rtype: :obj:`int`
+        """
         if not name:
             return self.__dct.keys()
         res = set()

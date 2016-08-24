@@ -15,11 +15,9 @@
 #
 #    You should have received a copy of the GNU General Public License
 #    along with nexdatas.  If not, see <http://www.gnu.org/licenses/>.
-## \package nxsselector nexdatas
-## \file PropertiesDlg.py
-# label dialog
+# properties dialog
 
-"""  label dialog """
+"""  properties dialog """
 
 
 try:
@@ -32,19 +30,30 @@ from taurus.qt.qtgui.util.ui import UILoadable
 from .LDataDlg import LDataDlg
 
 import logging
+#: (:obj:`logging.Logger`) logger object
 logger = logging.getLogger(__name__)
 
 
 class PropertiesDlg(Qt.QDialog):
-    ## constructor
-    # \param parent parent widget
+    """  properties dialog """
+
     def __init__(self, parent=None):
+        """ constructor
+
+        :param parent: parent object
+        :type parent: :class:`taurus.qt.Qt.QObject`
+        """
         Qt.QDialog.__init__(self, parent)
+        #: (:class:`nxselector.PropertiesWg.PropertiesWg`) properties widget
         self.widget = PropertiesWg(self)
+        #: (:obj:`bool`) dirty flag
         self.dirty = False
+        #: (:obj:`list` <:obj:`str`>) available names
         self.available_names = None
 
     def createGUI(self):
+        """ creates widget GUI
+        """
         self.widget.available_names = self.available_names
         self.widget.createGUI()
         layout = Qt.QHBoxLayout()
@@ -56,29 +65,45 @@ class PropertiesDlg(Qt.QDialog):
         self.widget.dirty.connect(self.__setDirty)
 
     def __setDirty(self):
+        """ set dirty flag """
         self.dirty = True
 
 
-## main window class
 @UILoadable(with_ui='ui')
 class PropertiesWg(Qt.QWidget):
+    """  properties widget """
 
+    #: (:class:`taurus.qt.Qt.pyqtSignal`) dirty signal
     dirty = Qt.pyqtSignal()
 
-    ## constructor
-    # \param parent parent widget
     def __init__(self, parent=None):
+        """ constructor
+
+        :param parent: parent object
+        :type parent: :class:`taurus.qt.Qt.QObject`
+        """
         Qt.QWidget.__init__(self, parent)
         self.loadUi(filename='EdListWg.ui')
+        #: (:obj:`bool`) simple view flag
         self.simple = False
+        #: (:obj:`dict` <:obj:`str`, :obj:`str`>) \
+        #:    property (name, path) dictionary
         self.paths = {}
+        #: (:obj:`dict` <:obj:`str`, :obj:`str`>) \
+        #:    property (name, JSON list with shape) dictionary
         self.shapes = {}
+        #: (:obj:`dict` <:obj:`str`, :obj:`bool`>) \
+        #:    property (name, link) dictionary
         self.links = {}
+        #: (:obj:`dict` <:obj:`str`, :obj:`str`>) \
+        #:    property (name, nexus tupe) dictionary
         self.types = {}
+        #: (:obj:`list` <:obj:`str`>) available names
         self.available_names = None
-#        self.ui = Ui_EdListDlg()
 
     def createGUI(self):
+        """ creates widget GUI
+        """
         self.ui.closePushButton = self.ui.closeButtonBox.button(
             Qt.QDialogButtonBox.Close)
         self.ui.addPushButton = self.ui.addEditRemoveButtonBox.addButton(
@@ -100,12 +125,22 @@ class PropertiesWg(Qt.QWidget):
         self.ui.removePushButton.clicked.connect(self.__remove)
 
     def __names(self):
+        """ provides property names
+
+        :returns:  property names
+        :rtype: :obj:`list` <:obj:`str`> >
+        """
         return sorted(set(self.paths.keys()) |
                       set(self.shapes.keys()) |
                       set(self.links.keys()) |
                       set(self.types.keys()))
 
     def __populateTable(self, selected=None):
+        """ populates the group table
+
+        :param selected: selected property
+        :type selected: :obj:`str`
+        """
         self.ui.tableWidget.clear()
         sitem = None
         self.ui.tableWidget.setSortingEnabled(False)
@@ -155,6 +190,11 @@ class PropertiesWg(Qt.QWidget):
             self.ui.tableWidget.setCurrentItem(sitem)
 
     def __currentName(self):
+        """ provides a name of the currently selected channel
+
+        :returns: name of the currently selected channel
+        :rtype: :obj:`str`
+        """
         name = None
         row = self.ui.tableWidget.currentRow()
         skeys = self.__names()
@@ -164,6 +204,16 @@ class PropertiesWg(Qt.QWidget):
 
     @classmethod
     def __updateItem(cls, name, value, dct):
+        """ updates property items in the given dictionary
+
+        :param name: property name
+        :type name: :obj:`str`
+        :param value: property value
+        :type value: `any`
+        :param dct: (name, value) dictionary to be updated
+        :type dct: :obj:`dict` < :obj:`str`, `any`>
+`
+        """
         if not value:
             if name in dct.keys():
                 dct.pop(name)
@@ -171,6 +221,11 @@ class PropertiesWg(Qt.QWidget):
             dct[name] = value
 
     def __updateTable(self, form):
+        """ updates table acdcording to the given form
+
+        :param form: LDataDlg form with properties
+        :type form: :class:`nxselector.LDataDlg.LDataDlg`
+        """
         if form.label:
             name = form.label
 
@@ -189,6 +244,7 @@ class PropertiesWg(Qt.QWidget):
 
     @Qt.pyqtSlot()
     def __add(self):
+        """ adds a new property """
         dform = LDataDlg(self)
         dform.available_names = self.available_names
         dform.createGUI()
@@ -197,6 +253,7 @@ class PropertiesWg(Qt.QWidget):
 
     @Qt.pyqtSlot()
     def __edit(self):
+        """ change a value of the current property """
         dform = LDataDlg(self)
         name = self.__currentName()
         dform.label = name
@@ -218,6 +275,7 @@ class PropertiesWg(Qt.QWidget):
 
     @Qt.pyqtSlot()
     def __remove(self):
+        """ remmoves the current property """
         name = self.__currentName()
 
         if Qt.QMessageBox.question(

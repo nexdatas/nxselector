@@ -15,8 +15,6 @@
 #
 #    You should have received a copy of the GNU General Public License
 #    along with nexdatas.  If not, see <http://www.gnu.org/licenses/>.
-## \package nxsselector nexdatas
-## \file InfoDlg.py
 # info about tango servers
 
 """  info about tango servers """
@@ -29,19 +27,28 @@ except:
 from taurus.qt.qtgui.util.ui import UILoadable
 
 import logging
+#: (:obj:`logging.Logger`) logger object
 logger = logging.getLogger(__name__)
 
 
 @UILoadable(with_ui='ui')
 class InfoDlg(Qt.QDialog):
-    ## constructor
-    # \param parent parent widget
+    """  info about tango servers """
+
     def __init__(self, parent=None):
+        """ constructor
+
+        :param parent: parent object
+        :type parent: :class:`taurus.qt.Qt.QObject`
+        """
         Qt.QDialog.__init__(self, parent)
         self.loadUi()
+        #: (:class:`nxsselector.ServerState.ServerState`) server state
         self.state = None
 
     def createGUI(self):
+        """ creates GUI
+        """
         if self.state:
             self.ui.writerLabel.setText(self.state.writerDevice)
             self.ui.configLabel.setText(self.state.configDevice)

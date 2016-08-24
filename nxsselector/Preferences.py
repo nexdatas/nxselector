@@ -15,8 +15,6 @@
 #
 #    You should have received a copy of the GNU General Public License
 #    along with nexdatas.  If not, see <http://www.gnu.org/licenses/>.
-## \package nxsselector nexdatas
-## \file Preferences.py
 # preferences tab
 
 """ preferences tab """
@@ -49,24 +47,36 @@ from .Views import (TableView, OneTableView,
                     )
 
 import logging
+#: (:obj:`logging.Logger`) logger object
 logger = logging.getLogger(__name__)
 
 
-## main window class
 class Preferences(Qt.QObject):
+    """ preferences tab """
 
+    #: (:class:`taurus.qt.Qt.pyqtSignal`) server changed signal
     serverChanged = Qt.pyqtSignal()
+    #: (:class:`taurus.qt.Qt.pyqtSignal`) layout changed signal
     layoutChanged = Qt.pyqtSignal(Qt.QString, Qt.QString)
+    #: (:class:`taurus.qt.Qt.pyqtSignal`) dirty signal
     dirty = Qt.pyqtSignal()
 
-    ## constructor
-    # \param settings frame settings
     def __init__(self, ui, state=None):
+        """ constructor
+
+        :param ui: ui instance
+        :type ui: :class:`taurus.qt.qtgui.util.ui.__UI`
+        :param state: server state
+        :type state: :class:`nxsselector.ServerState.ServerState`
+        """
         Qt.QObject.__init__(self)
+        #: (:class:`taurus.qt.qtgui.util.ui.__UI`) ui instance
         self.ui = ui
+        #: (:class:`nxsselector.ServerState.ServerState`) server state
         self.state = state
 
-        # frames/columns/groups
+        #: (:obj:`list` <:class:`taurus.qt.Qt.QString`>) \
+        #:     list of nested frames/columns/groups configuration frame layout
         self.frameshelp = [
             Qt.QString(
                 '[[[["Components",1],["Timers",5]]],[[["Counters", 4]],'
@@ -82,6 +92,9 @@ class Preferences(Qt.QObject):
                 + '[[["MCAs", 1], ["SCAs", 4]]], [[["Misc", 5] ]]]'),
             Qt.QString('[[[["My Channels", 0]]],[[["My Components", 1]]]]'),
             Qt.QString('')]
+        #: (:obj:`list` <:class:`taurus.qt.Qt.QString`>) \
+        #:     list of configuration group content,
+        #:      "<id>":[<pattern1>, <pattern2>, ...]
         self.mgroupshelp = [
             Qt.QString('{ "3":["*_adc*"], "4":["*_c*"],'
                        + '"5":["*_t*"], "6":["*_mca*"],'
@@ -93,12 +106,18 @@ class Preferences(Qt.QObject):
                        + ' "4":["exp_c*"]}'),
             Qt.QString('{"2":["ct01", "ct02"], "5":["appscan"]}'),
             Qt.QString('')]
+        #: (:obj:`list` <:class:`taurus.qt.Qt.QString`>) \
+        #:     list of configuration server
         self.serverhelp = [
             Qt.QString(self.state.server)]
 
+        #: (:obj:`str`) defualt group configuration
         self.__mgroups = str(self.mgroupshelp[0])
+        #: (:obj:`str`) defualt frame configuration
         self.__frames = str(self.frameshelp[0])
 
+        #: (:obj:`dict` <:obj:`str`, :class:`taurus.qt.Qt.QWidget`>) \
+        #:    available element views
         self.views = {
             "CentralCheckBoxes (A)": CheckerView,
             "CheckBoxes (A)": LeftCheckerView,
@@ -129,14 +148,24 @@ class Preferences(Qt.QObject):
             "CheckBoxes Dis (U)": CheckerLabelViewNN,
         }
 
+        #: (:obj:`int`) maximum size of the helper for lineedits
         self.maxHelp = 10
+        #: (:obj:`str`) layout file path
         self.layoutFile = os.getcwd()
+        #: (:obj:`list` <:obj:`taurus.qt.Qt.QCompleter`>) \
+        #:    qcompleter list
         self.completers = []
 
+        #: (:obj:`bool`) if siganal connected
         self.connected = False
         self.connectSignals()
 
     def __setmgroups(self, groups):
+        """ setter for mgroups
+
+        :param groups: group configuration
+        :type groups: :obj:`str`
+        """
         try:
             lgroups = json.loads(groups)
             for gr in lgroups.values():
@@ -148,13 +177,23 @@ class Preferences(Qt.QObject):
             self.__mgroups = "{}"
 
     def __getmgroups(self):
+        """ getter for mgroups
+
+        :returns: group configuration
+        :rtype: :obj:`str`
+        """
         return self.__mgroups
 
-    ## the json data string
+    #: (:obj:`str`) the json data string
     mgroups = property(__getmgroups, __setmgroups,
                        doc='device groups')
 
     def __setframes(self, frames):
+        """ setter for frame configuration
+
+        :param groups: frame configuration
+        :type groups: :obj:`str`
+        """
         try:
             nml = []
             lframes = json.loads(frames)
@@ -171,13 +210,20 @@ class Preferences(Qt.QObject):
             print str(e)
 
     def __getframes(self):
+        """ getter for frame configuration
+
+        :returns: group configuration
+        :rtype: :obj:`str`
+        """
         return self.__frames
 
-    ## the json data string
+    #: (:obj:`str`) the json data string
     frames = property(__getframes, __setframes,
                       doc='detector frames')
 
     def disconnectSignals(self):
+        """ disconnects all signals
+        """
         if self.connected:
             self.ui.devSettingsLineEdit.editingFinished.disconnect(
                 self.on_devSettingsLineEdit_editingFinished)
@@ -194,6 +240,8 @@ class Preferences(Qt.QObject):
         self.connected = False
 
     def connectSignals(self):
+        """ connects all signals
+        """
         if not self.connected:
             self.ui.devSettingsLineEdit.editingFinished.connect(
                 self.on_devSettingsLineEdit_editingFinished)
@@ -210,12 +258,16 @@ class Preferences(Qt.QObject):
         self.connected = True
 
     def __clearCompleters(self):
+        """ clears completer list
+        """
         self.ui.groupLineEdit.setCompleter(None)
         self.ui.devSettingsLineEdit.setCompleter(None)
         self.ui.frameLineEdit.setCompleter(None)
         DynamicTools.cleanupObjects(self.completers)
 
     def reset(self):
+        """ resets whole Preferences
+        """
         logger.debug("reset preferences")
         self.disconnectSignals()
         self.__clearCompleters()
@@ -236,6 +288,11 @@ class Preferences(Qt.QObject):
         logger.debug("reset preferences ended")
 
     def changeServer(self, ask=True):
+        """ changes the selector server
+
+        :param ask: ask  for confirmation from the user
+        :type ask: :obj:`bool`
+        """
         self.disconnectSignals()
         logger.debug("server changing")
         server = str(self.ui.devSettingsLineEdit.text())
@@ -278,11 +335,20 @@ class Preferences(Qt.QObject):
 
     @Qt.pyqtSlot()
     def on_devSettingsLineEdit_editingFinished(self):
+        """ changes  selector server
+        """
         logger.debug("on_devSettingsLineEdit_editingFinished")
         self.changeServer()
         logger.debug("server changed")
 
     def addHint(self, string, hints):
+        """ adds hint
+
+        :param string: string hint
+        :type string: :obj:`str`
+        :param hints: a list of hints
+        :type hints: :obj:`list` <:class:`taurus.qt.Qt.QString>
+        """
         qstring = Qt.QString(string)
         if qstring not in hints:
             hints.insert(0, string)
@@ -291,6 +357,8 @@ class Preferences(Qt.QObject):
 
     @Qt.pyqtSlot()
     def on_layoutLineEdits_editingFinished(self):
+        """ updates layout according to new frame and group configurations
+        """
         logger.debug("on_layoutLineEdit_editingFinished")
         self.disconnectSignals()
 
@@ -327,16 +395,20 @@ class Preferences(Qt.QObject):
         self.connectSignals()
 
     def updateForm(self):
+        """ updates the form according to the class variables
+        """
         self.ui.devSettingsLineEdit.setText(
             self.state.server if self.state.server else 'module')
         self.ui.groupLineEdit.setText(self.mgroups)
         self.ui.frameLineEdit.setText(self.frames)
 
     def apply(self):
-        pass
+        """ does nothing"""
 
     @Qt.pyqtSlot()
     def layoutLoad(self):
+        """ loads a layout from the file
+        """
         filename = str(
             Qt.QFileDialog.getOpenFileName(
                 self.ui.preferences,
@@ -375,10 +447,13 @@ class Preferences(Qt.QObject):
 
     @Qt.pyqtSlot()
     def __dirty(self):
+        """ sets dirty flag """
         self.dirty.emit()
 
     @Qt.pyqtSlot()
     def layoutSave(self):
+        """ loads the current layout into a file
+        """
         try:
             filename = str(Qt.QFileDialog.getSaveFileName(
                 self.ui.storage,

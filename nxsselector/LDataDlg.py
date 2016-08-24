@@ -15,8 +15,6 @@
 #
 #    You should have received a copy of the GNU General Public License
 #    along with nexdatas.  If not, see <http://www.gnu.org/licenses/>.
-## \package nxsselector nexdatas
-## \file LDataDlg.py
 # editable data dialog
 
 """  editable data dialog """
@@ -32,34 +30,57 @@ from .MessageBox import MessageBox
 
 
 from taurus.qt.qtgui.util.ui import UILoadable
-#from .ui.ui_ldatadlg import Ui_LDataDlg
 
 import logging
+#: (:obj:`logging.Logger`) logger object
 logger = logging.getLogger(__name__)
 
 
-## main window class
 @UILoadable(with_ui='ui')
 class LDataDlg(Qt.QDialog):
+    """  editable data dialog """
 
-    ## constructor
-    # \param parent parent widget
     def __init__(self, parent=None):
+        """ constructor
+
+        :param parent: parent object
+        :type parent: :class:`taurus.qt.Qt.QObject`
+        """
         Qt.QDialog.__init__(self, parent)
         self.loadUi()
+        #: (:obj:`str`) device label
         self.label = ''
+        #: (:obj:`str`) nexus path
         self.path = ''
+        #: (:obj:`str`) shape in JSON list
         self.shape = None
+        #: (:obj:`str`) nexus data type
         self.dtype = ''
+        #: (:obj:`bool`) if nxdata link should be created
         self.link = None
+        #: (:obj:`list` <:obj:`str` > ) available variable names
         self.available_names = None
+        #: (:obj:`list` <:obj:`str` > ) special variable names
         self.special = ["shape", "data_type", "nexus_path", "link"]
+        #: (:obj:`dict` <:obj:`str` , :obj:`str` or :obj:`unicode`> ) \
+        #:     (name, value) variable dictionary
         self.variables = {}
+        #: (:obj:`dict` <:obj:`str` , :class:`taurus.qt.Qt.QLabel`> ) \
+        #:     (name, qlabel) variable dictionary
         self.names = {}
+        #: (:obj:`dict` <:obj:`str` , :class:`taurus.qt.Qt.QWidget`> ) \
+        #:     (name, qwidget) variable dictionary
         self.widgets = {}
 
     @classmethod
     def __linkText(cls, value):
+        """ converts link value to string, i.e. True, False or Default
+
+        :param value: link value
+        :type value: :obj:`bool` or `None`
+        :returns: True, False or Default
+        :rtype: :obj:`str`
+        """
         if isinstance(value, bool):
             if value is True:
                 return "True"
@@ -68,6 +89,8 @@ class LDataDlg(Qt.QDialog):
         return "Default"
 
     def createGUI(self):
+        """ creates GUI
+        """
         self.ui.labelLineEdit.setText(Qt.QString(str(self.label or "")))
         self.ui.pathLineEdit.setText(Qt.QString(str(self.path or "")))
         if self.shape is None:
@@ -91,6 +114,8 @@ class LDataDlg(Qt.QDialog):
             self.addGrid()
 
     def addGrid(self):
+        """ adds from grid
+        """
         index = 0
         for nm, val in self.variables.items():
             self.names[nm] = Qt.QLabel(self.ui.varFrame)
@@ -103,6 +128,11 @@ class LDataDlg(Qt.QDialog):
             index += 1
 
     def addVariables(self, variables):
+        """ adds  variables
+
+        :param variables: (name, value) variable dictionary
+        :type variables: :obj:`dict` <:obj:`str`, :obj:`str` or :obj:`unicode`>
+        """
         leftchannels = False
         for sp in self.special:
             if sp in variables.keys():
@@ -114,6 +144,8 @@ class LDataDlg(Qt.QDialog):
                 self.variables[vr] = val
 
     def accept(self):
+        """ updates class variables with the form content
+        """
         link = str(self.ui.linkComboBox.currentText())
         if link == "True":
             self.link = True

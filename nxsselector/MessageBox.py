@@ -15,8 +15,6 @@
 #
 #    You should have received a copy of the GNU General Public License
 #    along with nexdatas.  If not, see <http://www.gnu.org/licenses/>.
-## \package nxsselector nexdatas
-## \file MessageBox.py
 # error message box
 
 """ error message box """
@@ -24,6 +22,7 @@
 import sys
 import logging
 import PyTango
+#: (:obj:`logging.Logger`) logger object
 logger = logging.getLogger(__name__)
 
 try:
@@ -33,11 +32,27 @@ except:
 
 
 class MessageBox(Qt.QObject):
+    """ error message box """
+
     def __init__(self, parent):
+        """ constructor
+
+        :param parent: parent object
+        :type parent: :class:`taurus.qt.Qt.QObject`
+        """
         Qt.QObject.__init__(self, parent)
 
     @classmethod
     def getText(cls, default, error=None):
+        """ provides error message text fro sys.exc_info()
+
+        :param default: default message test
+        :type default: :obj:`str`
+        :param error: exception to describe
+        :type error: :obj:`Exception`
+        :returns: exception message
+        :rtype: :obj:`str`
+        """
         if error is None:
             error = sys.exc_info()[1]
         text = default
@@ -52,6 +67,19 @@ class MessageBox(Qt.QObject):
 
     @classmethod
     def warning(cls, parent, title, text, detailedText=None, icon=None):
+        """ creates warning messagebox
+
+        :param parent: parent object
+        :type parent: :class:`taurus.qt.Qt.QObject`
+        :param title: message box title
+        :type title: :obj:`str`
+        :param text: message box text
+        :type text: :obj:`str`
+        :param detailedText: message box detailed text
+        :type detailedText: :obj:`str`
+        :param icon: message box icon
+        :type icon:  :class:`taurus.qt.Qt.QIcon`
+        """
         msgBox = Qt.QMessageBox(parent)
         msgBox.setText(title)
         msgBox.setInformativeText(text)

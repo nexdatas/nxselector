@@ -15,8 +15,6 @@
 #
 #    You should have received a copy of the GNU General Public License
 #    along with nexdatas.  If not, see <http://www.gnu.org/licenses/>.
-## \package nxsselector nexdatas
-## \file GroupsDlg.py
 # editable list of component groups
 
 """  editable list dialog """
@@ -33,27 +31,52 @@ from .Element import GElement, CP, DS
 from .ElementModel import ElementModel
 
 import logging
+#: (:obj:`logging.Logger`) logger object
 logger = logging.getLogger(__name__)
 
 
 @UILoadable(with_ui='ui')
 class GroupsDlg(Qt.QDialog):
-    ## constructor
-    # \param parent parent widget
+    """  editable other device list dialog
+    """
+
     def __init__(self, parent=None):
+        """ constructor
+
+        :param parent: parent object
+        :type parent: :class:`taurus.qt.Qt.QObject`
+        """
         Qt.QDialog.__init__(self, parent)
         self.loadUi()
+        #: (:obj:`bool`) dirty flag
         self.dirty = False
+        #: (:obj:`dict` <:obj:`str`, :obj:`bool` or `None`>) \
+        #:     component selection
         self.components = {}
+        #: (:obj:`dict` <:obj:`str`, :obj:`bool` or `None`>) \
+        #:     datasource selection
         self.datasources = {}
-        self.dcpchanged = False
-        self.ddschanged = False
+        #: (:obj:`list` <:class:`nxsselector.Element.Element`>) \
+        #:    list of component elements
         self.dcpgroup = []
+        #: (:obj:`list` <:class:`nxsselector.Element.Element`>) \
+        #:    list of datasource elements
         self.ddsgroup = []
+        #: (:class:`nxsselector.ServerState.ServerState`) server state
         self.state = None
+        #: (:obj:`str`) group title
         self.title = "Selectable Detector Elements"
 
     def __createViews(self, widget, cpview, dsview):
+        """ creates basic views
+
+        :param widget: main detector widget
+        :type widget: :class:`taurus.qt.Qt.QWidget`
+        :param cpview: component table view
+        :type cpview: :class:`taurus.qt.Qt.QTableView`
+        :param dsview: datasource table view
+        :type dsview: :class:`taurus.qt.Qt.QTableView`
+        """
         gridLayout_3 = Qt.QGridLayout(widget)
         gridLayout = Qt.QGridLayout()
         gridLayout.addWidget(cpview, 0, 0, 1, 1)
@@ -61,6 +84,8 @@ class GroupsDlg(Qt.QDialog):
         gridLayout_3.addLayout(gridLayout, 0, 0, 1, 1)
 
     def createGUI(self):
+        """ creates GUI
+        """
         self.setWindowTitle(self.title)
         self.ui.dcpTableView = OneTableView(self.ui.detector)
         self.ui.ddsTableView = OneTableView(self.ui.detector)
@@ -81,11 +106,27 @@ class GroupsDlg(Qt.QDialog):
 
     @Qt.pyqtSlot()
     def __dirty(self):
+        """ sets dirty to True
+        """
         self.dirty = True
         self.setWindowTitle("Component Groups *")
         logger.debug("changed")
 
     def __populateTable(self, view, group, eltype, dct, header):
+        """ populates the group table
+
+        :param view: element table view
+        :type view: :class:`taurus.qt.Qt.QTableView`
+        :param group: list ofg elements
+        :type group: :obj:`list` <:class:`nxsselector.Element.Element`>
+        :param eltype: element type, i.e datasource=DS (0) or component=CP (1)
+        :type eltype: :obj:`int`
+        :param dct: element selection dictionary
+        :type dct: :obj:`dict` <:obj:`str`, :obj:`bool` or `None`>
+        :param header: table header
+        :type header: :obj:`str`
+        """
+
         for el in dct.keys():
             group.append(GElement(el, eltype, self.state, dct))
         md = ElementModel(group)
