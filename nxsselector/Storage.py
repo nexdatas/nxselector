@@ -15,8 +15,6 @@
 #
 #    You should have received a copy of the GNU General Public License
 #    along with nexdatas.  If not, see <http://www.gnu.org/licenses/>.
-## \package nxsselector nexdatas
-## \file Storage.py
 # storage tab
 
 """ storage tab """
@@ -34,37 +32,61 @@ from .MessageBox import MessageBox
 
 import logging
 import json
+#: (:obj:`logging.Logger`) logger object
 logger = logging.getLogger(__name__)
 
 
-## main window class
 class Storage(Qt.QObject):
+    """ storage tab """
 
+    #: (:class:`taurus.qt.Qt.pyqtSignal`) dirty signal
     dirty = Qt.pyqtSignal()
+    #: (:class:`taurus.qt.Qt.pyqtSignal`) resetviews signal
     resetViews = Qt.pyqtSignal()
+    #: (:class:`taurus.qt.Qt.pyqtSignal`) resetall signal
     resetAll = Qt.pyqtSignal()
+    #: (:class:`taurus.qt.Qt.pyqtSignal`) updategroups signal
     updateGroups = Qt.pyqtSignal()
 
-    ## constructor
-    # \param settings frame settings
     def __init__(self, ui, state=None, simplemode=False):
+        """ constructor
+
+        :param ui: ui instance
+        :type ui: :class:`taurus.qt.qtgui.util.ui.__UI`
+        :param state: server state
+        :type state: :class:`nxsselector.ServerState.ServerState`
+        :param simpleMode: if simple display mode
+        :type simpleMode: :obj:`bool`
+        """
         Qt.QObject.__init__(self)
 
+        #: (:class:`taurus.qt.qtgui.util.ui.__UI`) ui instance
         self.ui = ui
+        #: (:class:`nxsselector.ServerState.ServerState`) server state
         self.state = state
+        #: (:class:`taurus.qt.Qt.QHBoxLayout`) the main tab layout
         self.__layout = None
+        #: (:obj:`list` <:class:`taurus.qt.Qt.QHBoxLayout`>) timer widget list
         self.__tWidgets = []
+        #: (:obj:`bool`) only selected flag
         self.__onlyselected = False
+        #: (:obj:`bool`) simple mode
         self.__simplemode = simplemode
+        #: (:obj:`str`) module label
         self.__moduleLabel = 'module'
         self.connectSignals()
+        #: (:obj:`bool`) connected flag
         self.__connected = True
 
     def connectTimerButtons(self):
+        """ connects timer signals
+        """
         self.ui.timerDelPushButton.clicked.connect(self.__delTimer)
         self.ui.timerAddPushButton.clicked.connect(self.__addTimer)
 
     def disconnectSignals(self):
+        """ disconnects all tab signals
+        """
         logger.debug("disconnect signals")
         if self.__connected:
             self.__connected = False
@@ -120,6 +142,8 @@ class Storage(Qt.QObject):
             logger.debug("disconnect signals END")
 
     def connectSignals(self):
+        """ connects all tab signals
+        """
         logger.debug("connect signals")
         self.__connected = True
         self.ui.fileScanDirToolButton.pressed.connect(self.__setDir)
@@ -170,6 +194,8 @@ class Storage(Qt.QObject):
         logger.debug("connect signals END")
 
     def updateMntGrpComboBox(self):
+        """ updates a value of measurement group combo box
+        """
         self.disconnectSignals()
         self.ui.mntGrpComboBox.clear()
         for mg in self.state.avmglist:
@@ -182,6 +208,8 @@ class Storage(Qt.QObject):
 
     @Qt.pyqtSlot()
     def __variables(self):
+        """ changes configuration variables
+        """
         dform = EdListDlg(self.ui.storage)
         dform.widget.record = self.state.configvars
         dform.simple = True
@@ -194,6 +222,8 @@ class Storage(Qt.QObject):
 
     @Qt.pyqtSlot()
     def __labels(self):
+        """ changes component labels
+        """
         dform = EdListDlg(self.ui.storage)
         dform.widget.record = self.state.labels
         dform.simple = True
@@ -208,6 +238,8 @@ class Storage(Qt.QObject):
 
     @Qt.pyqtSlot()
     def __order(self):
+        """ changes the channel order
+        """
         dform = OrderDlg(self.ui.storage)
         dform.channels = list(self.state.orderedchannels)
         dform.selected = list(
@@ -227,12 +259,19 @@ class Storage(Qt.QObject):
 
     @Qt.pyqtSlot()
     def __info(self):
+        """ shows the server info
+        """
         dform = InfoDlg(self.ui.storage)
         dform.state = self.state
         dform.createGUI()
         dform.exec_()
 
     def showErrors(self, errors=None):
+        """ shows errors
+
+        :param errors: error list
+        :type errors: :obj:`list` < :obj:`str` >
+        """
         if errors is None:
             errors = self.state.fetchErrors()
         text = ""
@@ -263,6 +302,7 @@ class Storage(Qt.QObject):
 
     @Qt.pyqtSlot()
     def __errors(self):
+        """ shows error dialog """
         errors = self.state.fetchErrors()
         self.showErrors(errors)
         if not errors:
@@ -273,6 +313,7 @@ class Storage(Qt.QObject):
 
     @Qt.pyqtSlot()
     def __groups(self):
+        """ runs detgroups or descgroups depending on tab index"""
         index = self.ui.tabWidget.currentIndex()
         if index == 0:
             self.__detgroups()
@@ -280,9 +321,11 @@ class Storage(Qt.QObject):
             self.__descgroups()
 
     def __detgroups(self):
+        """ changes detector component groups
+        """
         dform = GroupsDlg(self.ui.storage)
         dform.state = self.state
-        ##DAC  to be hidden via reselector property
+        # DAC  to be hidden via reselector property
         hidden = set(self.state.mcplist)
         hidden.update(self.state.mutedChannels)
         hidden.update(set(self.state.orderedchannels))
@@ -322,6 +365,8 @@ class Storage(Qt.QObject):
             self.dirty.emit()
 
     def __descgroups(self):
+        """ changes descriptive component groups
+        """
         dform = GroupsDlg(self.ui.storage)
         dform.title = "Preselectable Description Elements"
         dform.state = self.state
@@ -358,6 +403,15 @@ class Storage(Qt.QObject):
             self.dirty.emit()
 
     def __updateGroup(self, group, dct, dvalue=False):
+        """ updates selection dictionary according to the given group
+
+        :param group: component selection dictionary
+        :type group: :obj:`dict` <:obj:`str`, :obj:`bool` or `None`>
+        :param dct: component group
+        :type dct: :obj:`dict` <:obj:`str`, :obj:`bool`>
+        :param dvalue: default value
+        :type dvalue: :obj:`bool`
+        """
         ddsdict = self.state.ddsdict.keys()
         for k, st in group.items():
             if k not in dct.keys() \
@@ -374,10 +428,19 @@ class Storage(Qt.QObject):
                     group[k] = dvalue
 
     def __createList(self, dct):
+        """ provides a list of selected components from dictionary
+
+        :param dct: component selection dictionary
+        :type group: :obj:`dict` <:obj:`str`, :obj:`bool` or `None`>
+        :returns:  list of selected components
+        :rtype: :obj:`list` <:obj:`str`>
+        """
         return [k for (k, st) in dct.items() if st is True]
 
     @Qt.pyqtSlot()
     def __props(self):
+        """ changes component device properites
+        """
         dform = PropertiesDlg(self.ui.storage)
 #        dform.widget.labels = self.state.labels
         dform.widget.paths = self.state.labelpaths
@@ -395,6 +458,8 @@ class Storage(Qt.QObject):
 
     @Qt.pyqtSlot()
     def __addTimer(self):
+        """ adds timers
+        """
         logger.debug("ADD Timer")
         if len(self.state.atlist) > len(self.__tWidgets) + 1:
             self.__appendTimer()
@@ -404,6 +469,11 @@ class Storage(Qt.QObject):
         logger.debug("ADD Timer end")
 
     def __appendTimer(self, connect=True):
+        """ appends a new timer into the configuration
+
+        :param connect: if currentIndexChanged should be connected to apply
+        :type connect: :obj:`bool`
+        """
         cb = Qt.QComboBox(self.ui.storage)
         self.__tWidgets.append(cb)
         if self.__layout is None:
@@ -416,6 +486,8 @@ class Storage(Qt.QObject):
 
     @Qt.pyqtSlot()
     def __delTimer(self):
+        """ removes the last timer from the configuration and widgets
+        """
         logger.debug("delTimer")
         if self.__tWidgets:
             self.__removeTimer()
@@ -425,6 +497,8 @@ class Storage(Qt.QObject):
         logger.debug("delTimer end")
 
     def __removeTimer(self):
+        """ removes the last timer from widgets
+        """
         if self.__tWidgets:
             cb = self.__tWidgets.pop()
             cb.hide()
@@ -435,6 +509,8 @@ class Storage(Qt.QObject):
             cb.close()
 
     def reset(self):
+        """ resets the storage tab
+        """
         logger.debug("reset storage")
         self.disconnectSignals()
         self.updateForm()
@@ -442,6 +518,13 @@ class Storage(Qt.QObject):
         logger.debug("reset storage ended")
 
     def __updateTimer(self, widget, nid):
+        """ updates timer combobox list
+
+        :param widget: timer combobox widget
+        :type widget: :class:`taurus.qt.Qt.QComboBox`
+        :param nid: timer index
+        :type nid: :obj:`int`
+        """
         widget.clear()
         mtimers = sorted(set(self.state.atlist))
         if self.state.timers is not None and len(self.state.timers) > nid:
@@ -465,6 +548,8 @@ class Storage(Qt.QObject):
         widget.setCurrentIndex(cid)
 
     def updateForm(self):
+        """ updates storage form
+        """
         logger.debug("updateForm storage")
         # file group
         if self.state.scanDir is not None:
@@ -514,6 +599,13 @@ class Storage(Qt.QObject):
         logger.debug("updateForm storage ended")
 
     def __applyTimer(self, widget, nid):
+        """ store timer into server state
+
+        :param widget: timer combobox widget
+        :type widget: :class:`taurus.qt.Qt.QComboBox`
+        :param nid: timer index
+        :type nid: :obj:`int`
+        """
         timer = str(widget.currentText())
         if self.state.timers:
             if len(self.state.timers) <= nid:
@@ -523,6 +615,8 @@ class Storage(Qt.QObject):
 
     @Qt.pyqtSlot()
     def __mntgrp_edited(self):
+        """ updates application state on editing measurement group
+        """
         logger.debug("mntgrp edited")
         current = str(self.ui.mntGrpComboBox.currentText()).lower()
         if current == self.state.mntgrp:
@@ -541,6 +635,8 @@ class Storage(Qt.QObject):
 
     @Qt.pyqtSlot()
     def __mntgrp_changed(self):
+        """ updates application state on changing measurement group
+        """
         logger.debug("mntgrp changed")
         current = str(self.ui.mntGrpComboBox.currentText()).lower()
         if current == self.state.mntgrp:
@@ -567,6 +663,8 @@ class Storage(Qt.QObject):
 
     @Qt.pyqtSlot()
     def __mntgrp_deleted(self):
+        """ updates application state on deleting measurement group
+        """
         logger.debug("mntgrp deleted")
         replay = Qt.QMessageBox.question(
             self.ui.storage,
@@ -584,6 +682,8 @@ class Storage(Qt.QObject):
 
     @Qt.pyqtSlot()
     def __setDir(self):
+        """ sets scan directory
+        """
         dirname = str(Qt.QFileDialog.getExistingDirectory(
             self.ui.storage,
             "Scan Directory",
@@ -595,21 +695,34 @@ class Storage(Qt.QObject):
 
     @Qt.pyqtSlot()
     def __dirty(self):
+        """ sets dirty flag
+        """
         self.dirty.emit()
 
     @Qt.pyqtSlot()
     def __dirChanged(self):
+        """ updates application state on a scan directory change
+        """
         dirname = str(self.ui.fileScanDirLineEdit.text())
         if self.state.scanDir != dirname:
             self.apply()
 
     @Qt.pyqtSlot()
     def __fileChanged(self):
+        """ updates application state on a scan file change
+        """
         fnames = self.__fileNames(False)
         if json.dumps(self.state.scanFile) != json.dumps(fnames):
             self.apply()
 
     def __fileNames(self, message=True):
+        """ corrects the scan file name lists
+
+        :param message: message on false
+        :type message: :obj:`str`
+        :returns: scan file name or a list of scan file names
+        :rtype: :obj:`str` or :obj:`list` <:obj:`str`>
+        """
         files = str(self.ui.fileScanLineEdit.text())
         sfiles = files.replace(';', ' ').replace(',', ' ').split()
         nxsfiles = []
@@ -630,6 +743,8 @@ class Storage(Qt.QObject):
 
     @Qt.pyqtSlot()
     def apply(self):
+        """ stores form values into server state object
+        """
         logger.debug("updateForm apply")
         self.disconnectSignals()
         if not str(self.ui.mntGrpComboBox.currentText()):

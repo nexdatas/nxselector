@@ -15,8 +15,6 @@
 #
 #    You should have received a copy of the GNU General Public License
 #    along with nexdatas.  If not, see <http://www.gnu.org/licenses/>.
-## \package nxselecto nexdatas
-## \file Selector.py
 # Main window of the application
 
 """ main window application dialog """
@@ -43,21 +41,40 @@ from .MessageBox import MessageBox
 
 import logging
 import gc
+#: (:obj:`logging.Logger`) logger object
 logger = logging.getLogger(__name__)
 
 
-## main window class
 @UILoadable(with_ui='ui')
 class Selector(Qt.QDialog, TaurusBaseWidget):
+    """ main window application dialog """
 
-    ## constructor
-    # \param parent parent widget
     def __init__(self, server=None, door=None,
                  standalone=False, umode=None,
                  setdefault=False,
                  organization='DESY',
                  application='NXS Component Selector',
                  parent=None):
+        """ constructor
+
+        :param server: selector server name
+        :type server: :obj:`str`
+        :param door: door device name
+        :type door: :obj:`str`
+        :param standalone: application run without macrogui
+        :type standalone: :obj:`bool`
+        :param umode: user mode, i.e. simple, user, advanced, expert, \
+                        administrator
+        :type umode: :obj:`str`
+        :param setdefault: set default
+        :type setdefault: :obj:`bool`
+        :param organization: organization name
+        :type organization: :obj:`str`
+        :param application: application name
+        :type application: :obj:`str`
+        :param parent: parent object
+        :type parent: :class:`taurus.qt.Qt.QObject`
+        """
         Qt.QWidget.__init__(self, parent)
         TaurusBaseWidget.__init__(self, 'NXSExpDescriptionEditor')
         self.setWindowFlags(Qt.Qt.Window)
@@ -66,34 +83,58 @@ class Selector(Qt.QDialog, TaurusBaseWidget):
         if umode != 'administrator':
             self.ui.tabWidget.removeTab(4)
         logger.debug("PARAMETERS: %s %s", server, parent)
+        #: (:obj:`str`) organization name
         self.__organization = organization
+        #: (:obj:`str`) application name
         self.__application = application
+        #: (:obj:`str`) door name
         self.__door = door
+        #: (:obj:`bool`) application executed without macrogui
         self.__standalone = standalone
 
+        #: (:obj:`bool`) progressbar is  running
         self.__progressFlag = False
+        #: (:obj:`bool`) door has to be updated
         self.__doortoupdateFlag = False
+        #: (:obj:`bool`) selector server has to be updated
         self.__servertoupdateFlag = False
 
+        #: (:obj:`str`) selector server
         self.__model = None
+        #: (:class:`nxsselector.ServerState.ServerState`) server state
         self.state = None
 
+        #: (:obj:`bool`) set default configuration
         self.__setdefault = setdefault
+        #: (:obj:`str`) user mode
         self.__umode = umode
+        #: (:obj:`bool`)  expert mode on
         self.expert = True
+        #: (:obj:`bool`)  user mode on
         self.user = False
+        #: (:obj:`bool`)  simple mode on
         self.simple = False
         if self.__umode:
             self.__setmode(self.__umode)
+        #: (:obj:`str`)  configuration file name
         self.cnfFile = ''
+        #: (:class:`taurus.qt.Qt.QProgressDialog`) progress bar
         self.__progress = None
+        #: (:obj:`list` <:class:`nxsselector.CommandThread.CommandThread`>) \
+        #:     command thread
         self.__commandthread = None
 
         self.__resetServer(server)
+        #: (:obj:`int`) user data tab number
         self.__datatab = 2
 
     def __setmode(self, umode):
-        ## expert mode
+        """ sets user mode
+
+        :param umode: user mode, i.e. simple, user, advanced, expert, \
+                        administrator
+        :type umode: :obj:`str`
+        """
         if umode == 'expert':
             self.expert = True
             self.user = False
@@ -112,6 +153,8 @@ class Selector(Qt.QDialog, TaurusBaseWidget):
             self.simple = True
 
     def settings(self):
+        """ sets configuration
+        """
         logger.debug("settings")
 
         if self.__progress:
@@ -144,7 +187,7 @@ class Selector(Qt.QDialog, TaurusBaseWidget):
 
         self.__addButtonBoxes()
 
-        ## user interface
+        # user interface
         self.preferences = Preferences(self.ui, self.state)
         if self.userView not in self.preferences.views:
             self.userView = 'CheckBoxes Dis'
@@ -209,9 +252,9 @@ class Selector(Qt.QDialog, TaurusBaseWidget):
         self.waitForThread()
         logger.debug("settings END")
 
-    ##  creates GUI
-    # \brief It create dialogs for the main window application
     def createGUI(self):
+        """ creates GUI for the main window
+        """
 
         self.__setButtonBoxes()
         self.__hideWidgets()
@@ -223,6 +266,7 @@ class Selector(Qt.QDialog, TaurusBaseWidget):
         self.__addTips()
 
     def __addButtonBoxes(self):
+        """adds button boxes into the main buttonbox"""
         if not self.__standalone:
             self.ui.mntServerLineEdit.hide()
             self.ui.mntServerLabel.hide()
@@ -256,6 +300,7 @@ class Selector(Qt.QDialog, TaurusBaseWidget):
         self.ui.buttonBox.setCenterButtons(True)
 
     def __setButtonBoxes(self):
+        """sets button boxes in the main buttonbox"""
 
         flayout = Qt.QHBoxLayout(self.ui.timerButtonFrame)
         flayout.setContentsMargins(0, 0, 0, 0)
@@ -268,6 +313,7 @@ class Selector(Qt.QDialog, TaurusBaseWidget):
         self.storage.connectTimerButtons()
 
     def __setWidgetValues(self):
+        """sets widget values"""
 
         self.ui.layoutButtonBox.button(
             Qt.QDialogButtonBox.Open).setText("Load")
@@ -308,6 +354,8 @@ class Selector(Qt.QDialog, TaurusBaseWidget):
         self.ui.statusCheckBox.setChecked(self.displayStatus != 0)
 
     def __hideWidgets(self):
+        """ hides widgets according to set user mode
+        """
         if not self.expert:
             self.ui.groupGroupBox.hide()
             self.ui.frameGroupBox.hide()
@@ -337,6 +385,8 @@ class Selector(Qt.QDialog, TaurusBaseWidget):
             self.ui.tabWidget.setCurrentIndex(self.__datatab)
 
     def __connectSignals(self):
+        """ connects all signals
+        """
         self.ui.buttonBox.button(
             Qt.QDialogButtonBox.Apply).pressed.connect(self.__applyClicked)
         self.ui.buttonBox.button(
@@ -368,6 +418,8 @@ class Selector(Qt.QDialog, TaurusBaseWidget):
         self.ui.tabWidget.currentChanged.connect(self.__tabChanged)
 
     def __addTips(self):
+        """ adds button tips
+        """
         self.ui.buttonBox.button(
             Qt.QDialogButtonBox.RestoreDefaults).setToolTip(
             "Deselect all detector components")
@@ -406,6 +458,11 @@ class Selector(Qt.QDialog, TaurusBaseWidget):
             "Change the available components in the Detectors tab")
 
     def setModel(self, model):
+        """ sets model
+
+        :param model: selector server model
+        :type model: :obj:`str`
+        """
         if str(model) != str(self.state.server):
             if self.__progress:
                 self.__model = model
@@ -419,6 +476,8 @@ class Selector(Qt.QDialog, TaurusBaseWidget):
             self.__servertoupdateFlag = False
 
     def __saveSettings(self):
+        """ saves settings
+        """
         settings = Qt.QSettings(self.__organization, self.__application, self)
         settings.setValue(
             "Selector/Geometry",
@@ -455,18 +514,33 @@ class Selector(Qt.QDialog, TaurusBaseWidget):
                 Qt.QVariant(self.__umode))
 
     def keyPressEvent(self, event):
+        """ adds saving settings on escape key
+
+        :param event: key event
+        :type event: :class:`taurus.qt.Qt.QEvent`
+        """
         if hasattr(event, "key") and event.key() == Qt.Qt.Key_Escape:
             logger.debug("escape key event")
             self.__saveSettings()
         Qt.QDialog.keyPressEvent(self, event)
 
     def closeEvent(self, event):
+        """ adds saving settings on close event
+
+        :param event: close event
+        :type event: :class:`taurus.qt.Qt.QEvent`
+        """
         logger.debug("close event")
         self.__saveSettings()
         Qt.QDialog.closeEvent(self, event)
         logger.debug("close event ended")
 
     def __resetServer(self, server):
+        """ resets server state variables
+
+        :param server: server name
+        :type server: :obj:`str`
+        """
         try:
             self.state = ServerState(server)
             if self.__door:
@@ -488,11 +562,18 @@ class Selector(Qt.QDialog, TaurusBaseWidget):
 
     @Qt.pyqtSlot()
     def __componentChanged(self):
+        """ updates detector view
+        """
         self.setDirty()
         self.detectors.updateViews()
 
     @Qt.pyqtSlot()
     def setDirty(self, flag=True):
+        """ sets dirty flag
+
+        :param flag: dirty flag
+        :type flag: :obj:`bool`
+        """
         self.__dirty = flag
         self.ui.statusLabel.hide()
         self.ui.buttonBox.button(Qt.QDialogButtonBox.Reset).setEnabled(True)
@@ -550,6 +631,8 @@ class Selector(Qt.QDialog, TaurusBaseWidget):
 
     @Qt.pyqtSlot()
     def resetServer(self):
+        """ resets server settings
+        """
         logger.debug("reset server")
         self.state.setServer()
         self._resetAll()
@@ -557,6 +640,8 @@ class Selector(Qt.QDialog, TaurusBaseWidget):
 
     @Qt.pyqtSlot(Qt.QString, Qt.QString)
     def resetLayout(self, frames, groups):
+        """ resets application layout
+        """
         logger.debug("reset layout")
         self.detectors.frames = str(frames)
         self.detectors.mgroups = str(groups)
@@ -565,6 +650,8 @@ class Selector(Qt.QDialog, TaurusBaseWidget):
 
     @Qt.pyqtSlot()
     def resetRows(self):
+        """ resets a maximum number of rows in element columns
+        """
         logger.debug("reset rows")
         rowMax = self.ui.rowMaxSpinBox.value()
         for tab in self.tabs:
@@ -574,12 +661,15 @@ class Selector(Qt.QDialog, TaurusBaseWidget):
 
     @Qt.pyqtSlot()
     def updateGroups(self):
-        ## QProgressDialog to be added
+        """ updates elements groups
+        """
         self.state.storeGroups()
         self._resetAll()
 
     @Qt.pyqtSlot()
     def resetViews(self):
+        """ resets all tab views
+        """
         logger.debug("reset view")
         for tab in self.tabs:
             if not isinstance(tab, Descriptions):
@@ -589,6 +679,8 @@ class Selector(Qt.QDialog, TaurusBaseWidget):
         logger.debug("reset view end")
 
     def reset(self):
+        """ fetches configuration and resets all tab views
+        """
         logger.debug("reset selector")
         try:
             self.state.fetchSettings()
@@ -604,6 +696,8 @@ class Selector(Qt.QDialog, TaurusBaseWidget):
         logger.debug("reset selector ended")
 
     def closeReset(self):
+        """ close reset method for progressbar
+        """
         status = True
         logger.debug("closing Progress")
         if self.__progress:
@@ -635,12 +729,21 @@ class Selector(Qt.QDialog, TaurusBaseWidget):
         return status
 
     def waitForThread(self):
+        """ waits for running thread
+        """
         logger.debug("waiting for Thread")
         if self.__commandthread:
             self.__commandthread.wait()
         logger.debug("waiting for Thread ENDED")
 
     def runProgress(self, commands, onclose="closeReset"):
+        """ starts progress thread with the given commands
+
+        :param commands: list of commands
+        :type commands: :obj:`list` <:obj:`str`>
+        :param onclose: close command name
+        :type onclose: :obj:`str`
+        """
         if self.__progress:
             return
         if self.__commandthread:
@@ -660,6 +763,7 @@ class Selector(Qt.QDialog, TaurusBaseWidget):
         self.__progress.show()
 
     def resetClickAll(self):
+        """ updates the current mntgrp and resets all settings """
         logger.debug("reset ALL")
         self.state.switchMntGrp()
         self._synchDoor()
@@ -671,6 +775,8 @@ class Selector(Qt.QDialog, TaurusBaseWidget):
         logger.debug("reset ENDED")
 
     def _synchDoor(self):
+        """ synchronize the current door name with macroserver
+        """
         if not self.__door:
             self.__door = self.state.door
         elif not self.state.isDoorFromMacroServer(self.__door):
@@ -692,22 +798,30 @@ class Selector(Qt.QDialog, TaurusBaseWidget):
 
     @Qt.pyqtSlot()
     def resetAll(self):
+        """ resets all settings and synchronize the current door"""
         self._synchDoor()
         self._resetAll()
 
     def _resetAll(self):
+        """ resets all settings """
         logger.debug("reset ALL")
         self.runProgress(["updateControllers", "importMntGrp"])
         self.storage.showErrors()
         logger.debug("reset ENDED")
 
     def resetDescriptions(self):
+        """ resets description selection to the default values"""
         logger.debug("reset Descriptions")
         self.runProgress(["resetDescriptions", "importMntGrp"])
         self.storage.showErrors()
         logger.debug("reset Descriptions ENDED")
 
     def resetConfiguration(self, expconf):
+        """ resets measurement group configuration
+
+        :param expconf: new measurement group configuration
+        :type expconf: :obj:`str`
+        """
         logger.debug("reset Configuration")
         conf = self.state.mntGrpConfiguration()
         econf = json.dumps(expconf)
@@ -723,6 +837,12 @@ class Selector(Qt.QDialog, TaurusBaseWidget):
         logger.debug("reset Configuration END")
 
     def updateDoorName(self, door):
+        """ updates door name
+
+        :param door: new door name
+        :type door: :obj:`str`
+        """
+
         logger.debug("update DoorName")
         if self.__progress:
             self.__door = door
@@ -737,11 +857,15 @@ class Selector(Qt.QDialog, TaurusBaseWidget):
 
     @Qt.pyqtSlot()
     def __resetClicked(self):
+        """ sets reset button focus and resets all settings"""
         self.ui.buttonBox.button(Qt.QDialogButtonBox.Reset).setFocus()
         self.resetClickAll()
 
     @Qt.pyqtSlot()
     def __restore(self):
+        """ unselected all selected elements for detectors
+            or reset description to defualt values
+        """
         index = self.ui.tabWidget.currentIndex()
         if index == 0:
             self.__clearAllClicked()
@@ -749,6 +873,8 @@ class Selector(Qt.QDialog, TaurusBaseWidget):
             self.resetDescriptions()
 
     def __clearAllClicked(self):
+        """ unselected all selected elements for detectors
+        """
         for ds in self.state.dsgroup.keys():
             self.state.dsgroup[ds] = False
         for ds in self.state.cpgroup.keys():
@@ -758,6 +884,7 @@ class Selector(Qt.QDialog, TaurusBaseWidget):
 
     @Qt.pyqtSlot()
     def cnfLoad(self):
+        """ loads selection settings from a file"""
         try:
             filename = str(Qt.QFileDialog.getOpenFileName(
                 self.ui.storage,
@@ -782,6 +909,7 @@ class Selector(Qt.QDialog, TaurusBaseWidget):
 
     @Qt.pyqtSlot()
     def cnfSave(self):
+        """ saves selection settings in a file"""
         try:
             filename = str(Qt.QFileDialog.getSaveFileName(
                 self.ui.storage,
@@ -812,11 +940,17 @@ class Selector(Qt.QDialog, TaurusBaseWidget):
 
     @Qt.pyqtSlot()
     def __applyClicked(self):
+        """ focuses on apply button and performs apply action"""
         self.ui.buttonBox.button(Qt.QDialogButtonBox.Apply).setFocus()
         self.apply()
 
     @Qt.pyqtSlot(int)
     def __tabChanged(self, index):
+        """  updates button views on tab change
+
+        :param index:  tag index
+        :type index: :obj:`int`
+        """
         if index == 0:
             self.ui.groupsPushButton.setText("Others")
             self.ui.groupsPushButton.show()
@@ -842,10 +976,16 @@ class Selector(Qt.QDialog, TaurusBaseWidget):
 
     @Qt.pyqtSlot(int)
     def __displayStatusChanged(self, state):
+        """  displays status in buttonbox
+
+        :param state:  status state
+        :type index: :obj:`int`
+        """
         self.displayStatus = state
         self.setDirty(self.__dirty)
 
     def closeApply(self):
+        """ close action for apply command """
         if not self.closeReset():
             self.setDirty(True)
         else:
@@ -853,6 +993,8 @@ class Selector(Qt.QDialog, TaurusBaseWidget):
         self.ui.fileScanIDSpinBox.setValue(self.state.scanID)
 
     def apply(self):
+        """ applies seeting on selection server and
+            creates a new measurement group"""
         logger.debug("apply")
         try:
             conf = self.state.updateMntGrp()
@@ -879,6 +1021,11 @@ class Selector(Qt.QDialog, TaurusBaseWidget):
         logger.debug("apply END")
 
     def defineMissingKeys(self, ctext):
+        """ adds missing keys to the user data table
+
+        :param ctext: json list of missing user data keys
+        :type ctext: :obj:`str`
+        """
         if ctext:
             missingkeys = json.loads(ctext)
             for key in missingkeys:

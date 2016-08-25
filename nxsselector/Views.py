@@ -15,11 +15,9 @@
 #
 #    You should have received a copy of the GNU General Public License
 #    along with nexdatas.  If not, see <http://www.gnu.org/licenses/>.
-## \package nxsselector nexdatas
-## \file Views.py
 # module with different table views
 
-""" main window application dialog """
+""" component element table views """
 
 
 try:
@@ -30,28 +28,49 @@ except:
 import logging
 import json
 
+#: (:obj:`logging.Logger`) logger object
 logger = logging.getLogger(__name__)
 from .DynamicTools import DynamicTools
 from .LDataDlg import LDataDlg
 
 
 class RightClickCheckBox(Qt.QCheckBox):
+    """ right click checkbox table widget
+    """
 
+    #: (:class:`taurus.qt.Qt.pyqtSignal`) rightClick signal
     rightClick = Qt.pyqtSignal()
 
     def __init__(self, parent=None):
+        """ constructor
+
+        :param parent: parent object
+        :type parent: :class:`taurus.qt.Qt.QObject`
+        """
         Qt.QCheckBox.__init__(self, parent)
 
     @Qt.pyqtSlot()
     def mousePressEvent(self, event):
+        """ excecutes right click action
+
+        :param event: mouse event
+        :type event: :class:`taurus.qt.Qt.QEvent`
+        """
         Qt.QCheckBox.mousePressEvent(self, event)
         if event.button() == Qt.Qt.RightButton:
             self.rightClick.emit()
 
 
 class CheckerLabelWidget(Qt.QWidget):
+    """ checkbox table widget
+    """
 
     def __init__(self, parent=None):
+        """ constructor
+
+        :param parent: parent object
+        :type parent: :class:`taurus.qt.Qt.QObject`
+        """
         Qt.QWidget.__init__(self, parent)
         self.checkBox = Qt.QCheckBox(self)
         self.label = Qt.QLabel(self)
@@ -96,6 +115,11 @@ class OneTableView(Qt.QTableView):
     dirty = Qt.pyqtSignal()
 
     def __init__(self, parent=None):
+        """ constructor
+
+        :param parent: parent object
+        :type parent: :class:`taurus.qt.Qt.QObject`
+        """
         Qt.QTableView.__init__(self, parent)
         self.verticalHeader().setVisible(False)
         self.horizontalHeader().setVisible(False)
@@ -111,6 +135,11 @@ class OneTableView(Qt.QTableView):
 class CheckerView(Qt.QWidget):
 
     def __init__(self, parent=None):
+        """ constructor
+
+        :param parent: parent object
+        :type parent: :class:`taurus.qt.Qt.QObject`
+        """
         Qt.QWidget.__init__(self, parent)
         self.model = None
         self.glayout = Qt.QGridLayout(self)
@@ -333,6 +362,11 @@ class CheckerView(Qt.QWidget):
 class CheckDisView(CheckerView):
 
     def __init__(self, parent=None):
+        """ constructor
+
+        :param parent: parent object
+        :type parent: :class:`taurus.qt.Qt.QObject`
+        """
         CheckerView.__init__(self, parent)
         self.dmapper = Qt.QSignalMapper(self)
         self.dmapper.mapped.connect(self.dchecked)
@@ -362,6 +396,11 @@ class CheckDisView(CheckerView):
 class CheckPropView(CheckDisView):
 
     def __init__(self, parent=None):
+        """ constructor
+
+        :param parent: parent object
+        :type parent: :class:`taurus.qt.Qt.QObject`
+        """
         CheckDisView.__init__(self, parent)
         self.widget = RightClickCheckBox
         self.pmapper = Qt.QSignalMapper(self)
@@ -413,6 +452,11 @@ class CheckPropView(CheckDisView):
 class RadioView(CheckerView):
 
     def __init__(self, parent=None):
+        """ constructor
+
+        :param parent: parent object
+        :type parent: :class:`taurus.qt.Qt.QObject`
+        """
         CheckerView.__init__(self, parent)
         self.widget = Qt.QRadioButton
 
@@ -420,6 +464,11 @@ class RadioView(CheckerView):
 class LeftRadioView(CheckerView):
 
     def __init__(self, parent=None):
+        """ constructor
+
+        :param parent: parent object
+        :type parent: :class:`taurus.qt.Qt.QObject`
+        """
         CheckerView.__init__(self, parent)
         self.widget = Qt.QRadioButton
         self.center = False
@@ -435,6 +484,11 @@ class LeftCheckerView(CheckerView):
 class ButtonView(CheckerView):
 
     def __init__(self, parent=None):
+        """ constructor
+
+        :param parent: parent object
+        :type parent: :class:`taurus.qt.Qt.QObject`
+        """
         CheckerView.__init__(self, parent)
         self.widget = Qt.QPushButton
         self.center = False
@@ -443,6 +497,11 @@ class ButtonView(CheckerView):
 class CheckerViewNL(CheckerView):
 
     def __init__(self, parent=None):
+        """ constructor
+
+        :param parent: parent object
+        :type parent: :class:`taurus.qt.Qt.QObject`
+        """
         CheckerView.__init__(self, parent)
         self.showLabels = False
 
@@ -450,6 +509,11 @@ class CheckerViewNL(CheckerView):
 class LeftCheckerViewNL(LeftCheckerView):
 
     def __init__(self, parent=None):
+        """ constructor
+
+        :param parent: parent object
+        :type parent: :class:`taurus.qt.Qt.QObject`
+        """
         LeftCheckerView.__init__(self, parent)
         self.showLabels = False
 
@@ -457,6 +521,11 @@ class LeftCheckerViewNL(LeftCheckerView):
 class ButtonViewNL(ButtonView):
 
     def __init__(self, parent=None):
+        """ constructor
+
+        :param parent: parent object
+        :type parent: :class:`taurus.qt.Qt.QObject`
+        """
         ButtonView.__init__(self, parent)
         self.showLabels = False
 
@@ -464,6 +533,11 @@ class ButtonViewNL(ButtonView):
 class RadioViewNL(RadioView):
 
     def __init__(self, parent=None):
+        """ constructor
+
+        :param parent: parent object
+        :type parent: :class:`taurus.qt.Qt.QObject`
+        """
         RadioView.__init__(self, parent)
         self.showLabels = False
 
@@ -471,6 +545,11 @@ class RadioViewNL(RadioView):
 class LeftRadioViewNL(LeftRadioView):
 
     def __init__(self, parent=None):
+        """ constructor
+
+        :param parent: parent object
+        :type parent: :class:`taurus.qt.Qt.QObject`
+        """
         LeftRadioView.__init__(self, parent)
         self.showLabels = False
 
@@ -478,6 +557,11 @@ class LeftRadioViewNL(LeftRadioView):
 class CheckerViewNN(CheckerView):
 
     def __init__(self, parent=None):
+        """ constructor
+
+        :param parent: parent object
+        :type parent: :class:`taurus.qt.Qt.QObject`
+        """
         CheckerView.__init__(self, parent)
         self.showNames = False
 
@@ -485,6 +569,11 @@ class CheckerViewNN(CheckerView):
 class LeftCheckerViewNN(LeftCheckerView):
 
     def __init__(self, parent=None):
+        """ constructor
+
+        :param parent: parent object
+        :type parent: :class:`taurus.qt.Qt.QObject`
+        """
         LeftCheckerView.__init__(self, parent)
         self.showNames = False
 
@@ -492,6 +581,11 @@ class LeftCheckerViewNN(LeftCheckerView):
 class ButtonViewNN(ButtonView):
 
     def __init__(self, parent=None):
+        """ constructor
+
+        :param parent: parent object
+        :type parent: :class:`taurus.qt.Qt.QObject`
+        """
         ButtonView.__init__(self, parent)
         self.showNames = False
 
@@ -499,6 +593,11 @@ class ButtonViewNN(ButtonView):
 class RadioViewNN(RadioView):
 
     def __init__(self, parent=None):
+        """ constructor
+
+        :param parent: parent object
+        :type parent: :class:`taurus.qt.Qt.QObject`
+        """
         RadioView.__init__(self, parent)
         self.showNames = False
 
@@ -506,6 +605,11 @@ class RadioViewNN(RadioView):
 class LeftRadioViewNN(LeftRadioView):
 
     def __init__(self, parent=None):
+        """ constructor
+
+        :param parent: parent object
+        :type parent: :class:`taurus.qt.Qt.QObject`
+        """
         LeftRadioView.__init__(self, parent)
         self.showNames = False
 
@@ -513,6 +617,11 @@ class LeftRadioViewNN(LeftRadioView):
 class RadioDisView(CheckDisView):
 
     def __init__(self, parent=None):
+        """ constructor
+
+        :param parent: parent object
+        :type parent: :class:`taurus.qt.Qt.QObject`
+        """
         CheckDisView.__init__(self, parent)
         self.widget = Qt.QRadioButton
 
@@ -520,6 +629,11 @@ class RadioDisView(CheckDisView):
 class ButtonDisView(CheckDisView):
 
     def __init__(self, parent=None):
+        """ constructor
+
+        :param parent: parent object
+        :type parent: :class:`taurus.qt.Qt.QObject`
+        """
         CheckDisView.__init__(self, parent)
         self.widget = Qt.QPushButton
         self.center = False
@@ -528,6 +642,11 @@ class ButtonDisView(CheckDisView):
 class CheckDisViewNL(CheckDisView):
 
     def __init__(self, parent=None):
+        """ constructor
+
+        :param parent: parent object
+        :type parent: :class:`taurus.qt.Qt.QObject`
+        """
         CheckDisView.__init__(self, parent)
         self.showLabels = False
 
@@ -535,6 +654,11 @@ class CheckDisViewNL(CheckDisView):
 class CheckPropViewNL(CheckPropView):
 
     def __init__(self, parent=None):
+        """ constructor
+
+        :param parent: parent object
+        :type parent: :class:`taurus.qt.Qt.QObject`
+        """
         CheckPropView.__init__(self, parent)
         self.showLabels = False
 
@@ -542,6 +666,11 @@ class CheckPropViewNL(CheckPropView):
 class ButtonDisViewNL(ButtonDisView):
 
     def __init__(self, parent=None):
+        """ constructor
+
+        :param parent: parent object
+        :type parent: :class:`taurus.qt.Qt.QObject`
+        """
         ButtonDisView.__init__(self, parent)
         self.showLabels = False
 
@@ -549,6 +678,11 @@ class ButtonDisViewNL(ButtonDisView):
 class RadioDisViewNL(RadioDisView):
 
     def __init__(self, parent=None):
+        """ constructor
+
+        :param parent: parent object
+        :type parent: :class:`taurus.qt.Qt.QObject`
+        """
         RadioDisView.__init__(self, parent)
         self.showLabels = False
 
@@ -556,6 +690,11 @@ class RadioDisViewNL(RadioDisView):
 class CheckDisViewNN(CheckDisView):
 
     def __init__(self, parent=None):
+        """ constructor
+
+        :param parent: parent object
+        :type parent: :class:`taurus.qt.Qt.QObject`
+        """
         CheckDisView.__init__(self, parent)
         self.showNames = False
 
@@ -563,12 +702,22 @@ class CheckDisViewNN(CheckDisView):
 class CheckPropViewNN(CheckPropView):
 
     def __init__(self, parent=None):
+        """ constructor
+
+        :param parent: parent object
+        :type parent: :class:`taurus.qt.Qt.QObject`
+        """
         CheckPropView.__init__(self, parent)
         self.showNames = False
 
 
 class CheckerLabelViewNN(CheckerViewNN):
     def __init__(self, parent=None):
+        """ constructor
+
+        :param parent: parent object
+        :type parent: :class:`taurus.qt.Qt.QObject`
+        """
         CheckerViewNN.__init__(self, parent)
         self.widget = CheckerLabelWidget
 
@@ -576,6 +725,11 @@ class CheckerLabelViewNN(CheckerViewNN):
 class ButtonDisViewNN(ButtonDisView):
 
     def __init__(self, parent=None):
+        """ constructor
+
+        :param parent: parent object
+        :type parent: :class:`taurus.qt.Qt.QObject`
+        """
         ButtonDisView.__init__(self, parent)
         self.showNames = False
 
@@ -583,5 +737,10 @@ class ButtonDisViewNN(ButtonDisView):
 class RadioDisViewNN(RadioDisView):
 
     def __init__(self, parent=None):
+        """ constructor
+
+        :param parent: parent object
+        :type parent: :class:`taurus.qt.Qt.QObject`
+        """
         RadioDisView.__init__(self, parent)
         self.showNames = False

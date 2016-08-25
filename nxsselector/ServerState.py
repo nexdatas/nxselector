@@ -15,8 +15,6 @@
 #
 #    You should have received a copy of the GNU General Public License
 #    along with nexdatas.  If not, see <http://www.gnu.org/licenses/>.
-## \package nxsselector nexdatas
-## \file ServerState.py
 # state of sardana recorder server
 
 """ state of recorder server """
@@ -27,77 +25,137 @@ import time
 import subprocess
 
 import logging
+#: (:obj:`logging.Logger`) logger object
 logger = logging.getLogger(__name__)
 
 
-## main window class
 class ServerState(object):
+    """ state of recorder server """
 
-    ## constructor
-    # \param settings frame settings
     def __init__(self, server=None):
+        """ constructor
 
+        :param server: selector server name
+        :type server: :obj:`str`
+        """
+
+        #: (:obj:`str`) selector server name
         self.server = None
+        #: (:class:`PyTango.Database`) tango database instance
         self.__db = PyTango.Database()
+        #: (:class:`PyTango.DeviceProxy`) selector server device proxy
         self.__dp = None
 
+        #: (:obj:`int`) timeour
         self.__timeout = 25000
 
-        ## server configuration
+        #: (:obj:`dict` < :obj:`str`, `any`>) \
+        #:     profile server configuration
         self.__conf = {}
 
         self.findServer(server)
 
-        ## tango database
+        #: (:obj:`list`<:obj:`str`>) tango database
         self.errors = []
 
+        #: (:obj:`str`) scan directory
         self.scanDir = None
+        #: (:obj:`list`<:obj:`str`>) scan file names
         self.scanFile = []
+        #: (:obj:`int`) scan id
         self.scanID = 0
 
+        #: (:obj:`list`<:obj:`str`>) timers
         self.timers = None
+        #: (:obj:`str`) measurement group name
         self.mntgrp = None
+        #: (:obj:`str`) door  device name
         self.door = None
 
+        #: (:obj:`str`) configuration device name
         self.configDevice = None
+        #: (:obj:`str`) writer device name
         self.writerDevice = None
 
+        #: (:obj:`bool`) append entry in one file
         self.appendEntry = None
 
+        #: (:obj:`bool`) use dynamic components
         self.dynamicComponents = True
+        #: (:obj:`bool`) use dynamic links
         self.dynamicLinks = None
+        #: (:obj:`str`) default dynamic nexus path
         self.dynamicPath = None
 
+        #: (:obj:`dict` <:obj:`str` , :obj:`bool` or `None`>) \
+        #:    datasource selection
         self.dsgroup = {}
+        #: (:obj:`dict` <:obj:`str` , :obj:`str`>) device labels
         self.labels = {}
+        #: (:obj:`dict` <:obj:`str` , :obj:`dict` <:obj:`str` , `any`>>) \
+        #:     device properties
         self.properties = {}
+        #: (:obj:`list`<:obj:`str`>) list of non-plotted devices
         self.nodisplay = []
+        #: (:obj:`dict` <:obj:`str` , :obj:`bool` or `None`>) \
+        #:    detector component selection
         self.cpgroup = {}
+        #: (:obj:`dict` <:obj:`str` , :obj:`bool` or `None`>) \
+        #:    description component selection
         self.acpgroup = {}
+        #: (:obj:`list`<:obj:`str`>) selected description components
         self.acplist = []
+        #: (:obj:`list`<:obj:`str`>) available timers
         self.atlist = []
+        #: (:obj:`list`<:obj:`str`>) mandatory components
         self.mcplist = []
+        #: ( [:obj:`dict` <:obj:`str`, :obj:`dict` <:obj:`str`, \
+        #:        :obj:`list` <(:obj:`str`, :obj:`str`, :obj:`str`, \
+        #:        :obj:`str`, :obj:`list` <:obj:`int`>)> > > ] ) \
+        #: element description
         self.description = []
+        #: (:obj:`list`<:obj:`str`>) available components
         self.avcplist = []
+        #: (:obj:`list`<:obj:`str`>) available datasources
         self.avdslist = []
+        #: (:obj:`list`<:obj:`str`>) available measurement groups
         self.avmglist = []
+        #: (:obj:`dict` <:obj:`str`, :obj:`list` <:obj:`str` >>) \
+        #:     variable components
         self.vrcpdict = {}
+        #: (:obj:`dict` <:obj:`str`, :obj:`list` <:obj:`str` >>) \
+        #:     component variables
         self.cpvrdict = {}
+        #: (:obj:`dict` <:obj:`str` , :obj:`bool` or `None`>) \
+        #:    init (descriptive) datasource selection
         self.idsgroup = {}
+        #: (:obj:`list`<:obj:`str`>) administrator data key names
         self.admindata = []
 
+        #: (:obj:`list`<:obj:`str`>) ordered pool channels
         self.orderedchannels = []
 
+        #: (:obj:`dict` <:obj:`str` , :obj:`str`>) configuration variables
         self.configvars = {}
+        #: (:obj:`dict` <:obj:`str` , `any`>) (name, value) \
+        #:     user data dictionary
         self.datarecord = {}
+        #: (:obj:`dict` <:obj:`str` , :obj:`str`>) full device names
         self.fullnames = {}
 
+        #: (:obj:`dict` <:obj:`str` , :obj:`bool`>) label links
         self.labellinks = {}
+        #: (:obj:`dict` <:obj:`str` , :obj:`str`>) label nexus paths
         self.labelpaths = {}
+        #: (:obj:`dict` <:obj:`str` , :obj:`list`< :obj:`int`> >) \
+        #:     label data shapes
         self.labelshapes = {}
+        #: (:obj:`dict` <:obj:`str` , :obj:`str`>) label nexus types
         self.labeltypes = {}
 
+        #: (:obj:`list`<:obj:`str`>) error list
         self.errors = []
+        #: (:obj:`bool`) no timer restriction flag
         self.notimerresctriction = False
 
         try:
@@ -117,6 +175,12 @@ class ServerState(object):
                              "data_type"]
 
     def __grepServer(self):
+        """ provides the local selector server device name
+
+        :returns: selector server device name
+        :rtype: :obj:`str`
+
+        """
         server = None
         try:
             pipe = subprocess.Popen("ps -ef | grep 'NXSRecSelecto'",
@@ -139,9 +203,12 @@ class ServerState(object):
             pass
         return server
 
-    ## sets the existing NXSRecSelector server
-    ## \param server server name
     def findServer(self, server=None):
+        """  sets the existing NXSRecSelector server
+
+        :param server: selector server device name
+        :type server: :obj:`str`
+        """
         if server is None:
             servers = self.__db.get_device_exported_for_class(
                 "NXSRecSelector").value_string
@@ -160,6 +227,8 @@ class ServerState(object):
             self.server = str(server)
 
     def __fetchConfiguration(self):
+        """ fetches from the server the current profile configuration
+        """
         if not self.__dp:
             self.setServer()
         if not self.server:
@@ -167,12 +236,16 @@ class ServerState(object):
         self.__conf = json.loads(self.__dp.profileConfiguration)
 
     def fetchErrors(self):
+        """ fetches from the server the description errors
+        """
         if not self.__dp:
             self.setServer()
         self.errors = self.__loadList("descriptionErrors")
         return self.errors
 
     def setProperties(self):
+        """ sets label properties from properties
+        """
         if "label" in self.properties:
             self.labels = self.properties["label"]
         else:
@@ -195,14 +268,17 @@ class ServerState(object):
             self.labeltypes = {}
 
     def getProperties(self):
+        """ sets properties from label properties
+        """
         self.properties["label"] = self.labels
         self.properties["link"] = self.labellinks
         self.properties["nexus_path"] = self.labelpaths
         self.properties["shape"] = self.labelshapes
         self.properties["data_type"] = self.labeltypes
 
-    ## fetches configuration setting from server
     def fetchSettings(self):
+        """ fetches configuration setting from server
+        """
         self.__fetchConfiguration()
 
         self.cpgroup = self.__importDict("ComponentSelection")
@@ -243,7 +319,7 @@ class ServerState(object):
         self.__fetchFileData()
         self.__fetchEnvData()
         if self.notimerresctriction:
-            ## old version to check
+            # old version to check
             self.atlist = list(set(self.atlist) | set(self.timers))
         else:
             if self.timers:
@@ -258,6 +334,8 @@ class ServerState(object):
                 self.cpvrdict[cp].add(vr)
 
     def __fetchFileData(self):
+        """ fetches file data configuration from the server
+        """
         self.timers = self.__importList("Timer", True)
         self.mntgrp = str(self.__importData("MntGrp"))
         try:
@@ -274,6 +352,8 @@ class ServerState(object):
         self.dynamicPath = str(self.__importData("DefaultDynamicPath"))
 
     def __fetchEnvData(self):
+        """ fetches scan variables from the server
+        """
         params = {"ScanDir": "scanDir",
                   "ScanFile": "scanFile",
                   "ScanID": "scanID"}
@@ -290,6 +370,8 @@ class ServerState(object):
         logger.debug("fetch Env: %s" % (jvalue))
 
     def __storeEnvData(self):
+        """ stores scan variables on the server
+        """
         params = {"ScanDir": "scanDir",
                   "ScanFile": "scanFile",
                   "NeXusSelectorDevice": "server",
@@ -307,6 +389,8 @@ class ServerState(object):
         logger.debug("Store Env: %s" % (jvalue))
 
     def __storeFileData(self):
+        """ stores file data configuration on the server
+        """
 
         self.storeData("configDevice", self.configDevice)
         self.storeData("door", self.door)
@@ -323,6 +407,7 @@ class ServerState(object):
         self.__exportData("DefaultDynamicPath", self.dynamicPath)
 
     def storeGroups(self):
+        """ stores selection group settings on the server"""
         if not self.__dp:
             self.setServer()
         self.__exportDict("DataSourceSelection", self.dsgroup)
@@ -331,8 +416,8 @@ class ServerState(object):
         self.__exportDict("DataSourcePreselection", self.idsgroup)
         self.__storeConfiguration()
 
-    ## stores configuration settings on server
     def storeSettings(self):
+        """ stores all settings on the server"""
         if not self.__dp:
             self.setServer()
         self.__storeEnvData()
@@ -352,6 +437,7 @@ class ServerState(object):
         self.__storeConfiguration()
 
     def __storeConfiguration(self):
+        """ stores profile configuration on the server"""
         if not self.__dp:
             self.setServer()
         self.__dp.profileConfiguration = str(json.dumps(self.__conf))
@@ -359,17 +445,22 @@ class ServerState(object):
             self.__dp.exportEnvProfile()
 
     def fetchMntGrp(self):
+        """ fetches mntgrp and profile from the server
+        """
         if not self.__dp:
             self.setServer()
         self.__command(self.__dp, "fetchProfile")
 
     def switchMntGrp(self):
+        """ switches mntgrp and profile on the server
+        """
         if not self.__dp:
             self.setServer()
         self.__command(self.__dp, "switchProfile")
 
-    ## update measurement group
     def updateMntGrp(self):
+        """ updates mntgrp on the macroserver/pool
+        """
         if not self.mntgrp:
             raise Exception("ActiveMntGrp not defined")
         if not self.scanFile:
@@ -385,21 +476,38 @@ class ServerState(object):
         return conf
 
     def isMntGrpChanged(self):
+        """ checks if measurement group has changed
+
+        :returns: if measurement group has changed
+        :rtype: :obj:`bool`
+        """
         if not self.__dp:
             self.setServer()
         return self.__command(self.__dp, "isMntGrpUpdated")
 
     def importMntGrp(self):
+        """ imports mntgrp from sardana
+        """
         if not self.__dp:
             self.setServer()
         return self.__command(self.__dp, "importMntGrp")
 
     def createConfiguration(self):
+        """ creates the NeXus Writer configuration
+
+        :returns: NeXus writer configuration
+        :rtype: :obj:`str`
+        """
         if not self.__dp:
             self.setServer()
         return self.__command(self.__dp, "createWriterConfiguration", [])
 
     def deleteMntGrp(self, name):
+        """ deletes the profile and the corresponding measurement group
+
+        :param name: measurement group name
+        :type name: :obj:`str`
+        """
         if not self.__dp:
             self.setServer()
         self.__command(self.__dp, "deleteProfile", str(name))
@@ -410,6 +518,11 @@ class ServerState(object):
             self.fetchMntGrp()
 
     def mntGrpConfiguration(self):
+        """ provides measurement group configuration
+
+        :returns: measurement group configuration
+        :rtype: :obj:`str`
+        """
         mgconf = self.__command(self.__dp, "mntGrpConfiguration")
         conf = {}
         conf['MntGrpConfigs'] = {}
@@ -418,15 +531,27 @@ class ServerState(object):
         return json.dumps(conf)
 
     def getConfiguration(self):
+        """ provides profile configuration
+
+        :returns: profile configuration
+        :rtype: :obj:`str`
+        """
         self.storeSettings()
         return self.__dp.profileConfiguration
 
     def setConfiguration(self, conf):
+        """ sets profile configuration
+
+        :param conf: profile configuration
+        :type conf: :obj:`str`
+        """
         self.__dp.profileConfiguration = conf
         self.__command(self.__dp, "updateMntGrp")
         self.fetchSettings()
 
     def resetDescriptions(self):
+        """ resets description components to default values
+        """
         if hasattr(self.__dp, "command_inout_asynch"):
             # aid = self.__dp.command_inout_asynch("PreselectComponents")
             # self.__wait(self.__dp)
@@ -441,6 +566,9 @@ class ServerState(object):
             self.__command(self.__dp, "resetPreselectedComponents")
 
     def updateControllers(self):
+        """ update description component selection accoriding
+             to its device state
+        """
         if hasattr(self.__dp, "command_inout_asynch"):
             # aid = self.__dp.command_inout_asynch("PreselectComponents")
             # self.__wait(self.__dp)
@@ -455,6 +583,8 @@ class ServerState(object):
             self.__command(self.__dp, "preselectComponents")
 
     def setServer(self):
+        """ sets the selector server
+        """
         if self.server:
             self.__dp = self.__openProxy(self.server)
             self.__dp.set_timeout_millis(self.__timeout)
@@ -470,6 +600,13 @@ class ServerState(object):
                             (self.server or "module"))
 
     def isDoorFromMacroServer(self, door):
+        """ checks if door is of the current MacroServer
+
+        :param door: door name
+        :type door: :obj:`str`
+        :returns: if door is of the current MacroServer
+        :rtype: :obj:`bool`
+        """
         if not self.__dp:
             self.setServer()
         if hasattr(self.__dp, "macroServer"):
@@ -500,12 +637,30 @@ class ServerState(object):
 
     @classmethod
     def __openProxy(cls, server):
+        """ creates device proxy
+
+        :param server: server name
+        :type server: :obj:`str`
+        :returns: server device proxy
+        :rtype: :class:`PyTango.DeviceProxy`
+        """
         proxy = PyTango.DeviceProxy(server)
         cls.__wait(proxy)
         return proxy
 
     @classmethod
     def __command(cls, server, command, *var):
+        """ executes command on the server
+
+        :param server: server instance
+        :type server: :class:`PyTango.DeviceProxy` \
+                      or 'nxsrecconfig.Settings.Settings'
+        :param command: command name
+        :type command: :obj:`str`
+        :returns: command result
+        :rtype: `any`
+
+        """
         if not hasattr(server, "command_inout"):
             return getattr(server, command)(*var)
         elif var is None:
@@ -515,6 +670,14 @@ class ServerState(object):
 
     @classmethod
     def __wait(cls, proxy, counter=100):
+        """ waits for server until server is not in running state
+
+        :param proxy: server proxy
+        :type proxy: :class:`PyTango.DeviceProxy`
+        :param counter: maximum waiting timer in 0.01 sec
+                        (without command execution)
+        :type counter: :obj:`int`
+        """
         found = False
         cnt = 0
         while not found and cnt < counter:
@@ -531,6 +694,13 @@ class ServerState(object):
             cnt += 1
 
     def __importDict(self, name):
+        """ imports a dictionary variable from the profile configuration
+
+        :param name: record name
+        :type name: :obj:`str`
+        :returns: returns dictionary
+        :rtype: :obj:`dict` <`any`, `any`>
+        """
         dsg = self.__conf[name] if name in self.__conf else None
         res = {}
         if dsg:
@@ -541,6 +711,15 @@ class ServerState(object):
         return res
 
     def __importList(self, name, encoded=False):
+        """ imports a list variable from the profile configuration
+
+        :param name: record name
+        :type name: :obj:`str`
+        :param encoded: if list should be encoded from JSON
+        :type encoded: :obj:`bool`
+        :returns: returns configuration list
+        :rtype: :obj:`list` <`any`>
+        """
         dc = self.__conf[name] if name in self.__conf else None
         logger.debug(dc)
         res = []
@@ -553,11 +732,26 @@ class ServerState(object):
         return res
 
     def __importData(self, name):
+        """ imports a variable from the profile configuration
+
+        :param name: record name
+        :type name: :obj:`str`
+        :returns: returns configuration variable
+        :rtype: `any`
+        """
         dc = self.__conf[name] if name in self.__conf else None
         logger.debug(dc)
         return dc
 
     def __loadDict(self, name):
+        """ reads dictionary variable from the configuration server attribute
+
+        :param name: attribute name
+        :type name: :obj:`str`
+        :returns: returns dictionary
+        :rtype: :obj:`dict` <`any`, `any`>
+        """
+
         if not self.__dp:
             self.setServer()
         if self.server:
@@ -574,14 +768,35 @@ class ServerState(object):
         return res
 
     def __exportDict(self, name, value):
+        """ writes a dictionary variable into the profile configuration
+
+        :param name: attribute name
+        :type name: :obj:`str`
+        :param value: returns dictionary
+        :type value: :obj:`dict` <`any`, `any`>
+        """
         self.__conf[name] = json.dumps(value)
         logger.debug(" %s = %s" % (name, value))
 
     def __exportList(self, name, value):
+        """ writes a list variable into the profile configuration
+
+        :param name: attribute name
+        :type name: :obj:`str`
+        :param value: returns dictionary
+        :type value: :obj:`list` <`any`>
+        """
         self.__conf[name] = json.dumps(value)
         logger.debug(" %s = %s" % (name, value))
 
     def storeData(self, name, value):
+        """ stores data into the configuration server attribute
+
+        :param name: attribute name
+        :type name: :obj:`str`
+        :param value: attribute value
+        :type value: :obj:`list` <`any`>
+        """
         if not self.__dp:
             self.setServer()
         if self.server:
@@ -600,10 +815,26 @@ class ServerState(object):
         logger.debug(" %s = %s" % (name, value))
 
     def __exportData(self, name, value):
+        """ writes a variable into the profile configuration
+
+        :param name: attribute name
+        :type name: :obj:`str`
+        :param value: returns dictionary
+        :type value: `any`
+        """
         self.__conf[name] = value
         logger.debug(" %s = %s" % (name, value))
 
     def __loadList(self, name, encoded=False):
+        """ reads a list variable from the configuration server attribute
+
+        :param name: attribute name
+        :type name: :obj:`str`
+        :param encoded: encoding should be used
+        :type encoded: :obj:`bool`
+        :returns: returns dictionary
+        :rtype: :obj:`list` <`any`>
+        """
         if not self.__dp:
             self.setServer()
         if self.server:
@@ -622,6 +853,13 @@ class ServerState(object):
         return res
 
     def __loadData(self, name):
+        """ reads a attribute value from the configuration server
+
+        :param name: attribute name
+        :type name: :obj:`str`
+        :returns: returns an attribute value
+        :rtype: `any`
+        """
         if not self.__dp:
             self.setServer()
         if self.server:
@@ -634,6 +872,17 @@ class ServerState(object):
         return dc
 
     def __getList(self, name, encoded=False, argin=None):
+        """ returns a result list of the selection server command
+
+        :param name: record name
+        :type name: :obj:`str`
+        :param encoded: if list should be encoded from JSON
+        :type encoded: :obj:`bool`
+        :param argin: input command argument
+        :type argin: `any`
+        :returns: returns the command result list
+        :rtype: :obj:`list` <`any`>
+        """
         if not self.__dp:
             self.setServer()
         if self.server:
@@ -660,6 +909,13 @@ class ServerState(object):
         return res
 
     def __getDict(self, name):
+        """ returns a result dictionary of the selection server command
+
+        :param name: record name
+        :type name: :obj:`str`
+        :returns: returns the command result dictionary
+        :rtype: :obj:`dict` <`any`, `any`>
+        """
         if not self.__dp:
             self.setServer()
         if self.server:
@@ -677,8 +933,12 @@ class ServerState(object):
         logger.debug(" %s = %s" % (name, res))
         return res
 
-    ## update a list of Disable DataSources
     def __disableDataSources(self):
+        """ provides disable datasources
+
+        :returns: (disable datasources, ds component) dictionary
+        :rtype: :obj:`dict` <:obj:`str`, :obj:`str`>
+        """
         res = self.description
         dds = {}
 
@@ -699,6 +959,11 @@ class ServerState(object):
         return dds
 
     def clientRecords(self):
+        """ provides client recorders
+
+        :returns: list of client recorders
+        :rtype: :obj:`list` <:obj:`str`>
+        """
         res = self.description
         dds = {}
 
@@ -716,6 +981,11 @@ class ServerState(object):
                     set(self.recorder_names))
 
     def stepComponents(self):
+        """ provides components with step datasources
+
+        :returns: list of components with step datasources
+        :rtype: :obj:`list` <:obj:`str`>
+        """
         res = self.description
         cpset = set()
         for cpg in res:
@@ -732,6 +1002,11 @@ class ServerState(object):
         return list(cpset)
 
     def clientDataSources(self):
+        """ provides client datasources
+
+        :returns: list of client datasources
+        :rtype: :obj:`list` <:obj:`str`>
+        """
         res = self.dsdescription
         dsset = set()
         for jdsg in res:
@@ -741,17 +1016,21 @@ class ServerState(object):
                     dsset.add(dsg['dsname'])
         return list(dsset)
 
-    ## provides disable datasources
+    #: (:obj:`list` <:obj:`str`>) provides disable datasources
     ddsdict = property(__disableDataSources,
                        doc='provides disable datasources')
 
-    ## update a list of components
     def __components(self):
+        """ provides selected components
+
+        :returns: list of selected components
+        :rtype: :obj:`list` <:obj:`str`>
+        """
         if isinstance(self.cpgroup, dict):
             return [cp for cp in self.cpgroup.keys() if self.cpgroup[cp]]
         else:
             return []
 
-    ## provides disable datasources
+    #: (:obj:`list` <:obj:`str`>) provides selected components
     cplist = property(__components,
                       doc='provides selected components')
