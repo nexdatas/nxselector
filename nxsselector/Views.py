@@ -72,7 +72,9 @@ class CheckerLabelWidget(Qt.QWidget):
         :type parent: :class:`taurus.qt.Qt.QObject`
         """
         Qt.QWidget.__init__(self, parent)
+        #: (:class:`taurus.qt.Qt.QCheckBox`) element checkbox widget
         self.checkBox = Qt.QCheckBox(self)
+        #: (:class:`taurus.qt.Qt.QCheckBox`) element label widget
         self.label = Qt.QLabel(self)
         layout = Qt.QHBoxLayout()
         layout.addWidget(self.checkBox)
@@ -81,28 +83,66 @@ class CheckerLabelWidget(Qt.QWidget):
         self.setLayout(layout)
 
     def isChecked(self):
+        """ provides checkbox status
+
+        :returns: check status
+        :rtype: :obj:`bool`
+        """
         return self.checkBox.isChecked()
 
     def setChecked(self, status):
+        """ sets checkbox status
+
+        :param status: check status
+        :type status: :obj:`bool`
+        """
         self.label.setEnabled(status)
-        return self.checkBox.setChecked(status)
+        self.checkBox.setChecked(status)
 
     def setCheckable(self, status):
+        """ sets ckeckable checkbox flag
+
+        :param status: checkable flag
+        :type status: :obj:`bool`
+        """
         return self.checkBox.setCheckable(status)
 
     def setEnabled(self, status):
+        """ sets enable checkbox flag
+
+        :param status: enable flag
+        :type status: :obj:`bool`
+        """
         return self.checkBox.setEnabled(status)
 
-    def setPolicy(self, policy):
-        return self.label.setPolicy(policy)
+    def setSizePolicy(self, policy):
+        """ sets label size policy
+
+        :param policy: size policy
+        :type policy: :class:`taurus.qt.Qt.QSizePolicy`
+        """
+        self.label.setSizePolicy(policy)
 
     def setText(self, text):
-        return self.label.setText(text)
+        """ sets label text
+
+        :param policy: label text
+        :type policy: :class:`taurus.qt.Qt.QString` or :obj:`str`
+        """
+        self.label.setText(text)
 
 
 class TableView(Qt.QTableView):
+    """ table view with streached last column
+    """
 
     def __init__(self, parent=None):
+        """ constructor
+
+        :param parent: parent object
+        :type parent: :class:`taurus.qt.Qt.QObject`
+        """
+
         Qt.QTableView.__init__(self, parent)
         self.verticalHeader().setVisible(False)
 #        self.horizontalHeader().setVisible(False)
@@ -111,7 +151,10 @@ class TableView(Qt.QTableView):
 
 
 class OneTableView(Qt.QTableView):
+    """ table view with stretched last column un unvisible horizontal header
+    """
 
+    #: (:class:`taurus.qt.Qt.pyqtSignal`) dirty signal
     dirty = Qt.pyqtSignal()
 
     def __init__(self, parent=None):
@@ -127,12 +170,16 @@ class OneTableView(Qt.QTableView):
         self.horizontalHeader().setResizeMode(Qt.QHeaderView.Stretch)
 
     def reset(self):
+        """ resets table view and hides view columns
+        """
         Qt.QTableView.reset(self)
         for i in range(1, 5):
             self.hideColumn(i)
 
 
 class CheckerView(Qt.QWidget):
+    """ element view with redefined checkboxes
+    """
 
     def __init__(self, parent=None):
         """ constructor
@@ -141,24 +188,41 @@ class CheckerView(Qt.QWidget):
         :type parent: :class:`taurus.qt.Qt.QObject`
         """
         Qt.QWidget.__init__(self, parent)
+        #: (:class:`taurus.qt.Qt.QAbstractTableModel`) view model
         self.model = None
+        #: (:class:`taurus.qt.Qt.QGridLayout`) main grid layout
         self.glayout = Qt.QGridLayout(self)
+        #: (:obj:`list` <:class:`taurus.qt.Qt.QGridLayout`> ) element widgets
         self.widgets = []
+        #: (:class:`taurus.qt.Qt.QSignalMapper`) widget check status mapper
         self.mapper = Qt.QSignalMapper(self)
+        #: (:class:`taurus.qt.Qt.QSignalMapper`) widget property mapper
         self.pmapper = None
+        #: (:class:`taurus.qt.Qt.QSignalMapper`) widget display status mapper
         self.dmapper = None
+        #: (:obj:`list` <:class:`taurus.qt.Qt.QGridLayout`> ) \
+        #:     display checkbox widgets
         self.displays = []
         self.mapper.mapped.connect(self.checked)
+        #: (:class:`taurus.qt.Qt.QSpacerItem`) spacer view item
         self.spacer = None
+        #: (:obj:`type`) widget type
         self.widget = Qt.QCheckBox
+        #: (:obj:`bool`) if widget are centered
         self.center = True
+        #: (:obj:`int`) maximal number of rows in the column
         self.rowMax = 0
+        #: (:obj:`int`) selected widget row (widget id)
         self.selectedWidgetRow = None
+        #: (:obj:`bool`) if name labels should be shown
         self.showLabels = True
+        #: (:obj:`bool`) if names should be shown
         self.showNames = True
         self.setContextMenuPolicy(Qt.Qt.PreventContextMenu)
 
     def close(self):
+        """ widget close method which disconnect signals """
+
         self.mapper.mapped.disconnect(self.checked)
         if self.model:
             self.model.dataChanged.disconnect(self.reset)
@@ -167,6 +231,11 @@ class CheckerView(Qt.QWidget):
 
     @Qt.pyqtSlot(int)
     def checked(self, row):
+        """ updates the element model check status for the given widget row
+
+        :param row: widget row
+        :type row: :obj:`int`
+        """
         self.selectedWidgetRow = row
         ind = self.model.index(row, 0)
         value = Qt.QVariant(self.widgets[row].isChecked())
@@ -177,12 +246,22 @@ class CheckerView(Qt.QWidget):
         self.model.setData(ind, value, Qt.Qt.CheckStateRole)
 
     def setModel(self, model):
+        """
+        set the current view model
+
+        :param model: view model to be set
+        :type model: :class:`taurus.qt.Qt.QAbstractTableModel`
+
+        """
         self.model = model
         self.model.dataChanged.connect(self.reset)
         self.model.modelReset.connect(self.reset)
         self.reset()
 
     def clearLayout(self):
+        """ clears layouts of the view
+        """
+
         if self.glayout:
             self.widgets = []
             if self.dmapper:
@@ -192,6 +271,8 @@ class CheckerView(Qt.QWidget):
             self.glayout = Qt.QGridLayout(self)
 
     def connectMapper(self):
+        """ reconnects mapper
+        """
         if self.mapper:
             self.mapper.mapped.disconnect(self.checked)
         self.mapper = Qt.QSignalMapper(self)
@@ -200,6 +281,8 @@ class CheckerView(Qt.QWidget):
     @Qt.pyqtSlot()
     @Qt.pyqtSlot(Qt.QModelIndex, Qt.QModelIndex)
     def reset(self):
+        """ resets the view
+        """
         self.hide()
         self.clearLayout()
         self.connectMapper()
@@ -211,6 +294,13 @@ class CheckerView(Qt.QWidget):
         self.show()
 
     def __findRowNumber(self, rowMax, rowCount):
+        """ finds physical row number for the element widget
+
+        :param rowMax: maximal number of rows in the column
+        :type rowMax: :obj:`int`
+        :param rowCount: current model widget row (widget id)
+        :type rowCount: :obj:`int`
+        """
         rowNo = rowMax
         if rowNo < 1:
             rowNo = 1
@@ -222,6 +312,8 @@ class CheckerView(Qt.QWidget):
         return rowNo
 
     def updateState(self):
+        """ updates state of the view
+        """
         if self.model is not None:
             rowCount = self.model.rowCount()
             rowNo = self.__findRowNumber(self.rowMax, rowCount)
@@ -243,6 +335,17 @@ class CheckerView(Qt.QWidget):
         self.updateGeometry()
 
     def __createGrid(self, row, cb, ds, rowNo=None):
+        """ add widget into the view grid
+
+        :param row: the row number
+        :type row: :obj:`int`
+        :param cb: status checkbox or button
+        :type cb: :class:`taurus.qt.Qt.QWidget`
+        :param ds: display checkbox or button
+        :type ds: :class:`taurus.qt.Qt.QWidget`
+        :param rowNo: the number of row in the group
+        :type rowNo: :obj:`int`
+        """
         rowNo = self.rowMax if not rowNo else rowNo
         ind = self.model.index(row, 0)
         ind2 = self.model.index(row, 2)
@@ -288,6 +391,13 @@ class CheckerView(Qt.QWidget):
                 self.pmapper.setMapping(cb, self.widgets.index(cb))
 
     def __setWidgets(self, row):
+        """ creates element widgets
+
+        :param row: the row number
+        :type row: :obj:`int`
+        :returns: (checkbox widget, display widget)
+        :rtype: (:class:`taurus.qt.Qt.QWidget`, :class:`taurus.qt.Qt.QWidget`)
+        """
         ind = self.model.index(row, 0)
         flags = self.model.flags(ind)
         ind2 = self.model.index(row, 2)
@@ -321,6 +431,13 @@ class CheckerView(Qt.QWidget):
         return (cb, ds)
 
     def __setNameTips(self, row, cb):
+        """ set name tips of element widget
+
+        :param row: the row number
+        :type row: :obj:`int`
+        :param cb: checkbox widget
+        :type cb: :class:`taurus.qt.Qt.QWidget`
+        """
         ind = self.model.index(row, 0)
         name = self.model.data(ind, role=Qt.Qt.DisplayRole)
         ind1 = self.model.index(row, 1)
@@ -360,6 +477,8 @@ class CheckerView(Qt.QWidget):
 
 
 class CheckDisView(CheckerView):
+    """ element view with redefined checkboxes with display boxes
+    """
 
     def __init__(self, parent=None):
         """ constructor
@@ -368,20 +487,31 @@ class CheckDisView(CheckerView):
         :type parent: :class:`taurus.qt.Qt.QObject`
         """
         CheckerView.__init__(self, parent)
+        #: (:class:`taurus.qt.Qt.QSignalMapper`) widget display status mapper
         self.dmapper = Qt.QSignalMapper(self)
         self.dmapper.mapped.connect(self.dchecked)
+        #: (:obj:`bool`) if widget are centered
         self.center = False
+        #: (:obj:`str`) display status label text
         self.dlabel = 'Dis.'
+        #: (:obj:`str`) check status label text
         self.slabel = 'Sel.'
 
     @Qt.pyqtSlot(int)
     def dchecked(self, row):
+        """ updates the element model display for the given widget row
+
+        :param row: widget row
+        :type row: :obj:`int`
+        """
         self.selectedWidgetRow = row
         ind = self.model.index(row, 2)
         value = Qt.QVariant(self.displays[row].isChecked())
         self.model.setData(ind, value, Qt.Qt.CheckStateRole)
 
     def connectMapper(self):
+        """ reconnects mapper
+        """
         CheckerView.connectMapper(self)
         if self.dmapper:
             self.dmapper.mapped.disconnect(self.dchecked)
@@ -389,6 +519,7 @@ class CheckDisView(CheckerView):
         self.dmapper.mapped.connect(self.dchecked)
 
     def close(self):
+        """ widget close method which disconnect signals """
         self.dmapper.mapped.disconnect(self.dchecked)
         CheckerView.close(self)
 
@@ -402,12 +533,19 @@ class CheckPropView(CheckDisView):
         :type parent: :class:`taurus.qt.Qt.QObject`
         """
         CheckDisView.__init__(self, parent)
+        #: (:obj:`type`) widget type
         self.widget = RightClickCheckBox
+        #: (:class:`taurus.qt.Qt.QSignalMapper`) widget property mapper
         self.pmapper = Qt.QSignalMapper(self)
         self.pmapper.mapped.connect(self.pchecked)
 
     @Qt.pyqtSlot(int)
     def pchecked(self, row):
+        """ updates the element model properties for the given widget row
+
+        :param row: widget row
+        :type row: :obj:`int`
+        """
         self.selectedWidgetRow = row
         ind = self.model.index(row, 0)
         name = self.model.data(ind, role=Qt.Qt.DisplayRole)
@@ -438,6 +576,8 @@ class CheckPropView(CheckDisView):
                     Qt.QString(str(json.dumps(prs)))))
 
     def connectMapper(self):
+        """ reconnects mappers
+        """
         CheckDisView.connectMapper(self)
         if self.pmapper:
             self.pmapper.mapped.disconnect(self.pchecked)
@@ -445,11 +585,14 @@ class CheckPropView(CheckDisView):
         self.pmapper.mapped.connect(self.pchecked)
 
     def close(self):
+        """ widget close method which disconnect signals """
         self.pmapper.mapped.disconnect(self.pchecked)
         CheckDisView.close(self)
 
 
 class RadioView(CheckerView):
+    """ element view with radio checkboxes
+    """
 
     def __init__(self, parent=None):
         """ constructor
@@ -458,10 +601,13 @@ class RadioView(CheckerView):
         :type parent: :class:`taurus.qt.Qt.QObject`
         """
         CheckerView.__init__(self, parent)
+        #: (:obj:`type`) widget type
         self.widget = Qt.QRadioButton
 
 
 class LeftRadioView(CheckerView):
+    """ element view with left radio checkboxes
+    """
 
     def __init__(self, parent=None):
         """ constructor
@@ -470,18 +616,25 @@ class LeftRadioView(CheckerView):
         :type parent: :class:`taurus.qt.Qt.QObject`
         """
         CheckerView.__init__(self, parent)
+        #: (:obj:`type`) widget type
         self.widget = Qt.QRadioButton
+        #: (:obj:`bool`) if widget are centered
         self.center = False
 
 
 class LeftCheckerView(CheckerView):
+    """ element view with left checkboxes
+    """
 
     def __init__(self, parent=None):
         CheckerView.__init__(self, parent)
+        #: (:obj:`bool`) if widget are centered
         self.center = False
 
 
 class ButtonView(CheckerView):
+    """ element view with button checkboxes
+    """
 
     def __init__(self, parent=None):
         """ constructor
@@ -490,11 +643,15 @@ class ButtonView(CheckerView):
         :type parent: :class:`taurus.qt.Qt.QObject`
         """
         CheckerView.__init__(self, parent)
+        #: (:obj:`type`) widget type
         self.widget = Qt.QPushButton
+        #: (:obj:`bool`) if widget are centered
         self.center = False
 
 
 class CheckerViewNL(CheckerView):
+    """ element view with checkboxes without name labels
+    """
 
     def __init__(self, parent=None):
         """ constructor
@@ -503,10 +660,13 @@ class CheckerViewNL(CheckerView):
         :type parent: :class:`taurus.qt.Qt.QObject`
         """
         CheckerView.__init__(self, parent)
+        #: (:obj:`bool`) if name labels should be shown
         self.showLabels = False
 
 
 class LeftCheckerViewNL(LeftCheckerView):
+    """ element view with left checkboxes without name labels
+    """
 
     def __init__(self, parent=None):
         """ constructor
@@ -515,10 +675,13 @@ class LeftCheckerViewNL(LeftCheckerView):
         :type parent: :class:`taurus.qt.Qt.QObject`
         """
         LeftCheckerView.__init__(self, parent)
+        #: (:obj:`bool`) if name labels should be shown
         self.showLabels = False
 
 
 class ButtonViewNL(ButtonView):
+    """ element view with button checkboxes without name labels
+    """
 
     def __init__(self, parent=None):
         """ constructor
@@ -527,10 +690,13 @@ class ButtonViewNL(ButtonView):
         :type parent: :class:`taurus.qt.Qt.QObject`
         """
         ButtonView.__init__(self, parent)
+        #: (:obj:`bool`) if name labels should be shown
         self.showLabels = False
 
 
 class RadioViewNL(RadioView):
+    """ element view with radio checkboxes without name labels
+    """
 
     def __init__(self, parent=None):
         """ constructor
@@ -539,10 +705,13 @@ class RadioViewNL(RadioView):
         :type parent: :class:`taurus.qt.Qt.QObject`
         """
         RadioView.__init__(self, parent)
+        #: (:obj:`bool`) if name labels should be shown
         self.showLabels = False
 
 
 class LeftRadioViewNL(LeftRadioView):
+    """ element view with left radio checkboxes without name labels
+    """
 
     def __init__(self, parent=None):
         """ constructor
@@ -551,10 +720,13 @@ class LeftRadioViewNL(LeftRadioView):
         :type parent: :class:`taurus.qt.Qt.QObject`
         """
         LeftRadioView.__init__(self, parent)
+        #: (:obj:`bool`) if name labels should be shown
         self.showLabels = False
 
 
 class CheckerViewNN(CheckerView):
+    """ element view with checkboxes with only name labels
+    """
 
     def __init__(self, parent=None):
         """ constructor
@@ -563,10 +735,13 @@ class CheckerViewNN(CheckerView):
         :type parent: :class:`taurus.qt.Qt.QObject`
         """
         CheckerView.__init__(self, parent)
+        #: (:obj:`bool`) if names should be shown
         self.showNames = False
 
 
 class LeftCheckerViewNN(LeftCheckerView):
+    """ element view with checkboxes with only name labels
+    """
 
     def __init__(self, parent=None):
         """ constructor
@@ -575,10 +750,13 @@ class LeftCheckerViewNN(LeftCheckerView):
         :type parent: :class:`taurus.qt.Qt.QObject`
         """
         LeftCheckerView.__init__(self, parent)
+        #: (:obj:`bool`) if names should be shown
         self.showNames = False
 
 
 class ButtonViewNN(ButtonView):
+    """ element view with button checkboxes with only name labels
+    """
 
     def __init__(self, parent=None):
         """ constructor
@@ -587,10 +765,13 @@ class ButtonViewNN(ButtonView):
         :type parent: :class:`taurus.qt.Qt.QObject`
         """
         ButtonView.__init__(self, parent)
+        #: (:obj:`bool`) if names should be shown
         self.showNames = False
 
 
 class RadioViewNN(RadioView):
+    """ element view with radio checkboxes with only name labels
+    """
 
     def __init__(self, parent=None):
         """ constructor
@@ -599,10 +780,13 @@ class RadioViewNN(RadioView):
         :type parent: :class:`taurus.qt.Qt.QObject`
         """
         RadioView.__init__(self, parent)
+        #: (:obj:`bool`) if names should be shown
         self.showNames = False
 
 
 class LeftRadioViewNN(LeftRadioView):
+    """ element view with left radio checkboxes with only name labels
+    """
 
     def __init__(self, parent=None):
         """ constructor
@@ -611,10 +795,13 @@ class LeftRadioViewNN(LeftRadioView):
         :type parent: :class:`taurus.qt.Qt.QObject`
         """
         LeftRadioView.__init__(self, parent)
+        #: (:obj:`bool`) if names should be shown
         self.showNames = False
 
 
 class RadioDisView(CheckDisView):
+    """ element view with left radio checkboxes and display boxes
+    """
 
     def __init__(self, parent=None):
         """ constructor
@@ -623,10 +810,13 @@ class RadioDisView(CheckDisView):
         :type parent: :class:`taurus.qt.Qt.QObject`
         """
         CheckDisView.__init__(self, parent)
+        #: (:obj:`type`) widget type
         self.widget = Qt.QRadioButton
 
 
 class ButtonDisView(CheckDisView):
+    """ element view with left button checkboxes and display boxes
+    """
 
     def __init__(self, parent=None):
         """ constructor
@@ -635,11 +825,16 @@ class ButtonDisView(CheckDisView):
         :type parent: :class:`taurus.qt.Qt.QObject`
         """
         CheckDisView.__init__(self, parent)
+        #: (:obj:`type`) widget type
         self.widget = Qt.QPushButton
+        #: (:obj:`bool`) if widget are centered
         self.center = False
 
 
 class CheckDisViewNL(CheckDisView):
+    """ element view with left button checkboxes and display boxes
+    without name labels
+    """
 
     def __init__(self, parent=None):
         """ constructor
@@ -648,10 +843,14 @@ class CheckDisViewNL(CheckDisView):
         :type parent: :class:`taurus.qt.Qt.QObject`
         """
         CheckDisView.__init__(self, parent)
+        #: (:obj:`bool`) if name labels should be shown
         self.showLabels = False
 
 
 class CheckPropViewNL(CheckPropView):
+    """ element view with checkboxes and properties
+    without name labels
+    """
 
     def __init__(self, parent=None):
         """ constructor
@@ -660,10 +859,14 @@ class CheckPropViewNL(CheckPropView):
         :type parent: :class:`taurus.qt.Qt.QObject`
         """
         CheckPropView.__init__(self, parent)
+        #: (:obj:`bool`) if name labels should be shown
         self.showLabels = False
 
 
 class ButtonDisViewNL(ButtonDisView):
+    """ element view with left button checkboxes and display boxes
+    without name labels
+    """
 
     def __init__(self, parent=None):
         """ constructor
@@ -672,10 +875,14 @@ class ButtonDisViewNL(ButtonDisView):
         :type parent: :class:`taurus.qt.Qt.QObject`
         """
         ButtonDisView.__init__(self, parent)
+        #: (:obj:`bool`) if name labels should be shown
         self.showLabels = False
 
 
 class RadioDisViewNL(RadioDisView):
+    """ element view with left radio checkboxes and display boxes
+    without name labels
+    """
 
     def __init__(self, parent=None):
         """ constructor
@@ -684,10 +891,14 @@ class RadioDisViewNL(RadioDisView):
         :type parent: :class:`taurus.qt.Qt.QObject`
         """
         RadioDisView.__init__(self, parent)
+        #: (:obj:`bool`) if name labels should be shown
         self.showLabels = False
 
 
 class CheckDisViewNN(CheckDisView):
+    """ element view with redefined checkboxes with display boxes
+    without names
+    """
 
     def __init__(self, parent=None):
         """ constructor
@@ -700,6 +911,9 @@ class CheckDisViewNN(CheckDisView):
 
 
 class CheckPropViewNN(CheckPropView):
+    """ element view with redefined checkboxes with properties
+    without names
+    """
 
     def __init__(self, parent=None):
         """ constructor
@@ -708,10 +922,13 @@ class CheckPropViewNN(CheckPropView):
         :type parent: :class:`taurus.qt.Qt.QObject`
         """
         CheckPropView.__init__(self, parent)
+        #: (:obj:`bool`) if names should be shown
         self.showNames = False
 
 
 class CheckerLabelViewNN(CheckerViewNN):
+    """ element view with CheckerLabelWidget checkboxes with only name labels
+    """
     def __init__(self, parent=None):
         """ constructor
 
@@ -719,10 +936,14 @@ class CheckerLabelViewNN(CheckerViewNN):
         :type parent: :class:`taurus.qt.Qt.QObject`
         """
         CheckerViewNN.__init__(self, parent)
+        #: (:obj:`type`) widget type
         self.widget = CheckerLabelWidget
 
 
 class ButtonDisViewNN(ButtonDisView):
+    """ element view with button checkboxes and display boxes
+    with only name labels
+    """
 
     def __init__(self, parent=None):
         """ constructor
@@ -731,10 +952,14 @@ class ButtonDisViewNN(ButtonDisView):
         :type parent: :class:`taurus.qt.Qt.QObject`
         """
         ButtonDisView.__init__(self, parent)
+        #: (:obj:`bool`) if names should be shown
         self.showNames = False
 
 
 class RadioDisViewNN(RadioDisView):
+    """ element view with radio checkboxes and display boxes
+    with only name labels
+    """
 
     def __init__(self, parent=None):
         """ constructor
@@ -743,4 +968,5 @@ class RadioDisViewNN(RadioDisView):
         :type parent: :class:`taurus.qt.Qt.QObject`
         """
         RadioDisView.__init__(self, parent)
+        #: (:obj:`bool`) if names should be shown
         self.showNames = False
