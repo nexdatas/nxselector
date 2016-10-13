@@ -132,6 +132,7 @@ class CheckerLabelWidget(Qt.QWidget):
         """
         self.label.setText(text)
 
+
 class TableView(Qt.QTableView):
     """ table view with streached last column
     """
@@ -938,6 +939,7 @@ class CheckerLabelViewNN(CheckerViewNN):
         CheckerViewNN.__init__(self, parent)
         #: (:obj:`type`) widget type
         self.widget = CheckerLabelWidget
+
 
 class ButtonDisViewNN(ButtonDisView):
     """ element view with button checkboxes and display boxes
