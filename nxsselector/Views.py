@@ -122,6 +122,7 @@ class CheckerLabelWidget(Qt.QWidget):
         :type policy: :class:`taurus.qt.Qt.QSizePolicy`
         """
         self.label.setSizePolicy(policy)
+        Qt.QWidget.setSizePolicy(self, policy)
 
     def setText(self, text):
         """ sets label text
@@ -130,7 +131,6 @@ class CheckerLabelWidget(Qt.QWidget):
         :type policy: :class:`taurus.qt.Qt.QString` or :obj:`str`
         """
         self.label.setText(text)
-
 
 class TableView(Qt.QTableView):
     """ table view with streached last column
@@ -938,7 +938,6 @@ class CheckerLabelViewNN(CheckerViewNN):
         CheckerViewNN.__init__(self, parent)
         #: (:obj:`type`) widget type
         self.widget = CheckerLabelWidget
-
 
 class ButtonDisViewNN(ButtonDisView):
     """ element view with button checkboxes and display boxes
