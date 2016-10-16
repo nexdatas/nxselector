@@ -153,7 +153,7 @@ Nexus Data Writer via Sardana NeXus Recorder.</p>
 <div class="line"><a class="reference external" href="https://github.com/nexdatas/selector">https://github.com/nexdatas/selector</a></div>
 </div>
 <p>Extract the sources and run</p>
-<div class="code bash highlight-python"><div class="highlight"><pre>$ python setup.py install
+<div class="highlight-console"><div class="highlight"><pre><span class="gp">$</span> python setup.py install
 </pre></div>
 </div>
 </div>
@@ -161,26 +161,26 @@ Nexus Data Writer via Sardana NeXus Recorder.</p>
 <h3>Debian packages<a class="headerlink" href="#debian-packages" title="Permalink to this headline">¶</a></h3>
 <p>Debian Jessie (and Wheezy) packages can be found in the HDRI repository.</p>
 <p>To install the debian packages, add the PGP repository key</p>
-<div class="code bash highlight-python"><div class="highlight"><pre>$ sudo su
-$ wget -q -O - http://repos.pni-hdri.de/debian_repo.pub.gpg | apt-key add -
+<div class="highlight-console"><div class="highlight"><pre><span class="gp">$</span> sudo su
+<span class="gp">$</span> wget -q -O - http://repos.pni-hdri.de/debian_repo.pub.gpg <span class="p">|</span> apt-key add -
 </pre></div>
 </div>
 <p>and then download the corresponding source list</p>
-<div class="code bash highlight-python"><div class="highlight"><pre>$ cd /etc/apt/sources.list.d
-$ wget http://repos.pni-hdri.de/jessie-pni-hdri.list
+<div class="highlight-console"><div class="highlight"><pre><span class="gp">$</span> <span class="nb">cd</span> /etc/apt/sources.list.d
+<span class="gp">$</span> wget http://repos.pni-hdri.de/jessie-pni-hdri.list
 </pre></div>
 </div>
 <p>Finally,</p>
-<div class="code bash highlight-python"><div class="highlight"><pre>$ apt-get update
-$ apt-get install python-nxsrecselector nxselector
+<div class="highlight-console"><div class="highlight"><pre><span class="gp">$</span> apt-get update
+<span class="gp">$</span> apt-get install python-nxsrecselector nxselector
 </pre></div>
 </div>
 <p>To instal other NexDaTaS packages</p>
-<div class="code bash highlight-python"><div class="highlight"><pre>$ apt-get install python-nxswriter nxsconfigtool nxstools python-nxsconfigserver nxsconfigserver-db
+<div class="highlight-console"><div class="highlight"><pre><span class="gp">$</span> apt-get install python-nxswriter nxsconfigtool nxstools python-nxsconfigserver nxsconfigserver-db
 </pre></div>
 </div>
 <p>and</p>
-<div class="code bash highlight-python"><div class="highlight"><pre>$ apt-get install python-sardana-nxsrecorder nxstaurusgui
+<div class="highlight-console"><div class="highlight"><pre><span class="gp">$</span> apt-get install python-sardana-nxsrecorder nxstaurusgui
 </pre></div>
 </div>
 <p>for NeXus recorder and MacroGUI packages.</p>
@@ -191,7 +191,7 @@ $ apt-get install python-nxsrecselector nxselector
 <div class="section" id="setting-saradna">
 <h3>Setting Saradna<a class="headerlink" href="#setting-saradna" title="Permalink to this headline">¶</a></h3>
 <p>If sardana is not yet set up run</p>
-<div class="code bash highlight-python"><div class="highlight"><pre>$ Pool
+<div class="highlight-console"><div class="highlight"><pre><span class="gp">$</span> Pool
 </pre></div>
 </div>
 <ul class="simple">
@@ -199,7 +199,7 @@ $ apt-get install python-nxsrecselector nxselector
 <li>create the new instance</li>
 </ul>
 <p>Then wait a while until Pool is started and in a new terminal run</p>
-<div class="code bash highlight-python"><div class="highlight"><pre>$ MacroServer
+<div class="highlight-console"><div class="highlight"><pre><span class="gp">$</span> MacroServer
 </pre></div>
 </div>
 <ul class="simple">
@@ -210,33 +210,33 @@ $ apt-get install python-nxsrecselector nxselector
 <p>Next, run Astor and change start-up levels: for Pool to 2,
 for MacroServer to 3 and restart servers.</p>
 <p>Alternatively, terminate Pool and MacroServer in the terminals and run</p>
-<div class="code bash highlight-python"><div class="highlight"><pre>$ nxsetup -s Pool -l2
+<div class="highlight-console"><div class="highlight"><pre><span class="gp">$</span> nxsetup -s Pool -l2
 </pre></div>
 </div>
 <p>wait until Pool is started and run</p>
-<div class="code bash highlight-python"><div class="highlight"><pre>$ nxsetup -s MacroServer -l3
+<div class="highlight-console"><div class="highlight"><pre><span class="gp">$</span> nxsetup -s MacroServer -l3
 </pre></div>
 </div>
 <p>Additionally, one can create dummy devices by running <cite>sar_demo</cite> in</p>
-<div class="code bash highlight-python"><div class="highlight"><pre>$ spock
+<div class="highlight-console"><div class="highlight"><pre><span class="gp">$</span> spock
 </pre></div>
 </div>
 </div>
 <div class="section" id="setting-nexus-servers">
 <h3>Setting NeXus Servers<a class="headerlink" href="#setting-nexus-servers" title="Permalink to this headline">¶</a></h3>
 <p>To set up  NeXus Servers run</p>
-<div class="code bash highlight-python"><div class="highlight"><pre>$ nxsetup -x
+<div class="highlight-console"><div class="highlight"><pre><span class="gp">$</span> nxsetup -x
 </pre></div>
 </div>
 <p>or</p>
-<div class="code bash highlight-python"><div class="highlight"><pre>$ nxsetup -x NXSDataWriter
-$ nxsetup -x NXSConfigServer
-$ nxsetup -x NXSRecSelector
+<div class="highlight-console"><div class="highlight"><pre><span class="gp">$</span> nxsetup -x NXSDataWriter
+<span class="gp">$</span> nxsetup -x NXSConfigServer
+<span class="gp">$</span> nxsetup -x NXSRecSelector
 </pre></div>
 </div>
 <p>for specific servers.</p>
 <p>If the <cite>RecoderPath</cite> property of MacroServer is not set one can do it by</p>
-<div class="code bash highlight-python"><div class="highlight"><pre>$ nxsetup -a /usr/lib/python2.7/dist-packages/sardananxsrecorder
+<div class="highlight-console"><div class="highlight"><pre><span class="gp">$</span> nxsetup -a /usr/lib/python2.7/dist-packages/sardananxsrecorder
 </pre></div>
 </div>
 <p>where the path should point the <cite>sardananxsrecorder</cite> package.</p>
@@ -248,11 +248,11 @@ $ nxsetup -x NXSRecSelector
 <div class="section" id="device-selection">
 <h2>Device Selection<a class="headerlink" href="#device-selection" title="Permalink to this headline">¶</a></h2>
 <p>Every measurement requires devices to be selected. The Component Selector (CS) is a graphical user interface serving this purpose. It is launched from a Linux terminal by</p>
-<div class="code bash highlight-python"><div class="highlight"><pre><span class="n">haspp09</span><span class="o">%</span> <span class="n">nxselector</span>
+<div class="highlight-console"><div class="highlight"><pre><span class="go">haspp09% nxselector</span>
 </pre></div>
 </div>
 <p>or from Spock by</p>
-<div class="code bash highlight-python"><div class="highlight"><pre>p09/door/haspp09.01 [1]: nxselector
+<div class="highlight-console"><div class="highlight"><pre><span class="go">p09/door/haspp09.01 [1]: nxselector</span>
 </pre></div>
 </div>
 <div class="figure" id="figure-1-1">
