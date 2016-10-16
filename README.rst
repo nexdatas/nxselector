@@ -163,7 +163,7 @@ Every measurement requires devices to be selected. The Component Selector (CS) i
 
 .. code-block:: console
 
-   haspp09% nxselector
+   haspp09$ nxselector
 
 or from Spock by
 
