@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 #   This file is part of nexdatas - Tango Server for NeXus data writer
 #
-#    Copyright (C) 2014-2016 DESY, Jan Kotanski <jkotan@mail.desy.de>
+#    Copyright (C) 2014-2017 DESY, Jan Kotanski <jkotan@mail.desy.de>
 #
 #    nexdatas is free software: you can redistribute it and/or modify
 #    it under the terms of the GNU General Public License as published by
@@ -240,7 +240,20 @@ class ServerState(object):
         """
         if not self.__dp:
             self.setServer()
-        self.errors = self.__loadList("descriptionErrors")
+        if self.server:
+            self.__dp.ping()
+            self.__dp.set_green_mode(PyTango.GreenMode.Futures)
+            result = self.__dp.read_attribute("descriptionErrors", wait=False)
+            dc = result.result().value
+            self.__dp.set_green_mode(PyTango.GreenMode.Synchronous)
+        else:
+            dc = getattr(self.__dp, "descriptionErrors")
+        logger.debug(dc)
+        self.errors = []
+        if dc:
+            if isinstance(dc, (list, tuple)):
+                 self.errors = dc
+        logger.debug(" %s = %s" % ("descriptionErrors", self.errors))
         return self.errors
 
     def setProperties(self):

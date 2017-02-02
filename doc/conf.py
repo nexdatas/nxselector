@@ -50,7 +50,7 @@ master_doc = 'index'
 
 # General information about the project.
 project = u'nxsselector'
-copyright =  u'2012-2016 DESY, Jan Kotanski <jkotan@mail.desy.de>' \
+copyright =  u'2012-2017 DESY, Jan Kotanski <jkotan@mail.desy.de>' \
              + u'\n\nGNU GENERAL PUBLIC LICENSE, version 3'
 
 # The version info for the project you're documenting, acts as replacement for

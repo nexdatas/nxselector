@@ -1,3 +1,8 @@
+2017-02-02 Jan Kotanski <jankotan@gmail.com>
+	* fix getting descriptionErrors
+	* add python-concurrent.futures dependence
+	* tagged as 3.2.4
+
 2016-10-13 Jan Kotanski <jankotan@gmail.com>
 	* fix size policy of manadatory component widget
 	* tagged as 3.2.3
