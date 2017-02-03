@@ -1,3 +1,8 @@
+2017-02-03 Jan Kotanski <jankotan@gmail.com>
+	* fix getting descriptionErrors
+	* remove python-concurrent.futures dependence
+	* tagged as 3.2.6
+
 2017-02-02 Jan Kotanski <jankotan@gmail.com>
 	* fix getting descriptionErrors
 	* add python-concurrent.futures dependence

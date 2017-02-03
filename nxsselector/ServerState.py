@@ -241,11 +241,11 @@ class ServerState(object):
         if not self.__dp:
             self.setServer()
         if self.server:
-            self.__dp.ping()
-            self.__dp.set_green_mode(PyTango.GreenMode.Futures)
-            result = self.__dp.read_attribute("descriptionErrors", wait=False)
-            dc = result.result().value
-            self.__dp.set_green_mode(PyTango.GreenMode.Synchronous)
+            # workaround for issue: PyTango #22
+            try:
+                dc = self.__dp.read_attribute("descriptionErrors").value
+            except:
+                dc = self.__dp.read_attribute("descriptionErrors").value
         else:
             dc = getattr(self.__dp, "descriptionErrors")
         logger.debug(dc)
