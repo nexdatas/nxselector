@@ -74,7 +74,8 @@ def main():
             help="Qt stylesheet")
         parser.add_option(
             "-m", "--mode", dest="mode",
-            help="interface mode, i.e. simple, user, advanced, expert")
+            help="interface mode, i.e. simple, user, advanced, "
+            "special, expert")
         parser.add_option(
             "", "--set-as-default-mode",
             action="store_true",

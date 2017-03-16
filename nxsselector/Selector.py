@@ -63,8 +63,8 @@ class Selector(Qt.QDialog, TaurusBaseWidget):
         :type door: :obj:`str`
         :param standalone: application run without macrogui
         :type standalone: :obj:`bool`
-        :param umode: user mode, i.e. simple, user, advanced, expert, \
-                        administrator
+        :param umode: user mode, i.e. simple, user, advanced, special, \
+                        expert, administrator
         :type umode: :obj:`str`
         :param setdefault: set default
         :type setdefault: :obj:`bool`
@@ -114,6 +114,8 @@ class Selector(Qt.QDialog, TaurusBaseWidget):
         self.user = False
         #: (:obj:`bool`)  simple mode on
         self.simple = False
+        #: (:obj:`bool`)  negative hidden mode on
+        self.hidden = False
         if self.__umode:
             self.__setmode(self.__umode)
         #: (:obj:`str`)  configuration file name
@@ -139,18 +141,27 @@ class Selector(Qt.QDialog, TaurusBaseWidget):
             self.expert = True
             self.user = False
             self.simple = False
+            self.hidden = False
         elif umode == 'advanced':
             self.expert = False
             self.user = False
             self.simple = False
+            self.hidden = False
         elif umode == 'user':
             self.expert = False
             self.user = True
             self.simple = False
+            self.hidden = False
         elif umode == 'simple':
             self.expert = False
             self.user = True
             self.simple = True
+            self.hidden = True
+        elif umode == 'special':
+            self.expert = True
+            self.user = False
+            self.simple = False
+            self.hidden = True
 
     def settings(self):
         """ sets configuration
@@ -196,7 +207,7 @@ class Selector(Qt.QDialog, TaurusBaseWidget):
         self.detectors = Detectors(
             self.ui, self.state,
             self.preferences.views[self.userView],
-            self.rowMax, int(self.simple) + 2 * int(self.user))
+            self.rowMax, int(self.hidden) + 2 * int(self.user))
 
         self.preferences.mgroups = settings.value(
             'Preferences/Groups', '{}')

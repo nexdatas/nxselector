@@ -58,8 +58,9 @@ class Detectors(Qt.QObject):
         :type userView: :class:`taurus.qt.Qt.QWidget`
         :param rowMax: maximal row number in component column view
         :type rowMax: :obj:`int`
-        :param simpleMode: if simple display mode
-        :type simpleMode: :obj:`bool`
+        :param simpleMode: if simple display mode: \
+                           `1` for negative hidden, `2` for negative disable
+        :type simpleMode: :obj:`int`
         """
 
         Qt.QObject.__init__(self)
