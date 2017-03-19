@@ -1,3 +1,7 @@
+2017-03-XX Jan Kotanski <jankotan@gmail.com>
+	* add setStretchFactors and remove RightAlign for Detectors
+	* tagged as 3.3.1
+
 2017-03-16 Jan Kotanski <jankotan@gmail.com>
 	* add special mode
 	* tagged as 3.3.0
