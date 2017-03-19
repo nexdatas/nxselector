@@ -331,9 +331,30 @@ class CheckerView(Qt.QWidget):
                     Qt.QSizePolicy.Minimum,
                     Qt.QSizePolicy.Expanding)
                 self.glayout.addItem(self.spacer)
-
+        self.__resetStretchFactors()
         self.update()
         self.updateGeometry()
+
+    def __resetStretchFactors(self):
+        """ resets stretch factors """
+        grp = self.parent()
+        if hasattr(grp, "parent"):
+            frm = grp.parent()
+            stretch = 0
+            grps = frm.findChildren(Qt.QGroupBox)
+            for gr in grps:
+                mst = 0
+                gst = 0
+                mvws = frm.findChildren(CheckerView)
+                for mvw in mvws:
+
+                    gst += mvw.model.rowCount()/self.rowMax+1
+                if gst > mst:
+                    mst = gst
+            stretch = mst
+            if hasattr(frm, "parent"):
+                lyt = frm.parent().layout()
+                lyt.setStretchFactor(frm,  stretch)
 
     def __createGrid(self, row, cb, ds, rowNo=None):
         """ add widget into the view grid
@@ -367,14 +388,13 @@ class CheckerView(Qt.QWidget):
             if self.dmapper:
                 lrow = lrow + 1
                 lcol = 2 * lcol
+
                 if lrow == 1:
                     self.glayout.addWidget(
                         Qt.QLabel(self.slabel), 0, lcol, 1, 1)
                     self.glayout.addWidget(
-                        Qt.QLabel(self.dlabel), 0, lcol + 1, 1, 1,
-                        Qt.Qt.AlignRight)
-                self.glayout.addWidget(ds, lrow, lcol + 1, 1, 1,
-                                       Qt.Qt.AlignRight)
+                        Qt.QLabel(self.dlabel), 0, lcol + 1, 1, 1)
+                self.glayout.addWidget(ds, lrow, lcol + 1, 1, 1)
             self.glayout.addWidget(cb, lrow, lcol, 1, 1)
             self.widgets.append(cb)
 
