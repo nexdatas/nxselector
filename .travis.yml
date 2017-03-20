@@ -1,0 +1,37 @@
+language: python
+
+sudo: required
+dist: trusty
+
+python:
+  - "2.7"
+  
+services:
+  - mysql
+
+before_install:
+  - sudo add-apt-repository "deb http://repos.pni-hdri.de/apt/debian jessie main" -y
+#  - sudo add-apt-repository "deb http://security.debian.org/ jessie/updates main" -y
+#  - sudo add-apt-repository "deb http://ftp.de.debian.org/debian/ jessie main" -y
+  - curl http://repos.pni-hdri.de/debian_repo.pub.gpg | sudo apt-key add -
+  - sudo apt-get -qq update
+# - sudo apt-get install -y  mysql-server mysql-client mysql-client-5.5  mysql-server-5.5
+  - sudo apt-get install -y  --force-yes tango-db tango-common 
+  - sleep 10
+  - sudo apt-get install -y  --force-yes  tango-starter tango-test python-sardana liblog4j1.2-java 
+  - sleep 10
+#  - sudo apt-get install -y   --force-yes python-pni
+  - sudo apt-get install -y   --force-yes python-h5py
+  - sudo apt-get install -y   --force-yes nxsconfigserver-db
+  - sleep 10
+  - sudo apt-get install -y    python-sphinx
+  - sudo apt-get install -y   --force-yes python-pytango
+  - sudo apt-get install -y   libqt4-dev-bin python-taurus
+  - sleep 10
+  - export PYTHONPATH=$PYTHONPATH:$(pwd):/usr/lib/python2.7/dist-packages
+
+install:
+  - python setup.py -q install
+
+script:
+  - python test/runtest.py
