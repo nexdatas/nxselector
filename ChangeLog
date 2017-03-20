@@ -1,5 +1,6 @@
-2017-03-XX Jan Kotanski <jankotan@gmail.com>
+2017-03-20 Jan Kotanski <jankotan@gmail.com>
 	* add setStretchFactors and remove RightAlign for Detectors
+	* add add GNOME_DESKTOP_SESSION_ID=qtconfig
 	* tagged as 3.3.1
 
 2017-03-16 Jan Kotanski <jankotan@gmail.com>
