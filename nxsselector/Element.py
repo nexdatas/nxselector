@@ -89,6 +89,7 @@ class Element(object):
         :returns: if element is enable
         :rtype: :obj:`bool`
         """
+#        print ("Eneble %s: %s" % (self.name,self._getEnable()))
         return self._getEnable()
 
     def _getEnable(self):

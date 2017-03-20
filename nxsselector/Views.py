@@ -342,19 +342,43 @@ class CheckerView(Qt.QWidget):
             frm = grp.parent()
             stretch = 0
             grps = frm.findChildren(Qt.QGroupBox)
-            for gr in grps:
-                mst = 0
-                gst = 0
-                mvws = frm.findChildren(CheckerView)
-                for mvw in mvws:
+            hfrmlayout =  frm.layout()
+            vfrmlayouts = [hl for hl in hfrmlayout.children()
+                           if isinstance(hl, Qt.QVBoxLayout)]
+            vls = []
+            if vfrmlayouts:
+                for vl in vfrmlayouts:
+                    kids = [vl.itemAt(ind).widget() for ind in range(vl.count())
+                            if isinstance(vl.itemAt(ind).widget(), Qt.QGroupBox)]
+                    vls.append(kids)
+            else:
+                vls = [grps]
 
-                    gst += mvw.model.rowCount()/self.rowMax+1
-                if gst > mst:
-                    mst = gst
-            stretch = mst
+            for vl in vls:
+                vst = 0
+                for gr in vl:
+                    gst = 0
+                    mvws = gr.findChildren(CheckerView)
+                    for mvw in mvws:
+                        if hasattr(mvw.model, 'rowCount'):
+                            lgst = mvw.model.rowCount()/self.rowMax \
+                                   + (1 if (mvw.model.rowCount() % self.rowMax) else 0)
+                            if lgst > gst:
+                                gst = lgst
+                    vst = gst           
+                stretch += vst
             if hasattr(frm, "parent"):
                 lyt = frm.parent().layout()
-                lyt.setStretchFactor(frm,  stretch)
+                sizestt = [0, 1, 2, 3, 3, 4, 4, 4, 5, 5, 5, 5]
+                if stretch > len(sizestt):
+                    nstretch = 6
+                elif stretch < 0:
+                    nstretch = 0
+                else:
+                    nstretch = sizestt[stretch]
+                lyt.setStretchFactor(frm, nstretch)
+
+                        
 
     def __createGrid(self, row, cb, ds, rowNo=None):
         """ add widget into the view grid
