@@ -45,6 +45,7 @@ import gc
 logger = logging.getLogger(__name__)
 
 
+
 @UILoadable(with_ui='ui')
 class Selector(Qt.QDialog, TaurusBaseWidget):
     """ main window application dialog """
@@ -203,6 +204,9 @@ class Selector(Qt.QDialog, TaurusBaseWidget):
         if self.userView not in self.preferences.views:
             self.userView = 'CheckBoxes Dis'
         self.storage = Storage(self.ui, self.state, self.simple)
+        self.state.synchtread.scanidchanged.connect(
+            self.storage.updateScanID, Qt.Qt.QueuedConnection)
+        self.state.synchtread.start()
 
         self.detectors = Detectors(
             self.ui, self.state,
@@ -552,6 +556,11 @@ class Selector(Qt.QDialog, TaurusBaseWidget):
         :param server: server name
         :type server: :obj:`str`
         """
+        if self.state:
+            self.state.synchtread.running = False
+            if hasattr(self, "storage"):
+                self.state.synchtread.scanidchanged.disconnect(
+                    self.storage.updateScanID, Qt.Qt.QueuedConnection)
         try:
             self.state = ServerState(server)
             if self.__door:
@@ -568,6 +577,10 @@ class Selector(Qt.QDialog, TaurusBaseWidget):
             self.state.setServer()
             if self.__door:
                 self.state.storeData("door", self.__door)
+        if hasattr(self, "storage"):
+            self.state.synchtread.scanidchanged.connect(
+                self.storage.updateScanID, Qt.Qt.QueuedConnection)
+            self.state.synchtread.start()
         self.runProgress(["updateControllers", "fetchSettings"],
                          "settings")
 

@@ -243,7 +243,7 @@ class CheckerView(Qt.QWidget):
         if self.dmapper:
             if not value:
                 self.displays[row].setChecked(bool(False))
-
+        print "VCHECK", row, value
         self.model.setData(ind, value, Qt.Qt.CheckStateRole)
 
     def setModel(self, model):

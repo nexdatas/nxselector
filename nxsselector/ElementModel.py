@@ -106,7 +106,8 @@ class ElementModel(Qt.QAbstractTableModel):
         :returns: check status
         :rtype: :class:`taurus.qt.Qt.Qt.CheckState`
         """
-        if (not (self.flags(index) & Qt.Qt.ItemIsEnabled) and self.enable and device.enable) \
+        if (not (self.flags(index) & Qt.Qt.ItemIsEnabled)
+            and self.enable and device.enable) \
            or device.checked:
             return Qt.Qt.Checked
         else:
@@ -122,7 +123,9 @@ class ElementModel(Qt.QAbstractTableModel):
         :returns: display status
         :rtype: :class:`taurus.qt.Qt.Qt.CheckState`
         """
-        if (not (self.flags(index) & Qt.Qt.ItemIsEnabled) and self.enable and device.enable) \
+        # print "DDS", device.name, device.eltype
+        if (not (self.flags(index) & Qt.Qt.ItemIsEnabled)
+            and self.enable and device.enable) \
            or device.checked:
             if device.eltype == DS:
                 dds = device.state.ddsdict
@@ -463,6 +466,7 @@ class ElementModel(Qt.QAbstractTableModel):
             if column == 0:
                 if role == Qt.Qt.CheckStateRole:
                     index3 = self.index(index.row(), 2)
+                    print "EM devchecked",  value
                     device.checked = value
                     self.emit(
                         Qt.SIGNAL("dataChanged(QModelIndex, QModelIndex)"),

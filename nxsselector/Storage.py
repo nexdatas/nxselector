@@ -547,6 +547,15 @@ class Storage(Qt.QObject):
 
         widget.setCurrentIndex(cid)
 
+    @Qt.pyqtSlot()
+    def updateScanID(self):
+        """ updates scanid
+        """
+        logger.debug("updateForm storage")
+        self.state.fetchEnvData({"ScanID": "scanID"})
+        self.ui.fileScanIDSpinBox.setValue(self.state.scanID)
+        logger.debug("updateForm storage ended")
+
     def updateForm(self):
         """ updates storage form
         """

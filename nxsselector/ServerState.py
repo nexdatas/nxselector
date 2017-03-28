@@ -24,12 +24,68 @@ import json
 import time
 import subprocess
 
+try:
+    from taurus.external.qt import Qt
+except:
+    from taurus.qt import Qt
+
+
 import logging
 #: (:obj:`logging.Logger`) logger object
 logger = logging.getLogger(__name__)
 
 
-class ServerState(object):
+class SynchThread(Qt.QThread):
+    """ thread with server command
+    """
+
+    #: (:class:`taurus.qt.Qt.pyqtSignal`) dirty signal
+    scanidchanged = Qt.pyqtSignal()
+
+    def __init__(self, serverstate, server):
+        """constructor
+        :param serverstate: ServerState
+        :type serverstate: :class:`ServerState`
+        :param server: server name
+        :type server: :obj:`str`
+        """
+        Qt.QThread.__init__(self, serverstate)
+        #: (:class:`ServerState`) server state instance
+        self.state = serverstate
+        #: (:obj:`bool`) server is running
+        self.running = True
+
+        #: (:obj:`str`) server name
+        self.server = server
+
+        #: (:obj:`int`) last scan id
+        self.__lastscanid = 0
+        if self.state.server:
+            dp = PyTango.DeviceProxy(
+                self.state.server)
+            self.__lastscanid = dp.scanID
+
+
+    def run(self):
+        """ runs synch thread
+        """
+        insynch = True
+        while insynch:
+            time.sleep(5)
+
+            try:
+                if self.state.server:
+                    dp = PyTango.DeviceProxy(self.state.server)
+                    scanid = dp.scanID
+                    if self.__lastscanid != scanid:
+                        self.scanidchanged.emit()
+                        self.__lastscanid = scanid
+            except Exception as e:
+                print("ERROR: %s" % str(e))
+                raise
+
+
+class ServerState(Qt.QObject):
     """ state of recorder server """
 
     def __init__(self, server=None):
@@ -38,6 +94,7 @@ class ServerState(object):
         :param server: selector server name
         :type server: :obj:`str`
         """
+        Qt.QObject.__init__(self)
 
         #: (:obj:`str`) selector server name
         self.server = None
@@ -173,6 +230,8 @@ class ServerState(object):
                                ]
         self.channelprops = ["nexus_path", "link", "shape", "label",
                              "data_type"]
+        self.synchtread = SynchThread(self, self.server)
+
 
     def __grepServer(self):
         """ provides the local selector server device name
@@ -330,7 +389,7 @@ class ServerState(object):
             "poolElementNames", argin='IORegisterList')
 
         self.__fetchFileData()
-        self.__fetchEnvData()
+        self.fetchEnvData()
         if self.notimerresctriction:
             # old version to check
             self.atlist = list(set(self.atlist) | set(self.timers))
@@ -364,12 +423,12 @@ class ServerState(object):
         self.dynamicLinks = self.__importData("DefaultDynamicLinks")
         self.dynamicPath = str(self.__importData("DefaultDynamicPath"))
 
-    def __fetchEnvData(self):
+    def fetchEnvData(self, params=None):
         """ fetches scan variables from the server
         """
-        params = {"ScanDir": "scanDir",
-                  "ScanFile": "scanFile",
-                  "ScanID": "scanID"}
+        params = params or {"ScanDir": "scanDir",
+                            "ScanFile": "scanFile",
+                            "ScanID": "scanID"}
 
         if not self.__dp:
             self.setServer()
@@ -958,8 +1017,10 @@ class ServerState(object):
         for cpg in res:
             for cp, dss in cpg.items():
                 if isinstance(dss, dict):
-                    if cp in self.cplist or cp in self.mcplist \
-                            or cp in self.acplist:
+                    if cp in self.cplist \
+                       or cp in self.mcplist \
+                       or cp in self.acplist:
+                       # or cp in self.dslist \ 
                         for ds, values in dss.items():
                             for vl in values:
                                 if len(vl) > 0 and vl[0] == 'STEP':
@@ -984,8 +1045,9 @@ class ServerState(object):
             for cp, dss in cpg.items():
                 if isinstance(dss, dict):
                     if cp in self.cplist \
-                            or cp in self.mcplist \
-                            or cp in self.acplist:
+                       or cp in self.mcplist \
+                       or cp in self.acplist:
+                       # or cp in self.dslist \
                         for ds, values in dss.items():
                             for vl in values:
                                 if len(vl) > 1 and vl[1] == 'CLIENT':
@@ -1047,3 +1109,18 @@ class ServerState(object):
     #: (:obj:`list` <:obj:`str`>) provides selected components
     cplist = property(__components,
                       doc='provides selected components')
+
+    def __datasources(self):
+        """ provides selected datasources
+
+        :returns: list of selected datasources
+        :rtype: :obj:`list` <:obj:`str`>
+        """
+        if isinstance(self.dsgroup, dict):
+            return [cp for cp in self.dsgroup.keys() if self.dsgroup[cp]]
+        else:
+            return []
+
+    #: (:obj:`list` <:obj:`str`>) provides selected datasources
+    dslist = property(__datasources,
+                      doc='provides selected datasources')

@@ -140,6 +140,7 @@ class Detectors(Qt.QObject):
                     for felem in filtered:
                         if felem not in self.state.dsgroup.keys() \
                                 and felem in self.state.avcplist:
+#                        if felem in self.state.avcplist:
                             group.append(
                                 CPElement(felem, self.state))
                             ucp.add(felem)

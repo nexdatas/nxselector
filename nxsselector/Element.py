@@ -181,6 +181,7 @@ class GElement(Element):
         :param status: check status
         :type: :obj:`bool` or `None`
         """
+        print "SET G", self.name, status 
         logger.debug("Changed: %s to %s" % (self.name, status))
         self.group[self.name] = bool(status)
 
@@ -208,9 +209,15 @@ class DSElement(Element):
         res = self.state.dsgroup
         timers = self.state.timers or []
         if self.name in timers:
+            if self.name == 'exp_c01':
+                print "DS GCH", self.name, True
             return True
         if self.name in res.keys():
+            if self.name == 'exp_c01':
+                print "DS GCH", self.name, res[self.name]
             return res[self.name]
+        if self.name == 'exp_c01':
+            print "DS GCH", self.name, False
         return False
 
     def _setChecked(self, status):
@@ -219,6 +226,7 @@ class DSElement(Element):
         :param status: check status
         :type: :obj:`bool` or `None`
         """
+        print "SET DS", self.name, status 
         dc = self.state.dsgroup
         dc[self.name] = status
         if not status:
@@ -317,6 +325,7 @@ class CPElement(Element):
         :param status: check status
         :type: :obj:`bool` or `None`
         """
+        print "SET CP", self.name, status 
         if not self.group:
             dc = self.state.cpgroup
         else:
