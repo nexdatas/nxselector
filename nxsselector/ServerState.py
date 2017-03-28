@@ -65,7 +65,6 @@ class SynchThread(Qt.QThread):
                 self.state.server)
             self.__lastscanid = dp.scanID
 
-
     def run(self):
         """ runs synch thread
         """
@@ -232,13 +231,11 @@ class ServerState(Qt.QObject):
                              "data_type"]
         self.synchtread = SynchThread(self, self.server)
 
-
     def __grepServer(self):
         """ provides the local selector server device name
 
         :returns: selector server device name
         :rtype: :obj:`str`
-
         """
         server = None
         try:
@@ -311,7 +308,7 @@ class ServerState(Qt.QObject):
         self.errors = []
         if dc:
             if isinstance(dc, (list, tuple)):
-                 self.errors = dc
+                self.errors = dc
         logger.debug(" %s = %s" % ("descriptionErrors", self.errors))
         return self.errors
 
@@ -1019,8 +1016,8 @@ class ServerState(Qt.QObject):
                 if isinstance(dss, dict):
                     if cp in self.cplist \
                        or cp in self.mcplist \
+                       or cp in self.dslist \
                        or cp in self.acplist:
-                       # or cp in self.dslist \ 
                         for ds, values in dss.items():
                             for vl in values:
                                 if len(vl) > 0 and vl[0] == 'STEP':
@@ -1046,8 +1043,8 @@ class ServerState(Qt.QObject):
                 if isinstance(dss, dict):
                     if cp in self.cplist \
                        or cp in self.mcplist \
+                       or cp in self.dslist \
                        or cp in self.acplist:
-                       # or cp in self.dslist \
                         for ds, values in dss.items():
                             for vl in values:
                                 if len(vl) > 1 and vl[1] == 'CLIENT':

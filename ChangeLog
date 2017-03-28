@@ -1,3 +1,7 @@
+2017-03-28 Jan Kotanski <jankotan@gmail.com>
+	* add scanid update
+	* tagged as 3.4.0
+
 2017-03-20 Jan Kotanski <jankotan@gmail.com>
 	* add setStretchFactors and remove RightAlign for Detectors
 	* add add GNOME_DESKTOP_SESSION_ID=qtconfig

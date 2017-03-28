@@ -181,7 +181,7 @@ class GElement(Element):
         :param status: check status
         :type: :obj:`bool` or `None`
         """
-        print "SET G", self.name, status 
+        print "SET G", self.name, status
         logger.debug("Changed: %s to %s" % (self.name, status))
         self.group[self.name] = bool(status)
 
@@ -226,7 +226,7 @@ class DSElement(Element):
         :param status: check status
         :type: :obj:`bool` or `None`
         """
-        print "SET DS", self.name, status 
+        print "SET DS", self.name, status
         dc = self.state.dsgroup
         dc[self.name] = status
         if not status:
@@ -325,7 +325,7 @@ class CPElement(Element):
         :param status: check status
         :type: :obj:`bool` or `None`
         """
-        print "SET CP", self.name, status 
+        print "SET CP", self.name, status
         if not self.group:
             dc = self.state.cpgroup
         else:
