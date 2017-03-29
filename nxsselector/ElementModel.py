@@ -132,7 +132,6 @@ class ElementModel(Qt.QAbstractTableModel):
                 if not dds[device.name] in nd \
                         and dds[device.name]:
                     return Qt.Qt.Checked
-
             if device.display:
                 return Qt.Qt.Checked
             else:

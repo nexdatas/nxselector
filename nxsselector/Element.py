@@ -251,8 +251,7 @@ class DSElement(Element):
             if self.name in nd:
                 if status:
                     nd.remove(self.name)
-                    if self.name in timers:
-                        dc[self.name] = True
+                    dc[self.name] = True
             else:
                 if not status:
                     if self.name in timers:
@@ -335,14 +334,14 @@ class CPElement(Element):
             nd = self.state.nodisplay
             if self.name in nd:
                 nd.remove(self.name)
-            for dd, cp in dds.items():
-                if cp == self.name:
-                    if dd in ds:
-                        ds[dd] = status
-                    if dd in dc:
-                        dc[dd] = status
-                    if dd in nd:
-                        nd.remove(dd)
+        for dd, cp in dds.items():
+            if cp == self.name:
+                if dd in ds:
+                    ds[dd] = status
+                if dd in dc:
+                    dc[dd] = status
+                if not status and dd in nd:
+                    nd.remove(dd)
 
     def _getDisplay(self):
         """ getter for display flag
@@ -385,6 +384,7 @@ class CPElement(Element):
         ac = self.state.acpgroup
         ds = self.state.dsgroup
         nd = self.state.nodisplay
+        dds = self.state.ddsdict
         if self.name in ds.keys():
             if self.name in nd:
                 if status:
@@ -422,3 +422,13 @@ class CPElement(Element):
         else:
             if self.name in nd:
                 nd.remove(self.name)
+        for dd, cp in dds.items():
+            if cp == self.name:
+                if dd in nd:
+                    if status:
+                        nd.remove(dd)
+                else:
+                    if not status:
+                        nd.append(dd)
+                    else:
+                        ds[dd] = True
