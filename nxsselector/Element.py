@@ -34,7 +34,7 @@ class Element(object):
     def __init__(self, name, eltype, state):
         """ constructor
 
-       :param name: element name
+        :param name: element name
         :type name: :obj:`str`
         :param eltype: element type, i.e. DS=0 or CP=1
         :type eltype: :obj:`int`
@@ -89,7 +89,6 @@ class Element(object):
         :returns: if element is enable
         :rtype: :obj:`bool`
         """
-#        print ("Eneble %s: %s" % (self.name,self._getEnable()))
         return self._getEnable()
 
     def _getEnable(self):
@@ -181,7 +180,6 @@ class GElement(Element):
         :param status: check status
         :type: :obj:`bool` or `None`
         """
-        print "SET G", self.name, status
         logger.debug("Changed: %s to %s" % (self.name, status))
         self.group[self.name] = bool(status)
 
@@ -209,17 +207,9 @@ class DSElement(Element):
         res = self.state.dsgroup
         timers = self.state.timers or []
         if self.name in timers:
-            if self.name == 'exp_c01':
-                print "DS GCH", self.name, True
-            if self.name == 'med4m':
-                print "DS GCH M", self.name, True
             return True
         if self.name in res.keys():
-            if self.name == 'exp_c01':
-                print "DS GCH", self.name, res[self.name]
             return res[self.name]
-        if self.name == 'exp_c01':
-            print "DS GCH", self.name, False
         return False
 
     def _setChecked(self, status):
@@ -228,7 +218,6 @@ class DSElement(Element):
         :param status: check status
         :type: :obj:`bool` or `None`
         """
-        print "SET DS", self.name, status
         dc = self.state.dsgroup
         dc[self.name] = status
         if not status:
@@ -320,12 +309,8 @@ class CPElement(Element):
             res = self.group
             dsres = {}
         if self.name in res.keys():
-            if self.name == 'med4m':
-                print "CP CH M", self.name, res[self.name]
             return res[self.name] is True
         if self.name in dsres.keys():
-            if self.name == 'med4m':
-                print "CP CH M2", self.name, dsres[self.name]
             return dsres[self.name] is True
         return False
 
@@ -335,7 +320,7 @@ class CPElement(Element):
         :param status: check status
         :type: :obj:`bool` or `None`
         """
-        print "SET CP", self.name, status
+        dds = self.state.ddsdict
         if not self.group:
             ds = self.state.dsgroup
             dc = self.state.cpgroup
@@ -346,9 +331,18 @@ class CPElement(Element):
         if self.name in ds.keys():
             ds[self.name] = status
         if not status:
+            res = self.state.cpgroup
             nd = self.state.nodisplay
             if self.name in nd:
                 nd.remove(self.name)
+            for dd, cp in dds.items():
+                if cp == self.name:
+                    if dd in ds:
+                        ds[dd] = status
+                    if dd in dc:
+                        dc[dd] = status
+                    if dd in nd:
+                        nd.remove(dd)
 
     def _getDisplay(self):
         """ getter for display flag

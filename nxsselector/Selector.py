@@ -45,7 +45,6 @@ import gc
 logger = logging.getLogger(__name__)
 
 
-
 @UILoadable(with_ui='ui')
 class Selector(Qt.QDialog, TaurusBaseWidget):
     """ main window application dialog """

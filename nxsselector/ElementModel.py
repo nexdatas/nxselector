@@ -109,12 +109,8 @@ class ElementModel(Qt.QAbstractTableModel):
         if (not (self.flags(index) & Qt.Qt.ItemIsEnabled)
             and self.enable and device.enable) \
            or device.checked:
-            if device.name == 'med4m':
-                print "MED CHECKED", type(device)
             return Qt.Qt.Checked
         else:
-            if device.name == 'med4m':
-                print "MED UNCHECKED", type(device)
             return Qt.Qt.Unchecked
 
     def __displayCheck(self, device, index):
@@ -127,12 +123,9 @@ class ElementModel(Qt.QAbstractTableModel):
         :returns: display status
         :rtype: :class:`taurus.qt.Qt.Qt.CheckState`
         """
-        # print "DDS", device.name, device.eltype
         if (not (self.flags(index) & Qt.Qt.ItemIsEnabled)
             and self.enable and device.enable) \
            or device.checked:
-            ## CHECK: can be if removed
-#            if device.eltype == DS:
             dds = device.state.ddsdict
             if device.name in dds.keys():
                 nd = device.state.nodisplay
@@ -389,7 +382,8 @@ class ElementModel(Qt.QAbstractTableModel):
         elif device.eltype == CP:
             mcp = device.state.mcplist
             acp = device.state.acplist
-            if (self.autoEnable and device.name in mcp) or device.name in dds.keys():
+            if (self.autoEnable and device.name in mcp) \
+               or device.name in dds.keys():
                 enable2 = False
                 flag &= ~Qt.Qt.ItemIsEnabled
                 if device.name in dds.keys():
@@ -414,10 +408,6 @@ class ElementModel(Qt.QAbstractTableModel):
                 Qt.Qt.ItemIsEditable
             )
         if column == 2:
-#            if device.name.startswith("med4m") or device.name == 'exp_c01':
-#                print "dds",dds
-#                mcp = device.state.mcplist
-#                print "FLAG0", device.name, enable, enable2, self.autoEnable and device.name in mcp, device.name in dds.keys()
             if not self.disEnable:
                 flag &= ~Qt.Qt.ItemIsEnabled
                 return Qt.Qt.ItemFlags(flag | Qt.Qt.ItemIsUserCheckable)
@@ -481,14 +471,12 @@ class ElementModel(Qt.QAbstractTableModel):
             if column == 0:
                 if role == Qt.Qt.CheckStateRole:
                     index3 = self.index(index.row(), 2)
-                    print "EM devchecked",  value
                     device.checked = value
                     self.emit(
                         Qt.SIGNAL("dataChanged(QModelIndex, QModelIndex)"),
                         index, index3)
-                    ## CHECK : if can be removed
-                    #                    if device.eltype == CP:
-                    self.componentChecked.emit()
+                    if device.eltype == CP:
+                        self.componentChecked.emit()
                     self.dirty.emit()
                 return True
             elif column == 1:
