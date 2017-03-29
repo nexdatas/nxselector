@@ -1,3 +1,7 @@
+2017-03-29 Jan Kotanski <jankotan@gmail.com>
+	* change selection/deselection strategy
+	* tagged as 3.5.0
+
 2017-03-28 Jan Kotanski <jankotan@gmail.com>
 	* add scanid update
 	* tagged as 3.4.0
