@@ -34,7 +34,7 @@ class Element(object):
     def __init__(self, name, eltype, state):
         """ constructor
 
-        :param name: element name
+       :param name: element name
         :type name: :obj:`str`
         :param eltype: element type, i.e. DS=0 or CP=1
         :type eltype: :obj:`int`
@@ -211,6 +211,8 @@ class DSElement(Element):
         if self.name in timers:
             if self.name == 'exp_c01':
                 print "DS GCH", self.name, True
+            if self.name == 'med4m':
+                print "DS GCH M", self.name, True
             return True
         if self.name in res.keys():
             if self.name == 'exp_c01':
@@ -313,10 +315,18 @@ class CPElement(Element):
         """
         if not self.group:
             res = self.state.cpgroup
+            dsres = self.state.dsgroup
         else:
             res = self.group
+            dsres = {}
         if self.name in res.keys():
+            if self.name == 'med4m':
+                print "CP CH M", self.name, res[self.name]
             return res[self.name] is True
+        if self.name in dsres.keys():
+            if self.name == 'med4m':
+                print "CP CH M2", self.name, dsres[self.name]
+            return dsres[self.name] is True
         return False
 
     def _setChecked(self, status):
@@ -327,10 +337,14 @@ class CPElement(Element):
         """
         print "SET CP", self.name, status
         if not self.group:
+            ds = self.state.dsgroup
             dc = self.state.cpgroup
         else:
             dc = self.group
+            ds = {}
         dc[self.name] = status
+        if self.name in ds.keys():
+            ds[self.name] = status
         if not status:
             nd = self.state.nodisplay
             if self.name in nd:
@@ -343,6 +357,7 @@ class CPElement(Element):
         :rtype: :obj:`bool`
         """
         res = self.state.cpgroup
+        dsres = self.state.dsgroup
         nd = self.state.nodisplay
         res = self.state.acpgroup
         if self.name not in nd:
@@ -350,6 +365,11 @@ class CPElement(Element):
                 if res[self.name]:
                     return True
         res = self.state.cpgroup
+        if self.name not in nd:
+            if self.name in res.keys():
+                if res[self.name]:
+                    return True
+        res = self.state.dsgroup
         if self.name not in nd:
             if self.name in res.keys():
                 if res[self.name]:
@@ -369,7 +389,17 @@ class CPElement(Element):
         dc = self.state.cpgroup
         mc = self.state.mcplist
         ac = self.state.acpgroup
+        ds = self.state.dsgroup
         nd = self.state.nodisplay
+        if self.name in ds.keys():
+            if self.name in nd:
+                if status:
+                    nd.remove(self.name)
+            else:
+                if not status:
+                    nd.append(self.name)
+                else:
+                    ds[self.name] = True
         if self.name in dc.keys():
             if self.name in nd:
                 if status:

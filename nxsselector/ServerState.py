@@ -8,7 +8,7 @@
 #    the Free Software Foundation, either version 3 of the License, or
 #    (at your option) any later version.
 #
-#    nexdatas is distributed in the hope that it will be useful,
+#    nexdatas isd istributed in the hope that it will be useful,
 #    but WITHOUT ANY WARRANTY; without even the implied warranty of
 #    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 #    GNU General Public License for more details.
@@ -352,6 +352,8 @@ class ServerState(Qt.QObject):
 
         self.cpgroup = self.__importDict("ComponentSelection")
         self.dsgroup = self.__importDict("DataSourceSelection")
+        print "FETCH CP SET", self.cpgroup
+        print "FETCH DS SET", self.dsgroup
         self.acpgroup = self.__importDict("ComponentPreselection")
         self.properties = self.__importDict("ChannelProperties")
         self.setProperties()
@@ -491,6 +493,8 @@ class ServerState(Qt.QObject):
             self.setServer()
         self.__storeEnvData()
         self.__storeFileData()
+        print "STORE CP SET", self.cpgroup
+        print "STORE DS SET", self.dsgroup
         self.__exportDict("DataSourceSelection", self.dsgroup)
         self.__exportDict("ComponentSelection", self.cpgroup)
         self.__exportDict("ComponentPreselection", self.acpgroup)

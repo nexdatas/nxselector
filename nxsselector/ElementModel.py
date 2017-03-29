@@ -109,8 +109,12 @@ class ElementModel(Qt.QAbstractTableModel):
         if (not (self.flags(index) & Qt.Qt.ItemIsEnabled)
             and self.enable and device.enable) \
            or device.checked:
+            if device.name == 'med4m':
+                print "MED CHECKED", type(device)
             return Qt.Qt.Checked
         else:
+            if device.name == 'med4m':
+                print "MED UNCHECKED", type(device)
             return Qt.Qt.Unchecked
 
     def __displayCheck(self, device, index):
@@ -127,13 +131,14 @@ class ElementModel(Qt.QAbstractTableModel):
         if (not (self.flags(index) & Qt.Qt.ItemIsEnabled)
             and self.enable and device.enable) \
            or device.checked:
-            if device.eltype == DS:
-                dds = device.state.ddsdict
-                if device.name in dds.keys():
-                    nd = device.state.nodisplay
-                    if not dds[device.name] in nd \
-                            and dds[device.name]:
-                        return Qt.Qt.Checked
+            ## CHECK: can be if removed
+#            if device.eltype == DS:
+            dds = device.state.ddsdict
+            if device.name in dds.keys():
+                nd = device.state.nodisplay
+                if not dds[device.name] in nd \
+                        and dds[device.name]:
+                    return Qt.Qt.Checked
 
             if device.display:
                 return Qt.Qt.Checked
@@ -375,8 +380,8 @@ class ElementModel(Qt.QAbstractTableModel):
         enable2 = self.enable and device.enable
         flag = Qt.QAbstractTableModel.flags(self, index)
         column = index.column()
+        dds = device.state.ddsdict
         if device.eltype == DS:
-            dds = device.state.ddsdict
             if device.name in dds.keys() and self.autoEnable:
                 enable = False
                 flag &= ~Qt.Qt.ItemIsEnabled
@@ -384,9 +389,11 @@ class ElementModel(Qt.QAbstractTableModel):
         elif device.eltype == CP:
             mcp = device.state.mcplist
             acp = device.state.acplist
-            if device.name in mcp and self.autoEnable:
+            if (self.autoEnable and device.name in mcp) or device.name in dds.keys():
                 enable2 = False
                 flag &= ~Qt.Qt.ItemIsEnabled
+                if device.name in dds.keys():
+                    comp = dds[device.name]
         if column == 0:
             if enable and enable2:
                 return Qt.Qt.ItemFlags(flag |
@@ -407,6 +414,10 @@ class ElementModel(Qt.QAbstractTableModel):
                 Qt.Qt.ItemIsEditable
             )
         if column == 2:
+#            if device.name.startswith("med4m") or device.name == 'exp_c01':
+#                print "dds",dds
+#                mcp = device.state.mcplist
+#                print "FLAG0", device.name, enable, enable2, self.autoEnable and device.name in mcp, device.name in dds.keys()
             if not self.disEnable:
                 flag &= ~Qt.Qt.ItemIsEnabled
                 return Qt.Qt.ItemFlags(flag | Qt.Qt.ItemIsUserCheckable)
@@ -422,6 +433,10 @@ class ElementModel(Qt.QAbstractTableModel):
                         cpncheck = True
                 elif comp in device.state.cpgroup:
                     cpncheck = not device.state.cpgroup[comp]
+                    if not cpncheck and comp in device.state.nodisplay:
+                        cpncheck = True
+                if comp in device.state.dsgroup:
+                    cpncheck = not device.state.dsgroup[comp]
                     if not cpncheck and comp in device.state.nodisplay:
                         cpncheck = True
             elif comp is not None:
@@ -471,8 +486,9 @@ class ElementModel(Qt.QAbstractTableModel):
                     self.emit(
                         Qt.SIGNAL("dataChanged(QModelIndex, QModelIndex)"),
                         index, index3)
-                    if device.eltype == CP:
-                        self.componentChecked.emit()
+                    ## CHECK : if can be removed
+                    #                    if device.eltype == CP:
+                    self.componentChecked.emit()
                     self.dirty.emit()
                 return True
             elif column == 1:
