@@ -339,7 +339,7 @@ into separate entries identified by the current Scan ID.</string>
              <enum>Qt::RightToLeft</enum>
             </property>
             <property name="text">
-             <string>Append Entries</string>
+             <string>Multi-Scan Files</string>
             </property>
            </widget>
           </item>
