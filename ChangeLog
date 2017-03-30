@@ -1,3 +1,7 @@
+2017-03-30 Jan Kotanski <jankotan@gmail.com>
+	* add support for oxygen
+	* tagged as 3.5.2
+
 2017-03-29 Jan Kotanski <jankotan@gmail.com>
 	* change Append Entries to  Multi-Scan Files
 	* tagged as 3.5.1

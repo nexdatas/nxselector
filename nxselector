@@ -15,8 +15,8 @@
 #
 #    You should have received a copy of the GNU General Public License
 #    along with nexdatas.  If not, see <http://www.gnu.org/licenses/>.
-## \package nxsselector nexdatas
-## \file nxsscan
+# \package nxsselector nexdatas
+# \file nxsscan
 # GUI for setting sardana scans with NeXus Recorder
 
 """ NXS Scan - GUI for setting sardana scans with NeXus Recorder"""
@@ -37,11 +37,15 @@ import nxsselector.qrc as qrc
 logger = logging.getLogger(__name__)
 
 
-## the main function
 def main():
+    """ the main function
+    """
 
-    if "GNOME_DESKTOP_SESSION_ID"  not in os.environ:
+    if "GNOME_DESKTOP_SESSION_ID" not in os.environ:
         os.environ["GNOME_DESKTOP_SESSION_ID"] = "qtconfig"
+    if os.path.isdir("/usr/lib/kde4/plugins/") and \
+       "QT_PLUGIN_PATH" not in os.environ:
+        os.environ["QT_PLUGIN_PATH"] = "/usr/lib/kde4/plugins/"
     try:
         from taurus.external.qt import Qt
     except:
