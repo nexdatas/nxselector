@@ -214,6 +214,9 @@ class ServerState(Qt.QObject):
         #: (:obj:`bool`) no timer restriction flag
         self.notimerresctriction = False
 
+        self.ddsdirty = True
+        self.__ddsbackup = {}
+        
         try:
             self.setServer()
             if self.server:
@@ -230,6 +233,7 @@ class ServerState(Qt.QObject):
         self.channelprops = ["nexus_path", "link", "shape", "label",
                              "data_type"]
         self.synchtread = SynchThread(self, self.server)
+        
 
     def __grepServer(self):
         """ provides the local selector server device name
@@ -352,6 +356,8 @@ class ServerState(Qt.QObject):
 
         self.cpgroup = self.__importDict("ComponentSelection")
         self.dsgroup = self.__importDict("DataSourceSelection")
+        print "CP", self.cpgroup
+        print "DS", self.dsgroup
         self.acpgroup = self.__importDict("ComponentPreselection")
         self.properties = self.__importDict("ChannelProperties")
         self.setProperties()
@@ -372,6 +378,7 @@ class ServerState(Qt.QObject):
         self.acplist = self.__getList("preselectedComponents")
         self.atlist = self.__getList("availableTimers")
         self.description = self.__getList("componentDescription", True)
+        self.ddsdirty = True
         self.mutedChannels = self.__getList("mutedChannels")
 
         self.vrcpdict = self.__getDict("variableComponents")
@@ -1008,9 +1015,11 @@ class ServerState(Qt.QObject):
         :returns: (disable datasources, ds component) dictionary
         :rtype: :obj:`dict` <:obj:`str`, :obj:`str`>
         """
+        if not self.ddsdirty:
+            return dict(self.__ddsbackup)
+        
         res = self.description
         dds = {}
-
         for cpg in res:
             for cp, dss in cpg.items():
                 if isinstance(dss, dict):
@@ -1021,12 +1030,16 @@ class ServerState(Qt.QObject):
                         for ds, values in dss.items():
                             for vl in values:
                                 if len(vl) > 0 and vl[0] == 'STEP':
-                                    dds[ds] = cp
-                                    break
+                                    if ds != cp:
+                                        dds[ds] = cp
+                                        break
         if self.timers:
             for timer in self.timers:
                 if timer not in dds.keys():
                     dds[timer] = ''
+        self.__ddsbackup = dict(dds)
+        print "DDS", dds
+        self.ddsdirty = False
         return dds
 
     def clientRecords(self):

@@ -372,6 +372,7 @@ class ElementModel(Qt.QAbstractTableModel):
         enable2 = self.enable and device.enable
         flag = Qt.QAbstractTableModel.flags(self, index)
         column = index.column()
+        #print "FLAG1" ,device.name
         dds = device.state.ddsdict
         if device.eltype == DS:
             if device.name in dds.keys() and self.autoEnable:
@@ -387,6 +388,7 @@ class ElementModel(Qt.QAbstractTableModel):
                 flag &= ~Qt.Qt.ItemIsEnabled
                 if device.name in dds.keys():
                     comp = dds[device.name]
+        #qprint "FLAG" ,device.name, flag
         if column == 0:
             if enable and enable2:
                 return Qt.Qt.ItemFlags(flag |
@@ -470,6 +472,7 @@ class ElementModel(Qt.QAbstractTableModel):
             if column == 0:
                 if role == Qt.Qt.CheckStateRole:
                     index3 = self.index(index.row(), 2)
+                    print "SET CHECK", device.name, value
                     device.checked = value
                     self.emit(
                         Qt.SIGNAL("dataChanged(QModelIndex, QModelIndex)"),

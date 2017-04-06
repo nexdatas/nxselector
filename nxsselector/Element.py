@@ -220,6 +220,7 @@ class DSElement(Element):
         """
         dc = self.state.dsgroup
         dc[self.name] = status
+        self.state.dssdirty = True    
         if not status:
             nd = self.state.nodisplay
             if self.name in nd:
@@ -319,7 +320,9 @@ class CPElement(Element):
         :param status: check status
         :type: :obj:`bool` or `None`
         """
+        self.state.dssdirty = True    
         dds = self.state.ddsdict
+        print "CLICK", self.name, dds
         if not self.group:
             ds = self.state.dsgroup
             dc = self.state.cpgroup
