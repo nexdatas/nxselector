@@ -89,7 +89,6 @@ class Element(object):
         :returns: if element is enable
         :rtype: :obj:`bool`
         """
-#        print ("Eneble %s: %s" % (self.name,self._getEnable()))
         return self._getEnable()
 
     def _getEnable(self):
@@ -221,6 +220,7 @@ class DSElement(Element):
         """
         dc = self.state.dsgroup
         dc[self.name] = status
+        self.state.ddsdirty = True
         if not status:
             nd = self.state.nodisplay
             if self.name in nd:
@@ -252,8 +252,7 @@ class DSElement(Element):
             if self.name in nd:
                 if status:
                     nd.remove(self.name)
-                    if self.name in timers:
-                        dc[self.name] = True
+                    dc[self.name] = True
             else:
                 if not status:
                     if self.name in timers:
@@ -305,10 +304,14 @@ class CPElement(Element):
         """
         if not self.group:
             res = self.state.cpgroup
+            dsres = self.state.dsgroup
         else:
             res = self.group
+            dsres = {}
         if self.name in res.keys():
             return res[self.name] is True
+        if self.name in dsres.keys():
+            return dsres[self.name] is True
         return False
 
     def _setChecked(self, status):
@@ -317,15 +320,35 @@ class CPElement(Element):
         :param status: check status
         :type: :obj:`bool` or `None`
         """
+        self.state.ddsdirty = True
+        dds = self.state.ddsdict
+        self.state.ddsdirty = True
         if not self.group:
+            ds = self.state.dsgroup
             dc = self.state.cpgroup
         else:
             dc = self.group
+            ds = {}
         dc[self.name] = status
+        self.state.ddsdirty = True
+        if self.name in ds.keys():
+            ds[self.name] = status
+            self.state.ddsdirty = True
         if not status:
+            res = self.state.cpgroup
             nd = self.state.nodisplay
             if self.name in nd:
                 nd.remove(self.name)
+        for dd, cp in dds.items():
+            if cp == self.name:
+                if dd in ds:
+                    ds[dd] = status
+                    self.state.ddsdirty = True
+                if dd in dc:
+                    dc[dd] = status
+                    self.state.ddsdirty = True
+                if not status and dd in nd:
+                    nd.remove(dd)
 
     def _getDisplay(self):
         """ getter for display flag
@@ -334,6 +357,7 @@ class CPElement(Element):
         :rtype: :obj:`bool`
         """
         res = self.state.cpgroup
+        dsres = self.state.dsgroup
         nd = self.state.nodisplay
         res = self.state.acpgroup
         if self.name not in nd:
@@ -341,6 +365,11 @@ class CPElement(Element):
                 if res[self.name]:
                     return True
         res = self.state.cpgroup
+        if self.name not in nd:
+            if self.name in res.keys():
+                if res[self.name]:
+                    return True
+        res = self.state.dsgroup
         if self.name not in nd:
             if self.name in res.keys():
                 if res[self.name]:
@@ -360,7 +389,18 @@ class CPElement(Element):
         dc = self.state.cpgroup
         mc = self.state.mcplist
         ac = self.state.acpgroup
+        ds = self.state.dsgroup
         nd = self.state.nodisplay
+        dds = self.state.ddsdict
+        if self.name in ds.keys():
+            if self.name in nd:
+                if status:
+                    nd.remove(self.name)
+            else:
+                if not status:
+                    nd.append(self.name)
+                else:
+                    ds[self.name] = True
         if self.name in dc.keys():
             if self.name in nd:
                 if status:
@@ -389,3 +429,13 @@ class CPElement(Element):
         else:
             if self.name in nd:
                 nd.remove(self.name)
+        for dd, cp in dds.items():
+            if cp == self.name:
+                if dd in nd:
+                    if status:
+                        nd.remove(dd)
+                else:
+                    if not status:
+                        nd.append(dd)
+                    else:
+                        ds[dd] = True

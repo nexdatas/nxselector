@@ -694,6 +694,7 @@ class Selector(Qt.QDialog, TaurusBaseWidget):
         """ resets all tab views
         """
         logger.debug("reset view")
+        self.state.ddsdirty = True
         for tab in self.tabs:
             if not isinstance(tab, Descriptions):
                 tab.userView = self.preferences.views[
@@ -902,6 +903,7 @@ class Selector(Qt.QDialog, TaurusBaseWidget):
             self.state.dsgroup[ds] = False
         for ds in self.state.cpgroup.keys():
             self.state.cpgroup[ds] = False
+        self.state.ddsdirty = True
         self.resetViews()
         self.setDirty()
 

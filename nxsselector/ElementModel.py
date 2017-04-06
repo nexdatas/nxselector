@@ -106,7 +106,8 @@ class ElementModel(Qt.QAbstractTableModel):
         :returns: check status
         :rtype: :class:`taurus.qt.Qt.Qt.CheckState`
         """
-        if (not (self.flags(index) & Qt.Qt.ItemIsEnabled) and self.enable and device.enable) \
+        if (not (self.flags(index) & Qt.Qt.ItemIsEnabled)
+            and self.enable and device.enable) \
            or device.checked:
             return Qt.Qt.Checked
         else:
@@ -122,16 +123,15 @@ class ElementModel(Qt.QAbstractTableModel):
         :returns: display status
         :rtype: :class:`taurus.qt.Qt.Qt.CheckState`
         """
-        if (not (self.flags(index) & Qt.Qt.ItemIsEnabled) and self.enable and device.enable) \
+        if (not (self.flags(index) & Qt.Qt.ItemIsEnabled)
+            and self.enable and device.enable) \
            or device.checked:
-            if device.eltype == DS:
-                dds = device.state.ddsdict
-                if device.name in dds.keys():
-                    nd = device.state.nodisplay
-                    if not dds[device.name] in nd \
-                            and dds[device.name]:
-                        return Qt.Qt.Checked
-
+            dds = device.state.ddsdict
+            if device.name in dds.keys():
+                nd = device.state.nodisplay
+                if not dds[device.name] in nd \
+                        and dds[device.name]:
+                    return Qt.Qt.Checked
             if device.display:
                 return Qt.Qt.Checked
             else:
@@ -372,8 +372,8 @@ class ElementModel(Qt.QAbstractTableModel):
         enable2 = self.enable and device.enable
         flag = Qt.QAbstractTableModel.flags(self, index)
         column = index.column()
+        dds = device.state.ddsdict
         if device.eltype == DS:
-            dds = device.state.ddsdict
             if device.name in dds.keys() and self.autoEnable:
                 enable = False
                 flag &= ~Qt.Qt.ItemIsEnabled
@@ -381,9 +381,12 @@ class ElementModel(Qt.QAbstractTableModel):
         elif device.eltype == CP:
             mcp = device.state.mcplist
             acp = device.state.acplist
-            if device.name in mcp and self.autoEnable:
+            if (self.autoEnable and device.name in mcp) \
+               or device.name in dds.keys():
                 enable2 = False
                 flag &= ~Qt.Qt.ItemIsEnabled
+                if device.name in dds.keys():
+                    comp = dds[device.name]
         if column == 0:
             if enable and enable2:
                 return Qt.Qt.ItemFlags(flag |
@@ -419,6 +422,10 @@ class ElementModel(Qt.QAbstractTableModel):
                         cpncheck = True
                 elif comp in device.state.cpgroup:
                     cpncheck = not device.state.cpgroup[comp]
+                    if not cpncheck and comp in device.state.nodisplay:
+                        cpncheck = True
+                if comp in device.state.dsgroup:
+                    cpncheck = not device.state.dsgroup[comp]
                     if not cpncheck and comp in device.state.nodisplay:
                         cpncheck = True
             elif comp is not None:
@@ -463,6 +470,7 @@ class ElementModel(Qt.QAbstractTableModel):
             if column == 0:
                 if role == Qt.Qt.CheckStateRole:
                     index3 = self.index(index.row(), 2)
+                    device.state.ddsdirty = True
                     device.checked = value
                     self.emit(
                         Qt.SIGNAL("dataChanged(QModelIndex, QModelIndex)"),
