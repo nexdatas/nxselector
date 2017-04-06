@@ -1016,7 +1016,6 @@ class ServerState(Qt.QObject):
                 if isinstance(dss, dict):
                     if cp in self.cplist \
                        or cp in self.mcplist \
-                       or cp in self.dslist \
                        or cp in self.acplist:
                         for ds, values in dss.items():
                             for vl in values:
@@ -1043,7 +1042,6 @@ class ServerState(Qt.QObject):
                 if isinstance(dss, dict):
                     if cp in self.cplist \
                        or cp in self.mcplist \
-                       or cp in self.dslist \
                        or cp in self.acplist:
                         for ds, values in dss.items():
                             for vl in values:

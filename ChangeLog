@@ -1,3 +1,7 @@
+2017-04-06 Jan Kotanski <jankotan@gmail.com>
+	* revert changes from v3.5.0
+	* tagged as 3.5.3
+
 2017-03-30 Jan Kotanski <jankotan@gmail.com>
 	* add support for oxygen
 	* tagged as 3.5.2
