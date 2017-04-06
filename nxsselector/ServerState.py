@@ -216,7 +216,7 @@ class ServerState(Qt.QObject):
 
         self.ddsdirty = True
         self.__ddsbackup = {}
-        
+
         try:
             self.setServer()
             if self.server:
@@ -233,7 +233,7 @@ class ServerState(Qt.QObject):
         self.channelprops = ["nexus_path", "link", "shape", "label",
                              "data_type"]
         self.synchtread = SynchThread(self, self.server)
-        
+
 
     def __grepServer(self):
         """ provides the local selector server device name
@@ -356,8 +356,6 @@ class ServerState(Qt.QObject):
 
         self.cpgroup = self.__importDict("ComponentSelection")
         self.dsgroup = self.__importDict("DataSourceSelection")
-        print "CP", self.cpgroup
-        print "DS", self.dsgroup
         self.acpgroup = self.__importDict("ComponentPreselection")
         self.properties = self.__importDict("ChannelProperties")
         self.setProperties()
@@ -1017,7 +1015,7 @@ class ServerState(Qt.QObject):
         """
         if not self.ddsdirty:
             return dict(self.__ddsbackup)
-        
+
         res = self.description
         dds = {}
         for cpg in res:
@@ -1038,7 +1036,6 @@ class ServerState(Qt.QObject):
                 if timer not in dds.keys():
                     dds[timer] = ''
         self.__ddsbackup = dict(dds)
-        print "DDS", dds
         self.ddsdirty = False
         return dds
 

@@ -220,7 +220,7 @@ class DSElement(Element):
         """
         dc = self.state.dsgroup
         dc[self.name] = status
-        self.state.dssdirty = True    
+        self.state.ddsdirty = True
         if not status:
             nd = self.state.nodisplay
             if self.name in nd:
@@ -320,9 +320,9 @@ class CPElement(Element):
         :param status: check status
         :type: :obj:`bool` or `None`
         """
-        self.state.dssdirty = True    
+        self.state.ddsdirty = True
         dds = self.state.ddsdict
-        print "CLICK", self.name, dds
+        self.state.ddsdirty = True
         if not self.group:
             ds = self.state.dsgroup
             dc = self.state.cpgroup
@@ -330,8 +330,10 @@ class CPElement(Element):
             dc = self.group
             ds = {}
         dc[self.name] = status
+        self.state.ddsdirty = True
         if self.name in ds.keys():
             ds[self.name] = status
+            self.state.ddsdirty = True
         if not status:
             res = self.state.cpgroup
             nd = self.state.nodisplay
@@ -341,8 +343,10 @@ class CPElement(Element):
             if cp == self.name:
                 if dd in ds:
                     ds[dd] = status
+                    self.state.ddsdirty = True
                 if dd in dc:
                     dc[dd] = status
+                    self.state.ddsdirty = True
                 if not status and dd in nd:
                     nd.remove(dd)
 

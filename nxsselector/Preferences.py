@@ -207,7 +207,7 @@ class Preferences(Qt.QObject):
                             raise Exception("Duplicated id")
             self.__frames = frames
         except Exception as e:
-            print str(e)
+            print(str(e))
 
     def __getframes(self):
         """ getter for frame configuration
