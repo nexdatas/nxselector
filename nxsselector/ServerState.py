@@ -84,7 +84,6 @@ class SynchThread(Qt.QThread):
                         self.__lastscanid = scanid
             except:
                 """ what is wrong """
-                print("ERROR: %s" % str(e))
 
 
 class ServerState(Qt.QObject):
