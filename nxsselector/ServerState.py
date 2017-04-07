@@ -74,14 +74,17 @@ class SynchThread(Qt.QThread):
 
             try:
                 if self.state.server:
-                    dp = PyTango.DeviceProxy(self.state.server)
-                    scanid = dp.scanID
+                    try:
+                        scanid = dp.scanID
+                    except:
+                        dp = PyTango.DeviceProxy(self.state.server)
+                        scanid = dp.scanID
                     if self.__lastscanid != scanid:
                         self.scanidchanged.emit()
                         self.__lastscanid = scanid
-            except Exception as e:
+            except:
+                """ what is wrong """
                 print("ERROR: %s" % str(e))
-                raise
 
 
 class ServerState(Qt.QObject):

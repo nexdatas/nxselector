@@ -1,3 +1,7 @@
+2017-04-07 Jan Kotanski <jankotan@gmail.com>
+	* remove sending exceptions
+	* tagged as 3.5.5
+
 2017-04-06 Jan Kotanski <jankotan@gmail.com>
 	* fix for wrong deselection strategy
 	* tagged as 3.5.4
