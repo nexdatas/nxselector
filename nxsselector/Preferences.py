@@ -311,6 +311,7 @@ class Preferences(Qt.QObject):
                     if server == 'module':
                         self.state.server = ''
                         self.state.setServer()
+                        self.state.updateServerShared()
                         self.state.fetchSettings()
                         self.addHint(server, self.serverhelp)
                     else:
@@ -322,6 +323,7 @@ class Preferences(Qt.QObject):
                         if dp.info().dev_class == 'NXSRecSelector':
                             self.state.server = str(server)
                             self.state.setServer()
+                            self.state.updateServerShared()
                             self.state.fetchSettings()
                             self.addHint(server, self.serverhelp)
                 except Exception:

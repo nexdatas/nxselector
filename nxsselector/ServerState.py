@@ -42,7 +42,7 @@ class SynchThread(Qt.QThread):
     #: (:class:`taurus.qt.Qt.pyqtSignal`) dirty signal
     scanidchanged = Qt.pyqtSignal()
 
-    def __init__(self, serverstate, server):
+    def __init__(self, serverstate, server, mutex):
         """constructor
         :param serverstate: ServerState
         :type serverstate: :class:`ServerState`
@@ -50,19 +50,19 @@ class SynchThread(Qt.QThread):
         :type server: :obj:`str`
         """
         Qt.QThread.__init__(self, serverstate)
-        #: (:class:`ServerState`) server state instance
-        self.state = serverstate
         #: (:obj:`bool`) server is running
         self.running = True
 
+        #: (:class:`taurus.qt.Qt.QMutex`) thread mutex
+        self.mutex = mutex
+
         #: (:obj:`str`) server name
-        self.server = server
+        self.server = serverstate.server
 
         #: (:obj:`int`) last scan id
         self.__lastscanid = 0
-        if self.state.server:
-            dp = PyTango.DeviceProxy(
-                self.state.server)
+        if self.server:
+            dp = PyTango.DeviceProxy(self.server)
             self.__lastscanid = dp.scanID
 
     def run(self):
@@ -70,19 +70,21 @@ class SynchThread(Qt.QThread):
         """
         insynch = True
         while insynch:
-            time.sleep(5)
-
+            self.sleep(5)
             try:
-                if self.state.server:
-                    try:
-                        scanid = dp.scanID
-                    except:
-                        dp = PyTango.DeviceProxy(self.state.server)
-                        scanid = dp.scanID
-                    if self.__lastscanid != scanid:
-                        self.scanidchanged.emit()
-                        self.__lastscanid = scanid
-            except:
+                with Qt.QMutexLocker(self.mutex):
+                    server = self.server
+                if server:
+                    dp = PyTango.DeviceProxy(server)
+                    scanid = dp.scanID
+                with Qt.QMutexLocker(self.mutex):
+                    if not self.running:
+                        insynch = False
+                if self.__lastscanid != scanid and insynch:
+                    self.scanidchanged.emit()
+                    self.__lastscanid = scanid
+            except Exception as e:
+                # print (str(e))
                 """ what is wrong """
 
 
@@ -99,6 +101,10 @@ class ServerState(Qt.QObject):
 
         #: (:obj:`str`) selector server name
         self.server = None
+
+        #: (:class:`taurus.qt.Qt.QMutex`) thread mutex
+        self.mutex = Qt.QMutex()
+
         #: (:class:`PyTango.Database`) tango database instance
         self.__db = PyTango.Database()
         #: (:class:`PyTango.DeviceProxy`) selector server device proxy
@@ -234,7 +240,7 @@ class ServerState(Qt.QObject):
                                ]
         self.channelprops = ["nexus_path", "link", "shape", "label",
                              "data_type"]
-        self.synchtread = SynchThread(self, self.server)
+        self.synchtread = SynchThread(self, self.server, self.mutex)
 
 
     def __grepServer(self):
@@ -287,7 +293,14 @@ class ServerState(Qt.QObject):
             self.server = None
         else:
             self.server = str(server)
-
+        self.updateServerShared()
+            
+    def updateServerShared(self):        
+        with Qt.QMutexLocker(self.mutex):
+            if hasattr(self, "synchtread"):
+                if self.server != self.synchtread.server:
+                    self.synchtread.server = self.server
+            
     def __fetchConfiguration(self):
         """ fetches from the server the current profile configuration
         """

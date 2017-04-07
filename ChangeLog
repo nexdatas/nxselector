@@ -1,4 +1,8 @@
 2017-04-07 Jan Kotanski <jankotan@gmail.com>
+	* making synch thread safe
+	* tagged as 3.5.6
+
+2017-04-07 Jan Kotanski <jankotan@gmail.com>
 	* remove sending exceptions
 	* tagged as 3.5.5
 

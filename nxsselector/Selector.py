@@ -204,7 +204,7 @@ class Selector(Qt.QDialog, TaurusBaseWidget):
             self.userView = 'CheckBoxes Dis'
         self.storage = Storage(self.ui, self.state, self.simple)
         self.state.synchtread.scanidchanged.connect(
-            self.storage.updateScanID, Qt.Qt.QueuedConnection)
+            self.storage.updateScanID, Qt.Qt.DirectConnection)
         self.state.synchtread.start()
 
         self.detectors = Detectors(
@@ -556,10 +556,12 @@ class Selector(Qt.QDialog, TaurusBaseWidget):
         :type server: :obj:`str`
         """
         if self.state:
-            self.state.synchtread.running = False
+            with Qt.QMutexLocker(self.state.mutex):
+                self.state.synchtread.running = False
             if hasattr(self, "storage"):
                 self.state.synchtread.scanidchanged.disconnect(
-                    self.storage.updateScanID, Qt.Qt.QueuedConnection)
+                    self.storage.updateScanID)
+            self.state.synchtread.wait()
         try:
             self.state = ServerState(server)
             if self.__door:
@@ -578,7 +580,7 @@ class Selector(Qt.QDialog, TaurusBaseWidget):
                 self.state.storeData("door", self.__door)
         if hasattr(self, "storage"):
             self.state.synchtread.scanidchanged.connect(
-                self.storage.updateScanID, Qt.Qt.QueuedConnection)
+                self.storage.updateScanID, Qt.Qt.DirectConnection)
             self.state.synchtread.start()
         self.runProgress(["updateControllers", "fetchSettings"],
                          "settings")
