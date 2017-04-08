@@ -70,7 +70,8 @@ class SynchThread(Qt.QThread):
         """
         insynch = True
         while insynch:
-            self.sleep(5)
+            print "tick"
+            self.sleep(3)
             try:
                 with Qt.QMutexLocker(self.mutex):
                     server = self.server
@@ -84,9 +85,11 @@ class SynchThread(Qt.QThread):
                     self.scanidchanged.emit()
                     self.__lastscanid = scanid
             except Exception as e:
-                # print (str(e))
+                print (str(e))
                 """ what is wrong """
 
+            print "tack"
+            self.sleep(2)
 
 class ServerState(Qt.QObject):
     """ state of recorder server """
