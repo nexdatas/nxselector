@@ -243,7 +243,7 @@ class ServerState(Qt.QObject):
                                ]
         self.channelprops = ["nexus_path", "link", "shape", "label",
                              "data_type"]
-#        self.synchtread = SynchThread(self, self.server, self.mutex)
+        self.synchtread = SynchThread(self, self.server, self.mutex)
 
 
     def __grepServer(self):
@@ -297,14 +297,13 @@ class ServerState(Qt.QObject):
         else:
             self.server = str(server)
         self.updateServerShared()
-            
+
     def updateServerShared(self):
-        pass
         with Qt.QMutexLocker(self.mutex):
             if hasattr(self, "synchtread"):
                 if self.server != self.synchtread.server:
                     self.synchtread.server = self.server
-            
+
     def __fetchConfiguration(self):
         """ fetches from the server the current profile configuration
         """
