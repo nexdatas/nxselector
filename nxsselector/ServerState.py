@@ -243,7 +243,7 @@ class ServerState(Qt.QObject):
                                ]
         self.channelprops = ["nexus_path", "link", "shape", "label",
                              "data_type"]
-        self.synchtread = SynchThread(self, self.server, self.mutex)
+#        self.synchtread = SynchThread(self, self.server, self.mutex)
 
 
     def __grepServer(self):
@@ -298,7 +298,8 @@ class ServerState(Qt.QObject):
             self.server = str(server)
         self.updateServerShared()
             
-    def updateServerShared(self):        
+    def updateServerShared(self):
+        pass
         with Qt.QMutexLocker(self.mutex):
             if hasattr(self, "synchtread"):
                 if self.server != self.synchtread.server:

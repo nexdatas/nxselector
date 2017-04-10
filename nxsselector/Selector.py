@@ -203,9 +203,9 @@ class Selector(Qt.QDialog, TaurusBaseWidget):
         if self.userView not in self.preferences.views:
             self.userView = 'CheckBoxes Dis'
         self.storage = Storage(self.ui, self.state, self.simple)
-        self.state.synchtread.scanidchanged.connect(
-            self.storage.updateScanID, Qt.Qt.DirectConnection)
-        self.state.synchtread.start()
+#        self.state.synchtread.scanidchanged.connect(
+#            self.storage.updateScanID, Qt.Qt.DirectConnection)
+#        self.state.synchtread.start()
 
         self.detectors = Detectors(
             self.ui, self.state,
@@ -555,13 +555,13 @@ class Selector(Qt.QDialog, TaurusBaseWidget):
         :param server: server name
         :type server: :obj:`str`
         """
-        if self.state:
-            with Qt.QMutexLocker(self.state.mutex):
-                self.state.synchtread.running = False
-            if hasattr(self, "storage"):
-                self.state.synchtread.scanidchanged.disconnect(
-                    self.storage.updateScanID)
-            self.state.synchtread.wait()
+#        if self.state:
+#            with Qt.QMutexLocker(self.state.mutex):
+#                self.state.synchtread.running = False
+#            if hasattr(self, "storage"):
+#                self.state.synchtread.scanidchanged.disconnect(
+#                    self.storage.updateScanID)
+#            self.state.synchtread.wait()
         try:
             self.state = ServerState(server)
             if self.__door:
@@ -578,10 +578,10 @@ class Selector(Qt.QDialog, TaurusBaseWidget):
             self.state.setServer()
             if self.__door:
                 self.state.storeData("door", self.__door)
-        if hasattr(self, "storage"):
-            self.state.synchtread.scanidchanged.connect(
-                self.storage.updateScanID, Qt.Qt.DirectConnection)
-            self.state.synchtread.start()
+#        if hasattr(self, "storage"):
+#            self.state.synchtread.scanidchanged.connect(
+#                self.storage.updateScanID, Qt.Qt.DirectConnection)
+#            self.state.synchtread.start()
         self.runProgress(["updateControllers", "fetchSettings"],
                          "settings")
 

@@ -1,3 +1,7 @@
+2017-04-10 Jan Kotanski <jankotan@gmail.com>
+	* commenting ScanID threads (does not work correctly with TaurusForms)
+	* tagged as 3.5.7
+
 2017-04-07 Jan Kotanski <jankotan@gmail.com>
 	* making synch thread safe
 	* tagged as 3.5.6
