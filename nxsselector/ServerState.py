@@ -57,27 +57,40 @@ class SynchThread(Qt.QThread):
         self.mutex = mutex
 
         #: (:obj:`str`) server name
-        self.server = serverstate.server
+        self.server = str(serverstate.server)
+
+        #: (:obj:`str`) server name
+        self.__serverstate = serverstate
 
         #: (:obj:`int`) last scan id
         self.__lastscanid = 0
+        self.__dp = None
         if self.server:
-            dp = PyTango.DeviceProxy(self.server)
-            self.__lastscanid = dp.scanID
+            self.__dp = PyTango.DeviceProxy(self.server)
+            self.__lastscanid = self.__dp.scanID
+
+
+    def restart(self):
+        with Qt.QMutexLocker(self.mutex):
+            self.server = str(self.__serverstate.server)
+        if self.server:
+            self.__dp = PyTango.DeviceProxy(self.server)
+            self.__lastscanid = self.__dp.scanID
+        self.running = True
+        self.start()
 
     def run(self):
         """ runs synch thread
         """
         insynch = True
         while insynch:
-            print "tick"
-            self.sleep(3)
+#            print "tick"
+#            self.sleep(3)
+            self.msleep(10)
             try:
-                with Qt.QMutexLocker(self.mutex):
-                    server = self.server
-                if server:
-                    dp = PyTango.DeviceProxy(server)
-                    scanid = dp.scanID
+                scanid = self.__dp.scanID
+                if not Qt:
+                    break
                 with Qt.QMutexLocker(self.mutex):
                     if not self.running:
                         insynch = False
@@ -88,11 +101,14 @@ class SynchThread(Qt.QThread):
                 print (str(e))
                 """ what is wrong """
 
-            print "tack"
-            self.sleep(2)
+#            print "tack"
+#            self.sleep(2)
 
 class ServerState(Qt.QObject):
     """ state of recorder server """
+
+    #: (:class:`taurus.qt.Qt.pyqtSignal`) server changed signal
+    serverChanged = Qt.pyqtSignal()
 
     def __init__(self, server=None):
         """ constructor
@@ -243,7 +259,7 @@ class ServerState(Qt.QObject):
                                ]
         self.channelprops = ["nexus_path", "link", "shape", "label",
                              "data_type"]
-        self.synchtread = SynchThread(self, self.server, self.mutex)
+        self.synchthread = SynchThread(self, self.server, self.mutex)
 
 
     def __grepServer(self):
@@ -300,9 +316,9 @@ class ServerState(Qt.QObject):
 
     def updateServerShared(self):
         with Qt.QMutexLocker(self.mutex):
-            if hasattr(self, "synchtread"):
-                if self.server != self.synchtread.server:
-                    self.synchtread.server = self.server
+            if hasattr(self, "synchthread"):
+                if self.server != self.synchthread.server:
+                    self.serverChanged.emit()
 
     def __fetchConfiguration(self):
         """ fetches from the server the current profile configuration

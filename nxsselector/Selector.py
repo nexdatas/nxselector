@@ -203,9 +203,11 @@ class Selector(Qt.QDialog, TaurusBaseWidget):
         if self.userView not in self.preferences.views:
             self.userView = 'CheckBoxes Dis'
         self.storage = Storage(self.ui, self.state, self.simple)
-#        self.state.synchtread.scanidchanged.connect(
-#            self.storage.updateScanID, Qt.Qt.DirectConnection)
-        self.state.synchtread.start()
+        self.state.synchthread.scanidchanged.connect(
+            self.storage.updateScanID, Qt.Qt.DirectConnection)
+        self.state.serverChanged.connect(
+            self.resetServer, Qt.Qt.DirectConnection)
+        self.state.synchthread.restart()
 
         self.detectors = Detectors(
             self.ui, self.state,
@@ -557,11 +559,12 @@ class Selector(Qt.QDialog, TaurusBaseWidget):
         """
         if self.state:
             with Qt.QMutexLocker(self.state.mutex):
-                self.state.synchtread.running = False
-#            if hasattr(self, "storage"):
-#                self.state.synchtread.scanidchanged.disconnect(
-#                    self.storage.updateScanID)
-            self.state.synchtread.wait()
+                self.state.synchthread.running = False
+            if hasattr(self, "storage"):
+                self.state.synchthread.scanidchanged.disconnect(
+                    self.storage.updateScanID)
+                self.state.serverChanged.disconnect(self.resetServer)
+            self.state.synchthread.wait()
         try:
             self.state = ServerState(server)
             if self.__door:
@@ -579,11 +582,29 @@ class Selector(Qt.QDialog, TaurusBaseWidget):
             if self.__door:
                 self.state.storeData("door", self.__door)
         if hasattr(self, "storage"):
-#            self.state.synchtread.scanidchanged.connect(
-#                self.storage.updateScanID, Qt.Qt.DirectConnection)
-            self.state.synchtread.start()
+            self.state.synchthread.scanidchanged.connect(
+                self.storage.updateScanID, Qt.Qt.DirectConnection)
+            self.state.serverChanged.connect(
+                self.resetServer, Qt.Qt.DirectConnection)
+            self.state.synchthread.restart()
         self.runProgress(["updateControllers", "fetchSettings"],
                          "settings")
+
+
+    def __resetStateThread(self):
+        """ resets server state variables
+        """
+        if self.state:
+            with Qt.QMutexLocker(self.state.mutex):
+                self.state.synchthread.running = False
+            if hasattr(self, "storage"):
+                self.state.synchthread.scanidchanged.disconnect(
+                    self.storage.updateScanID)
+            self.state.synchthread.wait()
+            if hasattr(self, "storage"):
+                self.state.synchthread.scanidchanged.connect(
+                    self.storage.updateScanID, Qt.Qt.DirectConnection)
+                self.state.synchthread.restart()
 
     @Qt.pyqtSlot()
     def __componentChanged(self):
@@ -660,6 +681,7 @@ class Selector(Qt.QDialog, TaurusBaseWidget):
         """
         logger.debug("reset server")
         self.state.setServer()
+        self.__resetStateThread()
         self._resetAll()
         logger.debug("reset server ended")
 

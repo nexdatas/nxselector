@@ -1,3 +1,7 @@
+2017-04-XX Jan Kotanski <jankotan@gmail.com>
+	* move creation of DeviceProxy out of the thread
+	* tagged as 3.5.8
+
 2017-04-10 Jan Kotanski <jankotan@gmail.com>
 	* commenting ScanID threads (does not work correctly with TaurusForms)
 	* tagged as 3.5.7
