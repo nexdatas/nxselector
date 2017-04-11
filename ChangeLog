@@ -1,4 +1,4 @@
-2017-04-XX Jan Kotanski <jankotan@gmail.com>
+2017-04-11 Jan Kotanski <jankotan@gmail.com>
 	* move creation of DeviceProxy out of the thread
 	* tagged as 3.5.8
 
