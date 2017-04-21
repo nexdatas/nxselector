@@ -84,9 +84,7 @@ class SynchThread(Qt.QThread):
         """
         insynch = True
         while insynch:
-#            print "tick"
-#            self.sleep(3)
-            self.msleep(10)
+            self.sleep(5)
             try:
                 scanid = self.__dp.scanID
                 if not Qt:
@@ -101,8 +99,6 @@ class SynchThread(Qt.QThread):
                 print (str(e))
                 """ what is wrong """
 
-#            print "tack"
-#            self.sleep(2)
 
 class ServerState(Qt.QObject):
     """ state of recorder server """

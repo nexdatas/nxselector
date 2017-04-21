@@ -1,3 +1,7 @@
+2017-04-21 Jan Kotanski <jankotan@gmail.com>
+	* increase sleep time for synch
+	* tagged as 3.5.9
+
 2017-04-11 Jan Kotanski <jankotan@gmail.com>
 	* move creation of DeviceProxy out of the thread
 	* tagged as 3.5.8
