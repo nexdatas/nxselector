@@ -590,7 +590,6 @@ class Selector(Qt.QDialog, TaurusBaseWidget):
         self.runProgress(["updateControllers", "fetchSettings"],
                          "settings")
 
-
     def __resetStateThread(self):
         """ resets server state variables
         """

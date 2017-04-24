@@ -69,7 +69,6 @@ class SynchThread(Qt.QThread):
             self.__dp = PyTango.DeviceProxy(self.server)
             self.__lastscanid = self.__dp.scanID
 
-
     def restart(self):
         with Qt.QMutexLocker(self.mutex):
             self.server = str(self.__serverstate.server)
@@ -256,7 +255,6 @@ class ServerState(Qt.QObject):
         self.channelprops = ["nexus_path", "link", "shape", "label",
                              "data_type"]
         self.synchthread = SynchThread(self, self.server, self.mutex)
-
 
     def __grepServer(self):
         """ provides the local selector server device name

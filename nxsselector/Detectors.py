@@ -155,7 +155,12 @@ class Detectors(Qt.QObject):
             if ds not in uds and ds not in ucp:
                 if DS not in self.groups:
                     self.groups[DS] = []
-                self.groups[DS].append(DSElement(ds, self.state))
+                if ds in self.state.avcplist:
+                    self.groups[DS].append(CPElement(ds, self.state))
+                    ucp.add(ds)
+                else:
+                    self.groups[DS].append(DSElement(ds, self.state))
+                    uds.add(ds)
         for cp in self.state.cpgroup.keys():
             if cp not in ucp and cp not in uds \
                     and cp not in self.state.mcplist \
