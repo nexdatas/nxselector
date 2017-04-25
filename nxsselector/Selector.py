@@ -555,11 +555,9 @@ class Selector(Qt.QDialog, TaurusBaseWidget):
 
     @Qt.pyqtSlot()
     def checkDirty(self):
-        print "CHECK"
         if not self.state.isMntGrpChanged():
-            print "DIRTY"
             self.setDirty()
-        
+
     def __resetServer(self, server):
         """ resets server state variables
 

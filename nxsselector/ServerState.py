@@ -34,31 +34,58 @@ import logging
 #: (:obj:`logging.Logger`) logger object
 logger = logging.getLogger(__name__)
 
-class Checker(object):
 
-    
-    def compDict(self, dct, dct2):
+class Checker(object):
+    """ compare configuation methods
+    """
+
+    def __init__(self):
+        """ constructor
+        """
+
+        #: (:obj:`list`<:obj:`str`>) special keys for sorted json lists
+        self.jsortedlists = ['PreselectingDataSources']
+        #: (:obj:`list`<:obj:`str`>) special keys for json dicts
+        self.jdicts = ['DataSourceSelection']
+
+    def compDict(self, dct, dct2, sort=False):
+        """ compare two configuration dictionaries
+
+        :param dct: first configuration dictionary
+        :type dct: `dict`<:obj:`any`, :obj:`any`>
+        :param dct2: second configuration dictionary
+        :type dct2: `dict`<:obj:`any`, :obj:`any`>
+        :param sort: if use special keys
+        :type sort: :obj:`bool`
+        :returns: if configuration are equal
+        :rtype: :obj:`bool`
+        """
+
         if not isinstance(dct, dict):
-#            print "ERROR DICT", dct
             return False
         if not isinstance(dct2, dict):
-#            print "ERROR DICT2", dct2
             return False
         if len(dct.keys()) != len(dct2.keys()):
-#            print "ERROR LEN", dct.keys(),dct2.keys()
             return False
         for k, v in dct.items():
             if k not in dct2.keys():
-#              print "ERROR ", k ," not in ", dct2.keys()
-              return False
+                return False
             if isinstance(v, dict):
                 return self.compDict(v, dct2[k])
+            elif sort and k in self.jsortedlists:
+                l1 = sorted(json.loads(v))
+                l2 = sorted(json.loads(dct2[k]))
+                if l1 != l2:
+                    return False
+            elif sort and k in self.jdicts:
+                d1 = json.loads(v)
+                d2 = json.loads(dct2[k])
+                return self.compDict(d1, d2)
             else:
                 if v != dct2[k]:
-#                    print "ERROR",v, dct2[k]
                     return False
         return True
-    
+
 
 class SynchThread(Qt.QThread):
     """ thread with server command
@@ -94,12 +121,15 @@ class SynchThread(Qt.QThread):
         self.__lastscanid = 0
         #: (:obj:`str`) last mntgrp configuration
         self.__lastmg = ""
-        
+        #: (:obj:`str`) last profile configuration
+        self.__lastprof = ""
+
         self.__dp = None
         if self.server and self.server != 'module':
             self.__dp = PyTango.DeviceProxy(self.server)
             self.__lastscanid = self.__dp.scanID
             self.__lastmg = self.__dp.mntGrpConfiguration()
+            self.__lastprof = self.__dp.profileConfiguration
 
     def restart(self):
         with Qt.QMutexLocker(self.mutex):
@@ -108,10 +138,10 @@ class SynchThread(Qt.QThread):
             self.__dp = PyTango.DeviceProxy(self.server)
             self.__lastscanid = self.__dp.scanID
             self.__lastmg = self.__dp.mntGrpConfiguration()
+            self.__lastprof = self.__dp.profileConfiguration
         self.running = True
         self.start()
 
-        
     def run(self):
         """ runs synch thread
         """
@@ -119,27 +149,33 @@ class SynchThread(Qt.QThread):
         mylast = ""
         checker = Checker()
         while insynch:
-            self.sleep(5)
+            self.msleep(5)
             try:
                 if not Qt or not self.__dp:
                     break
                 scanid = self.__dp.scanID
                 mg = self.__dp.mntGrpConfiguration()
+                prof = self.__dp.profileConfiguration
                 with Qt.QMutexLocker(self.mutex):
                     if not self.running:
                         insynch = False
                 if self.__lastscanid != scanid and insynch:
                     self.scanidchanged.emit()
                     self.__lastscanid = scanid
-                if self.__lastmg != mg and insynch:
-                    print "MG CHANGED", self.__lastmg != mg, mg != mylast, self.__lastmg != mylast
+                if (self.__lastmg != mg or self.__lastprof != prof) \
+                   and insynch:
                     m0 = json.loads(self.__lastmg)
                     m1 = json.loads(mg)
                     if not checker.compDict(m0, m1):
-                        print "EMIT"
                         self.mgconfchanged.emit()
-                    mylast = mg
+                    else:
+                        p0 = json.loads(self.__lastprof)
+                        p1 = json.loads(prof)
+                        if not checker.compDict(p0, p1, True):
+                            self.mgconfchanged.emit()
+
                     self.__lastmg = mg
+                    self.__lastprof = prof
             except Exception as e:
                 print (str(e))
                 """ what is wrong """
@@ -634,8 +670,12 @@ class ServerState(Qt.QObject):
         mgconf = json.loads(self.__command(self.__dp, "mntGrpConfiguration"))
         locmgconf = self.__importDict("MntGrpConfiguration")
         checker = Checker()
-        return checker.compDict(mgconf, locmgconf)
-        
+        if checker.compDict(mgconf, locmgconf):
+            pconf = json.loads(self.__dp.profileConfiguration)
+            locpconf = self.__conf
+            return checker.compDict(pconf, locpconf, True)
+        return False
+
     def importMntGrp(self):
         """ imports mntgrp from sardana
         """
