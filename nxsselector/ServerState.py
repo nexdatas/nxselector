@@ -149,7 +149,7 @@ class SynchThread(Qt.QThread):
         mylast = ""
         checker = Checker()
         while insynch:
-            self.msleep(5)
+            self.sleep(5)
             try:
                 if not Qt or not self.__dp:
                     break
