@@ -205,6 +205,8 @@ class Selector(Qt.QDialog, TaurusBaseWidget):
         self.storage = Storage(self.ui, self.state, self.simple)
         self.state.synchthread.scanidchanged.connect(
             self.storage.updateScanID, Qt.Qt.DirectConnection)
+        self.state.synchthread.mgconfchanged.connect(
+            self.checkDirty, Qt.Qt.DirectConnection)
         self.state.serverChanged.connect(
             self.resetServer, Qt.Qt.DirectConnection)
         self.state.synchthread.restart()
@@ -551,6 +553,13 @@ class Selector(Qt.QDialog, TaurusBaseWidget):
         Qt.QDialog.closeEvent(self, event)
         logger.debug("close event ended")
 
+    @Qt.pyqtSlot()
+    def checkDirty(self):
+        print "CHECK"
+        if self.state.isMntGrpChanged():
+            print "DIRTY"
+            self.setDirty()
+        
     def __resetServer(self, server):
         """ resets server state variables
 
@@ -561,6 +570,8 @@ class Selector(Qt.QDialog, TaurusBaseWidget):
             with Qt.QMutexLocker(self.state.mutex):
                 self.state.synchthread.running = False
             if hasattr(self, "storage"):
+                self.state.synchthread.mgconfchanged.disconnect(
+                    self.checkDirty)
                 self.state.synchthread.scanidchanged.disconnect(
                     self.storage.updateScanID)
                 self.state.serverChanged.disconnect(self.resetServer)
@@ -584,6 +595,8 @@ class Selector(Qt.QDialog, TaurusBaseWidget):
         if hasattr(self, "storage"):
             self.state.synchthread.scanidchanged.connect(
                 self.storage.updateScanID, Qt.Qt.DirectConnection)
+            self.state.synchthread.mgconfchanged.connect(
+                self.checkDirty, Qt.Qt.DirectConnection)
             self.state.serverChanged.connect(
                 self.resetServer, Qt.Qt.DirectConnection)
             self.state.synchthread.restart()
@@ -599,10 +612,14 @@ class Selector(Qt.QDialog, TaurusBaseWidget):
             if hasattr(self, "storage"):
                 self.state.synchthread.scanidchanged.disconnect(
                     self.storage.updateScanID)
+                self.state.synchthread.mgconfchanged.disconnect(
+                    self.checkDirty)
             self.state.synchthread.wait()
             if hasattr(self, "storage"):
                 self.state.synchthread.scanidchanged.connect(
                     self.storage.updateScanID, Qt.Qt.DirectConnection)
+                self.state.synchthread.mgconfchanged.connect(
+                    self.checkDirty, Qt.Qt.DirectConnection)
                 self.state.synchthread.restart()
 
     @Qt.pyqtSlot()

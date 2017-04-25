@@ -42,6 +42,9 @@ class SynchThread(Qt.QThread):
     #: (:class:`taurus.qt.Qt.pyqtSignal`) dirty signal
     scanidchanged = Qt.pyqtSignal()
 
+    #: (:class:`taurus.qt.Qt.pyqtSignal') mg configuration changed
+    mgconfchanged = Qt.pyqtSignal()
+
     def __init__(self, serverstate, server, mutex):
         """constructor
         :param serverstate: ServerState
@@ -64,36 +67,69 @@ class SynchThread(Qt.QThread):
 
         #: (:obj:`int`) last scan id
         self.__lastscanid = 0
+        #: (:obj:`str`) last mntgrp configuration
+        self.__lastmg = ""
+        
         self.__dp = None
-        if self.server:
+        if self.server and self.server != 'module':
             self.__dp = PyTango.DeviceProxy(self.server)
             self.__lastscanid = self.__dp.scanID
+            self.__lastmg = self.__dp.mntGrpConfiguration()
 
     def restart(self):
         with Qt.QMutexLocker(self.mutex):
             self.server = str(self.__serverstate.server)
-        if self.server:
+        if self.server and self.server != 'module':
             self.__dp = PyTango.DeviceProxy(self.server)
             self.__lastscanid = self.__dp.scanID
+            self.__lastmg = self.__dp.mntGrpConfiguration()
         self.running = True
         self.start()
 
+    def myAssertDict(self, dct, dct2):
+        if not isinstance(dct, dict):
+            print "ERROR DICT", dct
+        if not isinstance(dct2, dict):
+            print "ERROR DICT2", dct2
+        if len(dct.keys()) != len(dct2.keys()):
+            print "ERROR LEN", dct.keys(),dct2.keys()
+        for k, v in dct.items():
+            if k not in dct2.keys():
+              print "ERROR ", k ," not in ", dct2.keys()
+            if isinstance(v, dict):
+                self.myAssertDict(v, dct2[k])
+            else:
+                if v != dct2[k]:
+                    print "ERROR",v, dct2[k]
+
+
+        
     def run(self):
         """ runs synch thread
         """
         insynch = True
+        mylast = ""
         while insynch:
             self.sleep(5)
             try:
-                scanid = self.__dp.scanID
-                if not Qt:
+                if not Qt or not self.__dp:
                     break
+                scanid = self.__dp.scanID
+                mg = self.__dp.mntGrpConfiguration()
                 with Qt.QMutexLocker(self.mutex):
                     if not self.running:
                         insynch = False
                 if self.__lastscanid != scanid and insynch:
                     self.scanidchanged.emit()
                     self.__lastscanid = scanid
+                if self.__lastmg != mg and insynch:
+                    print "MG CHANGED", self.__lastmg != mg, mg != mylast, self.__lastmg != mylast
+                    m0 = json.loads(self.__lastmg)
+                    m1 = json.loads(mg)
+                    self.myAssertDict(m0,m1)
+                    self.mgconfchanged.emit()
+                    mylast = mg
+                    self.__lastmg = mg
             except Exception as e:
                 print (str(e))
                 """ what is wrong """
@@ -620,9 +656,9 @@ class ServerState(Qt.QObject):
             self.fetchMntGrp()
 
     def mntGrpConfiguration(self):
-        """ provides measurement group configuration
+        """ provides measurement group configuration with its name
 
-        :returns: measurement group configuration
+        :returns: measurement group configuration with its name
         :rtype: :obj:`str`
         """
         mgconf = self.__command(self.__dp, "mntGrpConfiguration")
