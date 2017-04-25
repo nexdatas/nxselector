@@ -1,3 +1,7 @@
+2017-04-25 Jan Kotanski <jankotan@gmail.com>
+	* add checks for configuration synch
+	* tagged as 3.6.0
+
 2017-04-24 Jan Kotanski <jankotan@gmail.com>
 	* treat datasource as a component if component exists
 	* tagged as 3.5.10
