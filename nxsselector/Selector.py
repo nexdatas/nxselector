@@ -556,7 +556,7 @@ class Selector(Qt.QDialog, TaurusBaseWidget):
     @Qt.pyqtSlot()
     def checkDirty(self):
         print "CHECK"
-        if self.state.isMntGrpChanged():
+        if not self.state.isMntGrpChanged():
             print "DIRTY"
             self.setDirty()
         

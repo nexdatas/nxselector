@@ -34,6 +34,31 @@ import logging
 #: (:obj:`logging.Logger`) logger object
 logger = logging.getLogger(__name__)
 
+class Checker(object):
+
+    
+    def compDict(self, dct, dct2):
+        if not isinstance(dct, dict):
+#            print "ERROR DICT", dct
+            return False
+        if not isinstance(dct2, dict):
+#            print "ERROR DICT2", dct2
+            return False
+        if len(dct.keys()) != len(dct2.keys()):
+#            print "ERROR LEN", dct.keys(),dct2.keys()
+            return False
+        for k, v in dct.items():
+            if k not in dct2.keys():
+#              print "ERROR ", k ," not in ", dct2.keys()
+              return False
+            if isinstance(v, dict):
+                return self.compDict(v, dct2[k])
+            else:
+                if v != dct2[k]:
+#                    print "ERROR",v, dct2[k]
+                    return False
+        return True
+    
 
 class SynchThread(Qt.QThread):
     """ thread with server command
@@ -86,29 +111,13 @@ class SynchThread(Qt.QThread):
         self.running = True
         self.start()
 
-    def myAssertDict(self, dct, dct2):
-        if not isinstance(dct, dict):
-            print "ERROR DICT", dct
-        if not isinstance(dct2, dict):
-            print "ERROR DICT2", dct2
-        if len(dct.keys()) != len(dct2.keys()):
-            print "ERROR LEN", dct.keys(),dct2.keys()
-        for k, v in dct.items():
-            if k not in dct2.keys():
-              print "ERROR ", k ," not in ", dct2.keys()
-            if isinstance(v, dict):
-                self.myAssertDict(v, dct2[k])
-            else:
-                if v != dct2[k]:
-                    print "ERROR",v, dct2[k]
-
-
         
     def run(self):
         """ runs synch thread
         """
         insynch = True
         mylast = ""
+        checker = Checker()
         while insynch:
             self.sleep(5)
             try:
@@ -126,8 +135,9 @@ class SynchThread(Qt.QThread):
                     print "MG CHANGED", self.__lastmg != mg, mg != mylast, self.__lastmg != mylast
                     m0 = json.loads(self.__lastmg)
                     m1 = json.loads(mg)
-                    self.myAssertDict(m0,m1)
-                    self.mgconfchanged.emit()
+                    if not checker.compDict(m0, m1):
+                        print "EMIT"
+                        self.mgconfchanged.emit()
                     mylast = mg
                     self.__lastmg = mg
             except Exception as e:
@@ -621,8 +631,11 @@ class ServerState(Qt.QObject):
         """
         if not self.__dp:
             self.setServer()
-        return self.__command(self.__dp, "isMntGrpUpdated")
-
+        mgconf = json.loads(self.__command(self.__dp, "mntGrpConfiguration"))
+        locmgconf = self.__importDict("MntGrpConfiguration")
+        checker = Checker()
+        return checker.compDict(mgconf, locmgconf)
+        
     def importMntGrp(self):
         """ imports mntgrp from sardana
         """
