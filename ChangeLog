@@ -1,4 +1,8 @@
 2017-04-26 Jan Kotanski <jankotan@gmail.com>
+	* make qt thread safe
+	* tagged as 3.6.3
+
+2017-04-26 Jan Kotanski <jankotan@gmail.com>
 	* add stretch factors to layouts
 	* tagged as 3.6.2
 

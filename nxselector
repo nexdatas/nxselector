@@ -51,6 +51,7 @@ def main():
     except:
         from taurus.qt import Qt
 
+    Qt.QCoreApplication.setAttribute(Qt.Qt.AA_X11InitThreads)
     Qt.QResource.registerResource(
         os.path.join(qrc.__path__[0], "resources.rcc"))
 
