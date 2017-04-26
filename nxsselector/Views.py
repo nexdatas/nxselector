@@ -417,8 +417,10 @@ class CheckerView(Qt.QWidget):
                     self.glayout.addWidget(
                         Qt.QLabel(self.slabel), 0, lcol, 1, 1)
                     self.glayout.addWidget(
-                        Qt.QLabel(self.dlabel), 0, lcol + 1, 1, 1)
-                self.glayout.addWidget(ds, lrow, lcol + 1, 1, 1)
+                        Qt.QLabel(self.dlabel), 0, lcol + 1, 1, 1,
+                        Qt.Qt.AlignCenter)
+                self.glayout.addWidget(ds, lrow, lcol + 1, 1, 1,
+                                       Qt.Qt.AlignCenter)
             self.glayout.addWidget(cb, lrow, lcol, 1, 1)
             self.widgets.append(cb)
 
