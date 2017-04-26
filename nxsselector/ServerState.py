@@ -177,7 +177,7 @@ class SynchThread(Qt.QThread):
                     self.__lastmg = mg
                     self.__lastprof = prof
             except Exception as e:
-                print (str(e))
+                # print (str(e))
                 """ what is wrong """
 
 

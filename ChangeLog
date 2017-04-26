@@ -1,3 +1,8 @@
+2017-04-26 Jan Kotanski <jankotan@gmail.com>
+	* fix issue with checking detector boxes
+	* avoid reseting QSettings on fail startup
+	* tagged as 3.6.1
+
 2017-04-25 Jan Kotanski <jankotan@gmail.com>
 	* add checks for configuration synch
 	* tagged as 3.6.0

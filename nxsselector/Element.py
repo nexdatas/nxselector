@@ -321,7 +321,8 @@ class CPElement(Element):
         :type: :obj:`bool` or `None`
         """
         self.state.ddsdirty = True
-        dds = self.state.ddsdict
+        if not status:
+            dds = self.state.ddsdict
         self.state.ddsdirty = True
         if not self.group:
             ds = self.state.dsgroup
@@ -339,6 +340,8 @@ class CPElement(Element):
             nd = self.state.nodisplay
             if self.name in nd:
                 nd.remove(self.name)
+        else:
+            dds = self.state.ddsdict
         for dd, cp in dds.items():
             if cp == self.name:
                 if dd in ds:
@@ -356,27 +359,17 @@ class CPElement(Element):
         :returns: if element should be displayed
         :rtype: :obj:`bool`
         """
-        res = self.state.cpgroup
+        cpres = self.state.cpgroup
         dsres = self.state.dsgroup
         nd = self.state.nodisplay
-        res = self.state.acpgroup
+        acpres = self.state.acpgroup
+        mcpres = self.state.mcplist
         if self.name not in nd:
-            if self.name in res.keys():
-                if res[self.name]:
-                    return True
-        res = self.state.cpgroup
-        if self.name not in nd:
-            if self.name in res.keys():
-                if res[self.name]:
-                    return True
-        res = self.state.dsgroup
-        if self.name not in nd:
-            if self.name in res.keys():
-                if res[self.name]:
-                    return True
-        res = self.state.mcplist
-        if self.name not in nd:
-            if self.name in res:
+            if (self.name in acpres.keys() and acpres[self.name]) or \
+               (self.name in cpres.keys() and cpres[self.name]) or \
+               (self.name in cpres.keys() and cpres[self.name]) or \
+               (self.name in dsres.keys() and dsres[self.name]) or \
+               self.name in mcpres:
                 return True
         return False
 
@@ -386,13 +379,16 @@ class CPElement(Element):
         :param status: display status
         :type: :obj:`bool` or `None`
         """
+
         dc = self.state.cpgroup
         mc = self.state.mcplist
         ac = self.state.acpgroup
         ds = self.state.dsgroup
         nd = self.state.nodisplay
         dds = self.state.ddsdict
+        found = False
         if self.name in ds.keys():
+            found = True
             if self.name in nd:
                 if status:
                     nd.remove(self.name)
@@ -402,6 +398,7 @@ class CPElement(Element):
                 else:
                     ds[self.name] = True
         if self.name in dc.keys():
+            found = True
             if self.name in nd:
                 if status:
                     nd.remove(self.name)
@@ -410,7 +407,8 @@ class CPElement(Element):
                     nd.append(self.name)
                 else:
                     dc[self.name] = True
-        elif self.name in ac.keys():
+        if self.name in ac.keys():
+            found = True
             if self.name in nd:
                 if status:
                     nd.remove(self.name)
@@ -419,14 +417,15 @@ class CPElement(Element):
                     nd.append(self.name)
                 else:
                     ac[self.name] = True
-        elif self.name in mc:
+        if self.name in mc:
+            found = True
             if self.name in nd:
                 if status:
                     nd.remove(self.name)
             else:
                 if not status:
                     nd.append(self.name)
-        else:
+        if not found:
             if self.name in nd:
                 nd.remove(self.name)
         for dd, cp in dds.items():
@@ -438,4 +437,6 @@ class CPElement(Element):
                     if not status:
                         nd.append(dd)
                     else:
+                        if dd in dc.keys():
+                            dc[dd] = True
                         ds[dd] = True

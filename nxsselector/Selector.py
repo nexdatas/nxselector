@@ -116,6 +116,9 @@ class Selector(Qt.QDialog, TaurusBaseWidget):
         self.simple = False
         #: (:obj:`bool`)  negative hidden mode on
         self.hidden = False
+
+        #: (:obj:`bool`)  if QSettings loaded
+        self.__settingsloaded = False
         if self.__umode:
             self.__setmode(self.__umode)
         #: (:obj:`str`)  configuration file name
@@ -267,6 +270,7 @@ class Selector(Qt.QDialog, TaurusBaseWidget):
         if self.__doortoupdateFlag:
             self.updateDoorName(self.__door)
 
+        self.__settingsloaded = True
         self.waitForThread()
         logger.debug("settings END")
 
@@ -539,7 +543,8 @@ class Selector(Qt.QDialog, TaurusBaseWidget):
         """
         if hasattr(event, "key") and event.key() == Qt.Qt.Key_Escape:
             logger.debug("escape key event")
-            self.__saveSettings()
+            if self.__settingsloaded:
+                self.__saveSettings()
         Qt.QDialog.keyPressEvent(self, event)
 
     def closeEvent(self, event):
@@ -549,7 +554,8 @@ class Selector(Qt.QDialog, TaurusBaseWidget):
         :type event: :class:`taurus.qt.Qt.QEvent`
         """
         logger.debug("close event")
-        self.__saveSettings()
+        if self.__settingsloaded:
+            self.__saveSettings()
         Qt.QDialog.closeEvent(self, event)
         logger.debug("close event ended")
 

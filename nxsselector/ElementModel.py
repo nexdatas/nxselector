@@ -386,6 +386,7 @@ class ElementModel(Qt.QAbstractTableModel):
                 enable2 = False
                 flag &= ~Qt.Qt.ItemIsEnabled
                 if device.name in dds.keys():
+                    enable = False
                     comp = dds[device.name]
         if column == 0:
             if enable and enable2:
