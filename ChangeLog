@@ -1,4 +1,8 @@
 2017-04-26 Jan Kotanski <jankotan@gmail.com>
+	* add stretch factors to layouts
+	* tagged as 3.6.2
+
+2017-04-26 Jan Kotanski <jankotan@gmail.com>
 	* fix issue with checking detector boxes
 	* avoid reseting QSettings on fail startup
 	* tagged as 3.6.1

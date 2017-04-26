@@ -341,24 +341,27 @@ class CheckerView(Qt.QWidget):
         if hasattr(grp, "parent"):
             frm = grp.parent()
             stretch = 0
-            grps = frm.findChildren(Qt.QGroupBox)
+            grps = [(grp, None) for grp in frm.findChildren(Qt.QGroupBox)]
             hfrmlayout = frm.layout()
             vfrmlayouts = [hl for hl in hfrmlayout.children()
                            if isinstance(hl, Qt.QVBoxLayout)]
-            vls = []
+            gvls = []
             if vfrmlayouts:
                 for vl in vfrmlayouts:
                     kids = [
-                        vl.itemAt(ind).widget() for ind in range(vl.count())
+                        (vl.itemAt(ind).widget(), vl)
+                        for ind in range(vl.count())
                         if isinstance(vl.itemAt(ind).widget(), Qt.QGroupBox)]
-                    vls.append(kids)
+                    gvls.append(kids)
             else:
-                vls = [grps]
+                gvls = [grps]
 
-            for vl in vls:
+            for gvl in gvls:
                 vst = 0
-                for gr in vl:
+                lvl = None
+                for gr, vl in gvl:
                     gst = 0
+                    lvl = vl
                     mvws = gr.findChildren(CheckerView)
                     for mvw in mvws:
                         if hasattr(mvw.model, 'rowCount'):
@@ -368,6 +371,8 @@ class CheckerView(Qt.QWidget):
                             if lgst > gst:
                                 gst = lgst
                     vst = gst
+                if lvl:
+                    hfrmlayout.setStretchFactor(lvl, vst)
                 stretch += vst
             if hasattr(frm, "parent"):
                 lyt = frm.parent().layout()
