@@ -174,7 +174,7 @@ class OneTableView(Qt.QTableView):
         """ resets table view and hides view columns
         """
         Qt.QTableView.reset(self)
-        for i in range(1, 5):
+        for i in range(1, 6):
             self.hideColumn(i)
 
 
