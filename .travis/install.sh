@@ -28,7 +28,6 @@ fi
 
 docker exec -it --user root ndts service tango-db restart
 docker exec -it --user root ndts service tango-starter restart
-docker exec -it --user root ndts mkdir -p /etc/bash_completion.d/
 
 
 echo "install python-pytango"
