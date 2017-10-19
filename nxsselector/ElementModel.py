@@ -180,6 +180,7 @@ class ElementModel(Qt.QAbstractTableModel):
         props = device.state.properties
         ochs = device.state.orderedchannels
         chps = device.state.channelprops
+        echps = device.state.extrachannelprops
         admindata = device.state.admindata
         dname = device.name
         contains = dict()
@@ -195,7 +196,12 @@ class ElementModel(Qt.QAbstractTableModel):
                     contains[pr] = props[pr][dname]
                 else:
                     contains[pr] = None
-
+            for pr in echps:
+                if props and pr in props.keys() and \
+                   props[pr] and dname in props[pr].keys():
+                    contains[pr] = props[pr][dname]
+                else:
+                    contains[pr] = None
         return json.dumps(contains)
 
     def __scanSources(self, device):

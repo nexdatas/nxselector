@@ -336,6 +336,7 @@ class ServerState(Qt.QObject):
                                ]
         self.channelprops = ["nexus_path", "link", "shape", "label",
                              "data_type"]
+        self.extrachannelprops = ["synchronizer", "synchronization"]
         self.synchthread = SynchThread(self, self.server, self.mutex)
 
     def __grepServer(self):
