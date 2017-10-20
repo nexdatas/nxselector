@@ -27,7 +27,7 @@ except:
     from taurus.qt import Qt
 
 from .MessageBox import MessageBox
-
+from. ElementModel import PROPTEXT
 
 from taurus.qt.qtgui.util.ui import UILoadable
 
@@ -35,6 +35,7 @@ import logging
 #: (:obj:`logging.Logger`) logger object
 logger = logging.getLogger(__name__)
 
+SYNCHTEXT = PROPTEXT["synchronization"]
 
 @UILoadable(with_ui='ui')
 class LDataDlg(Qt.QDialog):
@@ -62,8 +63,6 @@ class LDataDlg(Qt.QDialog):
         self.available_names = None
         #: (:obj:`list` <:obj:`str` > ) special variable names
         self.special = ["shape", "data_type", "nexus_path", "link"]
-        #: (:obj:`list` <:obj:`str` > ) special variable names
-        self.extra = ["synchronization", "synchronizer"]
         #: (:obj:`dict` <:obj:`str` , :obj:`str` or :obj:`unicode`> ) \
         #:     (name, value) variable dictionary
         self.variables = {}
@@ -73,7 +72,10 @@ class LDataDlg(Qt.QDialog):
         #: (:obj:`dict` <:obj:`str` , :class:`taurus.qt.Qt.QWidget`> ) \
         #:     (name, qwidget) variable dictionary
         self.widgets = {}
-        self.__synchText = ["Trigger", "Gate"]
+        #: (:obj:`list` <:obj:`str` > ) special variable names
+        self.hidden = ["synchronization", "synchronizer"]
+        #: (:obj:`list` <:obj:`str` > ) special variable names
+        self.extra = []
 
     @classmethod
     def __linkText(cls, value):
@@ -94,6 +96,10 @@ class LDataDlg(Qt.QDialog):
     def createGUI(self):
         """ creates GUI
         """
+        self.ui.synchronizationComboBox.hide()
+        self.ui.synchronizationLabel.hide()
+        self.ui.synchronizerLineEdit.hide()
+        self.ui.synchronizerLabel.hide()
         self.ui.labelLineEdit.setText(Qt.QString(str(self.label or "")))
         self.ui.pathLineEdit.setText(Qt.QString(str(self.path or "")))
         if self.shape is None:
@@ -110,42 +116,20 @@ class LDataDlg(Qt.QDialog):
             cid = 0
         self.ui.linkComboBox.setCurrentIndex(cid)
 
-        if self.variables and "synchronization" in self.variables:
-            synch = int(self.variables["synchronization"] or 0)
-            self.ui.synchronizationComboBox.show()
-            self.ui.synchronizationLabel.show()
-        else:
-            synch = 0
-            self.ui.synchronizationComboBox.hide()
-            self.ui.synchronizationLabel.hide()
-        cid = self.ui.synchronizationComboBox.findText(
-            Qt.QString(self.__synchText[synch]))
-        if cid < 0:
-            cid = 0
-        self.ui.synchronizationComboBox.setCurrentIndex(cid)
-        
         if self.available_names:
             completer = Qt.QCompleter(self.available_names, self)
             self.ui.labelLineEdit.setCompleter(completer)
 
-        if self.variables and "synchronizer" in self.variables:
-            val = self.variables["synchronizer"] or "software"
-        else:
-            val = "software"
-        if val is not None:
-            self.ui.synchronizerLineEdit.setText(
-                Qt.QString(str(val or "")))
-
         if self.variables:
             self.addGrid()
-                
+
 
     def addGrid(self):
         """ adds from grid
         """
         index = 0
         for nm, val in self.variables.items():
-            if nm not in self.extra:
+            if nm not in self.extra and (val and nm in self.hidden):
                 self.names[nm] = Qt.QLabel(self.ui.varFrame)
                 self.names[nm].setText(Qt.QString(str(nm)))
                 self.ui.varGridLayout.addWidget(self.names[nm], index, 0, 1, 1)
@@ -183,18 +167,6 @@ class LDataDlg(Qt.QDialog):
         else:
             self.link = None
 
-        textsynch = str(self.ui.synchronizationComboBox.currentText())
-        synch = self.__synchText.index(textsynch) \
-                if textsynch in self.__synchText else None
-        if synch or "synchronization" in self.variables:
-            self.variables["synchronization"] = synch
-                
-
-        
-        syncher = unicode(self.ui.synchronizerLineEdit.text())
-        if syncher != "software" or "synchronizer" in self.variables:
-            self.variables["synchronizer"] = syncher
-
         self.label = unicode(self.ui.labelLineEdit.text())
         self.path = unicode(self.ui.pathLineEdit.text())
         self.dtype = unicode(self.ui.typeLineEdit.text())
@@ -228,3 +200,60 @@ class LDataDlg(Qt.QDialog):
             return
 
         Qt.QDialog.accept(self)
+
+
+class LExDataDlg(LDataDlg):
+    """  extension of editable data dialog """
+
+    def __init__(self, parent=None):
+        """ constructor
+
+        :param parent: parent object
+        :type parent: :class:`taurus.qt.Qt.QObject`
+        """
+        LDataDlg.__init__(self, parent)
+        #: (:obj:`list` <:obj:`str` > ) special variable names
+        self.extra = ["synchronization", "synchronizer"]
+
+    def createGUI(self):
+        """ creates GUI
+        """
+        LDataDlg.createGUI(self)
+        self.ui.synchronizationComboBox.show()
+        self.ui.synchronizationLabel.show()
+        self.ui.synchronizerLineEdit.show()
+        self.ui.synchronizerLabel.show()
+
+        if self.variables and "synchronization" in self.variables:
+            synch = int(self.variables["synchronization"] or 0)
+        else:
+            synch = 0
+        cid = self.ui.synchronizationComboBox.findText(
+            Qt.QString(SYNCHTEXT[synch]))
+        if cid < 0:
+            cid = 0
+        self.ui.synchronizationComboBox.setCurrentIndex(cid)
+
+        if self.variables and "synchronizer" in self.variables:
+            val = self.variables["synchronizer"] or "software"
+        else:
+            val = "software"
+        if val is not None:
+            self.ui.synchronizerLineEdit.setText(
+                Qt.QString(str(val or "")))
+
+    def accept(self):
+        """ updates class variables with the form content
+        """
+
+        textsynch = str(self.ui.synchronizationComboBox.currentText())
+        synch = SYNCHTEXT.index(textsynch) \
+                if textsynch in SYNCHTEXT else None
+        if synch or "synchronization" in self.variables:
+            self.variables["synchronization"] = synch
+
+        syncher = unicode(self.ui.synchronizerLineEdit.text())
+        if syncher != "software" or "synchronizer" in self.variables:
+            self.variables["synchronizer"] = syncher
+
+        LDataDlg.accept(self)

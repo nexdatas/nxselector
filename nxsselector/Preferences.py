@@ -44,6 +44,9 @@ from .Views import (TableView, OneTableView,
                     CheckPropView,
                     CheckPropViewNL,
                     CheckPropViewNN,
+                    CheckExPropView,
+                    CheckExPropViewNL,
+                    CheckExPropViewNN,
                     )
 
 import logging
@@ -138,12 +141,15 @@ class Preferences(Qt.QObject):
             "Buttons": ButtonViewNN,
             "CheckBoxes Dis (A)": CheckDisView,
             "CheckBoxes Prop (A)": CheckPropView,
+            "CheckBoxes Synch (A)": CheckExPropView,
             "RadioButtons Dis (A)": RadioDisView,
             "CheckBoxes Dis (N)": CheckDisViewNL,
             "CheckBoxes Prop (N)": CheckPropViewNL,
+            "CheckBoxes Synch (N)": CheckExPropViewNL,
             "RadioButtons Dis (N)": RadioDisViewNL,
             "CheckBoxes Dis": CheckDisViewNN,
             "CheckBoxes Prop": CheckPropViewNN,
+            "CheckBoxes Synch": CheckExPropViewNN,
             "RadioButtons Dis": RadioDisViewNN,
             "CheckBoxes Dis (U)": CheckerLabelViewNN,
         }
