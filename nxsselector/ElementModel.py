@@ -37,6 +37,7 @@ NAME = range(1)
 #: (:obj:`list` <:obj:`str` > ) synchronization text labels
 PROPTEXT = {"synchronization": ["Trigger", "Gate"]}
 
+
 class ElementModel(Qt.QAbstractTableModel):
     """ element model
     """
@@ -295,8 +296,8 @@ class ElementModel(Qt.QAbstractTableModel):
         if prs:
             prs = json.loads(prs)
             tt = " ".join("%s=\"%s\"" % (
-                k, (v if k not in PROPTEXT.keys() else PROPTEXT[k][int(v)])) \
-                          for (k, v) in prs.items() if v)
+                k, (v if k not in PROPTEXT.keys() else PROPTEXT[k][int(v)]))
+                for (k, v) in prs.items() if v)
             if tt.strip():
                 text = "%s\n(%s)" % (text, tt.strip())
 
@@ -390,7 +391,7 @@ class ElementModel(Qt.QAbstractTableModel):
                 comp = dds[device.name]
         elif device.eltype == CP:
             mcp = device.state.mcplist
-            acp = device.state.acplist
+            # acp = device.state.acplist
             if (self.autoEnable and device.name in mcp) \
                or device.name in dds.keys():
                 enable2 = False

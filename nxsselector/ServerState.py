@@ -146,7 +146,6 @@ class SynchThread(Qt.QThread):
         """ runs synch thread
         """
         insynch = True
-        mylast = ""
         checker = Checker()
         while insynch:
             self.sleep(5)
@@ -176,8 +175,7 @@ class SynchThread(Qt.QThread):
 
                     self.__lastmg = mg
                     self.__lastprof = prof
-            except Exception as e:
-                # print (str(e))
+            except Exception:
                 """ what is wrong """
 
 
@@ -412,11 +410,17 @@ class ServerState(Qt.QObject):
         if not self.__dp:
             self.setServer()
         if self.server:
-            # workaround for issue: PyTango #22
-            try:
-                dc = self.__dp.read_attribute("descriptionErrors").value
-            except:
-                dc = self.__dp.read_attribute("descriptionErrors").value
+            # workaround for issue: PyTango 9.2.1  #22 / #168
+            #     GIL/monitor locking problem
+            error = True
+            maxcount = 10
+            while error and maxcount:
+                try:
+                    dc = self.__dp.read_attribute("descriptionErrors").value
+                    error = False
+                except Exception as e:
+                    logger.warning(str(e))
+                maxcount -= 1
         else:
             dc = getattr(self.__dp, "descriptionErrors")
         logger.debug(dc)

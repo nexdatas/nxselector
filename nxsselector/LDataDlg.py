@@ -37,6 +37,7 @@ logger = logging.getLogger(__name__)
 
 SYNCHTEXT = PROPTEXT["synchronization"]
 
+
 @UILoadable(with_ui='ui')
 class LDataDlg(Qt.QDialog):
     """  editable data dialog """
@@ -122,23 +123,26 @@ class LDataDlg(Qt.QDialog):
 
         if self.variables:
             self.addGrid()
-
+        self.adjustSize()
 
     def addGrid(self):
         """ adds from grid
         """
         index = 0
         for nm, val in self.variables.items():
-            if nm not in self.extra and (val and nm in self.hidden):
-                self.names[nm] = Qt.QLabel(self.ui.varFrame)
-                self.names[nm].setText(Qt.QString(str(nm)))
-                self.ui.varGridLayout.addWidget(self.names[nm], index, 0, 1, 1)
-                self.widgets[nm] = Qt.QLineEdit(self.ui.varFrame)
-                if val is not None:
-                    self.widgets[nm].setText(Qt.QString(str(val or "")))
-                self.ui.varGridLayout.addWidget(
-                    self.widgets[nm], index, 1, 1, 1)
-                index += 1
+            if not nm.startswith("__"):
+                if (nm not in self.extra and nm not in self.hidden) or \
+                   (val and nm not in self.extra and nm in self.hidden):
+                    self.names[nm] = Qt.QLabel(self.ui.varFrame)
+                    self.names[nm].setText(Qt.QString(str(nm)))
+                    self.ui.varGridLayout.addWidget(
+                        self.names[nm], index, 0, 1, 1)
+                    self.widgets[nm] = Qt.QLineEdit(self.ui.varFrame)
+                    if val is not None:
+                        self.widgets[nm].setText(Qt.QString(str(val or "")))
+                    self.ui.varGridLayout.addWidget(
+                        self.widgets[nm], index, 1, 1, 1)
+                    index += 1
 
     def addVariables(self, variables):
         """ adds  variables
@@ -241,6 +245,7 @@ class LExDataDlg(LDataDlg):
         if val is not None:
             self.ui.synchronizerLineEdit.setText(
                 Qt.QString(str(val or "")))
+        self.adjustSize()
 
     def accept(self):
         """ updates class variables with the form content
@@ -248,7 +253,7 @@ class LExDataDlg(LDataDlg):
 
         textsynch = str(self.ui.synchronizationComboBox.currentText())
         synch = SYNCHTEXT.index(textsynch) \
-                if textsynch in SYNCHTEXT else None
+            if textsynch in SYNCHTEXT else None
         if synch or "synchronization" in self.variables:
             self.variables["synchronization"] = synch
 

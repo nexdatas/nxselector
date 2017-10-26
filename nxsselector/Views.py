@@ -342,7 +342,7 @@ class CheckerView(Qt.QWidget):
         if hasattr(grp, "parent"):
             frm = grp.parent()
             stretch = 0
-            grps = [(grp, None) for grp in frm.findChildren(Qt.QGroupBox)]
+            grps = [(gp, None) for gp in frm.findChildren(Qt.QGroupBox)]
             hfrmlayout = frm.layout()
             vfrmlayouts = [hl for hl in hfrmlayout.children()
                            if isinstance(hl, Qt.QVBoxLayout)]
@@ -574,6 +574,7 @@ class CheckDisView(CheckerView):
         """ widget close method which disconnect signals """
         self.dmapper.mapped.disconnect(self.dchecked)
         CheckerView.close(self)
+
 
 class CheckPropView(CheckDisView):
     """ element view with property widget
@@ -925,6 +926,7 @@ class CheckPropViewNL(CheckPropView):
         CheckPropView.__init__(self, parent)
         #: (:obj:`bool`) if name labels should be shown
         self.showLabels = False
+
 
 class CheckExPropViewNL(CheckExPropView):
     """ element view with checkboxes and properties

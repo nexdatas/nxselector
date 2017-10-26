@@ -92,5 +92,5 @@ class MessageBox(Qt.QObject):
                                 Qt.QSizePolicy.Expanding)
         layout = msgBox.layout()
         layout.addItem(spacer, layout.rowCount(), 0, 1, layout.columnCount())
-        _ = msgBox.exec_()
+        msgBox.exec_()
         msgBox.setParent(None)
