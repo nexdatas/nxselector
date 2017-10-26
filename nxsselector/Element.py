@@ -336,7 +336,7 @@ class CPElement(Element):
             ds[self.name] = status
             self.state.ddsdirty = True
         if not status:
-            res = self.state.cpgroup
+            # res = self.state.cpgroup
             nd = self.state.nodisplay
             if self.name in nd:
                 nd.remove(self.name)

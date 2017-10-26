@@ -1,3 +1,7 @@
+2017-10-26 Jan Kotanski <jankotan@gmail.com>
+	* add synchronizer and synchonization widget
+	* tagged as 3.7.0
+
 2017-04-26 Jan Kotanski <jankotan@gmail.com>
 	* make qt thread safe
 	* tagged as 3.6.3

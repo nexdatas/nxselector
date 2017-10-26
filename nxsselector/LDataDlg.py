@@ -27,13 +27,15 @@ except:
     from taurus.qt import Qt
 
 from .MessageBox import MessageBox
-
+from. ElementModel import PROPTEXT
 
 from taurus.qt.qtgui.util.ui import UILoadable
 
 import logging
 #: (:obj:`logging.Logger`) logger object
 logger = logging.getLogger(__name__)
+
+SYNCHTEXT = PROPTEXT["synchronization"]
 
 
 @UILoadable(with_ui='ui')
@@ -71,6 +73,10 @@ class LDataDlg(Qt.QDialog):
         #: (:obj:`dict` <:obj:`str` , :class:`taurus.qt.Qt.QWidget`> ) \
         #:     (name, qwidget) variable dictionary
         self.widgets = {}
+        #: (:obj:`list` <:obj:`str` > ) special variable names
+        self.hidden = ["synchronization", "synchronizer"]
+        #: (:obj:`list` <:obj:`str` > ) special variable names
+        self.extra = []
 
     @classmethod
     def __linkText(cls, value):
@@ -91,6 +97,10 @@ class LDataDlg(Qt.QDialog):
     def createGUI(self):
         """ creates GUI
         """
+        self.ui.synchronizationComboBox.hide()
+        self.ui.synchronizationLabel.hide()
+        self.ui.synchronizerLineEdit.hide()
+        self.ui.synchronizerLabel.hide()
         self.ui.labelLineEdit.setText(Qt.QString(str(self.label or "")))
         self.ui.pathLineEdit.setText(Qt.QString(str(self.path or "")))
         if self.shape is None:
@@ -110,22 +120,29 @@ class LDataDlg(Qt.QDialog):
         if self.available_names:
             completer = Qt.QCompleter(self.available_names, self)
             self.ui.labelLineEdit.setCompleter(completer)
+
         if self.variables:
             self.addGrid()
+        self.adjustSize()
 
     def addGrid(self):
         """ adds from grid
         """
         index = 0
         for nm, val in self.variables.items():
-            self.names[nm] = Qt.QLabel(self.ui.varFrame)
-            self.names[nm].setText(Qt.QString(str(nm)))
-            self.ui.varGridLayout.addWidget(self.names[nm], index, 0, 1, 1)
-            self.widgets[nm] = Qt.QLineEdit(self.ui.varFrame)
-            if val is not None:
-                self.widgets[nm].setText(Qt.QString(str(val or "")))
-            self.ui.varGridLayout.addWidget(self.widgets[nm], index, 1, 1, 1)
-            index += 1
+            if not nm.startswith("__"):
+                if (nm not in self.extra and nm not in self.hidden) or \
+                   (val and nm not in self.extra and nm in self.hidden):
+                    self.names[nm] = Qt.QLabel(self.ui.varFrame)
+                    self.names[nm].setText(Qt.QString(str(nm)))
+                    self.ui.varGridLayout.addWidget(
+                        self.names[nm], index, 0, 1, 1)
+                    self.widgets[nm] = Qt.QLineEdit(self.ui.varFrame)
+                    if val is not None:
+                        self.widgets[nm].setText(Qt.QString(str(val or "")))
+                    self.ui.varGridLayout.addWidget(
+                        self.widgets[nm], index, 1, 1, 1)
+                    index += 1
 
     def addVariables(self, variables):
         """ adds  variables
@@ -178,7 +195,8 @@ class LDataDlg(Qt.QDialog):
             return
 
         for nm, wg in self.widgets.items():
-            self.variables[nm] = unicode(wg.text()) or None
+            if nm not in self.extra:
+                self.variables[nm] = unicode(wg.text()) or None
 
         if not self.label:
             Qt.QMessageBox.warning(self, "Wrong Data", "Empty data label")
@@ -186,3 +204,61 @@ class LDataDlg(Qt.QDialog):
             return
 
         Qt.QDialog.accept(self)
+
+
+class LExDataDlg(LDataDlg):
+    """  extension of editable data dialog """
+
+    def __init__(self, parent=None):
+        """ constructor
+
+        :param parent: parent object
+        :type parent: :class:`taurus.qt.Qt.QObject`
+        """
+        LDataDlg.__init__(self, parent)
+        #: (:obj:`list` <:obj:`str` > ) special variable names
+        self.extra = ["synchronization", "synchronizer"]
+
+    def createGUI(self):
+        """ creates GUI
+        """
+        LDataDlg.createGUI(self)
+        self.ui.synchronizationComboBox.show()
+        self.ui.synchronizationLabel.show()
+        self.ui.synchronizerLineEdit.show()
+        self.ui.synchronizerLabel.show()
+
+        if self.variables and "synchronization" in self.variables:
+            synch = int(self.variables["synchronization"] or 0)
+        else:
+            synch = 0
+        cid = self.ui.synchronizationComboBox.findText(
+            Qt.QString(SYNCHTEXT[synch]))
+        if cid < 0:
+            cid = 0
+        self.ui.synchronizationComboBox.setCurrentIndex(cid)
+
+        if self.variables and "synchronizer" in self.variables:
+            val = self.variables["synchronizer"] or "software"
+        else:
+            val = "software"
+        if val is not None:
+            self.ui.synchronizerLineEdit.setText(
+                Qt.QString(str(val or "")))
+        self.adjustSize()
+
+    def accept(self):
+        """ updates class variables with the form content
+        """
+
+        textsynch = str(self.ui.synchronizationComboBox.currentText())
+        synch = SYNCHTEXT.index(textsynch) \
+            if textsynch in SYNCHTEXT else None
+        if synch or "synchronization" in self.variables:
+            self.variables["synchronization"] = synch
+
+        syncher = unicode(self.ui.synchronizerLineEdit.text())
+        if syncher != "software" or "synchronizer" in self.variables:
+            self.variables["synchronizer"] = syncher
+
+        LDataDlg.accept(self)

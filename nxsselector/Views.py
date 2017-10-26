@@ -32,6 +32,7 @@ import json
 logger = logging.getLogger(__name__)
 from .DynamicTools import DynamicTools
 from .LDataDlg import LDataDlg
+from .LDataDlg import LExDataDlg
 
 
 class RightClickCheckBox(Qt.QCheckBox):
@@ -341,7 +342,7 @@ class CheckerView(Qt.QWidget):
         if hasattr(grp, "parent"):
             frm = grp.parent()
             stretch = 0
-            grps = [(grp, None) for grp in frm.findChildren(Qt.QGroupBox)]
+            grps = [(gp, None) for gp in frm.findChildren(Qt.QGroupBox)]
             hfrmlayout = frm.layout()
             vfrmlayouts = [hl for hl in hfrmlayout.children()
                            if isinstance(hl, Qt.QVBoxLayout)]
@@ -509,7 +510,6 @@ class CheckerView(Qt.QWidget):
 
         text = self.model.data(ind, role=Qt.Qt.ToolTipRole)
         text = str(text) if text else ""
-
         if self.showLabels:
             if self.showNames:
                 if text.strip():
@@ -577,6 +577,8 @@ class CheckDisView(CheckerView):
 
 
 class CheckPropView(CheckDisView):
+    """ element view with property widget
+    """
 
     def __init__(self, parent=None):
         """ constructor
@@ -590,6 +592,7 @@ class CheckPropView(CheckDisView):
         #: (:class:`taurus.qt.Qt.QSignalMapper`) widget property mapper
         self.pmapper = Qt.QSignalMapper(self)
         self.pmapper.mapped.connect(self.pchecked)
+        self.propdlg = LDataDlg
 
     @Qt.pyqtSlot(int)
     def pchecked(self, row):
@@ -606,7 +609,7 @@ class CheckPropView(CheckDisView):
 
         if props:
             prs = json.loads(str(props))
-            dform = LDataDlg(self)
+            dform = self.propdlg(self)
             dform.label = name
             dform.dtype = prs["data_type"] if "data_type" in prs else None
             dform.shape = prs["shape"] if "shape" in prs else None
@@ -640,6 +643,16 @@ class CheckPropView(CheckDisView):
         """ widget close method which disconnect signals """
         self.pmapper.mapped.disconnect(self.pchecked)
         CheckDisView.close(self)
+
+
+class CheckExPropView(CheckPropView):
+    """ element view with extended property widget
+    """
+
+    def __init__(self, parent=None):
+        CheckPropView.__init__(self, parent)
+        #: (:obj:`bool`) if widget are centered
+        self.propdlg = LExDataDlg
 
 
 class RadioView(CheckerView):
@@ -915,6 +928,22 @@ class CheckPropViewNL(CheckPropView):
         self.showLabels = False
 
 
+class CheckExPropViewNL(CheckExPropView):
+    """ element view with checkboxes and properties
+    without name labels
+    """
+
+    def __init__(self, parent=None):
+        """ constructor
+
+        :param parent: parent object
+        :type parent: :class:`taurus.qt.Qt.QObject`
+        """
+        CheckExPropView.__init__(self, parent)
+        #: (:obj:`bool`) if name labels should be shown
+        self.showLabels = False
+
+
 class ButtonDisViewNL(ButtonDisView):
     """ element view with left button checkboxes and display boxes
     without name labels
@@ -974,6 +1003,22 @@ class CheckPropViewNN(CheckPropView):
         :type parent: :class:`taurus.qt.Qt.QObject`
         """
         CheckPropView.__init__(self, parent)
+        #: (:obj:`bool`) if names should be shown
+        self.showNames = False
+
+
+class CheckExPropViewNN(CheckExPropView):
+    """ element view with redefined checkboxes with properties
+    without names
+    """
+
+    def __init__(self, parent=None):
+        """ constructor
+
+        :param parent: parent object
+        :type parent: :class:`taurus.qt.Qt.QObject`
+        """
+        CheckExPropView.__init__(self, parent)
         #: (:obj:`bool`) if names should be shown
         self.showNames = False
 

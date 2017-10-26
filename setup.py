@@ -78,7 +78,7 @@ class toolBuild(build):
     def run(self):
         """ runner
 
-        :\brief: It is running during building
+        :brief: It is running during building
         """
 
         try:
