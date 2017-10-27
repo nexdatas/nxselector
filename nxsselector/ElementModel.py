@@ -156,18 +156,19 @@ class ElementModel(Qt.QAbstractTableModel):
         cvars = device.state.configvars
         prs = json.loads(variables)
         for nm, val in prs.items():
-            if dname in cpvrs.keys() and nm in cpvrs[dname]:
-                if val is not None:
-                    cvars[nm] = val
-                elif nm in cvars:
-                    cvars.pop(nm)
-            else:
-                if nm not in props.keys():
-                    props[nm] = {}
-                if val is not None:
-                    props[nm][dname] = val
-                elif dname in props[nm].keys():
-                    props[nm].pop(dname)
+            if not nm.startswith("__"):
+                if dname in cpvrs.keys() and nm in cpvrs[dname]:
+                    if val is not None:
+                        cvars[nm] = val
+                    elif nm in cvars:
+                        cvars.pop(nm)
+                else:
+                    if nm not in props.keys():
+                        props[nm] = {}
+                    if val is not None:
+                        props[nm][dname] = val
+                    elif dname in props[nm].keys():
+                        props[nm].pop(dname)
         device.state.setProperties()
 
     def __properties(self, device):
@@ -185,6 +186,7 @@ class ElementModel(Qt.QAbstractTableModel):
         chps = device.state.channelprops
         echps = device.state.extrachannelprops
         admindata = device.state.admindata
+        tglist = device.state.triggergatelist
         dname = device.name
         contains = dict()
         if dname in cpvrs.keys():
@@ -205,6 +207,7 @@ class ElementModel(Qt.QAbstractTableModel):
                     contains[pr] = props[pr][dname]
                 else:
                     contains[pr] = None
+        contains["__triggergatelist__"] = tglist
         return json.dumps(contains)
 
     def __scanSources(self, device):

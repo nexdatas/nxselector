@@ -204,7 +204,7 @@ class ServerState(Qt.QObject):
         #: (:class:`PyTango.DeviceProxy`) selector server device proxy
         self.__dp = None
 
-        #: (:obj:`int`) timeour
+        #: (:obj:`int`) timeout
         self.__timeout = 25000
 
         #: (:obj:`dict` < :obj:`str`, `any`>) \
@@ -454,6 +454,15 @@ class ServerState(Qt.QObject):
             self.labeltypes = self.properties["data_type"]
         else:
             self.labeltypes = {}
+        if "__controllers__" in self.properties:
+            self.controllers = self.properties["__controllers__"]
+        else:
+            self.controllers = {}
+        if "__triggergatelist__" in self.properties:
+            self.triggergatelist = \
+                self.properties["__triggergatelist__"]
+        else:
+            self.triggergatelist = []
 
     def getProperties(self):
         """ sets properties from label properties

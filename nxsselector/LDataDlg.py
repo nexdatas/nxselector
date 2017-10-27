@@ -74,9 +74,12 @@ class LDataDlg(Qt.QDialog):
         #:     (name, qwidget) variable dictionary
         self.widgets = {}
         #: (:obj:`list` <:obj:`str` > ) special variable names
-        self.hidden = ["synchronization", "synchronizer"]
+        self.hidden = ["synchronization", "synchronizer",
+                       "entryname", "serialno"]
         #: (:obj:`list` <:obj:`str` > ) special variable names
         self.extra = []
+        #: (:obj:`list` <:obj:`str` > ) synchronizers
+        self.synchronizers = []
 
     @classmethod
     def __linkText(cls, value):
@@ -99,7 +102,7 @@ class LDataDlg(Qt.QDialog):
         """
         self.ui.synchronizationComboBox.hide()
         self.ui.synchronizationLabel.hide()
-        self.ui.synchronizerLineEdit.hide()
+        self.ui.synchronizerComboBox.hide()
         self.ui.synchronizerLabel.hide()
         self.ui.labelLineEdit.setText(Qt.QString(str(self.label or "")))
         self.ui.pathLineEdit.setText(Qt.QString(str(self.path or "")))
@@ -225,7 +228,7 @@ class LExDataDlg(LDataDlg):
         LDataDlg.createGUI(self)
         self.ui.synchronizationComboBox.show()
         self.ui.synchronizationLabel.show()
-        self.ui.synchronizerLineEdit.show()
+        self.ui.synchronizerComboBox.show()
         self.ui.synchronizerLabel.show()
 
         if self.variables and "synchronization" in self.variables:
@@ -242,9 +245,21 @@ class LExDataDlg(LDataDlg):
             val = self.variables["synchronizer"] or "software"
         else:
             val = "software"
-        if val is not None:
-            self.ui.synchronizerLineEdit.setText(
-                Qt.QString(str(val or "")))
+
+        self.ui.synchronizerComboBox.clear()
+        self.ui.synchronizerComboBox.addItem("software")
+        for sch in self.synchronizers:
+            self.ui.synchronizerComboBox.addItem(sch)
+            
+        cid = self.ui.synchronizerComboBox.findText(
+            Qt.QString(str(val)))
+        if cid < 0:
+            cid = 0
+        self.ui.synchronizerComboBox.setCurrentIndex(cid)
+
+#        if val is not None:
+#            self.ui.synchronizerLineEdit.setText(
+#                Qt.QString(str(val or "")))
         self.adjustSize()
 
     def accept(self):
@@ -257,7 +272,7 @@ class LExDataDlg(LDataDlg):
         if synch or "synchronization" in self.variables:
             self.variables["synchronization"] = synch
 
-        syncher = unicode(self.ui.synchronizerLineEdit.text())
+        syncher = unicode(self.ui.synchronizerComboBox.currentText())
         if syncher != "software" or "synchronizer" in self.variables:
             self.variables["synchronizer"] = syncher
 

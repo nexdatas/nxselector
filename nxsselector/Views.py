@@ -611,6 +611,8 @@ class CheckPropView(CheckDisView):
             prs = json.loads(str(props))
             dform = self.propdlg(self)
             dform.label = name
+            if "__triggergatelist__" in prs:
+                dform.synchronizers = list(prs["__triggergatelist__"])
             dform.dtype = prs["data_type"] if "data_type" in prs else None
             dform.shape = prs["shape"] if "shape" in prs else None
             dform.link = prs["link"] if "link" in prs else None
