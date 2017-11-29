@@ -52,6 +52,7 @@ class Selector(Qt.QDialog, TaurusBaseWidget):
     def __init__(self, server=None, door=None,
                  standalone=False, umode=None,
                  setdefault=False,
+                 switch=True,
                  organization='DESY',
                  application='NXS Component Selector',
                  parent=None):
@@ -106,6 +107,8 @@ class Selector(Qt.QDialog, TaurusBaseWidget):
 
         #: (:obj:`bool`) set default configuration
         self.__setdefault = setdefault
+        #: (:obj:`bool`) switch MntGrp into ActiveMntGrp
+        self.__switch = switch
         #: (:obj:`str`) user mode
         self.__umode = umode
         #: (:obj:`bool`)  expert mode on
@@ -272,6 +275,17 @@ class Selector(Qt.QDialog, TaurusBaseWidget):
 
         self.__settingsloaded = True
         self.waitForThread()
+        try:
+            if self.__switch:
+                self.resetClickAll()
+        except Exception:
+            import traceback
+            value = traceback.format_exc()
+            text = MessageBox.getText(
+                "Problems in Switching MntGrp")
+            MessageBox.warning(
+                self, "NXSelector: Error in Switching MntGrp",
+                text, str(value))
         logger.debug("settings END")
 
     def createGUI(self):
@@ -604,12 +618,12 @@ class Selector(Qt.QDialog, TaurusBaseWidget):
             self.state.serverChanged.connect(
                 self.resetServer, Qt.Qt.DirectConnection)
             self.state.synchthread.restart()
-        self.state.switchMntGrp()
-        self._synchDoor()
-        self.runProgress(["updateControllers",
-                          "importMntGrp",
-                          "fetchSettings"],
-                         "settings")
+        if self.__switch:
+            cmds = ["fetchSettings"]
+        else:
+            cmds = ["updateControllers",
+                    "fetchSettings"]
+        self.runProgress(cmds, "settings")
 
     def __resetStateThread(self):
         """ resets server state variables

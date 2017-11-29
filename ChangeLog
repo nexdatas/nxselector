@@ -1,4 +1,8 @@
 2017-11-29 Jan Kotanski <jankotan@gmail.com>
+	* fix problem in starting
+	* tagged as 3.7.2
+
+2017-11-29 Jan Kotanski <jankotan@gmail.com>
 	* load AcitveMntGrp on start
 	* tagged as 3.7.1
 

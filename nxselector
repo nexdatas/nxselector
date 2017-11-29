@@ -88,6 +88,12 @@ def main():
             default=False,
             dest="setdefault",
             help="set the current mode as default")
+        parser.add_option(
+            "", "--dont-switch-mntgrp",
+            action="store_false",
+            default=True,
+            dest="switch",
+            help="do not switch MntGrp to the ActiveMntGrp")
 
         app = Application(
             sys.argv,
@@ -112,7 +118,7 @@ def main():
 
     form = Selector(server, standalone=True, umode=umode,
                     setdefault=options.setdefault,
-                    door=options.door)
+                    door=options.door,switch=options.switch)
     form.show()
 
     if standalone:
