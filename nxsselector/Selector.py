@@ -604,7 +604,11 @@ class Selector(Qt.QDialog, TaurusBaseWidget):
             self.state.serverChanged.connect(
                 self.resetServer, Qt.Qt.DirectConnection)
             self.state.synchthread.restart()
-        self.runProgress(["updateControllers", "fetchSettings"],
+        self.state.switchMntGrp()
+        self._synchDoor()
+        self.runProgress(["updateControllers",
+                          "importMntGrp",
+                          "fetchSettings"],
                          "settings")
 
     def __resetStateThread(self):

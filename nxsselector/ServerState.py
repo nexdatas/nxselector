@@ -409,6 +409,8 @@ class ServerState(Qt.QObject):
         """
         if not self.__dp:
             self.setServer()
+
+        dc = "Error: Cannot read descriptionErrors"
         if self.server:
             # workaround for issue: PyTango 9.2.1  #22 / #168
             #     GIL/monitor locking problem

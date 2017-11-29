@@ -1,3 +1,7 @@
+2017-11-29 Jan Kotanski <jankotan@gmail.com>
+	* load AcitveMntGrp on start
+	* tagged as 3.7.1
+
 2017-10-26 Jan Kotanski <jankotan@gmail.com>
 	* add synchronizer and synchonization widget
 	* tagged as 3.7.0

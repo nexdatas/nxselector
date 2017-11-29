@@ -250,7 +250,7 @@ class LExDataDlg(LDataDlg):
         self.ui.synchronizerComboBox.addItem("software")
         for sch in self.synchronizers:
             self.ui.synchronizerComboBox.addItem(sch)
-            
+
         cid = self.ui.synchronizerComboBox.findText(
             Qt.QString(str(val)))
         if cid < 0:
