@@ -256,6 +256,18 @@ class Selector(Qt.QDialog, TaurusBaseWidget):
         self.tabs = [self.detectors, self.descriptions, self.data,
                      self.storage, self.preferences]
 
+        self.waitForThread()
+        try:
+            if self.__switch:
+                self.resetClickAll()
+        except Exception:
+            import traceback
+            value = traceback.format_exc()
+            text = MessageBox.getText(
+                "Problems in Switching MntGrp")
+            MessageBox.warning(
+                self, "NXSelector: Error in Switching MntGrp",
+                text, str(value))
         self.createGUI()
 
         sg = settings.value("Selector/Geometry")
@@ -274,18 +286,6 @@ class Selector(Qt.QDialog, TaurusBaseWidget):
             self.updateDoorName(self.__door)
 
         self.__settingsloaded = True
-        self.waitForThread()
-        try:
-            if self.__switch:
-                self.resetClickAll()
-        except Exception:
-            import traceback
-            value = traceback.format_exc()
-            text = MessageBox.getText(
-                "Problems in Switching MntGrp")
-            MessageBox.warning(
-                self, "NXSelector: Error in Switching MntGrp",
-                text, str(value))
         logger.debug("settings END")
 
     def createGUI(self):
