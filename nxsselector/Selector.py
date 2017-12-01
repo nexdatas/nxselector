@@ -814,6 +814,10 @@ class Selector(Qt.QDialog, TaurusBaseWidget):
         logger.debug("closing Progress ENDED")
         return status
 
+    def closeResetShowErrors(self):
+        self.storage.showErrors()
+        self.closeReset()
+
     def waitForThread(self):
         """ waits for running thread
         """
@@ -853,11 +857,11 @@ class Selector(Qt.QDialog, TaurusBaseWidget):
         logger.debug("reset ALL")
         self.state.switchMntGrp()
         self._synchDoor()
-        self.runProgress([
-            "updateControllers",
-            "importMntGrp"
-        ])
-        self.storage.showErrors()
+        self.runProgress(
+            [
+                "updateControllers",
+                "importMntGrp"],
+            onclose="closeResetShowErrors")
         logger.debug("reset ENDED")
 
     def _synchDoor(self):
@@ -891,15 +895,15 @@ class Selector(Qt.QDialog, TaurusBaseWidget):
     def _resetAll(self):
         """ resets all settings """
         logger.debug("reset ALL")
-        self.runProgress(["updateControllers", "importMntGrp"])
-        self.storage.showErrors()
+        self.runProgress(["updateControllers", "importMntGrp"],
+            onclose="closeResetShowErrors")
         logger.debug("reset ENDED")
 
     def resetDescriptions(self):
         """ resets description selection to the default values"""
         logger.debug("reset Descriptions")
-        self.runProgress(["resetDescriptions", "importMntGrp"])
-        self.storage.showErrors()
+        self.runProgress(["resetDescriptions", "importMntGrp"],
+            onclose="closeResetShowErrors")
         logger.debug("reset Descriptions ENDED")
 
     def resetConfiguration(self, expconf):
@@ -1073,6 +1077,7 @@ class Selector(Qt.QDialog, TaurusBaseWidget):
 
     def closeApply(self):
         """ close action for apply command """
+        self.storage.showErrors()
         if not self.closeReset():
             self.setDirty(True)
         else:
@@ -1089,7 +1094,6 @@ class Selector(Qt.QDialog, TaurusBaseWidget):
             self.runProgress(["updateControllers", "importMntGrp",
                               "createConfiguration"],
                              "closeApply")
-            self.storage.showErrors()
         except Exception:
             import traceback
             value = traceback.format_exc()

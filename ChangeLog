@@ -1,3 +1,7 @@
+2017-12-01 Jan Kotanski <jankotan@gmail.com>
+	* fix problem of fetching Description errors
+	* tagged as 3.7.3
+
 2017-11-29 Jan Kotanski <jankotan@gmail.com>
 	* fix problem in starting
 	* tagged as 3.7.2
