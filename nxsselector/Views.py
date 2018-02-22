@@ -149,7 +149,11 @@ class TableView(Qt.QTableView):
         self.verticalHeader().setVisible(False)
 #        self.horizontalHeader().setVisible(False)
         self.horizontalHeader().setStretchLastSection(True)
-        self.horizontalHeader().setResizeMode(Qt.QHeaderView.Stretch)
+        try:
+            self.horizontalHeader().setResizeMode(Qt.QHeaderView.Stretch)
+        except:
+            # workaround for bug in pyqt
+            self.horizontalHeader().setSectionResizeMode(Qt.QHeaderView.Stretch)
 
 
 class OneTableView(Qt.QTableView):
@@ -169,7 +173,11 @@ class OneTableView(Qt.QTableView):
         self.verticalHeader().setVisible(False)
         self.horizontalHeader().setVisible(False)
         self.horizontalHeader().setStretchLastSection(True)
-        self.horizontalHeader().setResizeMode(Qt.QHeaderView.Stretch)
+        try:
+            self.horizontalHeader().setResizeMode(Qt.QHeaderView.Stretch)
+        except:
+            # workaround for bug in pyqt
+            self.horizontalHeader().setSectionResizeMode(Qt.QHeaderView.Stretch)
 
     def reset(self):
         """ resets table view and hides view columns
