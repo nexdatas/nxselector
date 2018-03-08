@@ -1,3 +1,7 @@
+2018-03-08 Jan Kotanski <jankotan@gmail.com>
+	* fix server None issue
+	* tagged as 3.7.5
+
 2018-02-22 Jan Kotanski <jankotan@gmail.com>
 	* workaround for bug in pyqt
 	* tagged as 3.7.4

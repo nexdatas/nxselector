@@ -61,6 +61,7 @@ def main():
     standalone = app is None
     server = None
     expert = True
+    umode = None
 
     if standalone:
         import taurus.core.util.argparse

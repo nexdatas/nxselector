@@ -112,7 +112,7 @@ class SynchThread(Qt.QThread):
         self.mutex = mutex
 
         #: (:obj:`str`) server name
-        self.server = str(serverstate.server)
+        self.server = str(serverstate.server) if serverstate.server else None
 
         #: (:obj:`str`) server name
         self.__serverstate = serverstate
@@ -133,7 +133,8 @@ class SynchThread(Qt.QThread):
 
     def restart(self):
         with Qt.QMutexLocker(self.mutex):
-            self.server = str(self.__serverstate.server)
+            self.server = str(self.__serverstate.server) \
+                if self.__serverstate.server else None
         if self.server and self.server != 'module':
             self.__dp = PyTango.DeviceProxy(self.server)
             self.__lastscanid = self.__dp.scanID
