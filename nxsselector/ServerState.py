@@ -818,7 +818,7 @@ class ServerState(Qt.QObject):
         if hasattr(self.__dp, "macroServer"):
             ms = str(self.__dp.macroServer)
             if ms:
-                if ':' not in ms:
+                if ':' not in ms and hasattr(self.__dp, "get_db_host"):
                     ms = "%s:%s/%s" % (self.__dp.get_db_host(),
                                        self.__dp.get_db_port(),
                                        ms)
