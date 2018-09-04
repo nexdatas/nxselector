@@ -222,6 +222,8 @@ class CheckerView(Qt.QWidget):
         self.center = True
         #: (:obj:`int`) maximal number of rows in the column
         self.rowMax = 0
+        #: (:obj:`int`) font size for in component column view
+        self.fontSize = 11
         #: (:obj:`int`) selected widget row (widget id)
         self.selectedWidgetRow = None
         #: (:obj:`bool`) if name labels should be shown
@@ -471,10 +473,16 @@ class CheckerView(Qt.QWidget):
                 ds = self.displays[row]
         else:
             cb = self.widget()
+            font = cb.font()
+            font.setPointSize(self.fontSize)
+            cb.setFont(font)
             if hasattr(cb, "setCheckable"):
                 cb.setCheckable(True)
             if self.dmapper:
                 ds = self.widget()
+                font = ds.font()
+                font.setPointSize(self.fontSize)
+                ds.setFont(font)
                 if hasattr(ds, "setCheckable"):
                     ds.setCheckable(True)
             if hasattr(cb, "setSizePolicy") and self.center:

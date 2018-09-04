@@ -1,3 +1,7 @@
+2018-09-04 Jan Kotanski <jankotan@gmail.com>
+	* add font size for checkboxes
+	* tagged as 3.8.0
+
 2018-04-05 Jan Kotanski <jankotan@gmail.com>
 	* fix fetching the door name
 	* tagged as 3.7.8

@@ -47,7 +47,7 @@ class Detectors(Qt.QObject):
     dirty = Qt.pyqtSignal()
 
     def __init__(self, ui, state=None, userView=CheckerView, rowMax=0,
-                 simpleMode=0):
+                 simpleMode=0, fontSize=11):
         """ constructor
 
         :param ui: ui instance
@@ -61,6 +61,8 @@ class Detectors(Qt.QObject):
         :param simpleMode: if simple display mode: \
                            `1` for negative hidden, `2` for negative disable
         :type simpleMode: :obj:`int`
+        :param fontSize: font size in component column view
+        :type fontSize: :obj:`int`
         """
 
         Qt.QObject.__init__(self)
@@ -74,6 +76,8 @@ class Detectors(Qt.QObject):
         self.userView = userView
         #: (:obj:`int`) maximal row number in component column view
         self.rowMax = rowMax
+        #: (:obj:`int`) font size for in component column view
+        self.fontSize = fontSize
         #: (:obj:`bool`) if simple view mode
         self.__simpleMode = simpleMode
         #: (:class:`taurus.qt.Qt.QLayout`) component layout
@@ -236,7 +240,10 @@ class Detectors(Qt.QObject):
                         layout_auto = Qt.QGridLayout(mgroup)
                         self.auto_layouts.append(layout_auto)
                         mview = self.userView(mgroup)
-                        mview.rowMax = self.rowMax
+                        if hasattr(mview, "rowMax"):
+                            mview.rowMax = self.rowMax
+                        if hasattr(mview, "fontSize"):
+                            mview.fontSize = self.fontSize
 
                         layout_auto.addWidget(mview, 0, 0, 1, 1)
                         self.views[group[1]] = mview
