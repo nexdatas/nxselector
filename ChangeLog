@@ -1,4 +1,8 @@
 2018-09-04 Jan Kotanski <jankotan@gmail.com>
+	* fix setting rowmax for groups in one column
+	* tagged as 3.8.1
+
+2018-09-04 Jan Kotanski <jankotan@gmail.com>
 	* add font size for checkboxes
 	* tagged as 3.8.0
 
