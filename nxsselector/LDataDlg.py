@@ -20,18 +20,19 @@
 """  editable data dialog """
 
 import json
+import logging
 
 try:
     from taurus.external.qt import Qt
 except:
     from taurus.qt import Qt
 
+from taurus.qt.qtgui.util.ui import UILoadable
+
 from .MessageBox import MessageBox
 from. ElementModel import PROPTEXT
 
-from taurus.qt.qtgui.util.ui import UILoadable
 
-import logging
 #: (:obj:`logging.Logger`) logger object
 logger = logging.getLogger(__name__)
 

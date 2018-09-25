@@ -200,8 +200,8 @@ class Selector(Qt.QDialog, TaurusBaseWidget):
             self.rowMax = 16
 
         self.fontSize = int(self.font().pointSize())
-        print(self.fontSize)
-        self.fontSize = int(settings.value('Preferences/FontSize', self.fontSize))
+        self.fontSize = int(
+            settings.value('Preferences/FontSize', self.fontSize))
         self.displayStatus = int(settings.value('Preferences/DisplayStatus',
                                                 2))
         self.cnfFile = str(settings.value("Selector/CnfFile", "./"))
@@ -912,14 +912,14 @@ class Selector(Qt.QDialog, TaurusBaseWidget):
         """ resets all settings """
         logger.debug("reset ALL")
         self.runProgress(["updateControllers", "importMntGrp"],
-            onclose="closeResetShowErrors")
+                         onclose="closeResetShowErrors")
         logger.debug("reset ENDED")
 
     def resetDescriptions(self):
         """ resets description selection to the default values"""
         logger.debug("reset Descriptions")
         self.runProgress(["resetDescriptions", "importMntGrp"],
-            onclose="closeResetShowErrors")
+                         onclose="closeResetShowErrors")
         logger.debug("reset Descriptions ENDED")
 
     def resetConfiguration(self, expconf):
