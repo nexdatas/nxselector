@@ -22,10 +22,10 @@
 import json
 
 import logging
+from .Element import CP, DS
+
 #: (:obj:`logging.Logger`) logger object
 logger = logging.getLogger(__name__)
-
-from .Element import CP, DS
 
 
 class Frames(object):

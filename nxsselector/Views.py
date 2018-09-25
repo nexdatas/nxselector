@@ -28,11 +28,12 @@ except:
 import logging
 import json
 
-#: (:obj:`logging.Logger`) logger object
-logger = logging.getLogger(__name__)
 from .DynamicTools import DynamicTools
 from .LDataDlg import LDataDlg
 from .LDataDlg import LExDataDlg
+
+#: (:obj:`logging.Logger`) logger object
+logger = logging.getLogger(__name__)
 
 
 class RightClickCheckBox(Qt.QCheckBox):
@@ -153,7 +154,8 @@ class TableView(Qt.QTableView):
             self.horizontalHeader().setResizeMode(Qt.QHeaderView.Stretch)
         except:
             # workaround for bug in pyqt
-            self.horizontalHeader().setSectionResizeMode(Qt.QHeaderView.Stretch)
+            self.horizontalHeader().setSectionResizeMode(
+                Qt.QHeaderView.Stretch)
 
 
 class OneTableView(Qt.QTableView):
@@ -177,7 +179,8 @@ class OneTableView(Qt.QTableView):
             self.horizontalHeader().setResizeMode(Qt.QHeaderView.Stretch)
         except:
             # workaround for bug in pyqt
-            self.horizontalHeader().setSectionResizeMode(Qt.QHeaderView.Stretch)
+            self.horizontalHeader().setSectionResizeMode(
+                Qt.QHeaderView.Stretch)
 
     def reset(self):
         """ resets table view and hides view columns

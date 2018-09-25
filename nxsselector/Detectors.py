@@ -205,6 +205,30 @@ class Detectors(Qt.QObject):
         DynamicTools.cleanupFrames(self.mframes, "frames")
         DynamicTools.cleanupLayoutWithItems(self.glayout)
 
+    def __calcMaxRowNumbers(self):
+        """ calculates row numbers for groups
+
+        :returns:  a dictionry with rownumbers
+        :rtype: :obj:`dict`< :obj:`int`, :obj:`int`>
+        """
+        maxrownumbers = {}
+        gpsizes = dict([(gk, len(gr)) for gk, gr in self.groups.items()])
+        for frame in json.loads(self.frames):
+            for column in frame:
+                clm = [gr[1] for gr in column]
+                if len(clm) > 1:
+                    gpsum = sum([(gpsizes[gr[1]] if gr[1] in gpsizes else 0)
+                                 for gr in column])
+                    for gr in column:
+                        la = float(
+                            gpsizes[gr[1]] if gr[1] in gpsizes else 0) / \
+                            max(gpsum, 1)
+                        maxrownumbers[gr[1]] =  \
+                            max(1, int(la * (self.rowMax - 2*len(clm) + 2)))
+                else:
+                    maxrownumbers[column[0][1]] = self.rowMax
+        return maxrownumbers
+
     def createGUI(self):
         """ creates widget GUI
         """
@@ -213,6 +237,7 @@ class Detectors(Qt.QObject):
         self.glayout = Qt.QHBoxLayout(self.ui.detectors)
 
         frames = Frames(self.frames, DS in self.groups, CP in self.groups)
+        maxrownumbers = self.__calcMaxRowNumbers()
         for frame in frames:
             mframe = Qt.QFrame(self.ui.detectors)
             self.mframes.append(mframe)
@@ -241,7 +266,10 @@ class Detectors(Qt.QObject):
                         self.auto_layouts.append(layout_auto)
                         mview = self.userView(mgroup)
                         if hasattr(mview, "rowMax"):
-                            mview.rowMax = self.rowMax
+                            if group[1] in maxrownumbers.keys():
+                                mview.rowMax = maxrownumbers[group[1]]
+                            else:
+                                mview.rowMax = self.rowMax
                         if hasattr(mview, "fontSize"):
                             mview.fontSize = self.fontSize
 
