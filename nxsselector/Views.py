@@ -28,11 +28,12 @@ except:
 import logging
 import json
 
-#: (:obj:`logging.Logger`) logger object
-logger = logging.getLogger(__name__)
 from .DynamicTools import DynamicTools
 from .LDataDlg import LDataDlg
 from .LDataDlg import LExDataDlg
+
+#: (:obj:`logging.Logger`) logger object
+logger = logging.getLogger(__name__)
 
 
 class RightClickCheckBox(Qt.QCheckBox):
@@ -153,7 +154,8 @@ class TableView(Qt.QTableView):
             self.horizontalHeader().setResizeMode(Qt.QHeaderView.Stretch)
         except:
             # workaround for bug in pyqt
-            self.horizontalHeader().setSectionResizeMode(Qt.QHeaderView.Stretch)
+            self.horizontalHeader().setSectionResizeMode(
+                Qt.QHeaderView.Stretch)
 
 
 class OneTableView(Qt.QTableView):
@@ -177,7 +179,8 @@ class OneTableView(Qt.QTableView):
             self.horizontalHeader().setResizeMode(Qt.QHeaderView.Stretch)
         except:
             # workaround for bug in pyqt
-            self.horizontalHeader().setSectionResizeMode(Qt.QHeaderView.Stretch)
+            self.horizontalHeader().setSectionResizeMode(
+                Qt.QHeaderView.Stretch)
 
     def reset(self):
         """ resets table view and hides view columns
@@ -222,6 +225,8 @@ class CheckerView(Qt.QWidget):
         self.center = True
         #: (:obj:`int`) maximal number of rows in the column
         self.rowMax = 0
+        #: (:obj:`int`) font size for in component column view
+        self.fontSize = 11
         #: (:obj:`int`) selected widget row (widget id)
         self.selectedWidgetRow = None
         #: (:obj:`bool`) if name labels should be shown
@@ -471,10 +476,16 @@ class CheckerView(Qt.QWidget):
                 ds = self.displays[row]
         else:
             cb = self.widget()
+            font = cb.font()
+            font.setPointSize(self.fontSize)
+            cb.setFont(font)
             if hasattr(cb, "setCheckable"):
                 cb.setCheckable(True)
             if self.dmapper:
                 ds = self.widget()
+                font = ds.font()
+                font.setPointSize(self.fontSize)
+                ds.setFont(font)
                 if hasattr(ds, "setCheckable"):
                     ds.setCheckable(True)
             if hasattr(cb, "setSizePolicy") and self.center:

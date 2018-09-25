@@ -198,6 +198,10 @@ class Selector(Qt.QDialog, TaurusBaseWidget):
         self.rowMax = int(settings.value('Preferences/RowMax', 16))
         if not self.rowMax:
             self.rowMax = 16
+
+        self.fontSize = int(self.font().pointSize())
+        self.fontSize = int(
+            settings.value('Preferences/FontSize', self.fontSize))
         self.displayStatus = int(settings.value('Preferences/DisplayStatus',
                                                 2))
         self.cnfFile = str(settings.value("Selector/CnfFile", "./"))
@@ -220,7 +224,9 @@ class Selector(Qt.QDialog, TaurusBaseWidget):
         self.detectors = Detectors(
             self.ui, self.state,
             self.preferences.views[self.userView],
-            self.rowMax, int(self.hidden) + 2 * int(self.user))
+            self.rowMax,
+            int(self.hidden) + 2 * int(self.user),
+            self.fontSize)
 
         self.preferences.mgroups = settings.value(
             'Preferences/Groups', '{}')
@@ -249,7 +255,8 @@ class Selector(Qt.QDialog, TaurusBaseWidget):
             self.ui, self.state,
             self.preferences.views["CentralCheckBoxes"],
             self.preferences.views["CheckBoxes Dis (U)"],
-            self.rowMax)
+            self.rowMax,
+            self.fontSize)
 
         self.data = Data(self.ui, self.state, self.simple or self.user)
 
@@ -387,6 +394,7 @@ class Selector(Qt.QDialog, TaurusBaseWidget):
         if cid >= 0:
             self.ui.viewComboBox.setCurrentIndex(cid)
         self.ui.rowMaxSpinBox.setValue(self.rowMax)
+        self.ui.fontSizeSpinBox.setValue(self.fontSize)
         self.ui.statusCheckBox.setChecked(self.displayStatus != 0)
 
     def __hideWidgets(self):
@@ -440,6 +448,7 @@ class Selector(Qt.QDialog, TaurusBaseWidget):
 
         self.ui.viewComboBox.currentIndexChanged.connect(self.resetViews)
         self.ui.rowMaxSpinBox.editingFinished.connect(self.resetRows)
+        self.ui.fontSizeSpinBox.editingFinished.connect(self.resetRows)
         self.ui.statusCheckBox.stateChanged.connect(
             self.__displayStatusChanged)
 
@@ -524,6 +533,9 @@ class Selector(Qt.QDialog, TaurusBaseWidget):
         settings.setValue(
             "Preferences/RowMax",
             Qt.QVariant(self.ui.rowMaxSpinBox.value()))
+        settings.setValue(
+            "Preferences/FontSize",
+            Qt.QVariant(self.ui.fontSizeSpinBox.value()))
         settings.setValue(
             "Preferences/DisplayStatus",
             Qt.QVariant(2 if self.ui.statusCheckBox.isChecked() else 0))
@@ -739,8 +751,12 @@ class Selector(Qt.QDialog, TaurusBaseWidget):
         """
         logger.debug("reset rows")
         rowMax = self.ui.rowMaxSpinBox.value()
+        fontSize = self.ui.fontSizeSpinBox.value()
         for tab in self.tabs:
-            tab.rowMax = rowMax
+            if hasattr(tab, "rowMax"):
+                tab.rowMax = rowMax
+            if hasattr(tab, "fontSize"):
+                tab.fontSize = fontSize
         self.resetViews()
         logger.debug("reset rows ended")
 
@@ -896,14 +912,14 @@ class Selector(Qt.QDialog, TaurusBaseWidget):
         """ resets all settings """
         logger.debug("reset ALL")
         self.runProgress(["updateControllers", "importMntGrp"],
-            onclose="closeResetShowErrors")
+                         onclose="closeResetShowErrors")
         logger.debug("reset ENDED")
 
     def resetDescriptions(self):
         """ resets description selection to the default values"""
         logger.debug("reset Descriptions")
         self.runProgress(["resetDescriptions", "importMntGrp"],
-            onclose="closeResetShowErrors")
+                         onclose="closeResetShowErrors")
         logger.debug("reset Descriptions ENDED")
 
     def resetConfiguration(self, expconf):

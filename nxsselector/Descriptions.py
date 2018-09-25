@@ -46,7 +46,7 @@ class Descriptions(Qt.QObject):
     componentChecked = Qt.pyqtSignal()
 
     def __init__(self, ui, state=None, userView=CheckerView,
-                 mandUserView=CheckerView, rowMax=0):
+                 mandUserView=CheckerView, rowMax=0, fontSize=11):
         """ constructor
 
         :param ui: ui instance
@@ -59,6 +59,8 @@ class Descriptions(Qt.QObject):
         :type mandUserView: :class:`taurus.qt.Qt.QWidget`
         :param rowMax: maximal row number in component column view
         :type rowMax: :obj:`int`
+        :param fontSize: font size in component column view
+        :type fontSize: :obj:`int`
         """
 
         Qt.QObject.__init__(self)
@@ -72,6 +74,8 @@ class Descriptions(Qt.QObject):
         #: (:class:`taurus.qt.Qt.QWidget`) \
         #:     widget for description mandatory components
         self.mandUserView = mandUserView
+        #: (:obj:`int`) font size for in component column view
+        self.fontSize = fontSize
         #: (:obj:`int`) maximal row number in component column view
         self.rowMax = rowMax
 
@@ -216,7 +220,10 @@ class Descriptions(Qt.QObject):
         layout_auto = Qt.QGridLayout(mgroup)
         self.auto_layouts.append(layout_auto)
         mview = view(mgroup)
-        mview.rowMax = rowMax
+        if hasattr(mview, "rowMax"):
+            mview.rowMax = rowMax
+        if hasattr(mview, "fontSize"):
+            mview.fontSize = self.fontSize
         if hasattr(mview, 'dmapper'):
             mview.dmapper = None
 
