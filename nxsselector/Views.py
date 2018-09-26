@@ -391,7 +391,7 @@ class CheckerView(Qt.QWidget):
             if hasattr(frm, "parent"):
                 lyt = frm.parent().layout()
                 sizestt = [0, 1, 2, 3, 3, 4, 4, 4, 5, 5, 5, 5]
-                if stretch > len(sizestt):
+                if stretch >= len(sizestt):
                     nstretch = 6
                 elif stretch < 0:
                     nstretch = 0

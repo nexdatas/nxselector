@@ -1,4 +1,8 @@
-2018-09-04 Jan Kotanski <jankotan@gmail.com>
+2018-09-26 Jan Kotanski <jankotan@gmail.com>
+	* fix for stretch index
+	* tagged as 3.8.2
+
+2018-09-25 Jan Kotanski <jankotan@gmail.com>
 	* fix setting rowmax for groups in one column
 	* tagged as 3.8.1
 
