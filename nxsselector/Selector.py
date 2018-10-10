@@ -276,6 +276,7 @@ class Selector(Qt.QDialog, TaurusBaseWidget):
                 self, "NXSelector: Error in Switching MntGrp",
                 text, str(value))
         self.createGUI()
+        self.__tabChanged(0)
 
         sg = settings.value("Selector/Geometry")
         if sg:
@@ -325,6 +326,10 @@ class Selector(Qt.QDialog, TaurusBaseWidget):
         self.ui.clearAllPushButton = self.ui.buttonBox.addButton(
             Qt.QDialogButtonBox.RestoreDefaults)
         self.ui.clearAllPushButton.setText("ClearAll")
+        self.ui.unlockPushButton = self.ui.buttonBox.addButton(
+            Qt.QDialogButtonBox.RestoreDefaults)
+        self.ui.unlockPushButton.setText("Unlock")
+        self.ui.unlockPushButton.hide()
 
         self.ui.loadProfilePushButton = self.ui.buttonBox.addButton(
             Qt.QDialogButtonBox.Open)
@@ -439,6 +444,7 @@ class Selector(Qt.QDialog, TaurusBaseWidget):
             self.ui.buttonBox.button(
                 Qt.QDialogButtonBox.Close).pressed.connect(self.close)
         self.ui.clearAllPushButton.pressed.connect(self.__restore)
+        self.ui.unlockPushButton.pressed.connect(self.__unlock)
 
         self.ui.loadProfilePushButton.pressed.connect(self.cnfLoad)
         self.ui.saveProfilePushButton.pressed.connect(self.cnfSave)
@@ -978,6 +984,20 @@ class Selector(Qt.QDialog, TaurusBaseWidget):
         elif index == 1:
             self.resetDescriptions()
 
+    @Qt.pyqtSlot()
+    def __unlock(self):
+        """ unlock inaccessable descriptive components
+        """
+        for ds in self.state.idsgroup.keys():
+            if self.state.idsgroup[ds] is None:
+                self.state.idsgroup[ds] = False
+        for cp in self.state.acpgroup.keys():
+            if self.state.acpgroup[cp] is None:
+                self.state.acpgroup[cp] = False
+        self.state.ddsdirty = True
+        self.resetViews()
+        self.setDirty()
+
     def __clearAllClicked(self):
         """ unselected all selected elements for detectors
         """
@@ -1067,6 +1087,7 @@ class Selector(Qt.QDialog, TaurusBaseWidget):
             self.ui.clearAllPushButton.setToolTip(
                 "Deselect all detector components")
             self.ui.clearAllPushButton.show()
+            self.ui.unlockPushButton.hide()
         elif index == 1:
             self.ui.groupsPushButton.setText("Others")
             self.ui.groupsPushButton.show()
@@ -1077,7 +1098,11 @@ class Selector(Qt.QDialog, TaurusBaseWidget):
                 "Reset profile and the description components "
                 "into the default set")
             self.ui.clearAllPushButton.show()
+            self.ui.unlockPushButton.setToolTip(
+                "Unlock inaccessible description components")
+            self.ui.unlockPushButton.show()
         else:
+            self.ui.unlockPushButton.hide()
             self.ui.clearAllPushButton.hide()
             self.ui.groupsPushButton.hide()
 
