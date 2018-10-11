@@ -359,6 +359,8 @@ class Storage(Qt.QObject):
         dform.createGUI()
         dform.exec_()
         if dform.dirty:
+            if dform.newdatasources:
+                self.state.createDataSources(dform.newdatasources)
             self.__updateGroup(self.state.cpgroup, dform.components, False)
             self.__updateGroup(self.state.dsgroup, dform.datasources, False)
             self.resetViews.emit()

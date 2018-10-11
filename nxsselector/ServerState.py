@@ -405,6 +405,20 @@ class ServerState(Qt.QObject):
             self.__dp.exportEnvProfile()
         self.__conf = json.loads(self.__dp.profileConfiguration)
 
+    def createDataSources(self, datasources):
+        """ creates new datasources
+        :param datasources: datasources to add { name: source }
+        :type datasources: :obj:`dict` <:obj:`str`, :obj:`str``>
+        """
+        if not self.__dp:
+            self.setServer()
+        self.__command(self.__dp, "createDataSources",
+                       str(json.dumps(datasources)))
+        self.__fetchConfiguration()
+        self.avdslist = self.__getList("availableDataSources")
+        self.dsdescription = self.__getList(
+            "dataSourceDescription", argin=self.avdslist)
+
     def fetchErrors(self):
         """ fetches from the server the description errors
         """
