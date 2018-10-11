@@ -25,10 +25,16 @@ except:
     from taurus.qt import Qt
 
 from taurus.qt.qtgui.util.ui import UILoadable
+from taurus.qt.qtgui.panel import TaurusModelChooser
+from taurus.qt.qtgui.panel import TaurusModelSelectorTree
+from taurus.core.taurusbasetypes import TaurusElementType
+import taurus
 
 from .Views import OneTableView
 from .Element import GElement, CP, DS
 from .ElementModel import ElementModel
+from .AddDataSourceDlg import AddDataSourceDlg
+
 
 import logging
 #: (:obj:`logging.Logger`) logger object
@@ -66,6 +72,9 @@ class GroupsDlg(Qt.QDialog):
         self.state = None
         #: (:obj:`str`) group title
         self.title = "Selectable Detector Elements"
+        #: (:obj:`dict` <:obj:`str`, :obj:`str``>) \
+        #:     datasources to add { name: source }
+        self.newdatasources = {}
 
     def __createViews(self, widget, cpview, dsview):
         """ creates basic views
@@ -104,6 +113,12 @@ class GroupsDlg(Qt.QDialog):
         self.ui.closeButtonBox.button(
             Qt.QDialogButtonBox.Close).clicked.connect(self.reject)
 
+        self.ui.createPushButton = self.ui.closeButtonBox.addButton(
+            "", Qt.QDialogButtonBox.ActionRole)
+        self.ui.createPushButton.setText("Create DataSources ...")
+        self.ui.createPushButton.clicked.connect(
+            self.__createDataSources)
+
     @Qt.pyqtSlot()
     def __dirty(self):
         """ sets dirty to True
@@ -112,6 +127,19 @@ class GroupsDlg(Qt.QDialog):
         self.setWindowTitle("Component Groups *")
         logger.debug("changed")
 
+    @Qt.pyqtSlot()
+    def __createDataSources(self):
+        """ selects configuration of new datasources
+        """
+        dform = AddDataSourceDlg(self)
+        dform.createGUI()
+        if dform.exec_():
+            self.newdatasources[dform.name] = dform.source
+            self.datasources[dform.name] = True
+            self.__populateTable(self.ui.ddsTableView, self.ddsgroup, DS,
+                                 self.datasources, "DataSources:")
+            self.dirty = True
+        
     def __populateTable(self, view, group, eltype, dct, header):
         """ populates the group table
 
