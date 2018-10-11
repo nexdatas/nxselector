@@ -1,3 +1,8 @@
+2018-10-11 Jan Kotanski <jankotan@gmail.com>
+	* add Unlock button for descriptive component
+	* add create DataSources button
+	* tagged as 3.9.0
+
 2018-09-26 Jan Kotanski <jankotan@gmail.com>
 	* fix for stretch index
 	* tagged as 3.8.2

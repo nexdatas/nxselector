@@ -22,4 +22,4 @@ GUI for setting Sardana NeXus Recorder
 """
 
 #: (:obj:`str`) version of the application
-__version__ = "3.8.2"
+__version__ = "3.9.0"
