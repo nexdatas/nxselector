@@ -23,9 +23,6 @@ before_install:
   - if [ $TEST == "testsuit" ]; then chmod +x .travis/install.sh; fi
 
 before_script:
-  - docker build -t ndts .travis/${OS}
-  - docker run  --name  ndts -d -it -v `pwd`:/home/tango  ndts
-  - .travis/install.sh ${OS}
   - if [ $TEST == "testsuit" ]; then docker build -t ndts .travis/${OS}; fi
   - if [ $TEST == "testsuit" ]; then docker run  --name  ndts -d -it -v `pwd`:/home/tango  ndts; fi
   - if [ $TEST == "testsuit" ]; then .travis/install.sh ${OS} ${PY};  fi
