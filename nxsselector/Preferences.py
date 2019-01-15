@@ -27,7 +27,7 @@ from .MessageBox import MessageBox
 from .DynamicTools import DynamicTools
 try:
     from taurus.external.qt import Qt
-except:
+except Exception:
     from taurus.qt import Qt
 
 from .Views import (TableView, OneTableView,
@@ -179,7 +179,7 @@ class Preferences(Qt.QObject):
                     if isinstance(gr[i], list) and gr[i]:
                         gr[i] = gr[i][0]
             self.__mgroups = json.dumps(lgroups)
-        except:
+        except Exception:
             self.__mgroups = "{}"
 
     def __getmgroups(self):

@@ -24,7 +24,7 @@ import sys
 
 try:
     from taurus.external.qt import Qt
-except:
+except Exception:
     from taurus.qt import Qt
 
 from taurus.qt.qtgui.util.ui import UILoadable
@@ -113,7 +113,7 @@ class EdDataDlg(Qt.QDialog):
         if not self.isString and not self.simple:
             try:
                 self.value = json.loads(self.value)
-            except:
+            except Exception:
                 pass
 
         if not self.name:

@@ -24,7 +24,7 @@ import fnmatch
 
 try:
     from taurus.external.qt import Qt
-except:
+except Exception:
     from taurus.qt import Qt
 
 from .Element import DSElement, CPElement, CP, DS
@@ -123,7 +123,7 @@ class Detectors(Qt.QObject):
         uds = set()
         try:
             mgroups = json.loads(self.mgroups)
-        except:
+        except Exception:
             mgroups = {}
         for k, gr in mgroups.items():
             if int(k) in self.__availableGroups():
@@ -186,7 +186,7 @@ class Detectors(Qt.QObject):
                 for column in frame:
                     for group in column:
                         res.add(group[1])
-        except:
+        except Exception:
             pass
         return res
 

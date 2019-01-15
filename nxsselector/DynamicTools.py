@@ -25,7 +25,7 @@ logger = logging.getLogger(__name__)
 
 try:
     from taurus.external.qt import Qt
-except:
+except Exception:
     from taurus.qt import Qt
 
 
@@ -49,7 +49,7 @@ class DynamicTools(object):
                     la.deleteLater()
                 if label:
                     logger.debug("del %s" % label)
-            except:
+            except Exception:
                 if label:
                     logger.debug("ERROR del %s" % label)
 
@@ -73,7 +73,7 @@ class DynamicTools(object):
                     wg.deleteLater()
                 if label:
                     logger.debug("del %s" % label)
-            except:
+            except Exception:
                 if label:
                     logger.debug("ERROR del %s" % label)
 
@@ -93,7 +93,7 @@ class DynamicTools(object):
                 fr.close()
                 if label:
                     logger.debug("del %s" % label)
-            except:
+            except Exception:
                 if label:
                     logger.debug("ERROR del %s" % label)
 

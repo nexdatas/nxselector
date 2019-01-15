@@ -25,7 +25,7 @@ logger = logging.getLogger(__name__)
 
 try:
     from taurus.external.qt import Qt
-except:
+except Exception:
     from taurus.qt import Qt
 
 

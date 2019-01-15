@@ -21,7 +21,7 @@
 
 try:
     from taurus.external.qt import Qt
-except:
+except Exception:
     from taurus.qt import Qt
 from .EdListDlg import EdListDlg
 from .GroupsDlg import GroupsDlg

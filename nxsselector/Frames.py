@@ -92,7 +92,7 @@ class Frames(object):
                 self.__settings = [self.defaultds]
                 self.__makedict()
 
-        except:
+        except Exception:
             self.__settings = [self.defaultds, self.defaultcp]
             self.__makedict()
 

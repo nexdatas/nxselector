@@ -22,7 +22,7 @@
 
 try:
     from taurus.external.qt import Qt
-except:
+except Exception:
     from taurus.qt import Qt
 
 import logging
@@ -152,7 +152,7 @@ class TableView(Qt.QTableView):
         self.horizontalHeader().setStretchLastSection(True)
         try:
             self.horizontalHeader().setResizeMode(Qt.QHeaderView.Stretch)
-        except:
+        except Exception:
             # workaround for bug in pyqt
             self.horizontalHeader().setSectionResizeMode(
                 Qt.QHeaderView.Stretch)
@@ -177,7 +177,7 @@ class OneTableView(Qt.QTableView):
         self.horizontalHeader().setStretchLastSection(True)
         try:
             self.horizontalHeader().setResizeMode(Qt.QHeaderView.Stretch)
-        except:
+        except Exception:
             # workaround for bug in pyqt
             self.horizontalHeader().setSectionResizeMode(
                 Qt.QHeaderView.Stretch)

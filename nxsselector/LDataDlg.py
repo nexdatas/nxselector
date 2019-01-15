@@ -25,7 +25,7 @@ import sys
 
 try:
     from taurus.external.qt import Qt
-except:
+except Exception:
     from taurus.qt import Qt
 
 from taurus.qt.qtgui.util.ui import UILoadable

@@ -21,7 +21,7 @@
 
 try:
     from taurus.external.qt import Qt
-except:
+except Exception:
     from taurus.qt import Qt
 
 from .Element import DS, CP

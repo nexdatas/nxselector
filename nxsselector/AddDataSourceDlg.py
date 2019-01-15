@@ -23,7 +23,7 @@ import sys
 
 try:
     from taurus.external.qt import Qt
-except:
+except Exception:
     from taurus.qt import Qt
 
 from taurus.qt.qtgui.util.ui import UILoadable
@@ -100,7 +100,7 @@ class AddDataSourceDlg(Qt.QDialog):
         self.setWindowTitle(self.title)
         try:
             host = taurus.Factory('tango').getAuthority().getFullName()
-        except:
+        except Exception:
             host = None
 
         self.ui.tree = TaurusModelSelectorTree(
