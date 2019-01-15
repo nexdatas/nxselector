@@ -21,6 +21,7 @@
 
 import json
 import logging
+import sys
 
 try:
     from taurus.external.qt import Qt
@@ -37,6 +38,9 @@ from. ElementModel import PROPTEXT
 logger = logging.getLogger(__name__)
 
 SYNCHTEXT = PROPTEXT["synchronization"]
+
+if sys.version_info > (3,):
+    unicode = str
 
 
 @UILoadable(with_ui='ui')

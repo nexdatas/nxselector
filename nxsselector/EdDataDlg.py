@@ -20,6 +20,7 @@
 """  editable data dialog """
 
 import json
+import sys
 
 try:
     from taurus.external.qt import Qt
@@ -31,6 +32,10 @@ from taurus.qt.qtgui.util.ui import UILoadable
 import logging
 #: (:obj:`logging.Logger`) logger object
 logger = logging.getLogger(__name__)
+
+
+if sys.version_info > (3,):
+    unicode = str
 
 
 @UILoadable(with_ui='ui')
