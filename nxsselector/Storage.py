@@ -21,7 +21,7 @@
 
 try:
     from taurus.external.qt import Qt
-except:
+except Exception:
     from taurus.qt import Qt
 from .EdListDlg import EdListDlg
 from .GroupsDlg import GroupsDlg
@@ -504,10 +504,8 @@ class Storage(Qt.QObject):
         if self.__tWidgets:
             cb = self.__tWidgets.pop()
             cb.hide()
+            cb.currentIndexChanged.disconnect(self.apply)
             self.__layout.removeWidget(cb)
-            self.ui.storage.disconnect(
-                cb, Qt.SIGNAL(
-                    "currentIndexChanged(int)"), self.apply)
             cb.close()
 
     def reset(self):
@@ -536,8 +534,8 @@ class Storage(Qt.QObject):
         else:
             timer = ''
         widget.addItems(
-            [Qt.QString(tm) for tm in mtimers])
-        cid = widget.findText(Qt.QString(timer))
+            [str(tm) for tm in mtimers])
+        cid = widget.findText(str(timer))
         if cid < 0:
             cid = 0
             if self.state.atlist:

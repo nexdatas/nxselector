@@ -1,3 +1,8 @@
+2018-10-16 Jan Kotanski <jankotan@gmail.com>
+	* add support for qt5
+	* add support for python3
+	* tagged as 3.10.0
+
 2018-10-11 Jan Kotanski <jankotan@gmail.com>
 	* add Unlock button for descriptive component
 	* add create DataSources button

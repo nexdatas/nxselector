@@ -25,8 +25,10 @@ from distutils.util import get_platform
 from distutils.core import setup
 from distutils.command.build import build
 from distutils.command.clean import clean
-from distutils.command.install_scripts import install_scripts
+# from distutils.command.install_scripts import install_scripts
 import shutil
+from sphinx.setup_command import BuildDoc
+
 
 #: (:obj:`str`) package name
 TOOL = "nxsselector"
@@ -34,15 +36,14 @@ TOOL = "nxsselector"
 ITOOL = __import__(TOOL)
 
 
-from sphinx.setup_command import BuildDoc
-
 def read(fname):
-    """ read the file 
+    """ read the file
 
     :param fname: readme file name
     :type fname: :obj:`str`
     """
     return open(os.path.join(os.path.dirname(__file__), fname)).read()
+
 
 #: (:obj:`str`) .ui file directory
 UIDIR = os.path.join(TOOL, "ui")
@@ -59,7 +60,7 @@ class toolBuild(build):
     @classmethod
     def makeqrc(cls, qfile, path):
         """  creates the python qrc files
-        
+
         :param qfile: qrc file name
         :type qfile: :obj:`str`
         :param path:  qrc file path
@@ -70,10 +71,10 @@ class toolBuild(build):
 
         compiled = os.system("rcc %s -o %s -binary" % (qrcfile, rccfile))
         if compiled == 0:
-            print "Built: %s -> %s" % (qrcfile, rccfile)
+            print("Built: %s -> %s" % (qrcfile, rccfile))
         else:
-            print >> sys.stderr, "Error: Cannot build  %s" % (rccfile)
-
+            sys.stderr.write("Error: Cannot build  %s\n" % (rccfile))
+            sys.stderr.flush()
 
     def run(self):
         """ runner
@@ -88,7 +89,8 @@ class toolBuild(build):
                 if not qrc[0] in (".", ".."):
                     self.makeqrc(qrc[0], qrc[1])
         except TypeError:
-            print >> sys.stderr, "No .qrc files to build"
+            sys.stderr.write("No .qrc files to build\n")
+            sys.stderr.flush()
 
         if get_platform()[:3] == 'win':
             for script in SCRIPTS:
@@ -102,7 +104,7 @@ class toolClean(clean):
 
     def run(self):
         """ runner
-        
+
         :brief: It is running during cleaning
         """
 
@@ -120,9 +122,9 @@ class toolClean(clean):
             os.remove(str(fl))
 
         cfiles = [os.path.join(QRCDIR, cfile) for cfile
-                  in os.listdir(QRCDIR) if ( 
+                  in os.listdir(QRCDIR) if (
                 cfile.endswith('.pyc')
-                or cfile.endswith('.rcc') or 
+                or cfile.endswith('.rcc') or
                 (cfile.endswith('.py')
                  and not cfile.endswith('__init__.py')))]
         for fl in cfiles:
@@ -145,10 +147,12 @@ def get_scripts(scripts):
         return scripts + [sc + '.pyw' for sc in scripts]
     return scripts
 
+
 #: (:obj:`dict` <:obj:`str`, :obj:`list` <:obj:`str`> > ) package data
 package_data = {
     'nxsselector': ['ui/*.ui', 'qrc/*.rcc']
 }
+
 
 #: (:obj:`str`) full release number
 release = ITOOL.__version__
@@ -168,7 +172,7 @@ SETUPDATA = dict(
     maintainer_email="jankotan@gmail.com",
     description=("GUI for Setting Nexus Sardana Recorder"),
     license=read('COPYRIGHT'),
-#    license="GNU GENERAL PUBLIC LICENSE, version 3",
+    #    license="GNU GENERAL PUBLIC LICENSE, version 3",
     keywords="configuration scan nexus sardana recorder tango component data",
     url="https://github.com/jkotan/nexdatas",
     platforms=("Linux", " Windows", " MacOS "),
@@ -186,9 +190,10 @@ SETUPDATA = dict(
 )
 
 
-## the main function
+# the main function
 def main():
     setup(**SETUPDATA)
+
 
 if __name__ == '__main__':
     main()

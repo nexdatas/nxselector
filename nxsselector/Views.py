@@ -22,7 +22,7 @@
 
 try:
     from taurus.external.qt import Qt
-except:
+except Exception:
     from taurus.qt import Qt
 
 import logging
@@ -130,7 +130,7 @@ class CheckerLabelWidget(Qt.QWidget):
         """ sets label text
 
         :param policy: label text
-        :type policy: :class:`taurus.qt.Qt.QString` or :obj:`str`
+        :type policy: :obj:`str` or :obj:`str`
         """
         self.label.setText(text)
 
@@ -152,7 +152,7 @@ class TableView(Qt.QTableView):
         self.horizontalHeader().setStretchLastSection(True)
         try:
             self.horizontalHeader().setResizeMode(Qt.QHeaderView.Stretch)
-        except:
+        except Exception:
             # workaround for bug in pyqt
             self.horizontalHeader().setSectionResizeMode(
                 Qt.QHeaderView.Stretch)
@@ -177,7 +177,7 @@ class OneTableView(Qt.QTableView):
         self.horizontalHeader().setStretchLastSection(True)
         try:
             self.horizontalHeader().setResizeMode(Qt.QHeaderView.Stretch)
-        except:
+        except Exception:
             # workaround for bug in pyqt
             self.horizontalHeader().setSectionResizeMode(
                 Qt.QHeaderView.Stretch)
@@ -253,7 +253,7 @@ class CheckerView(Qt.QWidget):
         """
         self.selectedWidgetRow = row
         ind = self.model.index(row, 0)
-        value = Qt.QVariant(self.widgets[row].isChecked())
+        value = (self.widgets[row].isChecked())
         if self.dmapper:
             if not value:
                 self.displays[row].setChecked(bool(False))
@@ -319,7 +319,7 @@ class CheckerView(Qt.QWidget):
         rowNo = rowMax
         if rowNo < 1:
             rowNo = 1
-        fullColumnNo = rowCount / rowNo
+        fullColumnNo = rowCount // rowNo
         lastRowNo = rowCount % rowNo
         while lastRowNo and fullColumnNo < rowNo - lastRowNo:
             rowNo -= 1
@@ -379,7 +379,7 @@ class CheckerView(Qt.QWidget):
                     mvws = gr.findChildren(CheckerView)
                     for mvw in mvws:
                         if hasattr(mvw.model, 'rowCount'):
-                            lgst = mvw.model.rowCount()/self.rowMax \
+                            lgst = mvw.model.rowCount() // self.rowMax \
                                 + (1 if (mvw.model.rowCount() % self.rowMax)
                                    else 0)
                             if lgst > gst:
@@ -424,7 +424,7 @@ class CheckerView(Qt.QWidget):
         if row >= len(self.widgets):
             if rowNo:
                 lrow = row % rowNo
-                lcol = row / rowNo
+                lcol = row // rowNo
             else:
                 lrow = row
                 lcol = 0
@@ -577,7 +577,7 @@ class CheckDisView(CheckerView):
         """
         self.selectedWidgetRow = row
         ind = self.model.index(row, 2)
-        value = Qt.QVariant(self.displays[row].isChecked())
+        value = (self.displays[row].isChecked())
         self.model.setData(ind, value, Qt.Qt.CheckStateRole)
 
     def connectMapper(self):
@@ -648,8 +648,8 @@ class CheckPropView(CheckDisView):
                     prs["nexus_path"] = dform.shape or None
                 for nm, val in dform.variables.items():
                     prs[nm] = val
-                self.model.setData(ind5, Qt.QVariant(
-                    Qt.QString(str(json.dumps(prs)))))
+                self.model.setData(ind5, (
+                    str(str(json.dumps(prs)))))
 
     def connectMapper(self):
         """ reconnects mappers

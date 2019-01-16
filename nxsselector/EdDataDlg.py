@@ -20,10 +20,11 @@
 """  editable data dialog """
 
 import json
+import sys
 
 try:
     from taurus.external.qt import Qt
-except:
+except Exception:
     from taurus.qt import Qt
 
 from taurus.qt.qtgui.util.ui import UILoadable
@@ -31,6 +32,10 @@ from taurus.qt.qtgui.util.ui import UILoadable
 import logging
 #: (:obj:`logging.Logger`) logger object
 logger = logging.getLogger(__name__)
+
+
+if sys.version_info > (3,):
+    unicode = str
 
 
 @UILoadable(with_ui='ui')
@@ -86,10 +91,10 @@ class EdDataDlg(Qt.QDialog):
             self.ui.stringCheckBox.hide()
         else:
             self.isString = isinstance(self.value,
-                                       (str, unicode, Qt.QString))
+                                       (str, unicode))
         self.ui.stringCheckBox.setChecked(self.isString)
-        self.setText(Qt.QString(self.name))
-        self.ui.valueTextEdit.setText(Qt.QString(str(self.value)))
+        self.setText(str(self.name))
+        self.ui.valueTextEdit.setText(str(str(self.value)))
 
 #        if self.available_names:
 #            completer = Qt.QCompleter(self.available_names, self)
@@ -108,7 +113,7 @@ class EdDataDlg(Qt.QDialog):
         if not self.isString and not self.simple:
             try:
                 self.value = json.loads(self.value)
-            except:
+            except Exception:
                 pass
 
         if not self.name:

@@ -47,7 +47,7 @@ def main():
         os.environ["QT_PLUGIN_PATH"] = "/usr/lib/kde4/plugins/"
     try:
         from taurus.external.qt import Qt
-    except:
+    except Exception:
         from taurus.qt import Qt
 
     Qt.QCoreApplication.setAttribute(Qt.Qt.AA_X11InitThreads)

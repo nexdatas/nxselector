@@ -26,7 +26,7 @@ import subprocess
 
 try:
     from taurus.external.qt import Qt
-except:
+except Exception:
     from taurus.qt import Qt
 
 
@@ -362,7 +362,7 @@ class ServerState(Qt.QObject):
                     instance = command[mi + 1]
                     server = self.__db.get_device_class_list(
                         "NXSRecSelector/%s" % instance).value_string[2]
-        except:
+        except Exception:
             pass
         return server
 
@@ -553,7 +553,7 @@ class ServerState(Qt.QObject):
         self.mntgrp = str(self.__importData("MntGrp"))
         try:
             self.door = str(self.__loadData("door"))
-        except:
+        except Exception:
             self.storeData("door", "")
             self.door = str(self.__loadData("door"))
 

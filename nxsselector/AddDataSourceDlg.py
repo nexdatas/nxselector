@@ -19,24 +19,30 @@
 
 """  editable list dialog """
 
+import sys
+
 try:
     from taurus.external.qt import Qt
-except:
+except Exception:
     from taurus.qt import Qt
 
 from taurus.qt.qtgui.util.ui import UILoadable
-from taurus.qt.qtgui.panel import TaurusModelChooser
+# from taurus.qt.qtgui.panel import TaurusModelChooser
 from taurus.qt.qtgui.panel import TaurusModelSelectorTree
 from taurus.core.taurusbasetypes import TaurusElementType
 import taurus
 
-from .Views import OneTableView
-from .Element import GElement, CP, DS
-from .ElementModel import ElementModel
+# from .Views import OneTableView
+# from .Element import GElement, CP, DS
+# from .ElementModel import ElementModel
 
 import logging
 #: (:obj:`logging.Logger`) logger object
 logger = logging.getLogger(__name__)
+
+
+if sys.version_info > (3,):
+    unicode = str
 
 
 class SourceLineEdit(Qt.QLineEdit):
@@ -57,7 +63,7 @@ class SourceLineEdit(Qt.QLineEdit):
         :type event: :class:`Qt.QEvent`
         """
         if event.mimeData().hasUrls():
-            urlcount = len(event.mimeData().urls())
+            # urlcount = len(event.mimeData().urls())
             url = event.mimeData().urls()[0]
             source = str(url.toString())
             if source.startswith("tango://"):
@@ -88,14 +94,13 @@ class AddDataSourceDlg(Qt.QDialog):
         #: (:obj:`str`) group title
         self.title = "Create DataSource"
 
-
     def createGUI(self):
         """ creates GUI
         """
         self.setWindowTitle(self.title)
         try:
             host = taurus.Factory('tango').getAuthority().getFullName()
-        except:
+        except Exception:
             host = None
 
         self.ui.tree = TaurusModelSelectorTree(

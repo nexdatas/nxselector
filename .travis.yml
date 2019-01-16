@@ -4,9 +4,10 @@ sudo: required
 dist: trusty
 
 env:
-  - OS_TYPE=debian8
-  - OS_TYPE=debian9
-  - OS_TYPE=ubuntu16.04
+  - TEST="flake8"
+  - OS=debian8 PY=2 TEST="testsuit"
+  - OS=debian9 PY=2 TEST="testsuit"
+  - OS=ubuntu16.04 PY=2 TEST="testsuit"
 
 services:
   - docker
@@ -16,17 +17,21 @@ python:
 
 
 before_install:
-  - chmod +x .travis/run.sh
-  - chmod +x .travis/install.sh
+  - if [ $TEST == "flake8" ]; then sudo apt-get update -qq ; fi
+  - if [ $TEST == "flake8" ]; then sudo pip install flake8; fi
+  - if [ $TEST == "testsuit" ]; then chmod +x .travis/run.sh; fi
+  - if [ $TEST == "testsuit" ]; then chmod +x .travis/install.sh; fi
 
 before_script:
-  - docker build -t ndts .travis/${OS_TYPE}
-  - docker run  --name  ndts -d -it -v `pwd`:/home/tango  ndts
-  - .travis/install.sh ${OS_TYPE}
+  - if [ $TEST == "testsuit" ]; then docker build -t ndts .travis/${OS}; fi
+  - if [ $TEST == "testsuit" ]; then docker run  --name  ndts -d -it -v `pwd`:/home/tango  ndts; fi
+  - if [ $TEST == "testsuit" ]; then .travis/install.sh ${OS} ${PY};  fi
+# - if [ $TEST == "testsuit" ]; then docker build -t ndts .travis/${OS}_py${PY}; fi
 
 script:
-  - .travis/run.sh
+  - if [ $TEST == "testsuit" ]; then .travis/run.sh ${PY}; fi
+  - if [ $TEST == "flake8" ]; then flake8; fi
 
 after-script:
-  - docker stop ndts
-  - docker rm ndts
+  - if [ $TEST == "testsuit" ]; then docker stop ndts; fi
+  - if [ $TEST == "testsuit" ]; then docker rm ndts; fi

@@ -21,14 +21,14 @@
 
 try:
     from taurus.external.qt import Qt
-except:
+except Exception:
     from taurus.qt import Qt
 
 from taurus.qt.qtgui.util.ui import UILoadable
-from taurus.qt.qtgui.panel import TaurusModelChooser
-from taurus.qt.qtgui.panel import TaurusModelSelectorTree
-from taurus.core.taurusbasetypes import TaurusElementType
-import taurus
+# from taurus.qt.qtgui.panel import TaurusModelChooser
+# from taurus.qt.qtgui.panel import TaurusModelSelectorTree
+# from taurus.core.taurusbasetypes import TaurusElementType
+# import taurus
 
 from .Views import OneTableView
 from .Element import GElement, CP, DS
@@ -139,7 +139,7 @@ class GroupsDlg(Qt.QDialog):
             self.__populateTable(self.ui.ddsTableView, self.ddsgroup, DS,
                                  self.datasources, "DataSources:")
             self.dirty = True
-        
+
     def __populateTable(self, view, group, eltype, dct, header):
         """ populates the group table
 

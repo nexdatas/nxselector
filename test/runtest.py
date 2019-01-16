@@ -15,153 +15,155 @@
 #
 #    You should have received a copy of the GNU General Public License
 #    along with nexdatas.  If not, see <http://www.gnu.org/licenses/>.
-## \package test nexdatas
-## \file runtest.py
+# \package test nexdatas
+# \file runtest.py
 # the unittest runner
 #
 
-import os
 import sys
+import unittest
+
 
 try:
-    import PyTango
-    ## if module PyTango avalable
+    __import__("PyTango")
+    # if module PyTango avalable
     PYTANGO_AVAILABLE = True
-except ImportError, e:
+except ImportError as e:
     PYTANGO_AVAILABLE = False
-    print "PyTango is not available: %s" % e
+    print("PyTango is not available: %s" % e)
 
 try:
     try:
-        import pni.io.nx.h5
-    except:
-        import pni.nx.h5
-    ## if module pni avalable
+        __import__("pni.io.nx.h5")
+    except Exception:
+        __import__("pni.nx.h5")
+    # if module pni avalable
     PNI_AVAILABLE = True
-except ImportError, e:
+except ImportError as e:
     PNI_AVAILABLE = False
-    print "pni is not available: %s" % e
+    print("pni is not available: %s" % e)
 
 try:
-    import h5py
-    ## if module pni avalable
+    __import__("h5py")
+    # if module pni avalable
     H5PY_AVAILABLE = True
-except ImportError, e:
+except ImportError as e:
     H5PY_AVAILABLE = False
-    print "h5py is not available: %s" % e
+    print("h5py is not available: %s" % e)
 
-
-import os
-import unittest
 
 if not PNI_AVAILABLE and not H5PY_AVAILABLE:
     raise Exception("Please install h5py or pni")
 
-#if PNI_AVAILABLE:
-#if H5PY_AVAILABLE:
-#if PNI_AVAILABLE and H5PY_AVAILABLE:
+# if PNI_AVAILABLE:
+# if H5PY_AVAILABLE:
+# if PNI_AVAILABLE and H5PY_AVAILABLE:
 
 
-    
-## list of available databases
+# list of available databases
 DB_AVAILABLE = []
 
 try:
     import MySQLdb
-    ## connection arguments to MYSQL DB
+    # connection arguments to MYSQL DB
     args = {}
     args["db"] = 'tango'
     args["host"] = 'localhost'
     args["read_default_file"] = '/etc/my.cnf'
-    ## inscance of MySQLdb
+    # inscance of MySQLdb
     mydb = MySQLdb.connect(**args)
     mydb.close()
     DB_AVAILABLE.append("MYSQL")
-except:
+except Exception:
     try:
         import MySQLdb
         from os.path import expanduser
         home = expanduser("~")
-        ## connection arguments to MYSQL DB
-        args2 = {'host': u'localhost', 'db': u'tango',
-                'read_default_file': u'%s/.my.cnf' % home, 'use_unicode': True}
-        ## inscance of MySQLdb
+        # connection arguments to MYSQL DB
+        args2 = {
+            'host': u'localhost', 'db': u'tango',
+            'read_default_file': u'%s/.my.cnf' % home, 'use_unicode': True
+        }
+        # inscance of MySQLdb
         mydb = MySQLdb.connect(**args2)
         mydb.close()
         DB_AVAILABLE.append("MYSQL")
 
-    except ImportError, e:
-        print "MYSQL not available: %s" % e
-    except Exception, e:
-        print "MYSQL not available: %s" % e
-    except:
-        print "MYSQL not available"
+    except ImportError as e:
+        print("MYSQL not available: %s" % e)
+    except Exception as e:
+        print("MYSQL not available: %s" % e)
+    except Exception:
+        print("MYSQL not available")
 
 
 try:
     import psycopg2
-    ## connection arguments to PGSQL DB
+    # connection arguments to PGSQL DB
     args = {}
     args["database"] = 'mydb'
-    ## inscance of psycog2
+    # inscance of psycog2
     pgdb = psycopg2.connect(**args)
     pgdb.close()
     DB_AVAILABLE.append("PGSQL")
-except ImportError, e:
-    print "PGSQL not available: %s" % e
-except Exception,e:
-    print "PGSQL not available: %s" % e
-except:
-    print "PGSQL not available"
-
+except ImportError as e:
+    print("PGSQL not available: %s" % e)
+except Exception as e:
+    print("PGSQL not available: %s" % e)
+except Exception:
+    print("PGSQL not available")
 
 
 try:
     import cx_Oracle
-    ## pwd
-    passwd = open('%s/pwd' % os.path.dirname(ConvertersTest.__file__)).read()[:-1]
+    passwd = ""
+    # pwd
+    # passwd = open(
+    #    '%s/pwd' % os.path.dirname(ConvertersTest.__file__)).read()[:-1]
 
-    ## connection arguments to ORACLE DB
+    # connection arguments to ORACLE DB
     args = {}
-    args["dsn"] = """(DESCRIPTION=(ADDRESS=(PROTOCOL=TCP)(HOST=dbsrv01.desy.de)(PORT=1521))(LOAD_BALANCE=yes)(CONNECT_DATA=(SERVER=DEDICATED)(SERVICE_NAME=desy_db.desy.de)(FAILOVER_MODE=(TYPE=NONE)(METHOD=BASIC)(RETRIES=180)(DELAY=5))))"""
+    args["dsn"] = \
+        "(DESCRIPTION=(ADDRESS=(PROTOCOL=TCP)(HOST=dbsrv01.desy.de)" \
+        "(PORT=1521))(LOAD_BALANCE=yes)(CONNECT_DATA=(SERVER=DEDICATED)" \
+        "(SERVICE_NAME=desy_db.desy.de)(FAILOVER_MODE=(TYPE=NONE)" \
+        "(METHOD=BASIC)(RETRIES=180)(DELAY=5))))"
     args["user"] = "read"
     args["password"] = passwd
-    ## inscance of cx_Oracle
+    # inscance of cx_Oracle
     ordb = cx_Oracle.connect(**args)
     ordb.close()
     DB_AVAILABLE.append("ORACLE")
-except ImportError, e:
-    print "ORACLE not available: %s" % e
-except Exception,e:
-    print "ORACLE not available: %s" % e
-except:
-    print "ORACLE not available"
+except ImportError as e:
+    print("ORACLE not available: %s" % e)
+except Exception as e:
+    print("ORACLE not available: %s" % e)
+except Exception:
+    print("ORACLE not available")
 
 
-## main function
+# main function
 def main():
 
+    # test server
+    # ts = None
 
-    ## test server
-    ts = None
-
-    ## test suit
+    # test suit
     suite = unittest.TestSuite()
 
-#                suite.addTests(
-#                    unittest.defaultTestLoader.loadTestsFromModule(DBFieldTagAsynchH5PYTest) )
+    #    suite.addTests(
+    #       unittest.defaultTestLoader.loadTestsFromModule(
+    #               DBFieldTagAsynchH5PYTest) )
 
-
-
-    ## test runner
+    # test runner
     runner = unittest.TextTestRunner()
-    ## test result
+    # test result
     result = runner.run(suite).wasSuccessful()
     sys.exit(not result)
 
-         
- #   if ts:
- #       ts.tearDown()
+    #   if ts:
+    #       ts.tearDown()
+
 
 if __name__ == "__main__":
     main()
