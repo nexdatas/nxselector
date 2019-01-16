@@ -319,7 +319,7 @@ class CheckerView(Qt.QWidget):
         rowNo = rowMax
         if rowNo < 1:
             rowNo = 1
-        fullColumnNo = rowCount / rowNo
+        fullColumnNo = rowCount // rowNo
         lastRowNo = rowCount % rowNo
         while lastRowNo and fullColumnNo < rowNo - lastRowNo:
             rowNo -= 1
@@ -379,7 +379,7 @@ class CheckerView(Qt.QWidget):
                     mvws = gr.findChildren(CheckerView)
                     for mvw in mvws:
                         if hasattr(mvw.model, 'rowCount'):
-                            lgst = mvw.model.rowCount()/self.rowMax \
+                            lgst = mvw.model.rowCount() // self.rowMax \
                                 + (1 if (mvw.model.rowCount() % self.rowMax)
                                    else 0)
                             if lgst > gst:
@@ -424,7 +424,7 @@ class CheckerView(Qt.QWidget):
         if row >= len(self.widgets):
             if rowNo:
                 lrow = row % rowNo
-                lcol = row / rowNo
+                lcol = row // rowNo
             else:
                 lrow = row
                 lcol = 0
