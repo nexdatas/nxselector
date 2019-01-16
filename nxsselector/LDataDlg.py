@@ -109,18 +109,18 @@ class LDataDlg(Qt.QDialog):
         self.ui.synchronizationLabel.hide()
         self.ui.synchronizerComboBox.hide()
         self.ui.synchronizerLabel.hide()
-        self.ui.labelLineEdit.setText(Qt.QString(str(self.label or "")))
-        self.ui.pathLineEdit.setText(Qt.QString(str(self.path or "")))
+        self.ui.labelLineEdit.setText(str(str(self.label or "")))
+        self.ui.pathLineEdit.setText(str(str(self.path or "")))
         if self.shape is None:
             shape = ''
         else:
             shape = self.shape
         self.ui.shapeLineEdit.setText(
-            Qt.QString(str(shape)))
-        self.ui.typeLineEdit.setText(Qt.QString(str(self.dtype or "")))
+            str(str(shape)))
+        self.ui.typeLineEdit.setText(str(str(self.dtype or "")))
 
         cid = self.ui.linkComboBox.findText(
-            Qt.QString(self.__linkText(self.link)))
+            str(self.__linkText(self.link)))
         if cid < 0:
             cid = 0
         self.ui.linkComboBox.setCurrentIndex(cid)
@@ -142,12 +142,12 @@ class LDataDlg(Qt.QDialog):
                 if (nm not in self.extra and nm not in self.hidden) or \
                    (val and nm not in self.extra and nm in self.hidden):
                     self.names[nm] = Qt.QLabel(self.ui.varFrame)
-                    self.names[nm].setText(Qt.QString(str(nm)))
+                    self.names[nm].setText(str(str(nm)))
                     self.ui.varGridLayout.addWidget(
                         self.names[nm], index, 0, 1, 1)
                     self.widgets[nm] = Qt.QLineEdit(self.ui.varFrame)
                     if val is not None:
-                        self.widgets[nm].setText(Qt.QString(str(val or "")))
+                        self.widgets[nm].setText(str(str(val or "")))
                     self.ui.varGridLayout.addWidget(
                         self.widgets[nm], index, 1, 1, 1)
                     index += 1
@@ -241,7 +241,7 @@ class LExDataDlg(LDataDlg):
         else:
             synch = 0
         cid = self.ui.synchronizationComboBox.findText(
-            Qt.QString(SYNCHTEXT[synch]))
+            str(SYNCHTEXT[synch]))
         if cid < 0:
             cid = 0
         self.ui.synchronizationComboBox.setCurrentIndex(cid)
@@ -257,14 +257,14 @@ class LExDataDlg(LDataDlg):
             self.ui.synchronizerComboBox.addItem(sch)
 
         cid = self.ui.synchronizerComboBox.findText(
-            Qt.QString(str(val)))
+            str(str(val)))
         if cid < 0:
             cid = 0
         self.ui.synchronizerComboBox.setCurrentIndex(cid)
 
 #        if val is not None:
 #            self.ui.synchronizerLineEdit.setText(
-#                Qt.QString(str(val or "")))
+#                str(str(val or "")))
         self.adjustSize()
 
     def accept(self):

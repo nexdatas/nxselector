@@ -49,6 +49,13 @@ logger = logging.getLogger(__name__)
 class Selector(Qt.QDialog, TaurusBaseWidget):
     """ main window application dialog """
 
+    #: (:class:`taurus.qt.Qt.pyqtSignal`) doorName  signal
+    doorName = Qt.pyqtSignal(str)
+
+    #: (:class:`taurus.qt.Qt.pyqtSignal`)
+    # experimentConfigurationChanged signal
+    experimentConfigurationChanged = Qt.pyqtSignal(dict)
+
     def __init__(self, server=None, door=None,
                  standalone=False, umode=None,
                  setdefault=False,
@@ -395,7 +402,7 @@ class Selector(Qt.QDialog, TaurusBaseWidget):
 
         self.storage.updateMntGrpComboBox()
 
-        cid = self.ui.viewComboBox.findText(Qt.QString(self.userView))
+        cid = self.ui.viewComboBox.findText(str(self.userView))
         if cid >= 0:
             self.ui.viewComboBox.setCurrentIndex(cid)
         self.ui.rowMaxSpinBox.setValue(self.rowMax)
@@ -532,40 +539,40 @@ class Selector(Qt.QDialog, TaurusBaseWidget):
         settings = Qt.QSettings(self.__organization, self.__application, self)
         settings.setValue(
             "Selector/Geometry",
-            Qt.QVariant(self.saveGeometry()))
+            (self.saveGeometry()))
         settings.setValue(
             "Preferences/UserView",
-            Qt.QVariant(str(self.ui.viewComboBox.currentText())))
+            (str(self.ui.viewComboBox.currentText())))
         settings.setValue(
             "Preferences/RowMax",
-            Qt.QVariant(self.ui.rowMaxSpinBox.value()))
+            (self.ui.rowMaxSpinBox.value()))
         settings.setValue(
             "Preferences/FontSize",
-            Qt.QVariant(self.ui.fontSizeSpinBox.value()))
+            (self.ui.fontSizeSpinBox.value()))
         settings.setValue(
             "Preferences/DisplayStatus",
-            Qt.QVariant(2 if self.ui.statusCheckBox.isChecked() else 0))
+            (2 if self.ui.statusCheckBox.isChecked() else 0))
         settings.setValue(
             "Preferences/Groups",
-            Qt.QVariant(str(self.preferences.mgroups)))
+            (str(self.preferences.mgroups)))
         settings.setValue(
             "Preferences/Frames",
-            Qt.QVariant(str(self.preferences.frames)))
+            (str(self.preferences.frames)))
         settings.setValue(
             "Preferences/FramesHints",
-            Qt.QVariant(self.preferences.frameshelp))
+            (self.preferences.frameshelp))
         settings.setValue(
             "Preferences/GroupsHints",
-            Qt.QVariant(self.preferences.mgroupshelp))
+            (self.preferences.mgroupshelp))
         settings.setValue(
-            "Selector/CnfFile", Qt.QVariant(self.cnfFile))
+            "Selector/CnfFile", (self.cnfFile))
         settings.setValue(
             "Preferences/LayoutFile",
-            Qt.QVariant(self.preferences.layoutFile))
+            (self.preferences.layoutFile))
         if self.__setdefault:
             settings.setValue(
                 "Selector/DefaultMode",
-                Qt.QVariant(self.__umode))
+                (self.__umode))
 
     def keyPressEvent(self, event):
         """ adds saving settings on escape key
@@ -741,7 +748,7 @@ class Selector(Qt.QDialog, TaurusBaseWidget):
         self._resetAll()
         logger.debug("reset server ended")
 
-    @Qt.pyqtSlot(Qt.QString, Qt.QString)
+    @Qt.pyqtSlot(str, str)
     def resetLayout(self, frames, groups):
         """ resets application layout
         """
@@ -902,7 +909,7 @@ class Selector(Qt.QDialog, TaurusBaseWidget):
                 | Qt.QMessageBox.Close)
             if replay == Qt.QMessageBox.Apply:
                 self.__door = self.state.door
-                self.emit(Qt.SIGNAL('doorName'), str(self.state.door))
+                self.doorName.emit(str(self.state.door))
             elif replay == Qt.QMessageBox.Reset:
                 self.updateDoorName(self.__door)
         else:
@@ -1131,7 +1138,7 @@ class Selector(Qt.QDialog, TaurusBaseWidget):
         logger.debug("apply")
         try:
             conf = self.state.updateMntGrp()
-            self.emit(Qt.SIGNAL('experimentConfigurationChanged'), conf)
+            self.experimentConfigurationChanged.emit(conf)
             self.runProgress(["updateControllers", "importMntGrp",
                               "createConfiguration"],
                              "closeApply")

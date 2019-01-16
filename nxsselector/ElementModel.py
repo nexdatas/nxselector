@@ -46,6 +46,8 @@ class ElementModel(Qt.QAbstractTableModel):
     dirty = Qt.pyqtSignal()
     #: (:class:`taurus.qt.Qt.pyqtSignal`) component checked signal
     componentChecked = Qt.pyqtSignal()
+    #: (:class:`taurus.qt.Qt.pyqtSignal`) datachanged  signal
+    datachanged = Qt.pyqtSignal(Qt.QModelIndex, Qt.QModelIndex)
 
     def __init__(self, group=None):
         """ consturctor
@@ -315,7 +317,7 @@ class ElementModel(Qt.QAbstractTableModel):
         :param role: data model role
         :type role: :class:`taurus.qt.Qt.Qt.ItemDataRole`
         :returns: model data
-        :rtype: `str:class:`taurus.qt.Qt.Qt.QVariant`
+        :rtype: `str:class:`taurus.qt.Qt.`
         """
         if not index.isValid() or \
                 not 0 <= index.row() < len(self.group):
@@ -324,34 +326,34 @@ class ElementModel(Qt.QAbstractTableModel):
         column = index.column()
         if column == 0:
             if role == Qt.Qt.DisplayRole:
-                return Qt.QVariant(device.name)
+                return (device.name)
             if role == Qt.Qt.CheckStateRole:
                 return self.__elementCheck(device, index)
             if role == Qt.Qt.ToolTipRole:
                 tips = self.__createTips(device, index)
                 if tips:
-                    return Qt.QVariant(Qt.QString(tips))
+                    return (str(tips))
         elif column == 1:
             if role == Qt.Qt.CheckStateRole:
                 return
             if device.name in device.state.labels.keys():
-                return Qt.QVariant(device.state.labels[device.name])
+                return (device.state.labels[device.name])
         elif column == 2:
             if role == Qt.Qt.CheckStateRole:
                 return self.__displayCheck(device, index)
         elif column == 3:
             if role == Qt.Qt.CheckStateRole:
                 return
-            return Qt.QVariant(Qt.QString(self.__scanSources(device)))
+            return (str(self.__scanSources(device)))
         elif column == 4:
             if role == Qt.Qt.CheckStateRole:
                 return
-            return Qt.QVariant(Qt.QString(self.__descSources(device)))
+            return (str(self.__descSources(device)))
         elif column == 5:
             if role == Qt.Qt.CheckStateRole:
                 return
-            return Qt.QVariant(Qt.QString(self.__properties(device)))
-        return Qt.QVariant()
+            return (str(self.__properties(device)))
+        return ()
 
     def headerData(self, section, _, role=Qt.Qt.DisplayRole):
         """ provides model data header
@@ -361,13 +363,13 @@ class ElementModel(Qt.QAbstractTableModel):
         :param role: data model role
         :type role: :class:`taurus.qt.Qt.Qt.ItemDataRole`
         :returns: model data header
-        :rtype: `str:class:`taurus.qt.Qt.Qt.QVariant`
+        :rtype: `str:class:`taurus.qt.Qt.`
         """
         if role != Qt.Qt.DisplayRole:
-            return Qt.QVariant()
+            return ()
         if section >= 0 and section < len(self.headers):
-            return Qt.QVariant(self.headers[section])
-        return Qt.QVariant(int(section + 1))
+            return (self.headers[section])
+        return (int(section + 1))
 
     def flags(self, index):
         """ provides model data flag
@@ -473,7 +475,7 @@ class ElementModel(Qt.QAbstractTableModel):
         :param index: element index
         :type index: :class:`taurus.qt.Qt.QModelIndex`
         :param value: element value
-        :type value: :class:`taurus.qt.Qt.Qt.QVariant`
+        :type value: :class:`taurus.qt.Qt.`
         :param role: data model role
         :type role: :class:`taurus.qt.Qt.Qt.ItemDataRole`
         :returns: if data fas set
@@ -487,9 +489,7 @@ class ElementModel(Qt.QAbstractTableModel):
                     index3 = self.index(index.row(), 2)
                     device.state.ddsdirty = True
                     device.checked = value
-                    self.emit(
-                        Qt.SIGNAL("dataChanged(QModelIndex, QModelIndex)"),
-                        index, index3)
+                    self.datachanged.emit(index, index3)
                     if device.eltype == CP:
                         self.componentChecked.emit()
                     self.dirty.emit()
@@ -498,19 +498,14 @@ class ElementModel(Qt.QAbstractTableModel):
                 if role == Qt.Qt.EditRole:
                     label = value.toString()
                     device.state.labels[device.name] = str(label)
-                    self.emit(
-                        Qt.SIGNAL("dataChanged(QModelIndex, QModelIndex)"),
-                        index, index)
+                    self.datachanged.emit(index, index)
                     self.dirty.emit()
                     return True
             elif column == 2:
                 if role == Qt.Qt.CheckStateRole:
                     index3 = self.index(index.row(), 2)
                     device.display = value
-
-                    self.emit(
-                        Qt.SIGNAL("dataChanged(QModelIndex, QModelIndex)"),
-                        index, index3)
+                    self.datachanged.emit(index, index3)
                     if device.eltype == CP:
                         self.componentChecked.emit()
                     self.dirty.emit()
@@ -521,9 +516,7 @@ class ElementModel(Qt.QAbstractTableModel):
                         value = value.toString()
                     self.__setProperties(device, str(value))
                     index5 = self.index(index.row(), 5)
-                    self.emit(
-                        Qt.SIGNAL("dataChanged(QModelIndex, QModelIndex)"),
-                        index, index5)
+                    self.datachanged.emit(index, index5)
                     self.dirty.emit()
                     return True
         return False

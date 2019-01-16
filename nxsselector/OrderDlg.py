@@ -101,7 +101,7 @@ class OrderDlg(Qt.QDialog):
             if self.onlyselected:
                 if ch not in self.selected:
                     continue
-            item = Qt.QListWidgetItem(Qt.QString(ch))
+            item = Qt.QListWidgetItem(str(ch))
             self.ui.listWidget.addItem(item)
             if selectedChannel is not None and selectedChannel == ch:
                 selected = item

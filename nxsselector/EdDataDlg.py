@@ -91,10 +91,10 @@ class EdDataDlg(Qt.QDialog):
             self.ui.stringCheckBox.hide()
         else:
             self.isString = isinstance(self.value,
-                                       (str, unicode, Qt.QString))
+                                       (str, unicode))
         self.ui.stringCheckBox.setChecked(self.isString)
-        self.setText(Qt.QString(self.name))
-        self.ui.valueTextEdit.setText(Qt.QString(str(self.value)))
+        self.setText(str(self.name))
+        self.ui.valueTextEdit.setText(str(str(self.value)))
 
 #        if self.available_names:
 #            completer = Qt.QCompleter(self.available_names, self)

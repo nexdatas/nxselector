@@ -130,7 +130,7 @@ class CheckerLabelWidget(Qt.QWidget):
         """ sets label text
 
         :param policy: label text
-        :type policy: :class:`taurus.qt.Qt.QString` or :obj:`str`
+        :type policy: :obj:`str` or :obj:`str`
         """
         self.label.setText(text)
 
@@ -253,7 +253,7 @@ class CheckerView(Qt.QWidget):
         """
         self.selectedWidgetRow = row
         ind = self.model.index(row, 0)
-        value = Qt.QVariant(self.widgets[row].isChecked())
+        value = (self.widgets[row].isChecked())
         if self.dmapper:
             if not value:
                 self.displays[row].setChecked(bool(False))
@@ -577,7 +577,7 @@ class CheckDisView(CheckerView):
         """
         self.selectedWidgetRow = row
         ind = self.model.index(row, 2)
-        value = Qt.QVariant(self.displays[row].isChecked())
+        value = (self.displays[row].isChecked())
         self.model.setData(ind, value, Qt.Qt.CheckStateRole)
 
     def connectMapper(self):
@@ -648,8 +648,8 @@ class CheckPropView(CheckDisView):
                     prs["nexus_path"] = dform.shape or None
                 for nm, val in dform.variables.items():
                     prs[nm] = val
-                self.model.setData(ind5, Qt.QVariant(
-                    Qt.QString(str(json.dumps(prs)))))
+                self.model.setData(ind5, (
+                    str(str(json.dumps(prs)))))
 
     def connectMapper(self):
         """ reconnects mappers

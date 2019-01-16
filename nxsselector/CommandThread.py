@@ -32,6 +32,8 @@ except Exception:
 class CommandThread(Qt.QThread):
     """ thread which executes a list of commands
     """
+    #: (:class:`taurus.qt.Qt.pyqtSignal`) finisched signal
+    finished = Qt.pyqtSignal()
 
     def __init__(self, instance, commands, parent):
         """ thread contructor
@@ -61,4 +63,4 @@ class CommandThread(Qt.QThread):
         except Exception as e:
             self.error = e
         finally:
-            self.emit(Qt.SIGNAL("finished"))
+            self.finished.emit()

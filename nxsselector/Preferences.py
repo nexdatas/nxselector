@@ -60,7 +60,7 @@ class Preferences(Qt.QObject):
     #: (:class:`taurus.qt.Qt.pyqtSignal`) server changed signal
     serverChanged = Qt.pyqtSignal()
     #: (:class:`taurus.qt.Qt.pyqtSignal`) layout changed signal
-    layoutChanged = Qt.pyqtSignal(Qt.QString, Qt.QString)
+    layoutChanged = Qt.pyqtSignal(str, str)
     #: (:class:`taurus.qt.Qt.pyqtSignal`) dirty signal
     dirty = Qt.pyqtSignal()
 
@@ -78,41 +78,41 @@ class Preferences(Qt.QObject):
         #: (:class:`nxsselector.ServerState.ServerState`) server state
         self.state = state
 
-        #: (:obj:`list` <:class:`taurus.qt.Qt.QString`>) \
+        #: (:obj:`list` <:obj:`str`>) \
         #:     list of nested frames/columns/groups configuration frame layout
         self.frameshelp = [
-            Qt.QString(
+            str(
                 '[[[["Components",1],["Timers",5]]],[[["Counters", 4]],'
                 + '[["ADC",3]],[["VFC",7]]],'
                 + '[[["MCA/SCA",6],["Additional",0]]]]'),
-            Qt.QString('[[[["Components",1],["Timers",5]]],[[["Counters", 4]],'
-                       + '[["ADC",3]]],[[["MCA/SCA",6],["Devices",0]]]]'),
-            Qt.QString('[[[["Counters", 4]],[["Channels",0]]],'
-                       + '[[["MCAs", 2],["Misc",1]]],[[["ADC",3]]]]'),
-            Qt.QString('[[[["Devices", 0]]],[[["MCAs", 2],["Misc",1]]]]'),
-            Qt.QString(
+            str('[[[["Components",1],["Timers",5]]],[[["Counters", 4]],'
+                + '[["ADC",3]]],[[["MCA/SCA",6],["Devices",0]]]]'),
+            str('[[[["Counters", 4]],[["Channels",0]]],'
+                + '[[["MCAs", 2],["Misc",1]]],[[["ADC",3]]]]'),
+            str('[[[["Devices", 0]]],[[["MCAs", 2],["Misc",1]]]]'),
+            str(
                 '[[[["Counters1", 0], ["Counters2", 2]], [["VCounters", 3]]],'
                 + '[[["MCAs", 1], ["SCAs", 4]]], [[["Misc", 5] ]]]'),
-            Qt.QString('[[[["My Channels", 0]]],[[["My Components", 1]]]]'),
-            Qt.QString('')]
-        #: (:obj:`list` <:class:`taurus.qt.Qt.QString`>) \
+            str('[[[["My Channels", 0]]],[[["My Components", 1]]]]'),
+            str('')]
+        #: (:obj:`list` <:class:`taurus.qt.str`>) \
         #:     list of configuration group content,
         #:      "<id>":[<pattern1>, <pattern2>, ...]
         self.mgroupshelp = [
-            Qt.QString('{ "3":["*_adc*"], "4":["*_c*"],'
-                       + '"5":["*_t*"], "6":["*_mca*"],'
-                       + '"7":["*_vfc*"]}'),
-            Qt.QString('{ "3":["exp_adc*"], "4":["exp_c*"],'
-                       + '"5":["exp_t*"], "6":["exp_mca*"],'
-                       + '["sca_exp_*"]}'),
-            Qt.QString('{"2":["mca8701*"]] , "3":["exp_adc*"],'
-                       + ' "4":["exp_c*"]}'),
-            Qt.QString('{"2":["ct01", "ct02"], "5":["appscan"]}'),
-            Qt.QString('')]
-        #: (:obj:`list` <:class:`taurus.qt.Qt.QString`>) \
+            str('{ "3":["*_adc*"], "4":["*_c*"],'
+                + '"5":["*_t*"], "6":["*_mca*"],'
+                + '"7":["*_vfc*"]}'),
+            str('{ "3":["exp_adc*"], "4":["exp_c*"],'
+                + '"5":["exp_t*"], "6":["exp_mca*"],'
+                + '["sca_exp_*"]}'),
+            str('{"2":["mca8701*"]] , "3":["exp_adc*"],'
+                + ' "4":["exp_c*"]}'),
+            str('{"2":["ct01", "ct02"], "5":["appscan"]}'),
+            str('')]
+        #: (:obj:`list` <:obj:`str`>) \
         #:     list of configuration server
         self.serverhelp = [
-            Qt.QString(self.state.server)]
+            str(self.state.server)]
 
         #: (:obj:`str`) defualt group configuration
         self.__mgroups = str(self.mgroupshelp[0])
@@ -335,7 +335,7 @@ class Preferences(Qt.QObject):
                 self.connectSignals()
                 self.serverChanged.emit()
             else:
-                self.ui.devSettingsLineEdit.setText(Qt.QString(
+                self.ui.devSettingsLineEdit.setText(str(
                     self.state.server if self.state.server else 'module'))
         self.connectSignals()
 
@@ -353,9 +353,9 @@ class Preferences(Qt.QObject):
         :param string: string hint
         :type string: :obj:`str`
         :param hints: a list of hints
-        :type hints: :obj:`list` <:class:`taurus.qt.Qt.QString>
+        :type hints: :obj:`list` <:obj:`str`>
         """
-        qstring = Qt.QString(string)
+        qstring = str(string)
         if qstring not in hints:
             hints.insert(0, string)
         if self.maxHelp < len(hints):
@@ -389,7 +389,7 @@ class Preferences(Qt.QObject):
                 if oldframes != self.frames or oldgroups != self.mgroups:
                     self.connectSignals()
                     self.layoutChanged.emit(
-                        Qt.QString(frames), Qt.QString(groups))
+                        str(frames), str(groups))
         except Exception as e:
             text = MessageBox.getText("Problem in setting layout")
             MessageBox.warning(
@@ -430,15 +430,15 @@ class Preferences(Qt.QObject):
                 if isinstance(profile, dict):
                     if "server" in profile.keys():
                         self.ui.devSettingsLineEdit.setText(
-                            Qt.QString(profile["server"]))
+                            str(profile["server"]))
                         self.on_devSettingsLineEdit_editingFinished()
                     if "frames" in profile.keys():
                         self.ui.frameLineEdit.setText(
-                            Qt.QString(profile["frames"]))
+                            str(profile["frames"]))
                         self.on_layoutLineEdits_editingFinished()
                     if "groups" in profile.keys():
                         self.ui.groupLineEdit.setText(
-                            Qt.QString(profile["groups"]))
+                            str(profile["groups"]))
                         self.on_layoutLineEdits_editingFinished()
                     if "rowMax" in profile.keys():
                         self.ui.rowMaxSpinBox.setValue(
