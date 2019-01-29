@@ -874,8 +874,9 @@ class Selector(Qt.QDialog, TaurusBaseWidget):
             oncloseaction, Qt.Qt.QueuedConnection)
         self.__progress = None
         self.__progress = Qt.QProgressDialog(
-            "Updating preselected devices...", "", 0, 0, self)
+            "Updating preselected devices...", "Cancel", 0, 0, self)
         self.__progress.setWindowModality(Qt.Qt.WindowModal)
+        self.__progress.setCancelButton(None)
         self.__progress.rejected.connect(
             self.waitForThread, Qt.Qt.QueuedConnection)
         self.__commandthread.start()

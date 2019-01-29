@@ -1,4 +1,8 @@
-2018-10-16 Jan Kotanski <jankotan@gmail.com>
+2019-01-29 Jan Kotanski <jankotan@gmail.com>
+	* hide cancel button in progress bar
+	* tagged as 3.10.1
+
+2019-01-16 Jan Kotanski <jankotan@gmail.com>
 	* add support for qt5
 	* add support for python3
 	* tagged as 3.10.0
