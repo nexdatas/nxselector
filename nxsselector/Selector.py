@@ -313,7 +313,7 @@ class Selector(Qt.QDialog, TaurusBaseWidget):
         self.__setButtonBoxes()
         self.__hideWidgets()
         for tab in self.tabs:
-                tab.reset()
+            tab.reset()
 
         self.__setWidgetValues()
         self.__connectSignals()
