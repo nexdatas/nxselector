@@ -29,7 +29,7 @@ from taurus.qt.qtgui.util.ui import UILoadable
 
 
 from taurus.qt.qtgui.base import TaurusBaseWidget
-from .ServerState import ServerState
+from .ServerState import ServerState, Checker
 
 from .Detectors import Detectors
 from .Preferences import Preferences
@@ -97,6 +97,8 @@ class Selector(Qt.QDialog, TaurusBaseWidget):
         self.__application = application
         #: (:obj:`str`) door name
         self.__door = door
+        #: (:obj:`str`) skip configuration reset
+        self.__skipconfig = True
         #: (:obj:`bool`) application executed without macrogui
         self.__standalone = standalone
 
@@ -301,6 +303,7 @@ class Selector(Qt.QDialog, TaurusBaseWidget):
             self.updateDoorName(self.__door)
 
         self.__settingsloaded = True
+        self.__skipconfig = False
         logger.debug("settings END")
 
     def createGUI(self):
@@ -846,6 +849,7 @@ class Selector(Qt.QDialog, TaurusBaseWidget):
     def closeResetShowErrors(self):
         self.storage.showErrors()
         self.closeReset()
+        self.__skipconfig = False
 
     def waitForThread(self):
         """ waits for running thread
@@ -936,6 +940,47 @@ class Selector(Qt.QDialog, TaurusBaseWidget):
                          onclose="closeResetShowErrors")
         logger.debug("reset Descriptions ENDED")
 
+    def compareConf(self, cnf, ecnf):
+        """ copares two dictionaries
+
+        :param cnf: current configuration
+        :type cnf: :obj:`dict`
+        :param ecnf: external configuration
+        :type ecnf: :obj:`dict`
+        :returns: if configurations are the same
+        :rtype: :obj:`bool`
+        """
+        if not isinstance(cnf, dict):
+            return False
+        if not isinstance(ecnf, dict):
+            return False
+
+        ekeys = list(set(ecnf.keys()))
+        if 'ScanFile' in ekeys:
+            if self.state.scanFile != ecnf['ScanFile']:
+                return False
+
+        if 'ScanDir' in ekeys:
+            if self.state.scanDir != ecnf['ScanDir']:
+                return False
+        if 'ActiveMntGrp' not in ekeys:
+            return False
+        amg = ecnf['ActiveMntGrp']
+        if amg != cnf['ActiveMntGrp']:
+            return False
+        if 'MntGrpConfigs' not in ekeys:
+            return False
+        if not isinstance(cnf['MntGrpConfigs'], dict) or \
+           amg not in cnf['MntGrpConfigs']:
+            return False
+        if not isinstance(ecnf['MntGrpConfigs'], dict) or \
+           amg not in ecnf['MntGrpConfigs']:
+            return False
+        status = Checker().compDict(
+            cnf['MntGrpConfigs'][amg], ecnf['MntGrpConfigs'][amg])
+
+        return status
+
     def resetConfiguration(self, expconf):
         """ resets measurement group configuration
 
@@ -943,17 +988,20 @@ class Selector(Qt.QDialog, TaurusBaseWidget):
         :type expconf: :obj:`str`
         """
         logger.debug("reset Configuration")
-        conf = self.state.mntGrpConfiguration()
-        econf = json.dumps(expconf)
-        if conf != econf:
-            replay = Qt.QMessageBox.question(
-                self.ui.preferences,
-                "NXSelector: Configuration "
-                "of Measument Group has been changed.",
-                "Would you like to update the changes? ",
-                Qt.QMessageBox.Yes | Qt.QMessageBox.No)
-            if replay == Qt.QMessageBox.Yes:
-                self._resetAll()
+        if not self.__skipconfig:
+            conf = json.loads(self.state.lastMntGrpConfiguration())
+            econf = expconf
+
+            if not self.compareConf(conf, econf):
+                self.__skipconfig = True
+                replay = Qt.QMessageBox.question(
+                    self.ui.preferences,
+                    "NXSelector: Configuration "
+                    "of Measument Group has been changed.",
+                    "Would you like to update the changes? ",
+                    Qt.QMessageBox.Yes | Qt.QMessageBox.No)
+                if replay == Qt.QMessageBox.Yes:
+                    self._resetAll()
         logger.debug("reset Configuration END")
 
     def updateDoorName(self, door):
@@ -1077,6 +1125,7 @@ class Selector(Qt.QDialog, TaurusBaseWidget):
     def __applyClicked(self):
         """ focuses on apply button and performs apply action"""
         self.ui.buttonBox.button(Qt.QDialogButtonBox.Apply).setFocus()
+        self.__skipconfig = True
         self.apply()
 
     @Qt.pyqtSlot(int)
@@ -1132,6 +1181,7 @@ class Selector(Qt.QDialog, TaurusBaseWidget):
         else:
             self.setDirty(False)
         self.ui.fileScanIDSpinBox.setValue(self.state.scanID)
+        self.__skipconfig = False
 
     def apply(self):
         """ applies seeting on selection server and
