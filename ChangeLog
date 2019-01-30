@@ -1,3 +1,7 @@
+2019-01-30 Jan Kotanski <jankotan@gmail.com>
+	* add MG sync for sardana 2.5.1
+	* tagged as 3.11.0
+
 2019-01-29 Jan Kotanski <jankotan@gmail.com>
 	* hide cancel button in progress bar
 	* tagged as 3.10.1

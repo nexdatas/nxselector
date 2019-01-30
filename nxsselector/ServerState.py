@@ -750,6 +750,19 @@ class ServerState(Qt.QObject):
         conf['MntGrpConfigs'][self.mntgrp] = json.loads(mgconf)
         return json.dumps(conf)
 
+    def lastMntGrpConfiguration(self):
+        """ provides measurement group configuration with its name
+
+        :returns: measurement group configuration with its name
+        :rtype: :obj:`str`
+        """
+        conf = {}
+        conf['MntGrpConfigs'] = {}
+        conf['ActiveMntGrp'] = self.mntgrp
+        conf['MntGrpConfigs'][self.mntgrp] = \
+            self.__importDict("MntGrpConfiguration")
+        return json.dumps(conf)
+
     def getConfiguration(self):
         """ provides profile configuration
 
