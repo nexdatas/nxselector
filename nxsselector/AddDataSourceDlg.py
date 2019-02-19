@@ -101,7 +101,10 @@ class AddDataSourceDlg(Qt.QDialog):
         try:
             host = taurus.Factory('tango').getAuthority().getFullName()
         except Exception:
-            host = None
+            try:
+                host = taurus.Factory('tango').getDatabase().getFullName()
+            except Exception:
+                host = None
 
         self.ui.tree = TaurusModelSelectorTree(
             selectables=[TaurusElementType.Attribute],
@@ -113,9 +116,9 @@ class AddDataSourceDlg(Qt.QDialog):
         self.ui.sourceLineEdit = SourceLineEdit(self)
         self.ui.sourceLineEdit.setToolTip(
             "Drop an attribute from the above tree")
-        if host.startswith("tango://"):
+        if host and host.startswith("tango://"):
             host = host[8:]
-        self.ui.hostLineEdit.setText(str(host))
+        self.ui.hostLineEdit.setText(str(host or ""))
         gridLayout = Qt.QGridLayout(self.ui.widget)
         gridLayout.addWidget(self.ui.tree, 0, 0, 1, 1)
         self.ui.gridLayout.addWidget(self.ui.sourceLineEdit, 1, 1, 2, 2)
