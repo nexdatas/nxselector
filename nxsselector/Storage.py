@@ -197,14 +197,16 @@ class Storage(Qt.QObject):
         """ updates a value of measurement group combo box
         """
         self.disconnectSignals()
-        self.ui.mntGrpComboBox.clear()
-        for mg in self.state.avmglist:
-            self.ui.mntGrpComboBox.addItem(mg)
-        if self.state.mntgrp not in self.state.avmglist:
-            self.ui.mntGrpComboBox.addItem(self.state.mntgrp)
-        ind = self.ui.mntGrpComboBox.findText(self.state.mntgrp)
-        self.ui.mntGrpComboBox.setCurrentIndex(ind)
-        self.connectSignals()
+        try:
+            self.ui.mntGrpComboBox.clear()
+            for mg in self.state.avmglist:
+                self.ui.mntGrpComboBox.addItem(mg)
+            if self.state.mntgrp not in self.state.avmglist:
+                self.ui.mntGrpComboBox.addItem(self.state.mntgrp)
+            ind = self.ui.mntGrpComboBox.findText(self.state.mntgrp)
+            self.ui.mntGrpComboBox.setCurrentIndex(ind)
+        finally:
+            self.connectSignals()
 
     @Qt.pyqtSlot()
     def __variables(self):
@@ -504,7 +506,10 @@ class Storage(Qt.QObject):
         if self.__tWidgets:
             cb = self.__tWidgets.pop()
             cb.hide()
-            cb.currentIndexChanged.disconnect(self.apply)
+            try:
+                cb.currentIndexChanged.disconnect(self.apply)
+            except Exception:
+                pass
             self.__layout.removeWidget(cb)
             cb.close()
 
@@ -513,8 +518,10 @@ class Storage(Qt.QObject):
         """
         logger.debug("reset storage")
         self.disconnectSignals()
-        self.updateForm()
-        self.connectSignals()
+        try:
+            self.updateForm()
+        finally:
+            self.connectSignals()
         logger.debug("reset storage ended")
 
     def __updateTimer(self, widget, nid):
@@ -632,13 +639,17 @@ class Storage(Qt.QObject):
             return
         self.disconnectSignals()
         if not current:
-            self.ui.mntGrpComboBox.setFocus()
-            self.connectSignals()
+            try:
+                self.ui.mntGrpComboBox.setFocus()
+            finally:
+                self.connectSignals()
             return
         self.state.mntgrp = current
         if self.state.mntgrp not in self.state.avmglist:
-            self.updateMntGrpComboBox()
-            self.connectSignals()
+            try:
+                self.updateMntGrpComboBox()
+            finally:
+                self.connectSignals()
             self.apply()
         logger.debug("mntgrp edited end")
 
@@ -652,8 +663,10 @@ class Storage(Qt.QObject):
             return
         self.disconnectSignals()
         if not current:
-            self.ui.mntGrpComboBox.setFocus()
-            self.connectSignals()
+            try:
+                self.ui.mntGrpComboBox.setFocus()
+            finally:
+                self.connectSignals()
             return
 
         self.state.mntgrp = current
@@ -661,9 +674,11 @@ class Storage(Qt.QObject):
             self.connectSignals()
             self.apply()
         else:
-            self.state.storeData("mntGrp", self.state.mntgrp)
-            self.state.fetchMntGrp()
-            self.connectSignals()
+            try:
+                self.state.storeData("mntGrp", self.state.mntgrp)
+                self.state.fetchMntGrp()
+            finally:
+                self.connectSignals()
             self.resetAll.emit()
 #        else:
 #            self.connectSignals()
@@ -683,9 +698,11 @@ class Storage(Qt.QObject):
             Qt.QMessageBox.Yes | Qt.QMessageBox.No)
         if replay == Qt.QMessageBox.Yes:
             self.disconnectSignals()
-            self.state.deleteMntGrp(
-                str(self.ui.mntGrpComboBox.currentText()).lower())
-            self.connectSignals()
+            try:
+                self.state.deleteMntGrp(
+                    str(self.ui.mntGrpComboBox.currentText()).lower())
+            finally:
+                self.connectSignals()
             self.resetAll.emit()
         logger.debug("mntgrp deleted end")
 
@@ -757,35 +774,40 @@ class Storage(Qt.QObject):
         logger.debug("updateForm apply")
         self.disconnectSignals()
         if not str(self.ui.mntGrpComboBox.currentText()):
-            self.ui.mntGrpComboBox.setFocus()
-            self.connectSignals()
+            try:
+                self.ui.mntGrpComboBox.setFocus()
+            finally:
+                self.connectSignals()
             return
-        self.state.mntgrp = str(self.ui.mntGrpComboBox.currentText()).lower()
+        try:
+            self.state.mntgrp = str(
+                self.ui.mntGrpComboBox.currentText()).lower()
 
-        logger.debug("apply Timers")
-        self.__applyTimer(self.ui.mntTimerComboBox, 0)
-        for nid, widget in enumerate(self.__tWidgets):
-            self.__applyTimer(widget, nid + 1)
-        logger.debug("apply Timers ended")
+            logger.debug("apply Timers")
+            self.__applyTimer(self.ui.mntTimerComboBox, 0)
+            for nid, widget in enumerate(self.__tWidgets):
+                self.__applyTimer(widget, nid + 1)
+            logger.debug("apply Timers ended")
 
-        self.state.door = str(self.ui.mntServerLineEdit.text())
+            self.state.door = str(self.ui.mntServerLineEdit.text())
 
-        # device group
-        self.state.writerDevice = str(self.ui.devWriterLineEdit.text())
-        self.state.configDevice = str(self.ui.devConfigLineEdit.text())
+            # device group
+            self.state.writerDevice = str(self.ui.devWriterLineEdit.text())
+            self.state.configDevice = str(self.ui.devConfigLineEdit.text())
 
-        self.state.scanDir = str(self.ui.fileScanDirLineEdit.text())
-#        self.state.scanID = int(self.ui.fileScanIDSpinBox.value())
-        self.state.scanFile = self.__fileNames()
+            self.state.scanDir = str(self.ui.fileScanDirLineEdit.text())
+    #        self.state.scanID = int(self.ui.fileScanIDSpinBox.value())
+            self.state.scanFile = self.__fileNames()
 
-        # dynamic component group
-        self.state.dynamicComponents = True
-        self.state.dynamicLinks = self.ui.dcLinksCheckBox.isChecked()
-        self.state.dynamicPath = str(self.ui.dcPathLineEdit.text())
+            # dynamic component group
+            self.state.dynamicComponents = True
+            self.state.dynamicLinks = self.ui.dcLinksCheckBox.isChecked()
+            self.state.dynamicPath = str(self.ui.dcPathLineEdit.text())
 
-        # others group
-        self.state.appendEntry = self.ui.othersEntryCheckBox.isChecked()
-        self.connectSignals()
+            # others group
+            self.state.appendEntry = self.ui.othersEntryCheckBox.isChecked()
+        finally:
+            self.connectSignals()
 
         self.dirty.emit()
         self.resetViews.emit()
