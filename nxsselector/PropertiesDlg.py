@@ -95,8 +95,11 @@ class PropertiesWg(Qt.QWidget):
         #: (:obj:`dict` <:obj:`str`, :obj:`bool`>) \
         #:    property (name, link) dictionary
         self.links = {}
+        #: (:obj:`dict` <:obj:`str`, :obj:`bool`>) \
+        #:    property (name, canfailflag) dictionary
+        self.canfailflags = {}
         #: (:obj:`dict` <:obj:`str`, :obj:`str`>) \
-        #:    property (name, nexus tupe) dictionary
+        #:    property (name, nexus type) dictionary
         self.types = {}
         #: (:obj:`list` <:obj:`str`>) available names
         self.available_names = None
@@ -133,6 +136,7 @@ class PropertiesWg(Qt.QWidget):
         return sorted(set(self.paths.keys()) |
                       set(self.shapes.keys()) |
                       set(self.links.keys()) |
+                      set(self.canfailflags.keys()) |
                       set(self.types.keys()))
 
     def __populateTable(self, selected=None):
@@ -146,7 +150,7 @@ class PropertiesWg(Qt.QWidget):
         self.ui.tableWidget.setSortingEnabled(False)
         names = self.__names()
         self.ui.tableWidget.setRowCount(len(names))
-        headers = ["Name", "Type", "Shape", "Link", "Path"]
+        headers = ["Name", "Type", "Shape", "Link", "CanFail", "Path"]
         self.ui.tableWidget.setColumnCount(len(headers))
         self.ui.tableWidget.setHorizontalHeaderLabels(headers)
         for row, name in enumerate(names):
@@ -173,9 +177,12 @@ class PropertiesWg(Qt.QWidget):
             value = str(self.links[name]) \
                 if name in self.links.keys() else ''
             self.ui.tableWidget.setItem(row, 3, Qt.QTableWidgetItem(value))
+            value = str(self.canfailflags[name]) \
+                if name in self.canfailflags.keys() else ''
+            self.ui.tableWidget.setItem(row, 4, Qt.QTableWidgetItem(value))
             value = str(self.paths[name]) \
                 if name in self.paths.keys() else ''
-            self.ui.tableWidget.setItem(row, 4, Qt.QTableWidgetItem(value))
+            self.ui.tableWidget.setItem(row, 5, Qt.QTableWidgetItem(value))
         self.ui.tableWidget.resizeColumnsToContents()
         self.ui.tableWidget.setSelectionBehavior(
             Qt.QAbstractItemView.SelectRows)
@@ -239,6 +246,12 @@ class PropertiesWg(Qt.QWidget):
             elif name:
                 self.links[name] = form.link
 
+            if form.canfail is None:
+                if name in self.canfailflags.keys():
+                    self.canfailflags.pop(name)
+            elif name:
+                self.canfailflags[name] = form.canfail
+
             self.__populateTable()
             self.dirty.emit()
 
@@ -263,6 +276,8 @@ class PropertiesWg(Qt.QWidget):
             dform.shape = self.shapes[name]
         if name in self.links.keys():
             dform.link = self.links[name]
+        if name in self.canfailflags.keys():
+            dform.canfail = self.canfailflags[name]
         if name in self.paths.keys():
             dform.path = self.paths[name]
 
@@ -290,6 +305,8 @@ class PropertiesWg(Qt.QWidget):
             self.shapes.pop(name)
         if name in self.links.keys():
             self.links.pop(name)
+        if name in self.canfailflags.keys():
+            self.canfailflags.pop(name)
         if name in self.paths.keys():
             self.paths.pop(name)
 

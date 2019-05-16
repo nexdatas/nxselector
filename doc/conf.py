@@ -435,7 +435,7 @@ intersphinx_mapping = {
     'http://docs.scipy.org/doc/scipy/reference': None,
     'http://docs.scipy.org/doc/numpy': None,
     'http://pytango.readthedocs.io/en/stable/': None,
-    'https://www.riverbankcomputing.com/static/Docs/PyQt4/':None,
+    'https://www.riverbankcomputing.com/static/Docs/PyQt4/': None,
     # 'http://pyqt.sourceforge.net/Docs/PyQt4/': None,
     'https://docs.scipy.org/doc/numpy': None,
 }
