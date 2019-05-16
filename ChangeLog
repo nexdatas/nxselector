@@ -4,6 +4,10 @@
 	* tagged as 3.12.0
 
 2019-02-19 Jan Kotanski <jankotan@gmail.com>
+	* fix for disconnecting disconnected timers
+	* tagged as 3.11.2
+
+2019-02-19 Jan Kotanski <jankotan@gmail.com>
 	* fix for getting host name from taurus
 	* tagged as 3.11.1
 
