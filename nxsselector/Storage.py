@@ -450,6 +450,7 @@ class Storage(Qt.QObject):
         dform.widget.paths = self.state.labelpaths
         dform.widget.shapes = self.state.labelshapes
         dform.widget.links = self.state.labellinks
+        dform.widget.canfailflags = self.state.labelcanfailflags
         dform.widget.types = self.state.labeltypes
 
         dform.available_names = list((set(self.state.labels.values())

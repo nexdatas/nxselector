@@ -65,10 +65,12 @@ class LDataDlg(Qt.QDialog):
         self.dtype = ''
         #: (:obj:`bool`) if nxdata link should be created
         self.link = None
+        #: (:obj:`bool`) if ds switched to CanFail mode
+        self.canfail = None
         #: (:obj:`list` <:obj:`str` > ) available variable names
         self.available_names = None
         #: (:obj:`list` <:obj:`str` > ) special variable names
-        self.special = ["shape", "data_type", "nexus_path", "link"]
+        self.special = ["shape", "data_type", "nexus_path", "canfail", "link"]
         #: (:obj:`dict` <:obj:`str` , :obj:`str` or :obj:`unicode`> ) \
         #:     (name, value) variable dictionary
         self.variables = {}
@@ -102,6 +104,20 @@ class LDataDlg(Qt.QDialog):
                 return "False"
         return "Default"
 
+    @classmethod
+    def __canfailText(cls, value):
+        """ converts canfail value to string, i.e. True, Default
+
+        :param value: canfail value
+        :type value: :obj:`bool` or `None`
+        :returns: True, False or Default
+        :rtype: :obj:`str`
+        """
+        if isinstance(value, bool):
+            if value is True:
+                return "True"
+        return "Default"
+
     def createGUI(self):
         """ creates GUI
         """
@@ -124,6 +140,12 @@ class LDataDlg(Qt.QDialog):
         if cid < 0:
             cid = 0
         self.ui.linkComboBox.setCurrentIndex(cid)
+
+        cid = self.ui.canfailComboBox.findText(
+            str(self.__canfailText(self.canfail)))
+        if cid < 0:
+            cid = 0
+        self.ui.canfailComboBox.setCurrentIndex(cid)
 
         if self.available_names:
             completer = Qt.QCompleter(self.available_names, self)
@@ -178,6 +200,12 @@ class LDataDlg(Qt.QDialog):
             self.link = False
         else:
             self.link = None
+
+        canfail = str(self.ui.canfailComboBox.currentText())
+        if canfail == "True":
+            self.canfail = True
+        else:
+            self.canfail = None
 
         self.label = unicode(self.ui.labelLineEdit.text())
         self.path = unicode(self.ui.pathLineEdit.text())

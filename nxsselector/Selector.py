@@ -102,7 +102,7 @@ class Selector(Qt.QDialog, TaurusBaseWidget):
         #: (:obj:`bool`) application executed without macrogui
         self.__standalone = standalone
 
-        #: (:obj:`bool`) progressbar is  running
+        #: (:obj:`bool`) progressbar is running
         self.__progressFlag = False
         #: (:obj:`bool`) door has to be updated
         self.__doortoupdateFlag = False

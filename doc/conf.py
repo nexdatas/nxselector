@@ -430,9 +430,12 @@ autoclass_content = 'both'
 
 intersphinx_mapping = {
     'http://www.taurus-scada.org/en/3.7.3/': None,
-    # 'http://www.taurus-scada.org': None,
+    'http://www.taurus-scada.org': None,
     'http://docs.python.org/2.7/': None,
     'http://docs.scipy.org/doc/scipy/reference': None,
     'http://docs.scipy.org/doc/numpy': None,
     'http://pytango.readthedocs.io/en/stable/': None,
+    'https://www.riverbankcomputing.com/static/Docs/PyQt4/': None,
+    # 'http://pyqt.sourceforge.net/Docs/PyQt4/': None,
+    'https://docs.scipy.org/doc/numpy': None,
 }

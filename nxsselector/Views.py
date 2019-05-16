@@ -625,7 +625,6 @@ class CheckPropView(CheckDisView):
         name = self.model.data(ind, role=Qt.Qt.DisplayRole)
         ind5 = self.model.index(row, 5)
         props = self.model.data(ind5, role=Qt.Qt.DisplayRole)
-
         if props:
             prs = json.loads(str(props))
             dform = self.propdlg(self)
@@ -636,6 +635,7 @@ class CheckPropView(CheckDisView):
             dform.shape = prs["shape"] if "shape" in prs else None
             dform.link = prs["link"] if "link" in prs else None
             dform.path = prs["nexus_path"] if "nexus_path" in prs else None
+            dform.canfail = prs["canfail"] if "canfail" in prs else None
             dform.addVariables(prs)
             dform.createGUI()
 
@@ -644,6 +644,7 @@ class CheckPropView(CheckDisView):
                 if "data_type" in prs:
                     prs["data_type"] = dform.dtype or None
                     prs["link"] = dform.link
+                    prs["canfail"] = dform.canfail
                     prs["shape"] = dform.shape
                     prs["nexus_path"] = dform.shape or None
                 for nm, val in dform.variables.items():
