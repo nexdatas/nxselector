@@ -127,6 +127,7 @@ class SynchThread(Qt.QThread):
         self.__dp = None
         if self.server and self.server != 'module':
             self.__dp = PyTango.DeviceProxy(self.server)
+            self.__dp.set_source(PyTango.DevSource.DEV)
             self.__lastscanid = self.__dp.scanID
             self.__lastmg = self.__dp.mntGrpConfiguration()
             self.__lastprof = self.__dp.profileConfiguration
@@ -137,6 +138,7 @@ class SynchThread(Qt.QThread):
                 if self.__serverstate.server else None
         if self.server and self.server != 'module':
             self.__dp = PyTango.DeviceProxy(self.server)
+            self.__dp.set_source(PyTango.DevSource.DEV)
             self.__lastscanid = self.__dp.scanID
             self.__lastmg = self.__dp.mntGrpConfiguration()
             self.__lastprof = self.__dp.profileConfiguration
@@ -827,6 +829,7 @@ class ServerState(Qt.QObject):
         """
         if self.server:
             self.__dp = self.__openProxy(self.server)
+            self.__dp.set_source(PyTango.DevSource.DEV)
             self.__dp.set_timeout_millis(self.__timeout)
             logger.debug("set server: %s:%s/%s" % (self.__dp.get_db_host(),
                                                    self.__dp.get_db_port(),
@@ -924,7 +927,7 @@ class ServerState(Qt.QObject):
             if cnt > 1:
                 time.sleep(0.01)
             try:
-                if cls.__command(proxy, "State") != PyTango.DevState.RUNNING:
+                if proxy.state() != PyTango.DevState.RUNNING:
                     found = True
             except (PyTango.DevFailed, PyTango.Except, PyTango.DevError):
                 time.sleep(0.01)
