@@ -35,7 +35,7 @@ logger = logging.getLogger(__name__)
 NAME = range(1)
 
 #: (:obj:`list` <:obj:`str` > ) synchronization text labels
-PROPTEXT = {"synchronization": ["Trigger", "Gate"]}
+PROPTEXT = {"synchronization": ["Trigger", "Gate", "Start"]}
 
 
 class ElementModel(Qt.QAbstractTableModel):

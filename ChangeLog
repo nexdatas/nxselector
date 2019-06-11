@@ -1,3 +1,7 @@
+2019-06-11 Jan Kotanski <jankotan@gmail.com>
+	* add Start to TriggerGateList
+	* tagged as 3.13.0
+
 2019-06-06 Jan Kotanski <jankotan@gmail.com>
 	* change State() to state
 	* tagged as 3.12.1
