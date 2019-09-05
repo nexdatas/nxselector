@@ -1,3 +1,7 @@
+2019-09-05 Jan Kotanski <jankotan@gmail.com>
+	* fix for checking display
+	* tagged as 3.13.1
+
 2019-06-11 Jan Kotanski <jankotan@gmail.com>
 	* add Start to TriggerGateList
 	* tagged as 3.13.0
