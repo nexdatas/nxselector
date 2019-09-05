@@ -6,7 +6,7 @@ env:
   - TEST="flake8"
   - OS=debian8 PY=2 TEST="testsuit"
   - OS=debian9 PY=2 TEST="testsuit"
-  - OS=ubuntu16.04 PY=2 TEST="testsuit"
+  - OS=ubuntu18.04 PY=2 TEST="testsuit"
 
 services:
   - docker

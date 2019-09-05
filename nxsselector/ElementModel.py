@@ -490,8 +490,7 @@ class ElementModel(Qt.QAbstractTableModel):
                     device.state.ddsdirty = True
                     device.checked = value
                     self.datachanged.emit(index, index3)
-                    if device.eltype == CP:
-                        self.componentChecked.emit()
+                    self.componentChecked.emit()
                     self.dirty.emit()
                 return True
             elif column == 1:
@@ -506,8 +505,7 @@ class ElementModel(Qt.QAbstractTableModel):
                     index3 = self.index(index.row(), 2)
                     device.display = value
                     self.datachanged.emit(index, index3)
-                    if device.eltype == CP:
-                        self.componentChecked.emit()
+                    self.componentChecked.emit()
                     self.dirty.emit()
                     return True
             elif column == 5:
