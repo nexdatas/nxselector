@@ -199,7 +199,7 @@ or from Spock by
 
 .. _Figure_1.1:
 
-.. image:: https://github.com/nexdatas/selector/blob/develop/doc/png/detectors_23.png?raw=true
+.. figure:: https://github.com/nexdatas/selector/blob/develop/doc/png/detectors_23.png?raw=true
 
    Figure 1.1: Component Selector: Detectors
 
@@ -229,7 +229,7 @@ Moreover, by pressing the *Save* or *Load* buttons, the user can save to a file 
 
 .. _Figure_1.2:
 
-.. image:: https://github.com/nexdatas/selector/blob/develop/doc/png/descriptions_23.png?raw=true
+.. figure:: https://github.com/nexdatas/selector/blob/develop/doc/png/descriptions_23.png?raw=true
 
    Figure 1.2: Component Selector: Descriptions
 
@@ -244,7 +244,7 @@ This helps to store the metadata informations by other Sardana recorders.
 
 .. _Figure_1.3:
 
-.. image:: https://github.com/nexdatas/selector/blob/develop/doc/png/udata_23.png?raw=true
+.. figure:: https://github.com/nexdatas/selector/blob/develop/doc/png/udata_23.png?raw=true
 
    Figure 1.3: Component Selector: NeXus User Data
 
