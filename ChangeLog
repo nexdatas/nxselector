@@ -1,4 +1,8 @@
 2019-10-14 Jan Kotanski <jankotan@gmail.com>
+	* update README
+	* tagged as 3.13.3
+
+2019-10-14 Jan Kotanski <jankotan@gmail.com>
 	* switch to setuptools
 	* add support for pip
 	* tagged as 3.13.2
