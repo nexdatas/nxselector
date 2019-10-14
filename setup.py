@@ -22,12 +22,18 @@
 import os
 import sys
 from distutils.util import get_platform
-from distutils.core import setup
-from distutils.command.build import build
+# from distutils.core import setup
+from setuptools import setup
+from setuptools.command.build_py import build_py
+# from distutils.command.build import build
 from distutils.command.clean import clean
 # from distutils.command.install_scripts import install_scripts
 import shutil
-from sphinx.setup_command import BuildDoc
+
+try:
+    from sphinx.setup_command import BuildDoc
+except Exception:
+    BuildDoc = None
 
 
 #: (:obj:`str`) package name
@@ -52,8 +58,23 @@ QRCDIR = os.path.join(TOOL, "qrc")
 #: (:obj:`list` < :obj:`str` >) executable scripts
 SCRIPTS = ['nxselector']
 
+needs_pytest = set(['test']).intersection(sys.argv)
+pytest_runner = ['pytest-runner'] if needs_pytest else []
 
-class toolBuild(build):
+install_requires = [
+    'taurus',
+    # 'nxsrecselector',
+    # 'pyqt5',
+    # 'pytango',
+    # 'sardana',
+    # 'nxswriter',
+    # 'nxstools',
+    # 'nxsconfigserver',
+    # 'pymysqldb',
+]
+
+
+class toolBuild(build_py):
     """ ui and qrc builder for python
     """
 
@@ -95,7 +116,7 @@ class toolBuild(build):
         if get_platform()[:3] == 'win':
             for script in SCRIPTS:
                 shutil.copy(script, script + ".pyw")
-        build.run(self)
+        build_py.run(self)
 
 
 class toolClean(clean):
@@ -171,16 +192,36 @@ SETUPDATA = dict(
     maintainer="Jan Kotanski",
     maintainer_email="jankotan@gmail.com",
     description=("GUI for Setting Nexus Sardana Recorder"),
-    license=read('COPYRIGHT'),
-    #    license="GNU GENERAL PUBLIC LICENSE, version 3",
+    # license=read('COPYRIGHT'),
+    install_requires=install_requires,
+    license="GNU GENERAL PUBLIC LICENSE, version 3",
     keywords="configuration scan nexus sardana recorder tango component data",
     url="https://github.com/jkotan/nexdatas",
     platforms=("Linux", " Windows", " MacOS "),
+    classifiers=[
+        'Development Status :: 5 - Production/Stable',
+        'Intended Audience :: Science/Research',
+        'Topic :: Scientific/Engineering :: Physics',
+        'Topic :: Software Development :: Libraries :: Python Modules',
+        'License :: OSI Approved :: GNU General Public License v2 (GPLv2)',
+        'Programming Language :: Python :: 2.7',
+        'Programming Language :: Python :: 3',
+        'Programming Language :: Python :: 3.4',
+        'Programming Language :: Python :: 3.5',
+        'Programming Language :: Python :: 3.6',
+        'Programming Language :: Python :: 3.7',
+    ],
     packages=[TOOL, UIDIR, QRCDIR],
     package_data=package_data,
     scripts=get_scripts(SCRIPTS),
-    cmdclass={"build": toolBuild, "clean": toolClean,
-              'build_sphinx': BuildDoc},
+    zip_safe=False,
+    setup_requires=pytest_runner,
+    tests_require=['pytest'],
+    cmdclass={
+        "build_py": toolBuild,
+        "clean": toolClean,
+        'build_sphinx': BuildDoc
+    },
     command_options={
         'build_sphinx': {
             'project': ('setup.py', name),
