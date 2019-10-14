@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 #   This file is part of nexdatas - Tango Server for NeXus data writer
 #
-#    Copyright (C) 2014-2017 DESY, Jan Kotanski <jkotan@mail.desy.de>
+#    Copyright (C) 2012-2018 DESY, Jan Kotanski <jkotan@mail.desy.de>
 #
 #    nexdatas is free software: you can redistribute it and/or modify
 #    it under the terms of the GNU General Public License as published by
@@ -15,11 +15,13 @@
 #
 #    You should have received a copy of the GNU General Public License
 #    along with nexdatas.  If not, see <http://www.gnu.org/licenses/>.
-# package constructor
+# \package test nexdatas
+# \file runtest.py
+# the unittest runner
+#
 
-""" --- NXS Selector --
-GUI for setting Sardana NeXus Recorder
-"""
+import main
 
-#: (:obj:`str`) version of the application
-__version__ = "3.13.2"
+
+if __name__ == "__main__":
+    main.main()
