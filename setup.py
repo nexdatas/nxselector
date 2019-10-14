@@ -185,7 +185,7 @@ name = "NXS Component Selector"
 
 #: (:obj:`dict` <:obj:`str`, `any`>) metadata for distutils
 SETUPDATA = dict(
-    name="nxsselector",
+    name="nxselector",
     version=ITOOL.__version__,
     author="Jan Kotanski",
     author_email="jankotan@gmail.com",
