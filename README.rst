@@ -213,7 +213,7 @@ Configuration of the each hardware device for the NeXus files is described insid
 | *device attribute*, e.g. counter reading, motor position <=> *data source*
 |
 
-The :ref:`Figure_1.1` displays the Detectors tab of the Component Selector including the available device components. Composite components are the one with multiple data sources. Simple components are distributed in the frames labelled Counters, ADC, MCA, etc. Components are selected by activating the *Sel.* checkbox. If the *Dis.* checkbox is enabled, the output of the device is displayed during the scan for monitoring purposes.
+The `Figure_1.1` displays the Detectors tab of the Component Selector including the available device components. Composite components are the one with multiple data sources. Simple components are distributed in the frames labelled Counters, ADC, MCA, etc. Components are selected by activating the *Sel.* checkbox. If the *Dis.* checkbox is enabled, the output of the device is displayed during the scan for monitoring purposes.
 
 Simple components may be part of composite components. As a consequence, selecting a composite component may implicitly select one or more simple components. This dependency has to be visible for the users. Therefore, simple components being implicitly selected are deactivated and their font colour changes to grey. The user may also move the mouse over a composite component to inspect the contents.
 
@@ -235,7 +235,7 @@ Moreover, by pressing the *Save* or *Load* buttons, the user can save to a file 
 
    Figure 1.2: Component Selector: Descriptions
 
-The Descriptions tab, :ref:`Figure_1.2`, displays components containing metadata which are stored only before or after the scan. They are divided into two groups: the *Mandatory* beamline-specific components and the *Optional* discipline-specific components. The *Mandatory* beamline group describes the source device and the facility. The *Optional* discipline group contains information about the spatial arrangement of the experimental setup, mainly motor positions. The user can select or deselect the optional components from the current profile.
+The Descriptions tab, `Figure_1.2`, displays components containing metadata which are stored only before or after the scan. They are divided into two groups: the *Mandatory* beamline-specific components and the *Optional* discipline-specific components. The *Mandatory* beamline group describes the source device and the facility. The *Optional* discipline group contains information about the spatial arrangement of the experimental setup, mainly motor positions. The user can select or deselect the optional components from the current profile.
 
 Moreover, the *Reset Desc.* button of Descriptions sets a group of descriptive components to the default one, i.e. defined in the DefaultAutomaticComponents property of the current NXSRecSelector server.
 
@@ -251,7 +251,7 @@ This helps to store the metadata informations by other Sardana recorders.
 
    Figure 1.3: Component Selector: NeXus User Data
 
-In order to describe the experiment completely some of the client data have to be provided by the user. The :ref:`Figure_1.3` shows the CS tab allowing the researcher to supply this information. Typical examples for user-supplied metadata are title, sample name and user comment.
+In order to describe the experiment completely some of the client data have to be provided by the user. The `Figure_1.3` shows the CS tab allowing the researcher to supply this information. Typical examples for user-supplied metadata are title, sample name and user comment.
 
 The layout of the Component Selector can be easily adapted into different beamline specification in the Configuration tab.
 
