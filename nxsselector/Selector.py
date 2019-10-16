@@ -22,7 +22,6 @@
 import json
 import os
 import sys
-import gc
 
 try:
     from taurus.external.qt import Qt
@@ -1234,7 +1233,6 @@ class Selector(Qt.QDialog, TaurusBaseWidget):
 def main():
     """ the main function
     """
-    print("MAIN")
     if "GNOME_DESKTOP_SESSION_ID" not in os.environ:
         os.environ["GNOME_DESKTOP_SESSION_ID"] = "qtconfig"
     if os.path.isdir("/usr/lib/kde4/plugins/") and \
@@ -1259,7 +1257,6 @@ def main():
     setdefault = False
     door = None
     switch = True
-
     if standalone:
         import taurus.core.util.argparse
         parser = taurus.core.util.argparse.get_taurus_parser()
@@ -1325,8 +1322,6 @@ def main():
 
     if standalone:
         status = int(app.exec_())
-        form = None
-        app = None
         qrc.qrc_resources.qCleanupResources()
         sys.exit(status)
     else:
