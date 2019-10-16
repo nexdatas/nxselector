@@ -232,7 +232,7 @@ Options:
 
     # comp_available tesQt
     # \brief It tests XMLConfigurator
-    def test_help2(self):
+    def ttest_help2(self):
         fun = sys._getframe().f_code.co_name
         print("Run: %s.%s() " % (self.__class__.__name__, fun))
 
