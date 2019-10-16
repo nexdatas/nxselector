@@ -141,6 +141,7 @@ except Exception as e:
 except Exception:
     print("ORACLE not available")
 
+import nxselector_test
 
 # main function
 def main():
@@ -151,9 +152,10 @@ def main():
     # test suit
     suite = unittest.TestSuite()
 
-    #    suite.addTests(
-    #       unittest.defaultTestLoader.loadTestsFromModule(
-    #               DBFieldTagAsynchH5PYTest) )
+    suite.addTests(
+          unittest.defaultTestLoader.loadTestsFromModule(
+              nxselector_test)
+    )
 
     # test runner
     runner = unittest.TextTestRunner()
