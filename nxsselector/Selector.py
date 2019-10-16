@@ -22,10 +22,12 @@
 import json
 import os
 import sys
+import gc
 
 try:
     from taurus.external.qt import Qt
-except Exception:
+except Exception as e:
+    print(e)
     from taurus.qt import Qt
 from taurus.qt.qtgui.util.ui import UILoadable
 
@@ -1322,7 +1324,11 @@ def main():
     form.show()
 
     if standalone:
-        sys.exit(app.exec_())
+        status = int(app.exec_())
+        form = None
+        app = None
+        qrc.qrc_resources.qCleanupResources()
+        sys.exit(status)
     else:
         return form
 
