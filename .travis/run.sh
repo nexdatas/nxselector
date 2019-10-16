@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-if [[ $2 == "1" ]]; then
+if [[ $1 == "2" ]]; then
     echo "run python-nxselector"
     docker exec -it ndts python test
 else
