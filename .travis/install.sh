@@ -30,23 +30,59 @@ docker exec -it --user root ndts service tango-db restart
 docker exec -it --user root ndts service tango-starter restart
 
 
-echo "install python-pytango"
-docker exec -it --user root ndts /bin/sh -c 'export DEBIAN_FRONTEND=noninteractive; apt-get -qq update; apt-get -qq install -y   python-pytango'
+if [ $2 = "2" ]; then
+    echo "install python-pytango"
+    docker exec -it --user root ndts /bin/sh -c 'export DEBIAN_FRONTEND=noninteractive; apt-get -qq update; apt-get -qq install -y   python-pytango'
+else
+    echo "install python3-pytango"
+    docker exec -it --user root ndts /bin/sh -c 'export DEBIAN_FRONTEND=noninteractive; apt-get -qq update; apt-get install -y git python3-six python3-numpy graphviz python3-sphinx g++ build-essential python3-dev pkg-config python3-all-dev  python3-setuptools libtango-dev python3-setuptools python3-pytango python3-tz python-pytango python-enum34; apt-get -qq install -y nxsconfigserver-db; sleep 10'
+    docker exec -it --user root ndts /bin/sh -c 'export DEBIAN_FRONTEND=noninteractive; apt-get -qq update; apt-get install -y libboost-python-dev libboost-dev'
+    if [ $1 = "debian10" ]; then
+	echo " "
+	# docker exec -it --user root ndts /bin/sh -c 'export DEBIAN_FRONTEND=noninteractive; apt-get -qq update; apt-get install -y libboost-python1.62-dev libboost1.62-dev'
+    else
+	docker exec -it --user root ndts /bin/sh -c 'git clone https://github.com/tango-controls/pytango pytango; cd pytango; git checkout tags/v9.2.5 -b b9.2.5'
+	docker exec -it --user root ndts /bin/sh -c 'cd pytango; python3 setup.py install'
+    fi
+fi
 if [ $? -ne "0" ]
 then
     exit -1
 fi
 
+if [ $1 = "debian8" ]; then
+    if [ $2 = "3" ]; then
+	echo "install python3-mysqldb"
+	docker exec -it --user root ndts /bin/sh -c 'export DEBIAN_FRONTEND=noninteractive; apt-get -qq update; apt-get install -y -t=jessie-backports  python3-mysqldb'
+    fi
+fi
 
-echo "install sardana, taurus and nexdatas"
-docker exec -it --user root ndts /bin/sh -c 'export DEBIAN_FRONTEND=noninteractive;  apt-get -qq update; apt-get -qq install -y  nxsconfigserver-db; sleep 10; apt-get -qq install -y python-nxsconfigserver python-nxswriter python-nxstools python-nxsrecselector python-taurus python-sardana python-setuptools'
+if [ $2 = "2" ]; then
+    echo "install sardana, taurus and nexdatas"
+    docker exec -it --user root ndts /bin/sh -c 'export DEBIAN_FRONTEND=noninteractive;  apt-get -qq update; apt-get -qq install -y  nxsconfigserver-db; sleep 10; apt-get -qq install -y python-nxsconfigserver python-nxswriter python-nxstools python-nxsrecselector python-taurus python-sardana python-setuptools'
+else
+    echo "install sardana, taurus and nexdatas"
+    docker exec -it --user root ndts /bin/sh -c 'export DEBIAN_FRONTEND=noninteractive; apt-get -qq update; apt-get install -y  nxsconfigserver-db; sleep 10; apt-get -qq install -y python3-nxsconfigserver python-3nxswriter python3-nxstools python3-nxsrecselector python3-setuptools'
+    docker exec -it --user root ndts /bin/sh -c 'git clone https://github.com/taurus-org/taurus taurus-src; cd taurus-src'
+    docker exec -it --user root ndts /bin/sh -c 'cd taurus-src; python3 setup.py install'
+    docker exec -it --user root ndts /bin/sh -c 'git clone https://github.com/sardana-org/sardana sardana-src; cd sardana-src'
+    docker exec -it --user root ndts /bin/sh -c 'cd sardana-src; python3 setup.py install'
+    
+fi
 if [ $? -ne "0" ]
 then
     exit -1
 fi
 
-echo "install nxselector"
-docker exec -it --user root ndts python setup.py -q install
+docker exec -it --user root ndts chown -R tango:tango .
+
+if [ $2 = "2" ]; then
+    echo "install nxselector"
+    docker exec -it --user root ndts python setup.py -q install
+else
+    echo "install nxselector3"
+    docker exec -it --user root ndts python3 setup.py -q install
+fi
 if [ $? -ne "0" ]
 then
     exit -1
