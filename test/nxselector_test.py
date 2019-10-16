@@ -29,6 +29,7 @@ import binascii
 # import threading
 # import PyTango
 # import json
+import nxsselector
 from nxsselector import Selector
 
 
@@ -187,6 +188,16 @@ Options:
         er = mystderr.getvalue()
         self.assertEqual(self.helpinfo, vl)
         self.assertEqual(self.helperror, er)
+
+    # comp_available test
+    # \brief It tests NXSelector
+    def test_version(self):
+        fun = sys._getframe().f_code.co_name
+        print("Run: %s.%s() " % (self.__class__.__name__, fun))
+
+        ver = nxsselector.__version__
+        self.assertTrue(ver)
+        self.assertTrue("." in ver)
 
     # comp_available tesQt
     # \brief It tests XMLConfigurator

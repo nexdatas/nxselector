@@ -14,6 +14,7 @@ env:
 
 services:
   - docker
+  - xvfb
 
 python:
   - "2.7"
@@ -27,7 +28,7 @@ before_install:
 
 before_script:
   - if [ $TEST == "testsuit" ]; then docker build -t ndts .travis/${OS}_py${PY}; fi
-  - if [ $TEST == "testsuit" ]; then docker run  --name  ndts -d -it -v `pwd`:/home/tango  ndts; fi
+  - if [ $TEST == "testsuit" ]; then docker run  --name  ndts -d -it -v `pwd`:/home/tango -v /tmp/.X11-unix:/tmp/.X11-unix:ro  -e DISPLAY=$DISPLAY  ndts; fi
   - if [ $TEST == "testsuit" ]; then .travis/install.sh ${OS} ${PY};  fi
 
 script:
