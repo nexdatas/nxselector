@@ -23,6 +23,7 @@
 import sys
 import unittest
 
+import nxselector_test
 
 try:
     __import__("PyTango")
@@ -151,9 +152,10 @@ def main():
     # test suit
     suite = unittest.TestSuite()
 
-    #    suite.addTests(
-    #       unittest.defaultTestLoader.loadTestsFromModule(
-    #               DBFieldTagAsynchH5PYTest) )
+    suite.addTests(
+          unittest.defaultTestLoader.loadTestsFromModule(
+              nxselector_test)
+    )
 
     # test runner
     runner = unittest.TextTestRunner()

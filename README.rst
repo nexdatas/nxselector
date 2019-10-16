@@ -73,6 +73,7 @@ and
 	  $ apt-get install python-sardana-nxsrecorder nxstaurusgui
 
 for NeXus recorder and MacroGUI packages.
+
 From pip
 ^^^^^^^^
 

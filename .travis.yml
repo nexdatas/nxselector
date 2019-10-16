@@ -4,13 +4,17 @@ dist: xenial
 
 env:
   - TEST="flake8"
+  - OS=debian9 PY=3 TEST="testsuit"
   - OS=debian9 PY=2 TEST="testsuit"
+  - OS=ubuntu18.04 PY=3 TEST="testsuit"
+  - OS=ubuntu18.04 PY=2 TEST="testsuit"
+  - OS=debian10 PY=3 TEST="testsuit"
   - OS=debian10 PY=2 TEST="testsuit"
-#  - OS=ubuntu18.04 PY=2 TEST="testsuit"
 #  - OS=debian8 PY=2 TEST="testsuit"
 
 services:
   - docker
+  - xvfb
 
 python:
   - "2.7"
@@ -23,10 +27,9 @@ before_install:
   - if [ $TEST == "testsuit" ]; then chmod +x .travis/install.sh; fi
 
 before_script:
-  - if [ $TEST == "testsuit" ]; then docker build -t ndts .travis/${OS}; fi
-  - if [ $TEST == "testsuit" ]; then docker run  --name  ndts -d -it -v `pwd`:/home/tango  ndts; fi
+  - if [ $TEST == "testsuit" ]; then docker build -t ndts .travis/${OS}_py${PY}; fi
+  - if [ $TEST == "testsuit" ]; then docker run  --name  ndts -d -it -v `pwd`:/home/tango -v /tmp/.X11-unix:/tmp/.X11-unix:ro  -e DISPLAY=$DISPLAY  ndts; fi
   - if [ $TEST == "testsuit" ]; then .travis/install.sh ${OS} ${PY};  fi
-# - if [ $TEST == "testsuit" ]; then docker build -t ndts .travis/${OS}_py${PY}; fi
 
 script:
   - if [ $TEST == "testsuit" ]; then .travis/run.sh ${PY}; fi
