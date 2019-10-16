@@ -7,7 +7,7 @@ else
     echo "run python3-nxselector"
     docker exec -it ndts python3 test
 fi
-if [ $? -ne "0" ]
+if [ "$?" -ne "0" ]
 then
     exit -1
 fi
