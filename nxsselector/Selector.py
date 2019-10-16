@@ -1252,7 +1252,7 @@ def main():
     app = Application.instance()
     standalone = app is None
     server = None
-    expert = True
+    # expert = True
     umode = None
     setdefault = False
     door = None
@@ -1317,7 +1317,8 @@ def main():
 
     form = Selector(server, standalone=True, umode=umode,
                     setdefault=setdefault,
-                    door=door,switch=switch)
+                    door=door,
+                    switch=switch)
     form.show()
 
     if standalone:

@@ -23,6 +23,7 @@
 import sys
 import unittest
 
+import nxselector_test
 
 try:
     __import__("PyTango")
@@ -141,7 +142,6 @@ except Exception as e:
 except Exception:
     print("ORACLE not available")
 
-import nxselector_test
 
 # main function
 def main():
