@@ -25,9 +25,9 @@ import sys
 
 try:
     from taurus.external.qt import Qt
-except Exception as e:
-    print(e)
+except Exception:
     from taurus.qt import Qt
+
 from taurus.qt.qtgui.util.ui import UILoadable
 
 
@@ -217,8 +217,8 @@ class Selector(Qt.QDialog, TaurusBaseWidget):
         self.fontSize = int(self.font().pointSize())
         self.fontSize = int(
             settings.value('Preferences/FontSize', self.fontSize))
-        self.displayStatus = int(settings.value('Preferences/DisplayStatus',
-                                                2))
+        self.displayStatus = int(
+            settings.value('Preferences/DisplayStatus', 2))
         self.cnfFile = str(settings.value("Selector/CnfFile", "./"))
 
         self.__addButtonBoxes()
@@ -1257,6 +1257,7 @@ def main():
     setdefault = False
     door = None
     switch = True
+
     if standalone:
         import taurus.core.util.argparse
         parser = taurus.core.util.argparse.get_taurus_parser()
@@ -1321,9 +1322,7 @@ def main():
     form.show()
 
     if standalone:
-        status = int(app.exec_())
-        qrc.qrc_resources.qCleanupResources()
-        sys.exit(status)
+        sys.exit(app.exec_())
     else:
         return form
 

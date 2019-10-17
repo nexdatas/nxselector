@@ -220,8 +220,6 @@ Options:
             if Application.instance() is None:
                 with self.assertRaises(SystemExit):
                     Selector.main()
-            else:
-                Selector.main()
             sys.argv = old_argv
             sys.stdout = old_stdout
             sys.stderr = old_stderr
