@@ -27,6 +27,7 @@ try:
     from taurus.external.qt import Qt
 except Exception:
     from taurus.qt import Qt
+
 from taurus.qt.qtgui.util.ui import UILoadable
 
 
@@ -216,8 +217,8 @@ class Selector(Qt.QDialog, TaurusBaseWidget):
         self.fontSize = int(self.font().pointSize())
         self.fontSize = int(
             settings.value('Preferences/FontSize', self.fontSize))
-        self.displayStatus = int(settings.value('Preferences/DisplayStatus',
-                                                2))
+        self.displayStatus = int(
+            settings.value('Preferences/DisplayStatus', 2))
         self.cnfFile = str(settings.value("Selector/CnfFile", "./"))
 
         self.__addButtonBoxes()
@@ -1232,7 +1233,6 @@ class Selector(Qt.QDialog, TaurusBaseWidget):
 def main():
     """ the main function
     """
-    print("MAIN")
     if "GNOME_DESKTOP_SESSION_ID" not in os.environ:
         os.environ["GNOME_DESKTOP_SESSION_ID"] = "qtconfig"
     if os.path.isdir("/usr/lib/kde4/plugins/") and \

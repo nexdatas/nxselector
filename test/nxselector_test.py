@@ -32,6 +32,7 @@ import binascii
 import nxsselector
 from nxsselector import Selector
 
+import taurus.qt.qtgui.application
 
 try:
     from cStringIO import StringIO
@@ -207,57 +208,26 @@ Options:
         fun = sys._getframe().f_code.co_name
         print("Run: %s.%s() " % (self.__class__.__name__, fun))
 
-        helps = ['--help']
+        helps = ['--help', '-h']
+        Application = taurus.qt.qtgui.application.TaurusApplication
         for hl in helps:
-            print(hl)
             old_stdout = sys.stdout
             old_stderr = sys.stderr
             sys.stdout = mystdout = StringIO()
             sys.stderr = mystderr = StringIO()
             old_argv = sys.argv
             sys.argv = ['nxselector', hl]
-            try:
+            if Application.instance() is None:
                 with self.assertRaises(SystemExit):
                     Selector.main()
-            except Exception:
-                Selector.main()
-
             sys.argv = old_argv
             sys.stdout = old_stdout
             sys.stderr = old_stderr
             vl = mystdout.getvalue()
             er = mystderr.getvalue()
-            self.assertTrue(vl.endswith(self.helpinfo))
-            self.assertEqual('', er)
-
-    # comp_available tesQt
-    # \brief It tests XMLConfigurator
-    def ttest_help2(self):
-        fun = sys._getframe().f_code.co_name
-        print("Run: %s.%s() " % (self.__class__.__name__, fun))
-
-        helps = ['-h']
-        for hl in helps:
-            print(hl)
-            old_stdout = sys.stdout
-            old_stderr = sys.stderr
-            sys.stdout = mystdout = StringIO()
-            sys.stderr = mystderr = StringIO()
-            old_argv = sys.argv
-            sys.argv = ['nxselector', hl]
-            try:
-                with self.assertRaises(SystemExit):
-                    Selector.main()
-            except Exception:
-                Selector.main()
-
-            sys.argv = old_argv
-            sys.stdout = old_stdout
-            sys.stderr = old_stderr
-            vl = mystdout.getvalue()
-            er = mystderr.getvalue()
-            self.assertTrue(vl.endswith(self.helpinfo))
-            self.assertEqual('', er)
+            if Application.instance() is None:
+                self.assertTrue(vl.endswith(self.helpinfo))
+                self.assertEqual('', er)
 
 
 if __name__ == '__main__':
