@@ -66,7 +66,7 @@ if [[ $2 == "2" ]]; then
 	docker exec -it --user root ndts /bin/sh -c 'git clone https://github.com/taurus-org/taurus taurus-src; cd taurus-src'
 	docker exec -it --user root ndts /bin/sh -c 'cd taurus-src; python setup.py install'
 	docker exec -it --user root ndts /bin/sh -c 'git clone https://github.com/sardana-org/sardana sardana-src; cd sardana-src'
-	docker exec -it --user root ndts /bin/sh -c 'cd sardana-src; python setup.py install; git checkout tags/2.8.3 -b b2.8.3'
+	docker exec -it --user root ndts /bin/sh -c 'cd sardana-src; git checkout tags/2.8.3 -b b2.8.3; python setup.py install'
     fi
 else
     echo "install sardana, taurus and nexdatas"
