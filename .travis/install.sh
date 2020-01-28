@@ -64,18 +64,22 @@ if [[ $2 == "2" ]]; then
 	docker exec -it --user root ndts /bin/sh -c 'export DEBIAN_FRONTEND=noninteractive;  apt-get -qq update; apt-get -qq install -y python-taurus python-sardana'
     else
 	docker exec -it --user root ndts /bin/sh -c 'git clone https://github.com/taurus-org/taurus taurus-src; cd taurus-src'
-	docker exec -it --user root ndts /bin/sh -c 'cd taurus-src; python setup.py install'
+	docker exec -it --user root ndts /bin/sh -c 'cd taurus-src; git checkout tags/4.6.1 -b b4.6.1; python setup.py install'
 	docker exec -it --user root ndts /bin/sh -c 'git clone https://github.com/sardana-org/sardana sardana-src; cd sardana-src'
 	docker exec -it --user root ndts /bin/sh -c 'cd sardana-src; git checkout tags/2.8.3 -b b2.8.3; python setup.py install'
     fi
 else
     echo "install sardana, taurus and nexdatas"
     docker exec -it --user root ndts /bin/sh -c 'export DEBIAN_FRONTEND=noninteractive; apt-get -qq update; apt-get install -y  nxsconfigserver-db; sleep 10; apt-get -qq install -y python3-nxsconfigserver python-3nxswriter python3-nxstools python3-nxsrecselector python3-setuptools'
-    docker exec -it --user root ndts /bin/sh -c 'git clone https://github.com/taurus-org/taurus taurus-src; cd taurus-src'
-    docker exec -it --user root ndts /bin/sh -c 'cd taurus-src; python3 setup.py install'
+    if [[ $1 == "debian9" ]]; then
+	docker exec -it --user root ndts /bin/sh -c 'git clone https://github.com/taurus-org/taurus taurus-src; cd taurus-src'
+	docker exec -it --user root ndts /bin/sh -c 'cd taurus-src; git checkout tags/4.6.1 -b b4.6.1; python3 setup.py install'
+    else
+	docker exec -it --user root ndts /bin/sh -c 'git clone https://github.com/taurus-org/taurus taurus-src; cd taurus-src'
+	docker exec -it --user root ndts /bin/sh -c 'cd taurus-src; python3 setup.py install'
+    fi
     docker exec -it --user root ndts /bin/sh -c 'git clone https://github.com/sardana-org/sardana sardana-src; cd sardana-src'
     docker exec -it --user root ndts /bin/sh -c 'cd sardana-src; python3 setup.py install'
-    
 fi
 if [ "$?" -ne "0" ]
 then
