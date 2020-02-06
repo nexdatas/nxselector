@@ -20,7 +20,7 @@ then
     exit -1
 fi
 echo "install tango servers"
-docker exec -it --user root ndts /bin/sh -c 'export DEBIAN_FRONTEND=noninteractive;  apt-get -qq update; apt-get -qq install -y  tango-starter tango-test liblog4j1.2-java qtbase5-dev-tools qt5-default git'
+docker exec -it --user root ndts /bin/sh -c 'export DEBIAN_FRONTEND=noninteractive;  apt-get -qq update; apt-get -qq install -y  tango-starter tango-test liblog4j1.2-java git'
 if [ "$?" -ne "0" ]
 then
     exit -1
@@ -45,6 +45,13 @@ else
 	docker exec -it --user root ndts /bin/sh -c 'cd pytango; python3 setup.py install'
     fi
 fi
+if [ "$?" -ne "0" ]
+then
+    exit -1
+fi
+
+echo "install qt5"
+docker exec -it --user root ndts /bin/sh -c 'export DEBIAN_FRONTEND=noninteractive;  apt-get -qq update; apt-get -qq install -y  qtbase5-dev-tools qt5-default'
 if [ "$?" -ne "0" ]
 then
     exit -1
