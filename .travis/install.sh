@@ -20,7 +20,7 @@ then
     exit -1
 fi
 echo "install tango servers"
-docker exec -it --user root ndts /bin/sh -c 'export DEBIAN_FRONTEND=noninteractive;  apt-get -qq update; apt-get -qq install -y  tango-starter tango-test liblog4j1.2-java'
+docker exec -it --user root ndts /bin/sh -c 'export DEBIAN_FRONTEND=noninteractive;  apt-get -qq update; apt-get -qq install -y  tango-starter tango-test liblog4j1.2-java qtbase5-dev-tools qt5-default'
 if [ "$?" -ne "0" ]
 then
     exit -1
@@ -32,11 +32,11 @@ docker exec -it --user root ndts service tango-starter restart
 
 if [[ $2 = "2" ]]; then
     echo "install python-pytango"
-    docker exec -it --user root ndts /bin/sh -c 'export DEBIAN_FRONTEND=noninteractive; apt-get -qq update; apt-get -qq install -y   python-pytango python-h5py  python-qtpy python-click git python-itango'
+    docker exec -it --user root ndts /bin/sh -c 'export DEBIAN_FRONTEND=noninteractive; apt-get -qq update; apt-get -qq install -y   python-pytango python-h5py  python-qtpy python-click git python-itango python-pint'
 else
     echo "install python3-pytango"
     docker exec -it --user root ndts /bin/sh -c 'export DEBIAN_FRONTEND=noninteractive; apt-get -qq update; apt-get install -y git python3-six python3-numpy graphviz python3-sphinx g++ build-essential python3-dev pkg-config python3-all-dev  python3-setuptools libtango-dev python3-setuptools python3-pytango python3-tz python3-pytango python3-enum34 python3-itango; apt-get -qq install -y nxsconfigserver-db; sleep 10'
-    docker exec -it --user root ndts /bin/sh -c 'export DEBIAN_FRONTEND=noninteractive; apt-get -qq update; apt-get install -y libboost-python-dev libboost-dev python3-h5py python3-qtpy  python3-click python3-setuptools'
+    docker exec -it --user root ndts /bin/sh -c 'export DEBIAN_FRONTEND=noninteractive; apt-get -qq update; apt-get install -y libboost-python-dev libboost-dev python3-h5py python3-qtpy  python3-click python3-setuptools  python3-pint'
     if [[ $1 = "debian10" ]]; then
 	echo " "
 	# docker exec -it --user root ndts /bin/sh -c 'export DEBIAN_FRONTEND=noninteractive; apt-get -qq update; apt-get install -y libboost-python1.62-dev libboost1.62-dev'
@@ -66,7 +66,7 @@ if [[ $2 == "2" ]]; then
 	docker exec -it --user root ndts /bin/sh -c 'git clone https://github.com/taurus-org/taurus taurus-src; cd taurus-src'
 	docker exec -it --user root ndts /bin/sh -c 'cd taurus-src; git checkout tags/4.6.1 -b b4.6.1; python setup.py install'
 	docker exec -it --user root ndts /bin/sh -c 'git clone https://github.com/sardana-org/sardana sardana-src; cd sardana-src'
-	docker exec -it --user root ndts /bin/sh -c 'cd sardana-src; git checkout tags/2.8.3 -b b2.8.3; python setup.py install'
+	docker exec -it --user root ndts /bin/sh -c 'cd sardana-src; git checkout tags/2.8.4 -b b2.8.4; python setup.py install'
     fi
 else
     echo "install sardana, taurus and nexdatas"
@@ -74,6 +74,7 @@ else
     if [[ $1 == "debian9" ]]; then
 	docker exec -it --user root ndts /bin/sh -c 'git clone https://github.com/taurus-org/taurus taurus-src; cd taurus-src'
 	docker exec -it --user root ndts /bin/sh -c 'cd taurus-src; git checkout tags/4.6.1 -b b4.6.1; python3 setup.py install'
+	# docker exec -it --user root ndts /bin/sh -c 'cd taurus-src; git checkout; python3 setup.py install'
     else
 	docker exec -it --user root ndts /bin/sh -c 'git clone https://github.com/taurus-org/taurus taurus-src; cd taurus-src'
 	docker exec -it --user root ndts /bin/sh -c 'cd taurus-src; python3 setup.py install'
