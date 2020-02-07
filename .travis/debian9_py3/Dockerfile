@@ -6,7 +6,7 @@ RUN apt-get -qq update && apt-get -qq install -y libterm-readline-gnu-perl softw
 RUN curl http://repos.pni-hdri.de/debian_repo.pub.gpg | apt-key add -
 RUN add-apt-repository "deb http://repos.pni-hdri.de/apt/debian stretch main" -y
 RUN apt-get -qq update && apt-get -qq -y dist-upgrade
-RUN apt-get -qq update && apt-get -qq install -y default-mysql-client  python3-h5py python3-sphinx debconf-utils net-tools  omniidl libomniorb4-dev libcos4-dev libomnithread3-dev libzmq3-dev python3-pninexus python3-pni python3-lxml python3-h5py python3-setuptools ipython3 python3-future python3-itango
+RUN apt-get -qq update && apt-get -qq install -y default-mysql-client  python3-h5py python3-sphinx debconf-utils net-tools  omniidl libomniorb4-dev libcos4-dev libomnithread3-dev libzmq3-dev python3-pninexus python3-pni python3-lxml python3-h5py python3-setuptools ipython3 python3-future
 RUN apt-get -qq install -y  python3-pninexus python3-pni build-essential autoconf libtool pkg-config
 RUN useradd -ms /bin/bash tango
 RUN  /bin/bash -c 'export DEBIAN_FRONTEND=noninteractive; debconf-set-selections <<< "mysql-server mysql-server/root_password password rootpw"'
