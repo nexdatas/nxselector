@@ -1,3 +1,7 @@
+2020-03-07 Jan Kotanski <jankotan@gmail.com>
+	* add error message on wrong new datasource name
+	* tagged as 3.13.5
+
 2019-10-17 Jan Kotanski <jankotan@gmail.com>
 	* add python3 tests
 	* tagged as 3.13.4
