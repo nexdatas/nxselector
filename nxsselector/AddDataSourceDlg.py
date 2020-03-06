@@ -93,6 +93,8 @@ class AddDataSourceDlg(Qt.QDialog):
         self.datasources = []
         #: (:obj:`str`) group title
         self.title = "Create DataSource"
+        #: (:obj:`list` <:obj:`str`>) forbidden name characters
+        self.__chars = ["/", ":", "#", "->"]
 
     def createGUI(self):
         """ creates GUI
@@ -145,6 +147,15 @@ class AddDataSourceDlg(Qt.QDialog):
                 self, "Wrong form input", "Empty datasource name")
             self.ui.nameLineEdit.setFocus()
             return
+
+        for ch in self.__chars:
+            if ch in self.name:
+                Qt.QMessageBox.warning(
+                    self, "Wrong form input",
+                    "Datasource name cannot contain any of '%s'" %
+                    "', '".join(self.__chars))
+                self.ui.nameLineEdit.setFocus()
+                return
 
         if self.name in self.datasources:
             Qt.QMessageBox.warning(
