@@ -148,14 +148,19 @@ class AddDataSourceDlg(Qt.QDialog):
             self.ui.nameLineEdit.setFocus()
             return
 
+        name = self.name
         for ch in self.__chars:
-            if ch in self.name:
-                Qt.QMessageBox.warning(
-                    self, "Wrong form input",
-                    "Datasource name cannot contain any of '%s'" %
-                    "', '".join(self.__chars))
-                self.ui.nameLineEdit.setFocus()
-                return
+            if ch in name:
+                name = name.replace(ch, "_")
+        if self.name != name:
+            self.ui.nameLineEdit.setText(name)
+            self.name = name
+            Qt.QMessageBox.warning(
+                self, "Wrong form input",
+                "Datasource name cannot contain any of '%s'" %
+                "', '".join(self.__chars))
+            self.ui.nameLineEdit.setFocus()
+            return
 
         if self.name in self.datasources:
             Qt.QMessageBox.warning(

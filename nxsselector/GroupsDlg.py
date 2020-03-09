@@ -136,8 +136,9 @@ class GroupsDlg(Qt.QDialog):
         if dform.exec_():
             self.newdatasources[dform.name] = dform.source
             self.datasources[dform.name] = True
+            datasources = {dform.name: True}
             self.__populateTable(self.ui.ddsTableView, self.ddsgroup, DS,
-                                 self.datasources, "DataSources:")
+                                 datasources, "DataSources:")
             self.dirty = True
 
     def __populateTable(self, view, group, eltype, dct, header):
