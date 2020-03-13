@@ -281,6 +281,8 @@ class ServerState(Qt.QObject):
         self.avdslist = []
         #: (:obj:`list`<:obj:`str`>) available measurement groups
         self.avmglist = []
+        #: (:obj:`list`<:obj:`str`>) available profiles
+        self.avprlist = []
         #: (:obj:`dict` <:obj:`str`, :obj:`list` <:obj:`str` >>) \
         #:     variable components
         self.vrcpdict = {}
@@ -519,6 +521,7 @@ class ServerState(Qt.QObject):
         self.dsdescription = self.__getList(
             "dataSourceDescription", argin=self.avdslist)
         self.avmglist = self.__getList("availableMntGrps")
+        self.avprlist = self.__getList("availableProfiles")
         self.mcplist = self.__getList("mandatoryComponents")
 
         self.acplist = self.__getList("preselectedComponents")
@@ -741,6 +744,7 @@ class ServerState(Qt.QObject):
             self.setServer()
         self.__command(self.__dp, "deleteProfile", str(name))
         self.avmglist = self.__getList("availableMntGrps")
+        self.avprlist = self.__getList("availableProfiles")
         if self.avmglist:
             self.mntgrp = self.avmglist[0]
             self.storeData("mntGrp", self.mntgrp)
