@@ -58,7 +58,12 @@ class MessageBox(Qt.QObject):
         text = default
         try:
             if isinstance(error, PyTango.DevFailed):
-                text = str("\n".join(["%s " % (err.desc) for err in error]))
+                if hasattr(error, "args"):
+                    text = str(
+                        "\n".join(["%s " % (err.desc) for err in error.args]))
+                else:
+                    text = str(
+                        "\n".join(["%s " % (err.desc) for err in error]))
             else:
                 text = str(error)
         except Exception:
