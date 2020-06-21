@@ -225,6 +225,8 @@ Options:
             sys.stderr = old_stderr
             vl = mystdout.getvalue()
             er = mystderr.getvalue()
+            print(vl)
+            print(er)
             if Application.instance() is None:
                 self.assertTrue(vl.endswith(self.helpinfo))
                 self.assertEqual('', er)
