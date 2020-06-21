@@ -1,3 +1,7 @@
+2020-06-02 Jan Kotanski <jankotan@gmail.com>
+	* adopt MessageBox to tango 9.3
+	* tagged as 3.13.7
+
 2020-03-09 Jan Kotanski <jankotan@gmail.com>
 	* rename wrong new datasource name
 	* tagged as 3.13.6
