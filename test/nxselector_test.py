@@ -266,7 +266,8 @@ Options:
             # print(vl)
             # print(er)
             if Application.instance() is None:
-                self.assertTrue(vl.endswith(self.helpinfo) or vl.endswith(self.helpinfo2))
+                self.assertTrue(
+                    vl.endswith(self.helpinfo) or vl.endswith(self.helpinfo2))
                 self.assertEqual('', er)
 
 
