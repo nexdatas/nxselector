@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>1015</width>
-    <height>545</height>
+    <height>581</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -34,7 +34,7 @@
 The extention .nxs corresponds to NeXus files.</string>
             </property>
             <property name="text">
-             <string>Scan &amp;File:</string>
+             <string>Scan Fi&amp;le:</string>
             </property>
             <property name="buddy">
              <cstring>fileScanLineEdit</cstring>
@@ -83,7 +83,7 @@ For the NeXus files it is appended into the data file name
 or into the NXentry group name (in the Append Entry mode).</string>
             </property>
             <property name="text">
-             <string>Scan ID:</string>
+             <string>Scan &amp;ID:</string>
             </property>
             <property name="buddy">
              <cstring>fileScanIDSpinBox</cstring>
@@ -240,7 +240,11 @@ or into the NXentry group name (in the Append Entry mode).</string>
             </property>
             <property name="toolTip">
              <string>Name of the current measurement group.
-The name is equvalent to the profile name.</string>
+The name is equvalent to the profile name.
+
+To add a new measurement group:
+ - change the current name of MG to a new one
+ - press the Apply button</string>
             </property>
             <property name="text">
              <string>&amp;MntGrp:</string>
@@ -266,6 +270,14 @@ The name is equvalent to the profile name.</string>
               <width>150</width>
               <height>0</height>
              </size>
+            </property>
+            <property name="toolTip">
+             <string>Name of the current measurement group.
+The name is equvalent to the profile name.
+
+To add a new measurement group:
+ - change the current name of MG to a new one
+ - press the Apply button</string>
             </property>
             <property name="editable">
              <bool>true</bool>
