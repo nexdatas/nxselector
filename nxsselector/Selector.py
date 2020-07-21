@@ -23,6 +23,8 @@ import json
 import os
 import sys
 
+from .qtapi import qt_api
+
 try:
     from taurus.external.qt import Qt
 except Exception:
@@ -1258,6 +1260,7 @@ def main():
     door = None
     switch = True
 
+    logger.debug("Using %s" % qt_api)
     if standalone:
         import taurus.core.util.argparse
         parser = taurus.core.util.argparse.get_taurus_parser()
@@ -1304,6 +1307,7 @@ def main():
         (options, _) = parser.parse_args()
         if options.style:
             app.setStyle(options.style)
+
         server = options.server
         if options.stylesheet:
             app.setStyle(options.stylesheet)
