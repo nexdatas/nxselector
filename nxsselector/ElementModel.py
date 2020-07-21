@@ -296,8 +296,17 @@ class ElementModel(Qt.QAbstractTableModel):
         tscans = self.__createList(scans)
         tdepends = self.__createList(depends)
         text = tscans if tscans else ""
+        dds = device.state.ddsdict
         if tdepends:
             text = "%s\n[%s]" % (text, tdepends)
+
+        if device.name in dds:
+            sld = dds[device.name]
+            if sld:
+                text = "%s\n * selected by %s *" % (text, sld)
+            else:
+                text = "%s\n * timer *" % text
+
         if prs:
             prs = json.loads(prs)
             tt = " ".join("%s=\"%s\"" % (
