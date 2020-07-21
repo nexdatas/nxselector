@@ -527,6 +527,15 @@ class CheckerView(Qt.QWidget):
             else:
                 cb.setText(str(name))
 
+            # works with:
+            # QT_API=pyqt4 ./nxselector  -t cleanlooks
+            # QT_API=pyqt5 ./nxselector
+            cb.setStyleSheet(
+                "QCheckBox:unchecked{ color: black; }"
+                "QCheckBox:checked{ color: blue; }"
+                "QCheckBox:disabled{ color: gray; }"
+                # "QCheckBox:disabled{ background-color: lightgray; }"
+            )
         text = self.model.data(ind, role=Qt.Qt.ToolTipRole)
         text = str(text) if text else ""
         if self.showLabels:

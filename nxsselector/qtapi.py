@@ -15,11 +15,23 @@
 #
 #    You should have received a copy of the GNU General Public License
 #    along with nexdatas.  If not, see <http://www.gnu.org/licenses/>.
-# package constructor
+# Main window of the application
 
-""" --- NXS Selector --
-GUI for setting Sardana NeXus Recorder
-"""
+""" main window application dialog """
 
-#: (:obj:`str`) version of the application
-__version__ = "3.14.0"
+import os
+
+qt_api = os.getenv("QT_API", os.getenv('DEFAULT_QT_API', 'pyqt5'))
+if qt_api != 'pyqt4':
+    try:
+        __import__("PyQt5")
+        qt_api = 'pyqt5'
+    except Exception:
+        __import__("PyQt4")
+        qt_api = 'pyqt4'
+else:
+    __import__("PyQt4")
+    qt_api = 'pyqt4'
+
+
+__all__ = ["qt_api"]
