@@ -1,6 +1,7 @@
 2020-07-21 Jan Kotanski <jankotan@gmail.com>
 	* add colors for selected components
 	* make qt5 default
+	* add selection dependence info
 	* tagged as 3.14.0
 
 2020-07-16 Jan Kotanski <jankotan@gmail.com>
