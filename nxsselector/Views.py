@@ -534,7 +534,6 @@ class CheckerView(Qt.QWidget):
                 "QCheckBox:unchecked{ color: black; }"
                 "QCheckBox:checked{ color: blue; }"
                 "QCheckBox:disabled{ color: gray; }"
-                # "QCheckBox:disabled{ background-color: lightgray; }"
             )
         text = self.model.data(ind, role=Qt.Qt.ToolTipRole)
         text = str(text) if text else ""

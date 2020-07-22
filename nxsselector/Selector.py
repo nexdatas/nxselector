@@ -1310,7 +1310,13 @@ def main():
 
         server = options.server
         if options.stylesheet:
-            app.setStyle(options.stylesheet)
+            app.setStyleSheet(options.stylesheet)
+        elif options.style == "cleanlooks" and qt_api == "pyqt4":
+            # fix for cleanlooks tooltip colors
+            app.setStyleSheet(
+                "QToolTip{ color: black; background-color: white; }"
+            )
+
         if options.mode:
             umode = options.mode
         else:
