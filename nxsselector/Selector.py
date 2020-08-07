@@ -1244,6 +1244,10 @@ def main():
         from taurus.external.qt import Qt
     except Exception:
         from taurus.qt import Qt
+    try:
+        from taurus.external.qt import __qt
+    except Exception:
+        from taurus.qt import __qt
     Qt.QCoreApplication.setAttribute(Qt.Qt.AA_X11InitThreads)
     Qt.QResource.registerResource(
         os.path.join(qrc.__path__[0], "resources.rcc"))
@@ -1311,11 +1315,13 @@ def main():
         server = options.server
         if options.stylesheet:
             app.setStyleSheet(options.stylesheet)
-        elif options.style == "cleanlooks" and qt_api == "pyqt4":
-            # fix for cleanlooks tooltip colors
-            app.setStyleSheet(
-                "QToolTip{ color: black; background-color: white; }"
-            )
+        elif options.style == "cleanlooks":
+            pyqtver = __qt.PYQT_VERSION.split(".")
+            if pyqtver and pyqtver[0] == "4":
+                # fix for cleanlooks tooltip colors
+                app.setStyleSheet(
+                    "QToolTip{ color: black; background-color: white; }"
+                )
 
         if options.mode:
             umode = options.mode

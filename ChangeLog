@@ -1,3 +1,7 @@
+2020-08-07 Jan Kotanski <jankotan@gmail.com>
+	* fix for pyqt_version checking
+	* tagged as 3.14.1
+
 2020-07-21 Jan Kotanski <jankotan@gmail.com>
 	* add colors for selected components
 	* make qt5 default
