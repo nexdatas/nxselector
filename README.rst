@@ -37,7 +37,7 @@ Extract the sources and run
 Debian packages
 ^^^^^^^^^^^^^^^
 
-Debian Jessie (and Wheezy) packages can be found in the HDRI repository.
+Debian `buster` and `stretch` or Ubuntu  `focal`, `eoan`, `bionic` packages can be found in the HDRI repository.
 
 To install the debian packages, add the PGP repository key
 
@@ -46,12 +46,12 @@ To install the debian packages, add the PGP repository key
 	  $ sudo su
 	  $ wget -q -O - http://repos.pni-hdri.de/debian_repo.pub.gpg | apt-key add -
 
-and then download the corresponding source list
+and then download the corresponding source list, e.g.
 
 .. code-block:: console
 
 	  $ cd /etc/apt/sources.list.d
-	  $ wget http://repos.pni-hdri.de/jessie-pni-hdri.list
+	  $ wget http://repos.pni-hdri.de/buster-pni-hdri.list
 
 Finally,
 
