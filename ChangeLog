@@ -1,4 +1,8 @@
 2020-08-10 Jan Kotanski <jankotan@gmail.com>
+	* rebuild the package
+	* tagged as 3.14.3
+
+2020-08-10 Jan Kotanski <jankotan@gmail.com>
 	* fix stretching of data columns for qt5
 	* tagged as 3.14.2
 
