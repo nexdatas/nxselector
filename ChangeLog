@@ -1,3 +1,7 @@
+2020-08-10 Jan Kotanski <jankotan@gmail.com>
+	* fix stretching of data columns for qt5
+	* tagged as 3.14.2
+
 2020-08-07 Jan Kotanski <jankotan@gmail.com>
 	* fix for pyqt_version checking
 	* tagged as 3.14.1

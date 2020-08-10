@@ -173,7 +173,7 @@ class EdListWg(Qt.QWidget):
                 flags &= ~Qt.Qt.ItemIsEnabled
                 item.setFlags(flags)
             self.ui.tableWidget.setItem(row, 1, item)
-        self.ui.tableWidget.resizeColumnsToContents()
+        self.ui.tableWidget.resizeColumnToContents(0)
         self.ui.tableWidget.setSelectionBehavior(
             Qt.QAbstractItemView.SelectRows)
         self.ui.tableWidget.setSelectionMode(
