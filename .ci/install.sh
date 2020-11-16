@@ -48,7 +48,7 @@ docker exec  --user root ndts service tango-starter restart
 
 if [[ $2 = "2" ]]; then
     echo "install python-pytango"
-    docker exec  --user root ndts /bin/sh -c 'export DEBIAN_FRONTEND=noninteractive; apt-get -qq update; apt-get -qq install -y   python-pytango python-h5py  python-qtpy python-click git pythonango python-pint'
+    docker exec  --user root ndts /bin/sh -c 'export DEBIAN_FRONTEND=noninteractive; apt-get -qq update; apt-get -qq install -y   python-pytango python-h5py  python-qtpy python-click git python-itango python-pint'
 else
     echo "install python3-pytango"
     if [[ $1 == "debian9" ]]; then
