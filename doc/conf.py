@@ -431,7 +431,7 @@ autoclass_content = 'both'
 intersphinx_mapping = {
     'http://www.taurus-scada.org/en/3.7.3/': None,
     'http://www.taurus-scada.org': None,
-    'http://docs.python.org/2.7/': None,
+    'https://docs.python.org/3/': None,
     'http://docs.scipy.org/doc/scipy/reference': None,
     'http://docs.scipy.org/doc/numpy': None,
     'http://pytango.readthedocs.io/en/stable/': None,
