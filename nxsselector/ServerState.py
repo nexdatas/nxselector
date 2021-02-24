@@ -929,7 +929,7 @@ class ServerState(Qt.QObject):
             try:
                 if proxy.state() != PyTango.DevState.RUNNING:
                     found = True
-            except (PyTango.DevFailed, PyTango.Except, PyTango.DevError):
+            except PyTango.DevFailed:
                 time.sleep(0.01)
                 found = False
                 if cnt == counter - 1:
