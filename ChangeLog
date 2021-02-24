@@ -1,3 +1,7 @@
+2021-02-24 Jan Kotanski <jankotan@gmail.com>
+	* avoid catching tango.Except and tango.DevError
+	* tagged as 3.14.4
+
 2020-08-10 Jan Kotanski <jankotan@gmail.com>
 	* rebuild the package
 	* tagged as 3.14.3
