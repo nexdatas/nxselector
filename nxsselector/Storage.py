@@ -32,6 +32,7 @@ from .MessageBox import MessageBox
 
 import logging
 import json
+import os
 #: (:obj:`logging.Logger`) logger object
 logger = logging.getLogger(__name__)
 
@@ -95,9 +96,13 @@ class Storage(Qt.QObject):
                 self.__dirChanged)
             self.ui.fileScanLineEdit.editingFinished.disconnect(
                 self.__fileChanged)
+            self.ui.fileExtScanLineEdit.editingFinished.disconnect(
+                self.__fileChanged)
             self.ui.fileScanDirLineEdit.textEdited.disconnect(
                 self.__dirty)
             self.ui.fileScanLineEdit.textEdited.disconnect(
+                self.__dirty)
+            self.ui.fileExtScanLineEdit.textEdited.disconnect(
                 self.__dirty)
             # measurement group
 
@@ -149,8 +154,10 @@ class Storage(Qt.QObject):
         self.ui.fileScanDirToolButton.pressed.connect(self.__setDir)
         self.ui.fileScanDirLineEdit.editingFinished.connect(self.__dirChanged)
         self.ui.fileScanLineEdit.editingFinished.connect(self.__fileChanged)
+        self.ui.fileExtScanLineEdit.editingFinished.connect(self.__fileChanged)
         self.ui.fileScanDirLineEdit.textEdited.connect(self.__dirty)
         self.ui.fileScanLineEdit.textEdited.connect(self.__dirty)
+        self.ui.fileExtScanLineEdit.textEdited.connect(self.__dirty)
         # measurement group
 
         self.ui.mntTimerComboBox.currentIndexChanged.connect(self.apply)
@@ -564,11 +571,16 @@ class Storage(Qt.QObject):
         self.ui.fileScanIDSpinBox.setValue(self.state.scanID)
         logger.debug("updateForm storage ended")
 
-    def updateForm(self):
+    def updateForm(self, status=None):
         """ updates storage form
+
+        :param status: scan file extension status
+        :type status: :obj:`bool` or :obj:`int`
         """
         logger.debug("updateForm storage")
         # file group
+        if status is None:
+            status = self.ui.fileExtScanCheckBox.isChecked()
         if self.state.scanDir is not None:
             self.ui.fileScanDirLineEdit.setText(self.state.scanDir)
         self.ui.fileScanIDSpinBox.setValue(self.state.scanID)
@@ -576,11 +588,32 @@ class Storage(Qt.QObject):
 
         sfile = ""
         if self.state.scanFile:
-            if isinstance(self.state.scanFile, (list, tuple)):
-                sfile = ", ".join(self.state.scanFile)
+            scanFile = self.state.scanFile
+            if status:
+                if isinstance(scanFile, (list, tuple)):
+                    fs = []
+                    es= []
+                    for sf in scanFile:
+                        fl, ex = os.path.splitext(sf)
+                        fs.append(fl)
+                        es.append(ex)
+                    if len(set(fs)) == 1:
+                        sfile = fs[0]
+                        sext = ", ".join(es)
+                    else:
+                        sfile = ", ".join(scanFile)
+                        sext = ""
+                else:
+                    sfile, sext = os.path.splitext(scanFile)
             else:
-                sfile = self.state.scanFile
+                if isinstance(scanFile, (list, tuple)):
+                    sfile = ", ".join(scanFile)
+                else:
+                    sfile = scanFile
+
             self.ui.fileScanLineEdit.setText(sfile)
+            if status:
+                self.ui.fileExtScanLineEdit.setText(sext)
         self.__updateTimer(self.ui.mntTimerComboBox, 0)
         while self.state.timers is not None and \
                 len(self.state.timers) > len(self.__tWidgets) + 1:
@@ -738,20 +771,35 @@ class Storage(Qt.QObject):
     def __fileChanged(self):
         """ updates application state on a scan file change
         """
-        fnames = self.__fileNames(False)
+        fnames = self.fileNames(False)
         if json.dumps(self.state.scanFile) != json.dumps(fnames):
             self.apply()
 
-    def __fileNames(self, message=True):
+    def fileNames(self, message=True, status=None):
         """ corrects the scan file name lists
 
         :param message: message on false
         :type message: :obj:`str`
+        :param status: scan file extension status
+        :type status: :obj:`bool` or :obj:`int`
         :returns: scan file name or a list of scan file names
         :rtype: :obj:`str` or :obj:`list` <:obj:`str`>
         """
+        if status is None:
+            status = self.ui.fileExtScanCheckBox.isChecked()
         files = str(self.ui.fileScanLineEdit.text())
         sfiles = files.replace(';', ' ').replace(',', ' ').split()
+        if status:
+            exts = str(self.ui.fileExtScanLineEdit.text())
+            sexts = exts.replace(';', ' ').replace(',', ' ').split()
+            sexts = [(ext if ext.startswith(".") else ".%s" % ext)
+                     for ext in sexts]
+            if sexts:
+                sefiles = []
+                for fl in sfiles:
+                    sefiles.extend(
+                        ["%s%s" % (fl, ext) for ext in sexts])
+                sfiles = sefiles
         nxsfiles = []
         for idx, f in enumerate(sfiles):
             if f.split(".")[-1] == 'nxs':
@@ -798,8 +846,7 @@ class Storage(Qt.QObject):
 
             self.state.scanDir = str(self.ui.fileScanDirLineEdit.text())
     #        self.state.scanID = int(self.ui.fileScanIDSpinBox.value())
-            self.state.scanFile = self.__fileNames()
-
+            self.state.scanFile = self.fileNames()
             # dynamic component group
             self.state.dynamicComponents = True
             self.state.dynamicLinks = self.ui.dcLinksCheckBox.isChecked()
