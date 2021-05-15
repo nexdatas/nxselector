@@ -592,7 +592,7 @@ class Storage(Qt.QObject):
             if status:
                 if isinstance(scanFile, (list, tuple)):
                     fs = []
-                    es= []
+                    es = []
                     for sf in scanFile:
                         fl, ex = os.path.splitext(sf)
                         fs.append(fl)

@@ -216,7 +216,6 @@ class Selector(Qt.QDialog, TaurusBaseWidget):
         if not self.rowMax:
             self.rowMax = 16
 
-
         self.fontSize = int(self.font().pointSize())
         self.fontSize = int(
             settings.value('Preferences/FontSize', self.fontSize))
