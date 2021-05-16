@@ -221,6 +221,8 @@ class Selector(Qt.QDialog, TaurusBaseWidget):
             settings.value('Preferences/FontSize', self.fontSize))
         self.displayStatus = int(
             settings.value('Preferences/DisplayStatus', 2))
+        self.scanFileExtStatus = int(
+            settings.value('Preferences/ScanFileExtStatus', 2))
         self.cnfFile = str(settings.value("Selector/CnfFile", "./"))
 
         self.__addButtonBoxes()
@@ -309,6 +311,11 @@ class Selector(Qt.QDialog, TaurusBaseWidget):
             self.setModel(self.__model)
         if self.__doortoupdateFlag:
             self.updateDoorName(self.__door)
+
+        self.__scanFileExtStatusChanged(int(
+            settings.value('Preferences/ScanFileExtStatus', 2)))
+        self.ui.fileExtScanCheckBox.setChecked(
+            self.scanFileExtStatus != 0)
 
         self.__settingsloaded = True
         self.__skipconfig = False
@@ -419,6 +426,7 @@ class Selector(Qt.QDialog, TaurusBaseWidget):
         self.ui.rowMaxSpinBox.setValue(self.rowMax)
         self.ui.fontSizeSpinBox.setValue(self.fontSize)
         self.ui.statusCheckBox.setChecked(self.displayStatus != 0)
+        self.ui.fileExtScanCheckBox.setChecked(self.scanFileExtStatus != 0)
 
     def __hideWidgets(self):
         """ hides widgets according to set user mode
@@ -475,6 +483,8 @@ class Selector(Qt.QDialog, TaurusBaseWidget):
         self.ui.fontSizeSpinBox.editingFinished.connect(self.resetRows)
         self.ui.statusCheckBox.stateChanged.connect(
             self.__displayStatusChanged)
+        self.ui.fileExtScanCheckBox.stateChanged.connect(
+            self.__scanFileExtStatusChanged)
 
         self.detectors.dirty.connect(self.setDirty)
         self.preferences.dirty.connect(self.setDirty)
@@ -563,6 +573,9 @@ class Selector(Qt.QDialog, TaurusBaseWidget):
         settings.setValue(
             "Preferences/DisplayStatus",
             (2 if self.ui.statusCheckBox.isChecked() else 0))
+        settings.setValue(
+            "Preferences/ScanFileExtStatus",
+            (2 if self.ui.fileExtScanCheckBox.isChecked() else 0))
         settings.setValue(
             "Preferences/Groups",
             (str(self.preferences.mgroups)))
@@ -1179,6 +1192,28 @@ class Selector(Qt.QDialog, TaurusBaseWidget):
         :type index: :obj:`int`
         """
         self.displayStatus = state
+        self.setDirty(self.__dirty)
+
+    @Qt.pyqtSlot(int)
+    def __scanFileExtStatusChanged(self, state):
+        """  scan file extension status in buttonbox
+
+        :param state:  status state
+        :type index: :obj:`int`
+        """
+        self.scanFileExtStatus = state
+        if state:
+            self.ui.fileExtScanLineEdit.show()
+            self.ui.fileExtScanLabel.show()
+            self.state.scanFile = self.storage.fileNames(False, False)
+            # self.storage.apply()
+            self.storage.updateForm(True)
+        else:
+            self.ui.fileExtScanLineEdit.hide()
+            self.ui.fileExtScanLabel.hide()
+            self.state.scanFile = self.storage.fileNames(False, True)
+            # self.storage.apply()
+            self.storage.updateForm(False)
         self.setDirty(self.__dirty)
 
     def closeApply(self):
