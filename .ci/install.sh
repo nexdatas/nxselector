@@ -117,7 +117,7 @@ else
 	docker exec  --user root ndts /bin/sh -c 'git clone https://gitlab.com/taurus-org/taurus taurus-src; cd taurus-src'
 	docker exec  --user root ndts /bin/sh -c 'cd taurus-src; git checkout tags/4.7.0 -b b4.7.0; python3 setup.py install'
 	docker exec  --user root ndts /bin/sh -c 'git clone https://github.com/sardana-org/sardana sardana-src; cd sardana-src'
-	docker exec  --user root ndts /bin/sh -c 'cd sardana-src; python3 setup.py install'
+	docker exec  --user root ndts /bin/sh -c 'cd sardana-src; git checkout tags/3.1.0 -b b3.1.0; python3 setup.py install'
     fi
 fi
 if [ "$?" -ne "0" ]
