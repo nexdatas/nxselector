@@ -542,7 +542,6 @@ class Storage(Qt.QObject):
         :param nid: timer index
         :type nid: :obj:`int`
         """
-        widget.clear()
         mtimers = sorted(set(self.state.atlist))
         if self.state.timers is not None and len(self.state.timers) > nid:
             timer = self.state.timers[nid]
@@ -550,6 +549,7 @@ class Storage(Qt.QObject):
                 mtimers = sorted(set(mtimers) - set(self.state.timers[:nid]))
         else:
             timer = ''
+        widget.clear()
         widget.addItems(
             [str(tm) for tm in mtimers])
         cid = widget.findText(str(timer))
