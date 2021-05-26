@@ -1,3 +1,7 @@
+2021-05-26 Jan Kotanski <jankotan@gmail.com>
+	* fix for timer selection
+	* tagged as 3.15.1
+
 2021-05-14 Jan Kotanski <jankotan@gmail.com>
 	* add scan file extension widget
 	* tagged as 3.15.0

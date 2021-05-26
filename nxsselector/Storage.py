@@ -78,6 +78,8 @@ class Storage(Qt.QObject):
         self.connectSignals()
         #: (:obj:`bool`) connected flag
         self.__connected = True
+        #: (:obj:`bool`) update form flag
+        self.__updating = False
 
     def connectTimerButtons(self):
         """ connects timer signals
@@ -578,73 +580,79 @@ class Storage(Qt.QObject):
         :type status: :obj:`bool` or :obj:`int`
         """
         logger.debug("updateForm storage")
-        # file group
-        if status is None:
-            status = self.ui.fileExtScanCheckBox.isChecked()
-        if self.state.scanDir is not None:
-            self.ui.fileScanDirLineEdit.setText(self.state.scanDir)
-        self.ui.fileScanIDSpinBox.setValue(self.state.scanID)
-        self.ui.fileScanIDSpinBox.setEnabled(False)
+        if self.__updating is True:
+            return
+        try:
+            self.__updating = True
+            # file group
+            if status is None:
+                status = self.ui.fileExtScanCheckBox.isChecked()
+            if self.state.scanDir is not None:
+                self.ui.fileScanDirLineEdit.setText(self.state.scanDir)
+            self.ui.fileScanIDSpinBox.setValue(self.state.scanID)
+            self.ui.fileScanIDSpinBox.setEnabled(False)
 
-        sfile = ""
-        if self.state.scanFile:
-            scanFile = self.state.scanFile
-            if status:
-                if isinstance(scanFile, (list, tuple)):
-                    fs = []
-                    es = []
-                    for sf in scanFile:
-                        fl, ex = os.path.splitext(sf)
-                        fs.append(fl)
-                        es.append(ex)
-                    if len(set(fs)) == 1:
-                        sfile = fs[0]
-                        sext = ", ".join(es)
+            sfile = ""
+            if self.state.scanFile:
+                scanFile = self.state.scanFile
+                if status:
+                    if isinstance(scanFile, (list, tuple)):
+                        fs = []
+                        es = []
+                        for sf in scanFile:
+                            fl, ex = os.path.splitext(sf)
+                            fs.append(fl)
+                            es.append(ex)
+                        if len(set(fs)) == 1:
+                            sfile = fs[0]
+                            sext = ", ".join(es)
+                        else:
+                            sfile = ", ".join(scanFile)
+                            sext = ""
                     else:
+                        sfile, sext = os.path.splitext(scanFile)
+                else:
+                    if isinstance(scanFile, (list, tuple)):
                         sfile = ", ".join(scanFile)
-                        sext = ""
-                else:
-                    sfile, sext = os.path.splitext(scanFile)
-            else:
-                if isinstance(scanFile, (list, tuple)):
-                    sfile = ", ".join(scanFile)
-                else:
-                    sfile = scanFile
+                    else:
+                        sfile = scanFile
 
-            self.ui.fileScanLineEdit.setText(sfile)
-            if status:
-                self.ui.fileExtScanLineEdit.setText(sext)
-        self.__updateTimer(self.ui.mntTimerComboBox, 0)
-        while self.state.timers is not None and \
-                len(self.state.timers) > len(self.__tWidgets) + 1:
-            logger.debug("ADDING timer")
-            self.__appendTimer(connect=False)
-        while self.state.timers and \
-                len(self.state.timers) < len(self.__tWidgets) + 1:
-            logger.debug("removing timer")
-            self.__removeTimer()
-        for nid, widget in enumerate(self.__tWidgets):
-            self.__updateTimer(widget, nid + 1)
+                self.ui.fileScanLineEdit.setText(sfile)
+                if status:
+                    self.ui.fileExtScanLineEdit.setText(sext)
+            self.__updateTimer(self.ui.mntTimerComboBox, 0)
+            while self.state.timers is not None and \
+                    len(self.state.timers) > len(self.__tWidgets) + 1:
+                logger.debug("ADDING timer")
+                self.__appendTimer(connect=False)
+            while self.state.timers and \
+                    len(self.state.timers) < len(self.__tWidgets) + 1:
+                logger.debug("removing timer")
+                self.__removeTimer()
+            for nid, widget in enumerate(self.__tWidgets):
+                self.__updateTimer(widget, nid + 1)
 
-        # measurement group
-        if self.state.mntgrp is not None:
-            self.ui.mntGrpComboBox.setEditText(self.state.mntgrp)
-        self.ui.mntServerLineEdit.setText(self.state.door)
+            # measurement group
+            if self.state.mntgrp is not None:
+                self.ui.mntGrpComboBox.setEditText(self.state.mntgrp)
+            self.ui.mntServerLineEdit.setText(self.state.door)
 
-        # device group
-        self.ui.devWriterLineEdit.setText(self.state.writerDevice)
-        self.ui.devConfigLineEdit.setText(self.state.configDevice)
+            # device group
+            self.ui.devWriterLineEdit.setText(self.state.writerDevice)
+            self.ui.devConfigLineEdit.setText(self.state.configDevice)
 
-        # dynamic component group
-#        self.ui.dcEnableCheckBox.setChecked(self.state.dynamicComponents)
-        if self.state.dynamicLinks is not None:
-            self.ui.dcLinksCheckBox.setChecked(self.state.dynamicLinks)
-        if self.state.dynamicPath is not None:
-            self.ui.dcPathLineEdit.setText(self.state.dynamicPath)
+            # dynamic component group
+    #        self.ui.dcEnableCheckBox.setChecked(self.state.dynamicComponents)
+            if self.state.dynamicLinks is not None:
+                self.ui.dcLinksCheckBox.setChecked(self.state.dynamicLinks)
+            if self.state.dynamicPath is not None:
+                self.ui.dcPathLineEdit.setText(self.state.dynamicPath)
 
-        # others group
-        if self.state.appendEntry is not None:
-            self.ui.othersEntryCheckBox.setChecked(self.state.appendEntry)
+            # others group
+            if self.state.appendEntry is not None:
+                self.ui.othersEntryCheckBox.setChecked(self.state.appendEntry)
+        finally:
+            self.__updating = False
 
         logger.debug("updateForm storage ended")
 
