@@ -52,9 +52,17 @@ except ImportError as e:
     H5PY_AVAILABLE = False
     print("h5py is not available: %s" % e)
 
+try:
+    __import__("pninexus.h5cpp")
+    # if module pni avalable
+    H5CPP_AVAILABLE = True
+except ImportError as e:
+    H5CPP_AVAILABLE = False
+    print("h5py is not available: %s" % e)
 
-if not PNI_AVAILABLE and not H5PY_AVAILABLE:
-    raise Exception("Please install h5py or pni")
+
+if not PNI_AVAILABLE and not H5PY_AVAILABLE and not H5CPP_AVAILABLE:
+    raise Exception("Please install h5py, h5cpp or pni")
 
 # if PNI_AVAILABLE:
 # if H5PY_AVAILABLE:
