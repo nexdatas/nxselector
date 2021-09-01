@@ -234,12 +234,12 @@ class Detectors(Qt.QObject):
         """
 
         self.__clearFrames()
-        self.glayout = Qt.QHBoxLayout(self.ui.detectors)
+        self.glayout = Qt.QHBoxLayout(self.ui.detectorsWidget)
 
         frames = Frames(self.frames, DS in self.groups, CP in self.groups)
         maxrownumbers = self.__calcMaxRowNumbers()
         for frame in frames:
-            mframe = Qt.QFrame(self.ui.detectors)
+            mframe = Qt.QFrame(self.ui.detectorsWidget)
             self.mframes.append(mframe)
             mframe.setFrameShape(Qt.QFrame.StyledPanel)
             mframe.setFrameShadow(Qt.QFrame.Raised)
@@ -282,9 +282,9 @@ class Detectors(Qt.QObject):
                 self.glayout.addWidget(mframe)
             else:
                 mframe.hide()
-        self.ui.detectors.update()
+        self.ui.detectorsWidget.update()
         if self.ui.tabWidget.currentWidget() == self.ui.detectors:
-            self.ui.detectors.show()
+            self.ui.detectorsWidget.show()
 
     def setModels(self):
         """ sets view models

@@ -159,11 +159,9 @@ class Descriptions(Qt.QObject):
     def createGUI(self):
         """ creates widget GUI
         """
-
-        self.ui.descriptions.hide()
         if self.__cplayout and self.__dslayout:
             self.__clearFrames()
-        self.__mainlayout = Qt.QHBoxLayout(self.ui.descriptions)
+        self.__mainlayout = Qt.QHBoxLayout(self.ui.descriptionsWidget)
         self.__cplayout = Qt.QVBoxLayout()
         self.__dslayout = Qt.QVBoxLayout()
         self.__mainlayout.addLayout(self.__cplayout)
@@ -187,9 +185,9 @@ class Descriptions(Qt.QObject):
             "Mandatory", self.mandUserView,
             max(1, int(lm * (self.rowMax - 2))))
 
-        self.ui.descriptions.update()
+        self.ui.descriptionsWidget.update()
         if self.ui.tabWidget.currentWidget() == self.ui.descriptions:
-            self.ui.descriptions.show()
+            self.ui.descriptionsWidget.show()
 
     def __addView(self, label, view, rowMax, layout=None, hide=False):
         """ adds component group frame views
@@ -207,7 +205,7 @@ class Descriptions(Qt.QObject):
         """
         if layout is None:
             layout = self.__cplayout
-        mframe = Qt.QFrame(self.ui.descriptions)
+        mframe = Qt.QFrame(self.ui.descriptionsWidget)
         mframe.setFrameShape(Qt.QFrame.StyledPanel)
         mframe.setFrameShadow(Qt.QFrame.Raised)
         self.mframes.append(mframe)
