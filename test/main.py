@@ -40,7 +40,7 @@ try:
         __import__("pni.nx.h5")
     # if module pni avalable
     PNI_AVAILABLE = True
-except ImportError as e:
+except Exception as e:
     PNI_AVAILABLE = False
     print("pni is not available: %s" % e)
 
@@ -48,7 +48,7 @@ try:
     __import__("h5py")
     # if module pni avalable
     H5PY_AVAILABLE = True
-except ImportError as e:
+except Exception as e:
     H5PY_AVAILABLE = False
     print("h5py is not available: %s" % e)
 
@@ -56,9 +56,9 @@ try:
     __import__("pninexus.h5cpp")
     # if module pni avalable
     H5CPP_AVAILABLE = True
-except ImportError as e:
+except Exception as e:
     H5CPP_AVAILABLE = False
-    print("h5py is not available: %s" % e)
+    print("h5cpp is not available: %s" % e)
 
 
 if not PNI_AVAILABLE and not H5PY_AVAILABLE and not H5CPP_AVAILABLE:
