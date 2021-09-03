@@ -64,7 +64,9 @@ else
 	docker exec  --user root ndts /bin/sh -c 'export DEBIAN_FRONTEND=noninteractive; apt-get -qq update; apt-get install -y git python3-six python3-numpy graphviz python3-sphinx g++ build-essential python3-dev pkg-config python3-all-dev  python3-setuptools libtango-dev python3-setuptools python3-pytango python3-tz python3-enum34 python3ango; apt-get -qq install -y nxsconfigserver-db; sleep 10'
     fi
     docker exec  --user root ndts /bin/sh -c 'export DEBIAN_FRONTEND=noninteractive; apt-get -qq update; apt-get install -y libboost-python-dev libboost-dev python3-h5py python3-qtpy  python3-click python3-setuptools  python3-pint'
-    if [[ $1 = "debian10" ]]; then
+    if [[ $1 == "debian10" ]]; then
+	echo " "
+    elif [[ $1 == "debian11" ]]; then
 	echo " "
     elif [[ $1 == "ubuntu20.04" ]]; then
 	echo " "
