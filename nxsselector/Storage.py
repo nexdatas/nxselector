@@ -796,10 +796,12 @@ class Storage(Qt.QObject):
         if status is None:
             status = self.ui.fileExtScanCheckBox.isChecked()
         files = str(self.ui.fileScanLineEdit.text())
-        sfiles = files.replace(';', ' ').replace(',', ' ').split()
+        sfiles = files.replace(';', ' ').replace(',', ' ').replace('/','_').\
+            split()
         if status:
             exts = str(self.ui.fileExtScanLineEdit.text())
-            sexts = exts.replace(';', ' ').replace(',', ' ').split()
+            sexts = exts.replace(';', ' ').replace(',', ' ').replace('/','_').\
+                split()
             sexts = [(ext if ext.startswith(".") else ".%s" % ext)
                      for ext in sexts]
             if sexts:
