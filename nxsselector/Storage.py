@@ -575,6 +575,43 @@ class Storage(Qt.QObject):
         self.ui.fileScanIDSpinBox.setValue(self.state.scanID)
         logger.debug("updateForm storage ended")
 
+    def _splitext(self, scanFile, status):
+        """ split extentions from file names
+
+        :param message: scan file name or a list of scan file names
+        :type message: :obj:`str` or :obj:`list` <:obj:`str`>
+        :param status: scan file extension status
+        :type status: :obj:`bool` or :obj:`int`
+        :returns: string of file names and string extentions scans
+                  separated by ', '
+        :rtype: (:obj:`str`, :obj:`str`)
+        """
+        sfile = ""
+        sext = ""
+        if status:
+            if isinstance(scanFile, (list, tuple)):
+                fs = []
+                es = []
+                for sf in scanFile:
+                    fl, ex = os.path.splitext(sf)
+                    fs.append(fl)
+                    es.append(ex)
+                if len(set(fs)) == 1:
+                    sfile = fs[0]
+                    sext = ", ".join(es)
+                else:
+                    sfile = ", ".join(scanFile)
+                    sext = ""
+            else:
+                sfile, sext = os.path.splitext(scanFile)
+        else:
+            if isinstance(scanFile, (list, tuple)):
+                sfile = ", ".join(scanFile)
+            else:
+                sfile = scanFile
+
+        return sfile, sext
+
     def updateForm(self, status=None):
         """ updates storage form
 
@@ -597,28 +634,7 @@ class Storage(Qt.QObject):
             sfile = ""
             if self.state.scanFile:
                 scanFile = self.state.scanFile
-                if status:
-                    if isinstance(scanFile, (list, tuple)):
-                        fs = []
-                        es = []
-                        for sf in scanFile:
-                            fl, ex = os.path.splitext(sf)
-                            fs.append(fl)
-                            es.append(ex)
-                        if len(set(fs)) == 1:
-                            sfile = fs[0]
-                            sext = ", ".join(es)
-                        else:
-                            sfile = ", ".join(scanFile)
-                            sext = ""
-                    else:
-                        sfile, sext = os.path.splitext(scanFile)
-                else:
-                    if isinstance(scanFile, (list, tuple)):
-                        sfile = ", ".join(scanFile)
-                    else:
-                        sfile = scanFile
-
+                sfile, sext = self._splitext(scanFile, status)
                 self.ui.fileScanLineEdit.setText(sfile)
                 if status:
                     self.ui.fileExtScanLineEdit.setText(sext)
@@ -774,7 +790,7 @@ class Storage(Qt.QObject):
         """ updates application state on a scan directory change
         """
         dirname = str(self.ui.fileScanDirLineEdit.text())
-        if True or self.state.scanDir != dirname:
+        if self.state.scanDir != dirname:
             self.apply()
 
     @Qt.pyqtSlot()
@@ -782,7 +798,10 @@ class Storage(Qt.QObject):
         """ updates application state on a scan file change
         """
         fnames = self.fileNames(False)
-        if True or json.dumps(self.state.scanFile) != json.dumps(fnames):
+        sfile, _ = self._splitext(
+            fnames, self.ui.fileExtScanCheckBox.isChecked())
+        if json.dumps(self.state.scanFile) != json.dumps(fnames) or \
+           str(self.ui.fileScanLineEdit.text()) != sfile:
             self.apply()
 
     def fileNames(self, message=True, status=None):
