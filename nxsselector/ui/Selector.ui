@@ -14,7 +14,7 @@
    <string>NeXus Component Selector</string>
   </property>
   <layout class="QGridLayout" name="gridLayout">
-   <item row="0" column="0">
+   <item row="1" column="0">
     <layout class="QVBoxLayout" name="verticalLayout">
      <item>
       <widget class="QFrame" name="frame_9">
@@ -574,6 +574,9 @@ Additionally user can add some additional data , e.g. comments.</string>
                      <property name="text">
                       <string>Row Max.:</string>
                      </property>
+                     <property name="buddy">
+                      <cstring>rowMaxSpinBox</cstring>
+                     </property>
                     </widget>
                    </item>
                    <item>
@@ -599,6 +602,9 @@ Additionally user can add some additional data , e.g. comments.</string>
                     <widget class="QLabel" name="fontSizeLabel">
                      <property name="text">
                       <string>Font Size:</string>
+                     </property>
+                     <property name="buddy">
+                      <cstring>fontSizeSpinBox</cstring>
                      </property>
                     </widget>
                    </item>
@@ -628,6 +634,45 @@ Additionally user can add some additional data , e.g. comments.</string>
                      </property>
                      <property name="text">
                       <string>Scan File Ext. separated</string>
+                     </property>
+                    </widget>
+                   </item>
+                   <item>
+                    <spacer name="horizontalSpacer_10">
+                     <property name="orientation">
+                      <enum>Qt::Horizontal</enum>
+                     </property>
+                     <property name="sizeType">
+                      <enum>QSizePolicy::Preferred</enum>
+                     </property>
+                     <property name="sizeHint" stdset="0">
+                      <size>
+                       <width>40</width>
+                       <height>20</height>
+                      </size>
+                     </property>
+                    </spacer>
+                   </item>
+                   <item>
+                    <widget class="QLabel" name="specialCharactersLabel">
+                     <property name="toolTip">
+                      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Character of scan file names to be replaced by '_', e.g. '/'&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                     </property>
+                     <property name="text">
+                      <string>Special Characters:</string>
+                     </property>
+                     <property name="buddy">
+                      <cstring>specialCharactersLineEdit</cstring>
+                     </property>
+                    </widget>
+                   </item>
+                   <item>
+                    <widget class="QLineEdit" name="specialCharactersLineEdit">
+                     <property name="toolTip">
+                      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Character of scan file names to be replaced by '_', e.g. '/'&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                     </property>
+                     <property name="text">
+                      <string>/</string>
                      </property>
                     </widget>
                    </item>
