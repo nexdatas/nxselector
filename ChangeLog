@@ -1,4 +1,5 @@
-2022-03-23 Jan Kotanski <jankotan@gmail.com>
+2022-03-24 Jan Kotanski <jankotan@gmail.com>
+	* add Special Characters widget
 	* replace '/' filename character by '_'
 	* tagged as 3.17.0
 

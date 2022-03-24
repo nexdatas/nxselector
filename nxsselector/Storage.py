@@ -80,6 +80,8 @@ class Storage(Qt.QObject):
         self.__connected = True
         #: (:obj:`bool`) update form flag
         self.__updating = False
+        #: (:obj:`str`)  file name characters to be replaced by underscore
+        self.specialCharacters = '/'
 
     def connectTimerButtons(self):
         """ connects timer signals
@@ -772,7 +774,7 @@ class Storage(Qt.QObject):
         """ updates application state on a scan directory change
         """
         dirname = str(self.ui.fileScanDirLineEdit.text())
-        if self.state.scanDir != dirname:
+        if True or self.state.scanDir != dirname:
             self.apply()
 
     @Qt.pyqtSlot()
@@ -780,7 +782,7 @@ class Storage(Qt.QObject):
         """ updates application state on a scan file change
         """
         fnames = self.fileNames(False)
-        if json.dumps(self.state.scanFile) != json.dumps(fnames):
+        if True or json.dumps(self.state.scanFile) != json.dumps(fnames):
             self.apply()
 
     def fileNames(self, message=True, status=None):
@@ -796,12 +798,18 @@ class Storage(Qt.QObject):
         if status is None:
             status = self.ui.fileExtScanCheckBox.isChecked()
         files = str(self.ui.fileScanLineEdit.text())
-        sfiles = files.replace(';', ' ').replace(',', ' ').\
-            replace('/', '_').split()
+        files = files.replace(';', ' ').replace(',', ' ')
+        for ch in self.specialCharacters:
+            if ch not in ['.']:
+                files = files.replace(ch, '_')
+        sfiles = files.split()
         if status:
             exts = str(self.ui.fileExtScanLineEdit.text())
-            sexts = exts.replace(';', ' ').replace(',', ' ').\
-                replace('/', '_').split()
+            exts = exts.replace(';', ' ').replace(',', ' ')
+            for ch in self.specialCharacters:
+                if ch not in ['.']:
+                    exts = exts.replace(ch, '_')
+            sexts = exts.split()
             sexts = [(ext if ext.startswith(".") else ".%s" % ext)
                      for ext in sexts]
             if sexts:
@@ -810,6 +818,16 @@ class Storage(Qt.QObject):
                     sefiles.extend(
                         ["%s%s" % (fl, ext) for ext in sexts])
                 sfiles = sefiles
+        if '.' in self.specialCharacters:
+            tfiles = []
+            for fle in sfiles:
+                if '.' in fle:
+                    fl, ex = os.path.splitext(fle)
+                    fl = fl.replace(".", "_")
+                    tfiles.append("%s%s" % (fl, ex))
+                else:
+                    tfiles.append(fle)
+            sfiles = tfiles
         nxsfiles = []
         for idx, f in enumerate(sfiles):
             if f.split(".")[-1] == 'nxs':

@@ -267,6 +267,10 @@ class Selector(Qt.QDialog, TaurusBaseWidget):
 
         self.preferences.layoutFile = str(
             settings.value("Preferences/LayoutFile", "./"))
+        self.storage.specialCharacters = str(
+            settings.value("Preferences/SpecialCharacters", "/"))
+        self.ui.specialCharactersLineEdit.setText(
+            self.storage.specialCharacters or "")
 
         self.detectors.mgroups = str(self.preferences.mgroups)
         self.detectors.frames = str(self.preferences.frames)
@@ -478,6 +482,9 @@ class Selector(Qt.QDialog, TaurusBaseWidget):
         self.preferences.serverChanged.connect(self.resetServer)
         self.preferences.layoutChanged.connect(self.resetLayout)
 
+        self.ui.specialCharactersLineEdit.textEdited.connect(
+            self.__specialCharactersChanged)
+
         self.ui.viewComboBox.currentIndexChanged.connect(self.resetViews)
         self.ui.rowMaxSpinBox.editingFinished.connect(self.resetRows)
         self.ui.fontSizeSpinBox.editingFinished.connect(self.resetRows)
@@ -590,6 +597,9 @@ class Selector(Qt.QDialog, TaurusBaseWidget):
             (self.preferences.mgroupshelp))
         settings.setValue(
             "Selector/CnfFile", (self.cnfFile))
+        settings.setValue(
+            "Preferences/SpecialCharacters",
+            (self.storage.specialCharacters))
         settings.setValue(
             "Preferences/LayoutFile",
             (self.preferences.layoutFile))
@@ -1193,6 +1203,15 @@ class Selector(Qt.QDialog, TaurusBaseWidget):
         """
         self.displayStatus = state
         self.setDirty(self.__dirty)
+
+    @Qt.pyqtSlot()
+    def __specialCharactersChanged(self):
+        """ special characters update
+        """
+        self.storage.specialCharacters = \
+            self.ui.specialCharactersLineEdit.text()
+        self.ui.fileScanLineEdit.editingFinished.emit()
+        self.storage.dirty.emit()
 
     @Qt.pyqtSlot(int)
     def __scanFileExtStatusChanged(self, state):
