@@ -208,8 +208,9 @@ class Detectors(Qt.QObject):
     def __calcMaxRowNumbers(self):
         """ calculates row numbers for groups
 
-        :returns:  a dictionry with rownumbers
-        :rtype: :obj:`dict`< :obj:`int`, :obj:`int`>
+        :returns:  a dictionries  with maxrownumbers and rownumbers
+        :rtype: (:obj:`dict`< :obj:`int`, :obj:`int`>,
+                 :obj:`dict`< :obj:`int`, :obj:`int`>)
         """
         maxrownumbers = {}
         gpsizes = dict([(gk, len(gr)) for gk, gr in self.groups.items()])
@@ -227,7 +228,7 @@ class Detectors(Qt.QObject):
                             max(1, int(la * (self.rowMax - 2*len(clm) + 2)))
                 else:
                     maxrownumbers[column[0][1]] = self.rowMax
-        return maxrownumbers
+        return maxrownumbers, gpsizes
 
     def createGUI(self):
         """ creates widget GUI
@@ -235,9 +236,8 @@ class Detectors(Qt.QObject):
 
         self.__clearFrames()
         self.glayout = Qt.QHBoxLayout(self.ui.detectorsWidget)
-
         frames = Frames(self.frames, DS in self.groups, CP in self.groups)
-        maxrownumbers = self.__calcMaxRowNumbers()
+        maxrownumbers, gpsizes = self.__calcMaxRowNumbers()
         for frame in frames:
             mframe = Qt.QFrame(self.ui.detectorsWidget)
             self.mframes.append(mframe)
@@ -255,6 +255,8 @@ class Detectors(Qt.QObject):
                     try:
                         ig = int(group[1])
                         if (self.__simpleMode & 1) and ig < 0:
+                            hide = True
+                        if ig not in gpsizes or gpsizes[ig] == 0:
                             hide = True
                     except Exception:
                         pass

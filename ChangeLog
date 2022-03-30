@@ -1,3 +1,7 @@
+2022-03-30 Jan Kotanski <jankotan@gmail.com>
+	* hide empty detector frames
+	* tagged as 3.18.0
+
 2022-03-24 Jan Kotanski <jankotan@gmail.com>
 	* add Special Characters widget
 	* replace '/' filename character by '_'
