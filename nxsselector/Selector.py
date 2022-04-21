@@ -1100,12 +1100,18 @@ class Selector(Qt.QDialog, TaurusBaseWidget):
     def cnfLoad(self):
         """ loads selection settings from a file"""
         try:
-            filename = str(Qt.QFileDialog.getOpenFileName(
+            filename = Qt.QFileDialog.getOpenFileName(
                 self.ui.storage,
                 "Load Profile",
                 self.cnfFile,
-                "JSON files (*.json);;All files (*)"))
-            logger.debug("loading configuration from %s" % filename)
+                "JSON files (*.json);;All files (*)")
+            logger.debug("loading configuration from %s" % str(filename))
+            if isinstance(filename, tuple):
+                if len(filename) >= 1:
+                    filename = str(filename[0])
+                else:
+                    filename = ""
+            filename = str(filename or "")
             if filename:
                 self.cnfFile = filename
                 jconf = open(filename).read()
@@ -1125,12 +1131,18 @@ class Selector(Qt.QDialog, TaurusBaseWidget):
     def cnfSave(self):
         """ saves selection settings in a file"""
         try:
-            filename = str(Qt.QFileDialog.getSaveFileName(
+            filename = Qt.QFileDialog.getSaveFileName(
                 self.ui.storage,
                 "Save Profile",
                 self.cnfFile,
-                "JSON files (*.json);;All files (*)"))
-            logger.debug("saving configuration to %s" % filename)
+                "JSON files (*.json);;All files (*)")
+            logger.debug("saving configuration to %s" % str(filename))
+            if isinstance(filename, tuple):
+                if len(filename) >= 1:
+                    filename = str(filename[0])
+                else:
+                    filename = ""
+            filename = str(filename or "")
             if filename:
                 if (len(filename) < 4 or filename[-4] != '.') and \
                         not (len(filename) > 5 and filename[-5] == '.'):

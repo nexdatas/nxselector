@@ -1,3 +1,7 @@
+2022-04-21 Jan Kotanski <jankotan@gmail.com>
+	* fix for save/load profile with qt5
+	* tagged as 3.18.1
+
 2022-03-30 Jan Kotanski <jankotan@gmail.com>
 	* hide empty detector frames
 	* tagged as 3.18.0
