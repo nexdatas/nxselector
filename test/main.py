@@ -77,7 +77,6 @@ try:
     # connection arguments to MYSQL DB
     args = {}
     args["db"] = 'tango'
-    args["host"] = 'localhost'
     args["read_default_file"] = '/etc/my.cnf'
     # inscance of MySQLdb
     mydb = MySQLdb.connect(**args)
@@ -89,8 +88,7 @@ except Exception:
         from os.path import expanduser
         home = expanduser("~")
         # connection arguments to MYSQL DB
-        args2 = {
-            'host': u'localhost', 'db': u'tango',
+        args2 = {'db': u'tango',
             'read_default_file': u'%s/.my.cnf' % home, 'use_unicode': True
         }
         # inscance of MySQLdb
