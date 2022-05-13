@@ -266,8 +266,15 @@ Options:
             # print(vl)
             # print(er)
             if Application.instance() is None:
+                vt = "".join(vl.split()).replace(
+                        "optionalarguments:", "options:")
+
+                helpinfo = "".join(self.helpinfo.split()).replace(
+                    "optionalarguments:", "options:")
+                helpinfo2 = "".join(self.helpinfo2.split()).replace(
+                    "optionalarguments:", "options:")
                 self.assertTrue(
-                    vl.endswith(self.helpinfo) or vl.endswith(self.helpinfo2))
+                    vt.endswith(helpinfo) or vt.endswith(helpinfo2))
                 self.assertEqual('', er)
 
 
