@@ -55,19 +55,13 @@ else
 	docker exec  --user root ndts /bin/sh -c 'cd itango-src; git checkout tags/v0.1.7 -b b0.1.7; python3 setup.py install'
 	# docker exec  --user root ndts /bin/sh -c 'cd taurus-src; git checkout; python3 setup.py install'
     fi
-    if [ $1 = "ubuntu20.04" ]; then
+    if [ $1 = "ubuntu20.04" ] || [ $1 = "ubuntu22.04" ] || [ $1 = "debian11" ]; then
 	docker exec  --user root ndts /bin/sh -c 'export DEBIAN_FRONTEND=noninteractive; apt-get -qq update; apt-get install -y git python3-six python3-numpy graphviz python3-sphinx g++ build-essential python3-dev pkg-config python3-all-dev  python3-setuptools libtango-dev python3-setuptools python3-tango python3-tz python3-enum34 python3ango; apt-get -qq install -y nxsconfigserver-db; sleep 10'
     else
 	docker exec  --user root ndts /bin/sh -c 'export DEBIAN_FRONTEND=noninteractive; apt-get -qq update; apt-get install -y git python3-six python3-numpy graphviz python3-sphinx g++ build-essential python3-dev pkg-config python3-all-dev  python3-setuptools libtango-dev python3-setuptools python3-pytango python3-tz python3-enum34 python3ango; apt-get -qq install -y nxsconfigserver-db; sleep 10'
     fi
     docker exec  --user root ndts /bin/sh -c 'export DEBIAN_FRONTEND=noninteractive; apt-get -qq update; apt-get install -y libboost-python-dev libboost-dev python3-h5py python3-qtpy  python3-click python3-setuptools  python3-pint'
-    if [[ $1 == "debian10" ]]; then
-	echo " "
-    elif [[ $1 == "debian11" ]]; then
-	echo " "
-    elif [[ $1 == "ubuntu20.04" ]]; then
-	echo " "
-    else
+    if [[ $1 == "debian9" ]] [[ $1 == "ubuntu18.04" ]];  then
 	docker exec  --user root ndts /bin/sh -c 'export DEBIAN_FRONTEND=noninteractive; apt-get -qq update; apt-get install -y libtango-dev python3-dev'
 	docker exec  --user root ndts /bin/sh -c 'git clone https://gitlab.com/tango-controls/pytango pytango; cd pytango; git checkout tags/v9.2.5 -b b9.2.5'
 	docker exec  --user root ndts /bin/sh -c 'cd pytango; python3 setup.py install'
@@ -104,7 +98,7 @@ if [[ $2 == "2" ]]; then
 else
     echo "install sardana, taurus and nexdatas"
     docker exec  --user root ndts /bin/sh -c 'export DEBIAN_FRONTEND=noninteractive; apt-get -qq update; apt-get install -y  nxsconfigserver-db; sleep 10; apt-get -qq install -y python3-nxsconfigserver python3-nxswriter python3-nxstools python3-nxsrecselector python3-setuptools nxsrecselector3 nxswriter3 nxsconfigserver3 nxstools3 python3-packaging'
-    if [[ $1 == "ubuntu20.04" ]]; then
+    if [[ $1 == "ubuntu20.04" ]] || [[ $1 == "ubuntu22.04" ]] ; then
 	docker exec  --user root ndts /bin/sh -c 'export DEBIAN_FRONTEND=noninteractive;  apt-get -qq update; apt-get -qq install -y python3-taurus python3-sardana'
     else
 	docker exec  --user root ndts /bin/sh -c 'git clone https://gitlab.com/taurus-org/taurus taurus-src; cd taurus-src'
