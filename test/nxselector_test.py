@@ -150,6 +150,44 @@ Options:
                         Override the default formatter
 """
 
+        self.helpinfo3 = """
+Usage: nxselector [options]
+
+Options:
+  -h, --help            show this help message and exit
+  -s SERVER, --server=SERVER
+                        selector server
+  -d DOOR, --door=DOOR  door device name
+  -t STYLE, --style=STYLE
+                        Qt style
+  -y STYLESHEET, --stylesheet=STYLESHEET
+                        Qt stylesheet
+  -m MODE, --mode=MODE  interface mode, i.e. simple, user, advanced, special,
+                        expert
+  --set-as-default-mode
+                        set the current mode as default
+  --dont-switch-mntgrp  do not switch MntGrp to the ActiveMntGrp
+  --version             show program's version number and exit
+
+  Taurus Options:
+    Basic options present in any taurus application
+
+    --taurus-log-level=LEVEL
+                        taurus log level. Allowed values (case insensitive):
+                        critical, error, warning, info, debug, trace
+    --taurus-polling-period=MILLISEC
+                        taurus global polling period in milliseconds
+    --taurus-serialization-mode=SERIAL
+                        taurus serialization mode. Allowed values (case
+                        insensitive):  serial, concurrent (default)
+    --tango-host=TANGO_HOST
+                        Tango host name (either HOST:PORT or a Taurus URI,
+                        e.g. tango://foo:1234)
+    --remote-console-port=PORT
+                        enables remote debugging using the given port
+    --default-formatter=FORMATTER
+                        Override the default formatter
+"""
         try:
             # random seed
             self.seed = long(binascii.hexlify(os.urandom(16)), 16)
@@ -164,7 +202,7 @@ Options:
         self._buint = "uint64" if IS64BIT else "uint32"
         self._bfloat = "float64" if IS64BIT else "float32"
 
-        self.__args = '{"host":"localhost", "db":"nxsconfig", ' \
+        self.__args = '{"db":"nxsconfig", ' \
                       '"read_default_file":"/etc/my.cnf", "use_unicode":true}'
         self.__cmps = []
         self.__ds = []
@@ -174,7 +212,7 @@ Options:
 
         from os.path import expanduser
         home = expanduser("~")
-        self.__args2 = '{"host":"localhost", "db":"nxsconfig", ' \
+        self.__args2 = '{"db":"nxsconfig", ' \
                        '"read_default_file":"%s/.my.cnf", ' \
                        '"use_unicode":true}' % home
 
@@ -266,8 +304,21 @@ Options:
             # print(vl)
             # print(er)
             if Application.instance() is None:
+                vt = "".join(vl.split()).replace(
+                        "optionalarguments:", "options:")
+
+                helpinfo = "".join(self.helpinfo.split()).replace(
+                    "optionalarguments:", "options:")
+                helpinfo2 = "".join(self.helpinfo2.split()).replace(
+                    "optionalarguments:", "options:")
+                helpinfo3 = "".join(self.helpinfo3.split()).replace(
+                    "optionalarguments:", "options:")
+                # print(vt)
+                # print(helpinfo)
+                # print(helpinfo2)
                 self.assertTrue(
-                    vl.endswith(self.helpinfo) or vl.endswith(self.helpinfo2))
+                    vt.endswith(helpinfo) or vt.endswith(helpinfo2)
+                    or vt.endswith(helpinfo3))
                 self.assertEqual('', er)
 
 
