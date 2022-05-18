@@ -1264,8 +1264,8 @@ class Selector(Qt.QDialog, TaurusBaseWidget):
         try:
             if self.state.isDoorRunning():
                 text = "The door is in the RUNNING state. \n" \
-                "Do not apply configuration while your scan or " \
-                "other macro is running!"
+                    "Do not apply configuration while your scan or " \
+                    "other macro is running!"
                 self.setDirty(True)
                 MessageBox.warning(
                     self,
