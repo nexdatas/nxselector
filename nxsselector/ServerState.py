@@ -877,7 +877,16 @@ class ServerState(Qt.QObject):
                             status = True
                             break
                 return status
-
+            
+    def isDoorRunning(self):
+        if self.door in [None, "module"]:
+            return None
+        dp = PyTango.DeviceProxy(self.door)
+        if dp.state() == PyTango.DevState.RUNNING:
+            
+            return True
+        return False
+            
     @classmethod
     def __openProxy(cls, server):
         """ creates device proxy

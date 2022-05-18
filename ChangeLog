@@ -1,3 +1,7 @@
+2022-05-12 Jan Kotanski <jankotan@gmail.com>
+	* warn user if apply is pressed during door running
+	* tagged as 3.18.2
+
 2022-04-21 Jan Kotanski <jankotan@gmail.com>
 	* fix for save/load profile with qt5
 	* tagged as 3.18.1
