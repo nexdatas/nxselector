@@ -1262,15 +1262,25 @@ class Selector(Qt.QDialog, TaurusBaseWidget):
             creates a new measurement group"""
         logger.debug("apply")
         try:
-            conf = self.state.updateMntGrp()
-            self.experimentConfigurationChanged.emit(conf)
-            self.runProgress(["updateControllers", "importMntGrp",
-                              "createConfiguration"],
-                             "closeApply")
+            if self.state.isDoorRunning():
+                text = "The door is in the RUNNING state. \n" \
+                    "Applying the MG configuration when your scan or " \
+                    "other macro is running is forbidden!"
+                self.setDirty(True)
+                MessageBox.warning(
+                    self,
+                    "NXSelector: Error in applying Selector Server settings",
+                    text)
+            else:
+                conf = self.state.updateMntGrp()
+                self.experimentConfigurationChanged.emit(conf)
+                self.runProgress(["updateControllers", "importMntGrp",
+                                  "createConfiguration"],
+                                 "closeApply")
         except Exception:
             import traceback
             value = traceback.format_exc()
-            text = MessageBox.getText("Problems in resetting Server")
+            text = MessageBox.getText("Problems in applying configuration")
             self.setDirty(True)
             if str(text).startswith("Exception: User Data not defined ["):
                 ctext = str(text).replace(
