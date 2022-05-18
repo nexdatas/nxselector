@@ -879,13 +879,31 @@ class ServerState(Qt.QObject):
                 return status
 
     def isDoorRunning(self):
-        if self.door in [None, "module"]:
-            return None
-        dp = PyTango.DeviceProxy(self.door)
-        if dp.state() == PyTango.DevState.RUNNING:
+        """ check if any door server is running
 
-            return True
-        return False
+        :returns: if any door running
+        :rtype: :obj:`bool`
+        """
+        if not self.__dp:
+            self.setServer()
+        status = False
+        if hasattr(self.__dp, "macroServer"):
+            ms = str(self.__dp.macroServer)
+            if ms:
+                if ':' not in ms and hasattr(self.__dp, "get_db_host"):
+                    ms = "%s:%s/%s" % (self.__dp.get_db_host(),
+                                       self.__dp.get_db_port(),
+                                       ms)
+
+                msp = self.__openProxy(ms)
+                doors = msp.doorList
+                for door in doors:
+                    dp = PyTango.DeviceProxy(door)
+                    if dp.state() == PyTango.DevState.RUNNING:
+
+                        status = True
+                        break
+        return status
 
     @classmethod
     def __openProxy(cls, server):
