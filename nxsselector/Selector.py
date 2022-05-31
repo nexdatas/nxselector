@@ -303,7 +303,6 @@ class Selector(Qt.QDialog, TaurusBaseWidget):
             pframehelp = pframehelp.toList()
             self.preferences.framehelp = [
                 str(ht.toString()) for ht in pframehelp]
-            print(self.preferences.framehelp)
 
         self.preferences.addHint(
             self.preferences.mgroups,
