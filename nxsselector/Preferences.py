@@ -280,13 +280,31 @@ class Preferences(Qt.QObject):
         if self.ui.viewComboBox.count() != len(self.views.keys()):
             self.ui.viewComboBox.clear()
             self.ui.viewComboBox.addItems(sorted(self.views.keys()))
-        completer = Qt.QCompleter(self.mgroupshelp, self.ui.preferences)
+        try:
+            completer = Qt.QCompleter(self.mgroupshelp, self.ui.preferences)
+        except Exception:
+            lst = Qt.QStringList()
+            for it in self.mgroupshelp.toList():
+                lst.append(str(it))
+            completer = Qt.QCompleter(lst, self.ui.preferences)
         self.ui.groupLineEdit.setCompleter(completer)
         self.completers.append(completer)
-        completer = Qt.QCompleter(self.serverhelp, self.ui.preferences)
+        try:
+            completer = Qt.QCompleter(self.serverhelp, self.ui.preferences)
+        except Exception:
+            lst = Qt.QStringList()
+            for it in self.serverhelp.toList():
+                lst.append(str(it))
+            completer = Qt.QCompleter(lst, self.ui.preferences)
         self.ui.devSettingsLineEdit.setCompleter(completer)
         self.completers.append(completer)
-        completer = Qt.QCompleter(self.frameshelp, self.ui.preferences)
+        try:
+            completer = Qt.QCompleter(self.frameshelp, self.ui.preferences)
+        except Exception:
+            lst = Qt.QStringList()
+            for it in self.frameshelp.toList():
+                lst.append(str(it))
+            completer = Qt.QCompleter(lst, self.ui.preferences)
         self.ui.frameLineEdit.setCompleter(completer)
         self.completers.append(completer)
         self.updateForm()
@@ -355,6 +373,9 @@ class Preferences(Qt.QObject):
         :param hints: a list of hints
         :type hints: :obj:`list` <:obj:`str`>
         """
+        if hasattr(hints, "toList"):
+            hints = hints.toList()
+            hints = [str(ht.toString()) for ht in hints]
         qstring = str(string)
         if qstring not in hints:
             hints.insert(0, string)
