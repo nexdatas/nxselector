@@ -22,16 +22,16 @@
 import os
 
 qt_api = os.getenv("QT_API", os.getenv('DEFAULT_QT_API', 'pyqt5'))
-if qt_api != 'pyqt4':
+if qt_api not in ['pyqt4', 'pyqt']:
     try:
         __import__("PyQt5")
         qt_api = 'pyqt5'
     except Exception:
         __import__("PyQt4")
-        qt_api = 'pyqt4'
+        qt_api = 'pyqt'
 else:
     __import__("PyQt4")
-    qt_api = 'pyqt4'
+    qt_api = 'pyqt'
 
 
 __all__ = ["qt_api"]

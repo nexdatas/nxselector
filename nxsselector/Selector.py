@@ -205,26 +205,50 @@ class Selector(Qt.QDialog, TaurusBaseWidget):
 
         settings = Qt.QSettings(self.__organization, self.__application, self)
         if not self.__umode or self.__umode == 'None':
-            self.__umode = str(settings.value("Selector/DefaultMode",
-                                              self.__umode))
+            defmode = settings.value("Selector/DefaultMode", self.__umode)
+            if hasattr(defmode, "toString"):
+                self.__umode = str(defmode.toString())
+            else:
+                self.__umode = str(defmode)
             if not self.__umode or self.__umode == 'None':
                 self.__umode = 'expert'
         self.__setmode(self.__umode)
         self.userView = settings.value('Preferences/UserView',
                                        'CheckBoxes Prop')
-        self.rowMax = int(settings.value('Preferences/RowMax', 16))
+        try:
+            self.rowMax = int(settings.value('Preferences/RowMax', 16))
+        except Exception:
+            self.rowMax = int(
+                settings.value('Preferences/RowMax', 16).toInt()[0])
         if not self.rowMax:
             self.rowMax = 16
 
         self.fontSize = int(self.font().pointSize())
-        self.fontSize = int(
-            settings.value('Preferences/FontSize', self.fontSize))
-        self.displayStatus = int(
-            settings.value('Preferences/DisplayStatus', 2))
-        self.scanFileExtStatus = int(
-            settings.value('Preferences/ScanFileExtStatus', 2))
-        self.cnfFile = str(settings.value("Selector/CnfFile", "./"))
-
+        try:
+            self.fontSize = int(
+                settings.value('Preferences/FontSize', self.fontSize))
+        except Exception:
+            self.fontSize = int(
+                settings.value(
+                    'Preferences/FontSize', self.fontSize).toInt()[0])
+        try:
+            self.displayStatus = int(
+                settings.value('Preferences/DisplayStatus', 2))
+        except Exception:
+            self.displayStatus = int(
+                settings.value('Preferences/DisplayStatus', 2).toInt()[0])
+        try:
+            self.scanFileExtStatus = int(
+                settings.value('Preferences/ScanFileExtStatus', 2))
+        except Exception:
+            self.scanFileExtStatus = int(
+                settings.value(
+                    'Preferences/ScanFileExtStatus', 2).toInt()[0])
+        cnffile = settings.value("Selector/CnfFile", "./")
+        if hasattr(cnffile, "toString"):
+            self.cnfFile = str(cnffile.toString())
+        else:
+            self.cnfFile = str(cnffile)
         self.__addButtonBoxes()
 
         # user interface
@@ -247,16 +271,38 @@ class Selector(Qt.QDialog, TaurusBaseWidget):
             int(self.hidden) + 2 * int(self.user),
             self.fontSize)
 
-        self.preferences.mgroups = settings.value(
+        pmgroups = settings.value(
             'Preferences/Groups', '{}')
-        self.preferences.frames = settings.value(
-            'Preferences/Frames', '[]')
-        self.preferences.mgroupshelp = settings.value(
+        if hasattr(pmgroups, "toString"):
+            self.preferences.mgroups = str(pmgroups.toString())
+        else:
+            self.preferences.mgroups = str(pmgroups)
+        pframes = settings.value('Preferences/Frames', '[]')
+        if hasattr(pframes, "toString"):
+            self.preferences.frames = str(pframes.toString())
+        else:
+            self.preferences.frames = str(pframes)
+
+        pmgrouphelp = settings.value(
             'Preferences/GroupsHints',
             self.preferences.mgroupshelp)
-        self.preferences.frameshelp = settings.value(
+        try:
+            self.preferences.mgroupshelp = [
+                pm for pm in pmgrouphelp]
+        except Exception:
+            pmgrouphelp = pmgrouphelp.toList()
+            self.preferences.mgroupshelp = [
+                str(ht.toString()) for ht in pmgrouphelp]
+
+        pframehelp = settings.value(
             'Preferences/FramesHints',
             self.preferences.frameshelp)
+        try:
+            self.preferences.frameshelp = [pm for pm in pframehelp]
+        except Exception:
+            pframehelp = pframehelp.toList()
+            self.preferences.framehelp = [
+                str(ht.toString()) for ht in pframehelp]
 
         self.preferences.addHint(
             self.preferences.mgroups,
@@ -265,10 +311,17 @@ class Selector(Qt.QDialog, TaurusBaseWidget):
             self.preferences.frames,
             self.preferences.frameshelp)
 
-        self.preferences.layoutFile = str(
-            settings.value("Preferences/LayoutFile", "./"))
-        self.storage.specialCharacters = str(
-            settings.value("Preferences/SpecialCharacters", "/"))
+        lfl = settings.value("Preferences/LayoutFile", "./")
+        if hasattr(lfl, "toString"):
+            self.preferences.layoutFile = str(lfl.toString())
+        else:
+            self.preferences.layoutFile = str(lfl)
+
+        schs = settings.value("Preferences/SpecialCharacters", "/")
+        if hasattr(schs, "toString"):
+            self.storage.specialCharacters = str(schs.toString())
+        else:
+            self.storage.specialCharacters = str(schs)
         self.ui.specialCharactersLineEdit.setText(
             self.storage.specialCharacters or "")
 
@@ -303,9 +356,12 @@ class Selector(Qt.QDialog, TaurusBaseWidget):
 
         sg = settings.value("Selector/Geometry")
         if sg:
-            self.restoreGeometry(sg)
+            try:
+                self.restoreGeometry(sg)
+            except Exception:
+                self.restoreGeometry(sg.toByteArray())
 
-#        self.resize(0, 0)
+        #        self.resize(0, 0)
 
         self.title = 'NeXus Component Selector'
         self.__dirty = True
@@ -315,9 +371,12 @@ class Selector(Qt.QDialog, TaurusBaseWidget):
             self.setModel(self.__model)
         if self.__doortoupdateFlag:
             self.updateDoorName(self.__door)
-
-        self.__scanFileExtStatusChanged(int(
-            settings.value('Preferences/ScanFileExtStatus', 2)))
+        try:
+            self.__scanFileExtStatusChanged(int(
+                settings.value('Preferences/ScanFileExtStatus', 2)))
+        except Exception:
+            self.__scanFileExtStatusChanged(int(
+                settings.value('Preferences/ScanFileExtStatus', 2).toInt()[0]))
         self.ui.fileExtScanCheckBox.setChecked(
             self.scanFileExtStatus != 0)
 

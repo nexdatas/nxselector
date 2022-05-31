@@ -1,3 +1,7 @@
+2022-05-31 Jan Kotanski <jankotan@gmail.com>
+	* add fixes for deb9 and qt4 with QVariant
+	* tagged as 3.18.3
+
 2022-05-12 Jan Kotanski <jankotan@gmail.com>
 	* warn user if apply is pressed during door running
 	* tagged as 3.18.2
