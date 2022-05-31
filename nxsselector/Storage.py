@@ -653,11 +653,11 @@ class Storage(Qt.QObject):
             # measurement group
             if self.state.mntgrp is not None:
                 self.ui.mntGrpComboBox.setEditText(self.state.mntgrp)
-            self.ui.mntServerLineEdit.setText(self.state.door)
+            self.ui.mntServerLineEdit.setText(self.state.door or "")
 
             # device group
-            self.ui.devWriterLineEdit.setText(self.state.writerDevice)
-            self.ui.devConfigLineEdit.setText(self.state.configDevice)
+            self.ui.devWriterLineEdit.setText(self.state.writerDevice or "")
+            self.ui.devConfigLineEdit.setText(self.state.configDevice or "")
 
             # dynamic component group
     #        self.ui.dcEnableCheckBox.setChecked(self.state.dynamicComponents)
