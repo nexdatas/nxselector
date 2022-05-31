@@ -227,7 +227,7 @@ class ServerState(Qt.QObject):
         self.scanID = 0
 
         #: (:obj:`list`<:obj:`str`>) timers
-        self.timers = None
+        self.timers = []
         #: (:obj:`str`) measurement group name
         self.mntgrp = None
         #: (:obj:`str`) door  device name
@@ -523,7 +523,10 @@ class ServerState(Qt.QObject):
 
         self.acplist = self.__getList("preselectedComponents")
         self.atlist = self.__getList("availableTimers")
-        self.description = self.__getList("componentDescription", True)
+        try:
+            self.description = self.__getList("componentDescription", True)
+        except Exception as e:
+            logger.error(str(e))
         self.ddsdirty = True
         self.mutedChannels = self.__getList("mutedChannels")
 
