@@ -7,12 +7,12 @@ Welcome to nxselector's documentation!
 |Pypi Version|
 |Python Versions|
 
-.. |github workflow| image:: https://github.com/nexdatas/selector/actions/workflows/tests.yml/badge.svg
-   :target: https://github.com/nexdatas/selector/actions
+.. |github workflow| image:: https://github.com/nexdatas/nxselector/actions/workflows/tests.yml/badge.svg
+   :target: https://github.com/nexdatas/nxselector/actions
    :alt:
 
 .. |docs| image:: https://img.shields.io/badge/Documentation-webpages-ADD8E6.svg
-   :target: https://nexdatas.github.io/selector/index.html
+   :target: https://nexdatas.github.io/nxselector/index.html
    :alt:
 
 .. |Pypi Version| image:: https://img.shields.io/pypi/v/nxselector.svg
@@ -32,8 +32,8 @@ is a GUI configuration tool dedicated to select components
 as well as datasources which constitute the XML configuration strings of
 Nexus Data Writer via Sardana NeXus Recorder.
 
-| Source code: https://github.com/nexdatas/selector
-| Web page:  https://nexdatas.github.io/selector
+| Source code: https://github.com/nexdatas/nxselector
+| Web page:  https://nexdatas.github.io/nxselector
 | NexDaTaS Web page: https://nexdatas.github.io
 
 
@@ -50,7 +50,7 @@ From sources
 
 Download the latest version of NeXuS Configuration Server from
 
-|    https://github.com/nexdatas/selector
+|    https://github.com/nexdatas/nxselector
 
 Extract the sources and run
 
@@ -224,7 +224,7 @@ or from Spock by
 
 .. _Figure_1.1:
 
-.. figure:: https://github.com/nexdatas/selector/blob/develop/doc/png/detectors_23.png?raw=true
+.. figure:: https://github.com/nexdatas/nxselector/blob/develop/doc/png/detectors_23.png?raw=true
 
    Figure 1.1: Component Selector: Detectors
 
@@ -254,7 +254,7 @@ Moreover, by pressing the *Save* or *Load* buttons, the user can save to a file 
 
 .. _Figure_1.2:
 
-.. figure:: https://github.com/nexdatas/selector/blob/develop/doc/png/descriptions_23.png?raw=true
+.. figure:: https://github.com/nexdatas/nxselector/blob/develop/doc/png/descriptions_23.png?raw=true
 
    Figure 1.2: Component Selector: Descriptions
 
@@ -269,7 +269,7 @@ This helps to store the metadata informations by other Sardana recorders.
 
 .. _Figure_1.3:
 
-.. figure:: https://github.com/nexdatas/selector/blob/develop/doc/png/udata_23.png?raw=true
+.. figure:: https://github.com/nexdatas/nxselector/blob/develop/doc/png/udata_23.png?raw=true
 
    Figure 1.3: Component Selector: NeXus User Data
 
