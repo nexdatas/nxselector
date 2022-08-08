@@ -31,7 +31,7 @@ except Exception:
 from taurus.qt.qtgui.util.ui import UILoadable
 
 from .MessageBox import MessageBox
-from. ElementModel import PROPTEXT
+from .ElementModel import PROPTEXT
 
 
 #: (:obj:`logging.Logger`) logger object
