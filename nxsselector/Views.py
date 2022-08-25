@@ -158,6 +158,13 @@ class TableView(Qt.QTableView):
                 Qt.QHeaderView.Stretch)
 
 
+class QVLine(Qt.QFrame):
+    def __init__(self):
+        super(QVLine, self).__init__()
+        self.setFrameShape(Qt.QFrame.VLine)
+        self.setFrameShadow(Qt.QFrame.Sunken)
+
+
 class OneTableView(Qt.QTableView):
     """ table view with stretched last column un unvisible horizontal header
     """
@@ -205,6 +212,7 @@ class CheckerView(Qt.QWidget):
         self.model = None
         #: (:class:`taurus.qt.Qt.QGridLayout`) main grid layout
         self.glayout = Qt.QGridLayout(self)
+        #  self.glayout.setHorizontalSpacing(20)
         #: (:obj:`list` <:class:`taurus.qt.Qt.QGridLayout`> ) element widgets
         self.widgets = []
         #: (:class:`taurus.qt.Qt.QSignalMapper`) widget check status mapper
@@ -284,6 +292,7 @@ class CheckerView(Qt.QWidget):
             self.spacer = None
             DynamicTools.cleanupLayoutWithItems(self.glayout)
             self.glayout = Qt.QGridLayout(self)
+            # self.glayout.setHorizontalSpacing(20)
 
     def connectMapper(self):
         """ reconnects mapper
