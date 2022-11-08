@@ -21,7 +21,13 @@
 
 import sys
 import logging
-import PyTango
+
+try:
+    import tango
+except Exception:
+    import PyTango as tango
+
+
 #: (:obj:`logging.Logger`) logger object
 logger = logging.getLogger(__name__)
 
@@ -57,7 +63,7 @@ class MessageBox(Qt.QObject):
             error = sys.exc_info()[1]
         text = default
         try:
-            if isinstance(error, PyTango.DevFailed):
+            if isinstance(error, tango.DevFailed):
                 if hasattr(error, "args"):
                     text = str(
                         "\n".join(["%s " % (err.desc) for err in error.args]))

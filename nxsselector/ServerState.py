@@ -19,10 +19,15 @@
 
 """ state of recorder server """
 
-import PyTango
 import json
 import time
 import subprocess
+
+
+try:
+    import tango
+except Exception:
+    import PyTango as tango
 
 try:
     from taurus.external.qt import Qt
@@ -126,8 +131,8 @@ class SynchThread(Qt.QThread):
 
         self.__dp = None
         if self.server and self.server != 'module':
-            self.__dp = PyTango.DeviceProxy(self.server)
-            self.__dp.set_source(PyTango.DevSource.DEV)
+            self.__dp = tango.DeviceProxy(self.server)
+            self.__dp.set_source(tango.DevSource.DEV)
             self.__lastscanid = self.__dp.scanID
             self.__lastmg = self.__dp.mntGrpConfiguration()
             self.__lastprof = self.__dp.profileConfiguration
@@ -137,8 +142,8 @@ class SynchThread(Qt.QThread):
             self.server = str(self.__serverstate.server) \
                 if self.__serverstate.server else None
         if self.server and self.server != 'module':
-            self.__dp = PyTango.DeviceProxy(self.server)
-            self.__dp.set_source(PyTango.DevSource.DEV)
+            self.__dp = tango.DeviceProxy(self.server)
+            self.__dp.set_source(tango.DevSource.DEV)
             self.__lastscanid = self.__dp.scanID
             self.__lastmg = self.__dp.mntGrpConfiguration()
             self.__lastprof = self.__dp.profileConfiguration
@@ -202,9 +207,9 @@ class ServerState(Qt.QObject):
         #: (:class:`taurus.qt.Qt.QMutex`) thread mutex
         self.mutex = Qt.QMutex()
 
-        #: (:class:`PyTango.Database`) tango database instance
-        self.__db = PyTango.Database()
-        #: (:class:`PyTango.DeviceProxy`) selector server device proxy
+        #: (:class:`tango.Database`) tango database instance
+        self.__db = tango.Database()
+        #: (:class:`tango.DeviceProxy`) selector server device proxy
         self.__dp = None
 
         #: (:obj:`int`) timeout
@@ -802,7 +807,7 @@ class ServerState(Qt.QObject):
             # self.__wait(self.__dp)
             try:
                 self.__command(self.__dp, "resetPreselectedComponents")
-            except PyTango.CommunicationFailed as e:
+            except tango.CommunicationFailed as e:
                 if e[-1].reason == "API_DeviceTimedOut":
                     self.__wait(self.__dp)
                 else:
@@ -819,7 +824,7 @@ class ServerState(Qt.QObject):
             # self.__wait(self.__dp)
             try:
                 self.__command(self.__dp, "PreselectComponents")
-            except PyTango.CommunicationFailed as e:
+            except tango.CommunicationFailed as e:
                 if e[-1].reason == "API_DeviceTimedOut":
                     self.__wait(self.__dp)
                 else:
@@ -832,7 +837,7 @@ class ServerState(Qt.QObject):
         """
         if self.server:
             self.__dp = self.__openProxy(self.server)
-            self.__dp.set_source(PyTango.DevSource.DEV)
+            self.__dp.set_source(tango.DevSource.DEV)
             self.__dp.set_timeout_millis(self.__timeout)
             logger.debug("set server: %s:%s/%s" % (self.__dp.get_db_host(),
                                                    self.__dp.get_db_port(),
@@ -901,8 +906,8 @@ class ServerState(Qt.QObject):
                 msp = self.__openProxy(ms)
                 doors = msp.doorList
                 for door in doors:
-                    dp = PyTango.DeviceProxy(door)
-                    if dp.state() == PyTango.DevState.RUNNING:
+                    dp = tango.DeviceProxy(door)
+                    if dp.state() == tango.DevState.RUNNING:
 
                         status = True
                         break
@@ -915,9 +920,9 @@ class ServerState(Qt.QObject):
         :param server: server name
         :type server: :obj:`str`
         :returns: server device proxy
-        :rtype: :class:`PyTango.DeviceProxy`
+        :rtype: :class:`tango.DeviceProxy`
         """
-        proxy = PyTango.DeviceProxy(server)
+        proxy = tango.DeviceProxy(server)
         cls.__wait(proxy)
         return proxy
 
@@ -926,7 +931,7 @@ class ServerState(Qt.QObject):
         """ executes command on the server
 
         :param server: server instance
-        :type server: :class:`PyTango.DeviceProxy` \
+        :type server: :class:`tango.DeviceProxy` \
                       or 'nxsrecconfig.Settings.Settings'
         :param command: command name
         :type command: :obj:`str`
@@ -946,7 +951,7 @@ class ServerState(Qt.QObject):
         """ waits for server until server is not in running state
 
         :param proxy: server proxy
-        :type proxy: :class:`PyTango.DeviceProxy`
+        :type proxy: :class:`tango.DeviceProxy`
         :param counter: maximum waiting timer in 0.01 sec
                         (without command execution)
         :type counter: :obj:`int`
@@ -957,9 +962,9 @@ class ServerState(Qt.QObject):
             if cnt > 1:
                 time.sleep(0.01)
             try:
-                if proxy.state() != PyTango.DevState.RUNNING:
+                if proxy.state() != tango.DevState.RUNNING:
                     found = True
-            except PyTango.DevFailed:
+            except tango.DevFailed:
                 time.sleep(0.01)
                 found = False
                 if cnt == counter - 1:
@@ -1078,7 +1083,7 @@ class ServerState(Qt.QObject):
         if self.server:
             try:
                 self.__dp.write_attribute(name, value)
-            except PyTango.CommunicationFailed as e:
+            except tango.CommunicationFailed as e:
                 if e[-1].reason == "API_DeviceTimedOut":
                     self.__wait(self.__dp)
                 else:

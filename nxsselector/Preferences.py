@@ -20,8 +20,12 @@
 """ preferences tab """
 
 import os
-import PyTango
 import json
+
+try:
+    import tango
+except Exception:
+    import PyTango as tango
 
 from .MessageBox import MessageBox
 from .DynamicTools import DynamicTools
@@ -342,7 +346,7 @@ class Preferences(Qt.QObject):
                             self.state.findServer()
                             self.state.setServer()
                             self.state.fetchSettings()
-                        dp = PyTango.DeviceProxy(server)
+                        dp = tango.DeviceProxy(server)
                         if dp.info().dev_class == 'NXSRecSelector':
                             self.state.server = str(server)
                             self.state.setServer()
