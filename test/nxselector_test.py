@@ -25,10 +25,6 @@ import sys
 import random
 import struct
 import binascii
-# import time
-# import threading
-# import PyTango
-# import json
 import nxsselector
 from nxsselector import Selector
 

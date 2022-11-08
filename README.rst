@@ -43,7 +43,7 @@ Installation
 
 Install the dependencies:
 
-|    Sardana, PyTango, sphinx, Taurus, NXSRecSelector
+|    Sardana, tango, sphinx, Taurus, NXSRecSelector
 
 From sources
 ^^^^^^^^^^^^
