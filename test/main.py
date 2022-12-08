@@ -26,12 +26,16 @@ import unittest
 import nxselector_test
 
 try:
-    __import__("PyTango")
-    # if module PyTango avalable
+    try:
+        __import__("tango")
+    except Exception:
+        __import__("PyTango")
+
+    # if module tango avalable
     PYTANGO_AVAILABLE = True
 except ImportError as e:
     PYTANGO_AVAILABLE = False
-    print("PyTango is not available: %s" % e)
+    print("tango is not available: %s" % e)
 
 try:
     try:
