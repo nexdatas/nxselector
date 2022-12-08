@@ -197,7 +197,7 @@ SETUPDATA = dict(
     license="GNU GENERAL PUBLIC LICENSE, version 3",
     keywords="configuration scan nexus sardana recorder tango component data",
     url="https://github.com/nexdatas/nxselector",
-    platforms=("Linux", " Windows", " MacOS "),
+    platforms=["Linux", " Windows", " MacOS "],
     classifiers=[
         'Development Status :: 5 - Production/Stable',
         'Intended Audience :: Science/Research',
