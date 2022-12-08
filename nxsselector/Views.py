@@ -210,9 +210,16 @@ class CheckerView(Qt.QWidget):
         Qt.QWidget.__init__(self, parent)
         #: (:class:`taurus.qt.Qt.QAbstractTableModel`) view model
         self.model = None
+        #: (:obj:`int`) grid spacing, the default is 6
+        self.gridSpacing = 20
+        #: (:obj:`int`) grid right margin
+        self.gridRightMargin = max(0, 9 - self.gridSpacing)
         #: (:class:`taurus.qt.Qt.QGridLayout`) main grid layout
         self.glayout = Qt.QGridLayout(self)
-        #  self.glayout.setHorizontalSpacing(20)
+        self.glayout.setHorizontalSpacing(self.gridSpacing)
+        margins = self.glayout.contentsMargins()
+        margins.setRight(self.gridRightMargin)
+        self.glayout.setContentsMargins(margins)
         #: (:obj:`list` <:class:`taurus.qt.Qt.QGridLayout`> ) element widgets
         self.widgets = []
         #: (:class:`taurus.qt.Qt.QSignalMapper`) widget check status mapper
@@ -292,7 +299,10 @@ class CheckerView(Qt.QWidget):
             self.spacer = None
             DynamicTools.cleanupLayoutWithItems(self.glayout)
             self.glayout = Qt.QGridLayout(self)
-            # self.glayout.setHorizontalSpacing(20)
+            self.glayout.setHorizontalSpacing(self.gridSpacing)
+            margins = self.glayout.contentsMargins()
+            margins.setRight(self.gridRightMargin)
+            self.glayout.setContentsMargins(margins)
 
     def connectMapper(self):
         """ reconnects mapper
@@ -347,6 +357,11 @@ class CheckerView(Qt.QWidget):
                 cb, ds = self.__setWidgets(row)
                 self.__setNameTips(row, cb)
                 self.__createGrid(row, cb, ds, rowNo)
+                if ds:
+                    ds.setStyleSheet(
+                        "QCheckBox:unchecked{ color: black; }"
+                        "QCheckBox:checked{ color: blue; }"
+                        "QCheckBox:disabled{ color: gray; }")
 
             if not self.spacer:
                 self.spacer = Qt.QSpacerItem(
