@@ -100,7 +100,7 @@ else
     if [ "$1" = "ubuntu20.04" ] || [ "$1" = "ubuntu22.04" ] ; then
 	docker exec  --user root ndts /bin/sh -c 'export DEBIAN_FRONTEND=noninteractive;  apt-get -qq update; apt-get -qq install -y python3-taurus python3-sardana'
     else
-	docker exec  --user root ndts /bin/sh -c 'git clone https://gitlab.com/taurus-org/taurus taurus-src; cd taurus-src'
+	docker exec  --user root ndts /bin/sh -c 'git clone https://gitlab.com/taurus-org/taurus taurus-src; cd taurus-src; sed -i "s/'"'"'pint/# '"'"'pint/g" setup.py'
 	docker exec  --user root ndts /bin/sh -c 'cd taurus-src; git checkout tags/4.7.0 -b b4.7.0; python3 setup.py install'
 	docker exec  --user root ndts /bin/sh -c 'git clone https://github.com/sardana-org/sardana sardana-src; cd sardana-src'
 	docker exec  --user root ndts /bin/sh -c 'cd sardana-src; git checkout tags/3.1.0 -b b3.1.0; python3 setup.py install'
