@@ -230,6 +230,8 @@ class ServerState(Qt.QObject):
         self.scanFile = []
         #: (:obj:`int`) scan id
         self.scanID = 0
+        #: (:obj:`int`) editable scanid
+        self.scanIDEditable = 2
 
         #: (:obj:`list`<:obj:`str`>) timers
         self.timers = []
@@ -608,6 +610,10 @@ class ServerState(Qt.QObject):
                   # "ScanID": "scanID"
                   }
 
+        if self.scanIDEditable:
+            params["ScanID"] = "scanID"
+        elif "ScanID" in params:
+            params.pop("ScanID")
         if not self.__dp:
             self.setServer()
 
