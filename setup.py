@@ -62,7 +62,7 @@ needs_pytest = set(['test']).intersection(sys.argv)
 pytest_runner = ['pytest-runner'] if needs_pytest else []
 
 install_requires = [
-    'taurus',
+    # 'taurus',
     # 'nxsrecselector',
     # 'pyqt5',
     # 'pytango',
