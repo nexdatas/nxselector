@@ -108,7 +108,8 @@ class Storage(Qt.QObject):
                 self.__dirty)
             self.ui.fileExtScanLineEdit.textEdited.disconnect(
                 self.__dirty)
-            # measurement group
+            self.ui.fileScanIDSpinBox.valueChanged.disconnect(
+                self.__scanIDChanged)
 
             self.ui.mntTimerComboBox.currentIndexChanged.disconnect(self.apply)
             for cb in self.__tWidgets:
@@ -159,6 +160,7 @@ class Storage(Qt.QObject):
         self.ui.fileScanDirLineEdit.editingFinished.connect(self.__dirChanged)
         self.ui.fileScanLineEdit.editingFinished.connect(self.__fileChanged)
         self.ui.fileExtScanLineEdit.editingFinished.connect(self.__fileChanged)
+        self.ui.fileScanIDSpinBox.valueChanged.connect(self.__scanIDChanged)
         self.ui.fileScanDirLineEdit.textEdited.connect(self.__dirty)
         self.ui.fileScanLineEdit.textEdited.connect(self.__dirty)
         self.ui.fileExtScanLineEdit.textEdited.connect(self.__dirty)
@@ -629,7 +631,8 @@ class Storage(Qt.QObject):
             if self.state.scanDir is not None:
                 self.ui.fileScanDirLineEdit.setText(self.state.scanDir)
             self.ui.fileScanIDSpinBox.setValue(self.state.scanID)
-            self.ui.fileScanIDSpinBox.setEnabled(False)
+            self.ui.fileScanIDSpinBox.setEnabled(
+                self.state.scanIDEditable != 0)
 
             sfile = ""
             if self.state.scanFile:
@@ -804,6 +807,15 @@ class Storage(Qt.QObject):
            str(self.ui.fileScanLineEdit.text()) != sfile:
             self.apply()
 
+    @Qt.pyqtSlot()
+    def __scanIDChanged(self):
+        """ updates application state on a scan id change
+        """
+        if self.state.scanIDEditable:
+            scanid = self.ui.fileScanIDSpinBox.value()
+            if self.state.scanID != scanid:
+                self.apply()
+
     def fileNames(self, message=True, status=None):
         """ corrects the scan file name lists
 
@@ -892,7 +904,8 @@ class Storage(Qt.QObject):
             self.state.configDevice = str(self.ui.devConfigLineEdit.text())
 
             self.state.scanDir = str(self.ui.fileScanDirLineEdit.text())
-    #        self.state.scanID = int(self.ui.fileScanIDSpinBox.value())
+            if self.state.scanIDEditable:
+                self.state.scanID = int(self.ui.fileScanIDSpinBox.value())
             self.state.scanFile = self.fileNames()
             # dynamic component group
             self.state.dynamicComponents = True

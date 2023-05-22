@@ -1,3 +1,7 @@
+2023-05-22 Jan Kotanski <jankotan@gmail.com>
+	* add a checkbox for scanID editable
+	* tagged as 3.19.0
+
 2022-12-08 Jan Kotanski <jankotan@gmail.com>
 	* add additional spacing in the checkbox view
 	* tagged as 3.18.4
