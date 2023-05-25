@@ -1,3 +1,7 @@
+2023-05-26 Jan Kotanski <jankotan@gmail.com>
+	* add fix Dis. align in the switch order mode
+	* tagged as 3.19.1
+
 2023-05-25 Jan Kotanski <jankotan@gmail.com>
 	* add CheckDisSelView to switch the checkboxes order
 	* add a checkbox for scanID editable
