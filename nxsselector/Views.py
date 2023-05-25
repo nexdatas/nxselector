@@ -249,6 +249,8 @@ class CheckerView(Qt.QWidget):
         #: (:obj:`bool`) if names should be shown
         self.showNames = True
         self.setContextMenuPolicy(Qt.Qt.PreventContextMenu)
+        #: (:obj:`bool`) switch checkboxes flag
+        self.switchCheckboxes = False
 
     def close(self):
         """ widget close method which disconnect signals """
@@ -456,15 +458,27 @@ class CheckerView(Qt.QWidget):
                 lrow = lrow + 1
                 lcol = 2 * lcol
 
-                if lrow == 1:
-                    self.glayout.addWidget(
-                        Qt.QLabel(self.slabel), 0, lcol, 1, 1)
-                    self.glayout.addWidget(
-                        Qt.QLabel(self.dlabel), 0, lcol + 1, 1, 1,
-                        Qt.Qt.AlignCenter)
-                self.glayout.addWidget(ds, lrow, lcol + 1, 1, 1,
-                                       Qt.Qt.AlignCenter)
-            self.glayout.addWidget(cb, lrow, lcol, 1, 1)
+                if not self.switchCheckboxes:
+                    if lrow == 1:
+                        self.glayout.addWidget(
+                            Qt.QLabel(self.slabel), 0, lcol, 1, 1)
+                        self.glayout.addWidget(
+                            Qt.QLabel(self.dlabel), 0, lcol + 1, 1, 1,
+                            Qt.Qt.AlignCenter)
+                    self.glayout.addWidget(ds, lrow, lcol + 1, 1, 1,
+                                           Qt.Qt.AlignCenter)
+                else:
+                    if lrow == 1:
+                        self.glayout.addWidget(
+                            Qt.QLabel(self.slabel), 0, lcol + 1, 1, 1)
+                        self.glayout.addWidget(
+                            Qt.QLabel(self.dlabel), 0, lcol, 1, 1)
+                    self.glayout.addWidget(ds, lrow, lcol, 1, 1,
+                                           Qt.Qt.AlignCenter)
+            if not self.switchCheckboxes:
+                self.glayout.addWidget(cb, lrow, lcol, 1, 1)
+            else:
+                self.glayout.addWidget(cb, lrow, lcol + 1, 1, 1)
             self.widgets.append(cb)
 
             if hasattr(cb, "clicked"):
@@ -707,6 +721,16 @@ class CheckExPropView(CheckPropView):
         CheckPropView.__init__(self, parent)
         #: (:obj:`bool`) if widget are centered
         self.propdlg = LExDataDlg
+
+
+class CheckDisSelView(CheckPropView):
+    """ element view with switched checkboxes
+    """
+
+    def __init__(self, parent=None):
+        CheckPropView.__init__(self, parent)
+        #: (:obj:`bool`) if widget are centered
+        self.switchCheckboxes = True
 
 
 class RadioView(CheckerView):
@@ -998,6 +1022,22 @@ class CheckExPropViewNL(CheckExPropView):
         self.showLabels = False
 
 
+class CheckDisSelViewNL(CheckDisSelView):
+    """ element view with checkboxes and properties
+    without name labels
+    """
+
+    def __init__(self, parent=None):
+        """ constructor
+
+        :param parent: parent object
+        :type parent: :class:`taurus.qt.Qt.QObject`
+        """
+        CheckDisSelView.__init__(self, parent)
+        #: (:obj:`bool`) if name labels should be shown
+        self.showLabels = False
+
+
 class ButtonDisViewNL(ButtonDisView):
     """ element view with left button checkboxes and display boxes
     without name labels
@@ -1057,6 +1097,22 @@ class CheckPropViewNN(CheckPropView):
         :type parent: :class:`taurus.qt.Qt.QObject`
         """
         CheckPropView.__init__(self, parent)
+        #: (:obj:`bool`) if names should be shown
+        self.showNames = False
+
+
+class CheckDisSelViewNN(CheckDisSelView):
+    """ element view with redefined checkboxes with properties
+    without names
+    """
+
+    def __init__(self, parent=None):
+        """ constructor
+
+        :param parent: parent object
+        :type parent: :class:`taurus.qt.Qt.QObject`
+        """
+        CheckDisSelView.__init__(self, parent)
         #: (:obj:`bool`) if names should be shown
         self.showNames = False
 
