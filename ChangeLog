@@ -1,4 +1,5 @@
-2023-05-22 Jan Kotanski <jankotan@gmail.com>
+2023-05-25 Jan Kotanski <jankotan@gmail.com>
+	* add CheckDisSelView to switch the checkboxes order
 	* add a checkbox for scanID editable
 	* tagged as 3.19.0
 
