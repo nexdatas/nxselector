@@ -2,7 +2,7 @@ FROM debian:bookworm
 
 MAINTAINER DESY, Jan Kotanski <jankotan@gmail.com>
 RUN /bin/bash -c 'echo "deb http://ftp.de.debian.org/debian bookworm main" > /etc/apt/sources.list.d/debiande.list'
-RUN apt-get -qq update && apt-get -qq install -y libterm-readline-gnu-perl software-properties-common coreutils gnupg2 procps apt-utils curl apt-transport-https gnupg2 ca-certificates
+RUN apt-get -qq update && apt-get -qq install -y libterm-readline-gnu-perl software-properties-common coreutils gnupg2 procps apt-utils curl apt-transport-https gnupg2 ca-certificates wget
 RUN curl http://repos.pni-hdri.de/debian_repo.pub.gpg | apt-key add -
 # RUN add-apt-repository "deb http://repos.pni-hdri.de/apt/debian bookworm main" -y
 RUN cd /etc/apt/sources.list.d && wget http://repos.pni-hdri.de/bookworm-pni-hdri.list
