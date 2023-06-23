@@ -61,7 +61,7 @@ Extract the sources and run
 Debian packages
 ^^^^^^^^^^^^^^^
 
-Debian `buster` and `stretch` or Ubuntu  `focal`, `eoan`, `bionic` packages can be found in the HDRI repository.
+Debian `bookworm`, `bullseye`, `buster` or Ubuntu  `lunar`, `jammy`, `focal` packages can be found in the HDRI repository.
 
 To install the debian packages, add the PGP repository key
 
@@ -75,26 +75,26 @@ and then download the corresponding source list, e.g.
 .. code-block:: console
 
 	  $ cd /etc/apt/sources.list.d
-	  $ wget http://repos.pni-hdri.de/buster-pni-hdri.list
+	  $ wget http://repos.pni-hdri.de/bookworm-pni-hdri.list
 
 Finally,
 
 .. code-block:: console
 
 	  $ apt-get update
-	  $ apt-get install python-nxsrecselector nxselector
+	  $ apt-get install python3-nxsrecselector nxselector nxsrecselector
 
 To instal other NexDaTaS packages
 
 .. code-block:: console
 
-	  $ apt-get install python-nxswriter nxsconfigtool nxstools python-nxsconfigserver nxsconfigserver-db
+	  $ apt-get install python3-nxswriter nxsconfigtool nxstools python3-nxsconfigserver nxsconfigserver-db
 
 and
 
 .. code-block:: console
 
-	  $ apt-get install python-sardana-nxsrecorder nxstaurusgui
+	  $ apt-get install python3-sardana-nxsrecorder nxstaurusgui
 
 for NeXus recorder and MacroGUI packages.
 
@@ -159,13 +159,13 @@ Alternatively, terminate Pool and MacroServer in the terminals and run
 
 .. code-block:: console
 
-          $ nxsetup -s Pool -l2
+          $ nxsetup start Pool -l2
 
 wait until Pool is started and run
 
 .. code-block:: console
 
-          $ nxsetup -s MacroServer -l3
+          $ nxsetup start MacroServer -l3
 
 
 Additionally, one can create dummy devices by running `sar_demo` in
@@ -183,15 +183,15 @@ To set up  NeXus Servers run
 
 .. code-block:: console
 
-	  $ nxsetup -x
+	  $ nxsetup set
 
 or
 
 .. code-block:: console
 
-          $ nxsetup -x NXSDataWriter
-          $ nxsetup -x NXSConfigServer
-	  $ nxsetup -x NXSRecSelector
+          $ nxsetup set NXSDataWriter
+          $ nxsetup set NXSConfigServer
+	  $ nxsetup set NXSRecSelector
 
 for specific servers.
 
@@ -199,7 +199,7 @@ If the `RecoderPath` property of MacroServer is not set one can do it by
 
 .. code-block:: console
 
-	  $ nxsetup -a /usr/lib/python2.7/dist-packages/sardananxsrecorder
+	  $ nxsetup add-recoder-path /usr/lib/python2.7/dist-packages/sardananxsrecorder
 
 where the path should point the `sardananxsrecorder` package.
 
