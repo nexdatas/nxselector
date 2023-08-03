@@ -1,3 +1,7 @@
+2023-08-03 Jan Kotanski <jankotan@gmail.com>
+	* switch to argparse modele
+	* tagged as 3.20.0
+
 2023-05-26 Jan Kotanski <jankotan@gmail.com>
 	* add fix Dis. align in the switch order mode
 	* tagged as 3.19.1
