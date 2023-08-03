@@ -53,6 +53,24 @@ import gc
 logger = logging.getLogger(__name__)
 
 
+def setLoggerLevel(logger, level):
+    global _logginglevel
+    """ sets logging level from string
+    :param logger: logger
+    :type logger: :obj:`logging.logger`
+    :param level: logging level
+    :type level: :obj:`str`
+    """
+    levels = {'debug': logging.DEBUG,
+              'info': logging.INFO,
+              'warning': logging.WARNING,
+              'error': logging.ERROR,
+              'critical': logging.CRITICAL}
+    _logginglevel = level if level in levels else "warning"
+    dlevel = levels.get(level, logging.WARNING)
+    logger.setLevel(dlevel)
+
+
 @UILoadable(with_ui='ui')
 class Selector(Qt.QDialog, TaurusBaseWidget):
     """ main window application dialog """
@@ -1435,41 +1453,44 @@ def main():
 
     logger.debug("Using %s" % qt_api)
     if standalone:
-        import taurus.core.util.argparse
-        parser = taurus.core.util.argparse.get_taurus_parser()
+        import argparse
+        parser = argparse.ArgumentParser(
+            description="NeXus Component Selector GUI")
 
-        parser.add_option(
+        parser.add_argument(
             "-s", "--server", dest="server",
             help="selector server")
-        parser.add_option(
+        parser.add_argument(
             "-d", "--door", dest="door",
             help="door device name")
-        parser.add_option(
+        parser.add_argument(
             "-t", "--style", dest="style",
             help="Qt style")
-        parser.add_option(
+        parser.add_argument(
             "-y", "--stylesheet", dest="stylesheet",
             help="Qt stylesheet")
-        parser.add_option(
+        parser.add_argument(
             "-m", "--mode", dest="mode",
             help="interface mode, i.e. simple, user, advanced, "
             "special, expert")
-        parser.add_option(
-            "", "--set-as-default-mode",
+        parser.add_argument(
+            "--set-as-default-mode",
             action="store_true",
             default=False,
             dest="setdefault",
             help="set the current mode as default")
-        parser.add_option(
-            "", "--dont-switch-mntgrp",
+        parser.add_argument(
+            "--dont-switch-mntgrp",
             action="store_false",
             default=True,
             dest="switch",
             help="do not switch MntGrp to the ActiveMntGrp")
+        parser.add_argument(
+            "--log", dest="log",
+            help="logging level, i.e. debug, info, warning, error, critical")
 
         app = Application(
             sys.argv,
-            cmd_line_parser=parser,
             app_name="NXS Component Selector",
             app_version=__version__,
             org_domain="desy.de",
@@ -1477,9 +1498,12 @@ def main():
 
         app.setWindowIcon(Qt.QIcon(":/configtools.png"))
 
-        (options, _) = parser.parse_args()
+        options = parser.parse_args()
         if options.style:
             app.setStyle(options.style)
+
+        if options.log:
+            setLoggerLevel(logger, options.log)
 
         server = options.server
         if options.stylesheet:
