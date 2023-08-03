@@ -209,10 +209,10 @@ optional arguments:
             # print(vl)
             # print(er)
             if Application.instance() is None:
-                vt = "".join(vl.split())
-                helpinfo = "".join(self.helpinfo.split())
-                # print(vt)
-                # print(helpinfo)
+                vt = "".join(vl.split()).replace(
+                    "optionalarguments:", "options:")
+                helpinfo = "".join(self.helpinfo.split()).replace(
+                    "optionalarguments:", "options:")
                 self.assertTrue(
                     vt.endswith(helpinfo))
                 self.assertEqual('', er)
