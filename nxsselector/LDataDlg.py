@@ -65,12 +65,15 @@ class LDataDlg(Qt.QDialog):
         self.dtype = ''
         #: (:obj:`bool`) if nxdata link should be created
         self.link = None
+        #: (:obj:`bool`) if spock scan output should be shown
+        self.output = None
         #: (:obj:`bool`) if ds switched to CanFail mode
         self.canfail = None
         #: (:obj:`list` <:obj:`str` > ) available variable names
         self.available_names = None
         #: (:obj:`list` <:obj:`str` > ) special variable names
-        self.special = ["shape", "data_type", "nexus_path", "canfail", "link"]
+        self.special = ["shape", "data_type", "nexus_path", "canfail",
+                        "link", "output"]
         #: (:obj:`dict` <:obj:`str` , :obj:`str` or :obj:`unicode`> ) \
         #:     (name, value) variable dictionary
         self.variables = {}
@@ -93,6 +96,22 @@ class LDataDlg(Qt.QDialog):
         """ converts link value to string, i.e. True, False or Default
 
         :param value: link value
+        :type value: :obj:`bool` or `None`
+        :returns: True, False or Default
+        :rtype: :obj:`str`
+        """
+        if isinstance(value, bool):
+            if value is True:
+                return "True"
+            if value is False:
+                return "False"
+        return "Default"
+
+    @classmethod
+    def __outputText(cls, value):
+        """ converts output value to string, i.e. True, False or Default
+
+        :param value: output value
         :type value: :obj:`bool` or `None`
         :returns: True, False or Default
         :rtype: :obj:`str`
@@ -140,6 +159,12 @@ class LDataDlg(Qt.QDialog):
         if cid < 0:
             cid = 0
         self.ui.linkComboBox.setCurrentIndex(cid)
+
+        cid = self.ui.outputComboBox.findText(
+            str(self.__outputText(self.output)))
+        if cid < 0:
+            cid = 0
+        self.ui.outputComboBox.setCurrentIndex(cid)
 
         cid = self.ui.canfailComboBox.findText(
             str(self.__canfailText(self.canfail)))
@@ -200,6 +225,14 @@ class LDataDlg(Qt.QDialog):
             self.link = False
         else:
             self.link = None
+
+        output = str(self.ui.outputComboBox.currentText())
+        if output == "True":
+            self.output = True
+        elif output == "False":
+            self.output = False
+        else:
+            self.output = None
 
         canfail = str(self.ui.canfailComboBox.currentText())
         if canfail == "True":
