@@ -313,6 +313,8 @@ class ServerState(Qt.QObject):
 
         #: (:obj:`dict` <:obj:`str` , :obj:`bool`>) label links
         self.labellinks = {}
+        #: (:obj:`dict` <:obj:`str` , :obj:`bool`>) label outputs
+        self.labeloutputs = {}
         #: (:obj:`dict` <:obj:`str` , :obj:`bool`>) label canfail flags
         self.labelcanfailflags = {}
         #: (:obj:`dict` <:obj:`str` , :obj:`str`>) label nexus paths
@@ -345,7 +347,7 @@ class ServerState(Qt.QObject):
                                'filename'
                                ]
         self.channelprops = ["nexus_path", "link", "shape", "label",
-                             "data_type", "canfail"]
+                             "data_type", "canfail", "output"]
         self.extrachannelprops = ["synchronizer", "synchronization"]
         self.synchthread = SynchThread(self, self.server, self.mutex)
 
@@ -468,6 +470,10 @@ class ServerState(Qt.QObject):
             self.labellinks = self.properties["link"]
         else:
             self.labellinks = {}
+        if "output" in self.properties:
+            self.labeloutputs = self.properties["output"]
+        else:
+            self.labeloutputs = {}
         if "canfail" in self.properties:
             self.labelcanfailflags = self.properties["canfail"]
         else:
@@ -499,6 +505,7 @@ class ServerState(Qt.QObject):
         """
         self.properties["label"] = self.labels
         self.properties["link"] = self.labellinks
+        self.properties["output"] = self.labeloutputs
         self.properties["canfail"] = self.labelcanfailflags
         self.properties["nexus_path"] = self.labelpaths
         self.properties["shape"] = self.labelshapes

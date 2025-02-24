@@ -1,3 +1,7 @@
+2024-02-24 Jan Kotanski <jankotan@gmail.com>
+	* add channel output combobox (#106)
+	* tagged as 3.21.0
+
 2024-02-13 Jan Kotanski <jankotan@gmail.com>
 	* fix typo in nexus_path setter (#103)
 	* tagged as 3.20.3
