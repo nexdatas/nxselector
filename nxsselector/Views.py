@@ -701,7 +701,7 @@ class CheckPropView(CheckDisView):
                 prs["nexus_path"] = dform.path or None
                 prs["output"] = dform.output
                 prs["value_ref_enabled"] = dform.refenabled
-                prs["value_ref_pattern"] = dform.pattern
+                prs["value_ref_pattern"] = dform.refpattern or None
                 for nm, val in dform.variables.items():
                     prs[nm] = val
                 self.model.setData(ind5, (
