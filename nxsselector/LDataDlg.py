@@ -67,13 +67,18 @@ class LDataDlg(Qt.QDialog):
         self.link = None
         #: (:obj:`bool`) if spock scan output should be shown
         self.output = None
+        #: (:obj:`bool`) if value reference eneabled
+        self.refenabled = None
+        #: (:obj:`str`) value reference pattern
+        self.refpattern = ''
         #: (:obj:`bool`) if ds switched to CanFail mode
         self.canfail = None
         #: (:obj:`list` <:obj:`str` > ) available variable names
         self.available_names = None
         #: (:obj:`list` <:obj:`str` > ) special variable names
         self.special = ["shape", "data_type", "nexus_path", "canfail",
-                        "link", "output"]
+                        "link", "output",
+                        "value_ref_enabled", "value_ref_pattern"]
         #: (:obj:`dict` <:obj:`str` , :obj:`str` or :obj:`unicode`> ) \
         #:     (name, value) variable dictionary
         self.variables = {}
@@ -124,6 +129,22 @@ class LDataDlg(Qt.QDialog):
         return "Default"
 
     @classmethod
+    def __refenabledText(cls, value):
+        """ converts refenabled value to string, i.e. True, False or Default
+
+        :param value: refenabled value
+        :type value: :obj:`bool` or `None`
+        :returns: True, False or Default
+        :rtype: :obj:`str`
+        """
+        if isinstance(value, bool):
+            if value is True:
+                return "True"
+            if value is False:
+                return "False"
+        return "Default"
+
+    @classmethod
     def __canfailText(cls, value):
         """ converts canfail value to string, i.e. True, Default
 
@@ -146,6 +167,7 @@ class LDataDlg(Qt.QDialog):
         self.ui.synchronizerLabel.hide()
         self.ui.labelLineEdit.setText(str(str(self.label or "")))
         self.ui.pathLineEdit.setText(str(str(self.path or "")))
+        self.ui.refpatternLineEdit.setText(str(str(self.refpattern or "")))
         if self.shape is None:
             shape = ''
         else:
@@ -165,6 +187,12 @@ class LDataDlg(Qt.QDialog):
         if cid < 0:
             cid = 0
         self.ui.outputComboBox.setCurrentIndex(cid)
+
+        cid = self.ui.refenabledComboBox.findText(
+            str(self.__refenabledText(self.refenabled)))
+        if cid < 0:
+            cid = 0
+        self.ui.refenabledComboBox.setCurrentIndex(cid)
 
         cid = self.ui.canfailComboBox.findText(
             str(self.__canfailText(self.canfail)))
@@ -234,6 +262,14 @@ class LDataDlg(Qt.QDialog):
         else:
             self.output = None
 
+        refenabled = str(self.ui.refenabledComboBox.currentText())
+        if refenabled == "True":
+            self.refenabled = True
+        elif refenabled == "False":
+            self.refenabled = False
+        else:
+            self.refenabled = None
+
         canfail = str(self.ui.canfailComboBox.currentText())
         if canfail == "True":
             self.canfail = True
@@ -242,6 +278,7 @@ class LDataDlg(Qt.QDialog):
 
         self.label = unicode(self.ui.labelLineEdit.text())
         self.path = unicode(self.ui.pathLineEdit.text())
+        self.refpattern = unicode(self.ui.refpatternLineEdit.text())
         self.dtype = unicode(self.ui.typeLineEdit.text())
         tshape = unicode(self.ui.shapeLineEdit.text()).replace("None", "null")
         try:

@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>328</width>
-    <height>384</height>
+    <width>406</width>
+    <height>480</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -78,6 +78,36 @@
         </property>
         <item>
          <layout class="QGridLayout" name="gridLayout">
+          <item row="4" column="0">
+           <widget class="QLabel" name="linkLabel">
+            <property name="text">
+             <string>&amp;Link:</string>
+            </property>
+            <property name="buddy">
+             <cstring>linkComboBox</cstring>
+            </property>
+           </widget>
+          </item>
+          <item row="6" column="0">
+           <widget class="QLabel" name="synchronizationLabel">
+            <property name="text">
+             <string>Synchronization:</string>
+            </property>
+            <property name="buddy">
+             <cstring>synchronizationComboBox</cstring>
+            </property>
+           </widget>
+          </item>
+          <item row="5" column="0">
+           <widget class="QLabel" name="canfailLabel">
+            <property name="text">
+             <string>CanFail:</string>
+            </property>
+            <property name="buddy">
+             <cstring>canfailComboBox</cstring>
+            </property>
+           </widget>
+          </item>
           <item row="1" column="0">
            <widget class="QLabel" name="shapeLabel">
             <property name="text">
@@ -86,6 +116,18 @@
             <property name="buddy">
              <cstring>shapeLineEdit</cstring>
             </property>
+           </widget>
+          </item>
+          <item row="7" column="1">
+           <widget class="QComboBox" name="synchronizerComboBox">
+            <property name="editable">
+             <bool>false</bool>
+            </property>
+            <item>
+             <property name="text">
+              <string>software</string>
+             </property>
+            </item>
            </widget>
           </item>
           <item row="6" column="1">
@@ -107,92 +149,6 @@
             </item>
            </widget>
           </item>
-          <item row="5" column="1">
-           <widget class="QComboBox" name="canfailComboBox">
-            <item>
-             <property name="text">
-              <string>Default</string>
-             </property>
-            </item>
-            <item>
-             <property name="text">
-              <string>True</string>
-             </property>
-            </item>
-           </widget>
-          </item>
-          <item row="1" column="1">
-           <widget class="QLineEdit" name="shapeLineEdit">
-            <property name="sizePolicy">
-             <sizepolicy hsizetype="MinimumExpanding" vsizetype="Preferred">
-              <horstretch>0</horstretch>
-              <verstretch>0</verstretch>
-             </sizepolicy>
-            </property>
-           </widget>
-          </item>
-          <item row="4" column="0">
-           <widget class="QLabel" name="linkLabel">
-            <property name="text">
-             <string>&amp;Link:</string>
-            </property>
-            <property name="buddy">
-             <cstring>linkComboBox</cstring>
-            </property>
-           </widget>
-          </item>
-          <item row="7" column="0">
-           <widget class="QLabel" name="synchronizerLabel">
-            <property name="text">
-             <string>Synchronizer:</string>
-            </property>
-            <property name="buddy">
-             <cstring>synchronizerComboBox</cstring>
-            </property>
-           </widget>
-          </item>
-          <item row="5" column="0">
-           <widget class="QLabel" name="canfailLabel">
-            <property name="text">
-             <string>CanFail:</string>
-            </property>
-            <property name="buddy">
-             <cstring>canfailComboBox</cstring>
-            </property>
-           </widget>
-          </item>
-          <item row="7" column="1">
-           <widget class="QComboBox" name="synchronizerComboBox">
-            <property name="editable">
-             <bool>false</bool>
-            </property>
-            <item>
-             <property name="text">
-              <string>software</string>
-             </property>
-            </item>
-           </widget>
-          </item>
-          <item row="2" column="0">
-           <widget class="QLabel" name="typeLabel">
-            <property name="text">
-             <string>&amp;Type:</string>
-            </property>
-            <property name="buddy">
-             <cstring>typeLineEdit</cstring>
-            </property>
-           </widget>
-          </item>
-          <item row="6" column="0">
-           <widget class="QLabel" name="synchronizationLabel">
-            <property name="text">
-             <string>Synchronization:</string>
-            </property>
-            <property name="buddy">
-             <cstring>synchronizationComboBox</cstring>
-            </property>
-           </widget>
-          </item>
           <item row="4" column="1">
            <widget class="QComboBox" name="linkComboBox">
             <item>
@@ -212,19 +168,13 @@
             </item>
            </widget>
           </item>
-          <item row="2" column="1">
-           <widget class="QLineEdit" name="typeLineEdit"/>
-          </item>
-          <item row="3" column="0">
-           <widget class="QLabel" name="outputLabel">
-            <property name="toolTip">
-             <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Show channel in the spock scan output&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-            </property>
+          <item row="7" column="0">
+           <widget class="QLabel" name="synchronizerLabel">
             <property name="text">
-             <string>Output:</string>
+             <string>Synchronizer:</string>
             </property>
             <property name="buddy">
-             <cstring>outputComboBox</cstring>
+             <cstring>synchronizerComboBox</cstring>
             </property>
            </widget>
           </item>
@@ -250,7 +200,112 @@
             </item>
            </widget>
           </item>
+          <item row="1" column="1">
+           <widget class="QLineEdit" name="shapeLineEdit">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="MinimumExpanding" vsizetype="Preferred">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+           </widget>
+          </item>
+          <item row="2" column="1">
+           <widget class="QLineEdit" name="typeLineEdit"/>
+          </item>
+          <item row="3" column="0">
+           <widget class="QLabel" name="outputLabel">
+            <property name="toolTip">
+             <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Show channel in the spock scan output&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+            </property>
+            <property name="text">
+             <string>Output:</string>
+            </property>
+            <property name="buddy">
+             <cstring>outputComboBox</cstring>
+            </property>
+           </widget>
+          </item>
+          <item row="5" column="1">
+           <widget class="QComboBox" name="canfailComboBox">
+            <item>
+             <property name="text">
+              <string>Default</string>
+             </property>
+            </item>
+            <item>
+             <property name="text">
+              <string>True</string>
+             </property>
+            </item>
+           </widget>
+          </item>
+          <item row="2" column="0">
+           <widget class="QLabel" name="typeLabel">
+            <property name="text">
+             <string>&amp;Type:</string>
+            </property>
+            <property name="buddy">
+             <cstring>typeLineEdit</cstring>
+            </property>
+           </widget>
+          </item>
+          <item row="8" column="0">
+           <widget class="QLabel" name="refeneabledLabel">
+            <property name="toolTip">
+             <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Enable channel  value reference &lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+            </property>
+            <property name="text">
+             <string>ValueRefEnabled:</string>
+            </property>
+            <property name="buddy">
+             <cstring>refeneabledComboBox</cstring>
+            </property>
+           </widget>
+          </item>
+          <item row="8" column="1">
+           <widget class="QComboBox" name="refeneabledComboBox">
+            <property name="toolTip">
+             <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Enable channel  value reference &lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+            </property>
+            <item>
+             <property name="text">
+              <string>Default</string>
+             </property>
+            </item>
+            <item>
+             <property name="text">
+              <string>True</string>
+             </property>
+            </item>
+            <item>
+             <property name="text">
+              <string>False</string>
+             </property>
+            </item>
+           </widget>
+          </item>
          </layout>
+        </item>
+        <item>
+         <widget class="QLabel" name="refpatternLabel">
+          <property name="toolTip">
+           <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;value reference pattern of the channel&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+          </property>
+          <property name="text">
+           <string>ValueRefPattern:</string>
+          </property>
+          <property name="buddy">
+           <cstring>refpatternLineEdit</cstring>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QLineEdit" name="refpatternLineEdit">
+          <property name="toolTip">
+           <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;value reference pattern of the channel&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+          </property>
+         </widget>
         </item>
         <item>
          <layout class="QHBoxLayout" name="horizontalLayout">
@@ -279,6 +334,8 @@
        <zorder></zorder>
        <zorder></zorder>
        <zorder>pathLineEdit</zorder>
+       <zorder>refpatternLabel</zorder>
+       <zorder>refpatternLineEdit</zorder>
       </widget>
      </item>
      <item>
@@ -348,6 +405,8 @@
   <tabstop>canfailComboBox</tabstop>
   <tabstop>synchronizationComboBox</tabstop>
   <tabstop>synchronizerComboBox</tabstop>
+  <tabstop>refeneabledComboBox</tabstop>
+  <tabstop>refpatternLineEdit</tabstop>
   <tabstop>pathLineEdit</tabstop>
  </tabstops>
  <resources/>
@@ -359,8 +418,8 @@
    <slot>accept()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>238</x>
-     <y>337</y>
+     <x>248</x>
+     <y>378</y>
     </hint>
     <hint type="destinationlabel">
      <x>157</x>
@@ -375,8 +434,8 @@
    <slot>reject()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>306</x>
-     <y>337</y>
+     <x>316</x>
+     <y>378</y>
     </hint>
     <hint type="destinationlabel">
      <x>286</x>

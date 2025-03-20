@@ -1,4 +1,8 @@
 2024-02-24 Jan Kotanski <jankotan@gmail.com>
+	* make value_ref_* properfies editable  (#106)
+	* tagged as 3.22.0
+
+2024-02-24 Jan Kotanski <jankotan@gmail.com>
 	* add channel output combobox (#106)
 	* tagged as 3.21.0
 

@@ -99,6 +99,12 @@ class PropertiesWg(Qt.QWidget):
         #:    property (name, output) dictionary
         self.outputs = {}
         #: (:obj:`dict` <:obj:`str`, :obj:`bool`>) \
+        #:    property (name, refenabled) dictionary
+        self.refenableds = {}
+        #: (:obj:`dict` <:obj:`str`, :obj:`str`>) \
+        #:    property (name, refpattern) dictionary
+        self.refpatterns = {}
+        #: (:obj:`dict` <:obj:`str`, :obj:`bool`>) \
         #:    property (name, canfailflag) dictionary
         self.canfailflags = {}
         #: (:obj:`dict` <:obj:`str`, :obj:`str`>) \
@@ -141,6 +147,8 @@ class PropertiesWg(Qt.QWidget):
                       set(self.links.keys()) |
                       set(self.canfailflags.keys()) |
                       set(self.outputs.keys()) |
+                      set(self.refenableds.keys()) |
+                      set(self.refpatterns.keys()) |
                       set(self.types.keys()))
 
     def __populateTable(self, selected=None):
@@ -155,7 +163,8 @@ class PropertiesWg(Qt.QWidget):
         names = self.__names()
         self.ui.tableWidget.setRowCount(len(names))
         headers = ["Name", "Type", "Shape",
-                   "Output", "Link", "CanFail", "Path"]
+                   "Output", "Link", "CanFail", "Path",
+                   "RefEnabled", "RefPattern"]
         self.ui.tableWidget.setColumnCount(len(headers))
         self.ui.tableWidget.setHorizontalHeaderLabels(headers)
         for row, name in enumerate(names):
@@ -191,6 +200,12 @@ class PropertiesWg(Qt.QWidget):
             value = str(self.paths[name]) \
                 if name in self.paths.keys() else ''
             self.ui.tableWidget.setItem(row, 6, Qt.QTableWidgetItem(value))
+            value = str(self.refenableds[name]) \
+                if name in self.refenableds.keys() else ''
+            self.ui.tableWidget.setItem(row, 7, Qt.QTableWidgetItem(value))
+            value = str(self.refpatterns[name]) \
+                if name in self.refpatterns.keys() else ''
+            self.ui.tableWidget.setItem(row, 8, Qt.QTableWidgetItem(value))
         self.ui.tableWidget.resizeColumnsToContents()
         self.ui.tableWidget.setSelectionBehavior(
             Qt.QAbstractItemView.SelectRows)
@@ -247,6 +262,7 @@ class PropertiesWg(Qt.QWidget):
             self.__updateItem(name, form.path, self.paths)
             self.__updateItem(name, form.dtype, self.types)
             self.__updateItem(name, form.shape, self.shapes)
+            self.__updateItem(name, form.refpattern, self.refpatterns)
 
             if form.link is None:
                 if name in self.links.keys():
@@ -259,6 +275,12 @@ class PropertiesWg(Qt.QWidget):
                     self.outputs.pop(name)
             elif name:
                 self.outputs[name] = form.output
+
+            if form.refenabled is None:
+                if name in self.refenableds.keys():
+                    self.refenableds.pop(name)
+            elif name:
+                self.refenableds[name] = form.refenabled
 
             if form.canfail is None:
                 if name in self.canfailflags.keys():
@@ -292,10 +314,14 @@ class PropertiesWg(Qt.QWidget):
             dform.link = self.links[name]
         if name in self.outputs.keys():
             dform.output = self.outputs[name]
+        if name in self.refenableds.keys():
+            dform.refenabled = self.refenableds[name]
         if name in self.canfailflags.keys():
             dform.canfail = self.canfailflags[name]
         if name in self.paths.keys():
             dform.path = self.paths[name]
+        if name in self.refpatterns.keys():
+            dform.refpattern = self.refpatterns[name]
 
         dform.available_names = self.available_names
         dform.createGUI()
@@ -323,10 +349,14 @@ class PropertiesWg(Qt.QWidget):
             self.links.pop(name)
         if name in self.outputs.keys():
             self.outputs.pop(name)
+        if name in self.refenableds.keys():
+            self.refenableds.pop(name)
         if name in self.canfailflags.keys():
             self.canfailflags.pop(name)
         if name in self.paths.keys():
             self.paths.pop(name)
+        if name in self.refpatterns.keys():
+            self.refpatterns.pop(name)
 
         self.dirty.emit()
         self.__populateTable()
