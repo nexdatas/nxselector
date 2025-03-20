@@ -315,10 +315,14 @@ class ServerState(Qt.QObject):
         self.labellinks = {}
         #: (:obj:`dict` <:obj:`str` , :obj:`bool`>) label outputs
         self.labeloutputs = {}
+        #: (:obj:`dict` <:obj:`str` , :obj:`bool`>) label ref enabled flags
+        self.labelrefenableds = {}
         #: (:obj:`dict` <:obj:`str` , :obj:`bool`>) label canfail flags
         self.labelcanfailflags = {}
         #: (:obj:`dict` <:obj:`str` , :obj:`str`>) label nexus paths
         self.labelpaths = {}
+        #: (:obj:`dict` <:obj:`str` , :obj:`str`>) label ref pattern
+        self.labelrefpatterns = {}
         #: (:obj:`dict` <:obj:`str` , :obj:`list`< :obj:`int`> >) \
         #:     label data shapes
         self.labelshapes = {}
@@ -347,7 +351,8 @@ class ServerState(Qt.QObject):
                                'filename'
                                ]
         self.channelprops = ["nexus_path", "link", "shape", "label",
-                             "data_type", "canfail", "output"]
+                             "data_type", "canfail", "output",
+                             "value_ref_enabled", "value_ref_pattern"]
         self.extrachannelprops = ["synchronizer", "synchronization"]
         self.synchthread = SynchThread(self, self.server, self.mutex)
 
@@ -474,6 +479,10 @@ class ServerState(Qt.QObject):
             self.labeloutputs = self.properties["output"]
         else:
             self.labeloutputs = {}
+        if "value_ref_enabled" in self.properties:
+            self.labelrefenableds = self.properties["vale_ref_enabled"]
+        else:
+            self.labelrefenableds = {}
         if "canfail" in self.properties:
             self.labelcanfailflags = self.properties["canfail"]
         else:
@@ -482,6 +491,10 @@ class ServerState(Qt.QObject):
             self.labelpaths = self.properties["nexus_path"]
         else:
             self.labelpaths = {}
+        if "value_ref_pattern" in self.properties:
+            self.labelrefpatterns = self.properties["value_ref_pattern"]
+        else:
+            self.labelrefpatterns = {}
         if "shape" in self.properties:
             self.labelshapes = self.properties["shape"]
         else:
@@ -506,6 +519,8 @@ class ServerState(Qt.QObject):
         self.properties["label"] = self.labels
         self.properties["link"] = self.labellinks
         self.properties["output"] = self.labeloutputs
+        self.properties["value_ref_enabled"] = self.labelrefenableds
+        self.properties["value_ref_pattern"] = self.labelrefpatterns
         self.properties["canfail"] = self.labelcanfailflags
         self.properties["nexus_path"] = self.labelpaths
         self.properties["shape"] = self.labelshapes

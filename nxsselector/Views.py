@@ -684,6 +684,10 @@ class CheckPropView(CheckDisView):
             dform.path = prs["nexus_path"] if "nexus_path" in prs else None
             dform.canfail = prs["canfail"] if "canfail" in prs else None
             dform.output = prs["output"] if "output" in prs else None
+            dform.refenabled = prs["value_ref_enabled"] \
+                if "value_ref_enabled" in prs else None
+            dform.refpattern = prs["value_ref_pattern"] \
+                if "value_ref_pattern" in prs else None
             dform.addVariables(prs)
             dform.createGUI()
 
@@ -696,6 +700,8 @@ class CheckPropView(CheckDisView):
                 prs["shape"] = dform.shape
                 prs["nexus_path"] = dform.path or None
                 prs["output"] = dform.output
+                prs["value_ref_enabled"] = dform.refenabled
+                prs["value_ref_pattern"] = dform.pattern
                 for nm, val in dform.variables.items():
                     prs[nm] = val
                 self.model.setData(ind5, (
