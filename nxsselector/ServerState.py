@@ -480,7 +480,7 @@ class ServerState(Qt.QObject):
         else:
             self.labeloutputs = {}
         if "value_ref_enabled" in self.properties:
-            self.labelrefenableds = self.properties["vale_ref_enabled"]
+            self.labelrefenableds = self.properties["value_ref_enabled"]
         else:
             self.labelrefenableds = {}
         if "canfail" in self.properties:
