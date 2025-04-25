@@ -446,12 +446,17 @@ class Preferences(Qt.QObject):
     def layoutLoad(self):
         """ loads a layout from the file
         """
-        filename = str(
-            Qt.QFileDialog.getOpenFileName(
-                self.ui.preferences,
-                "Load Layout",
-                self.layoutFile,
-                "JSON files (*.json);;All files (*)"))
+        filename = Qt.QFileDialog.getOpenFileName(
+            self.ui.preferences,
+            "Load Layout",
+            self.layoutFile,
+            "JSON files (*.json);;All files (*)")
+        if isinstance(filename, tuple):
+            if len(filename) > 0:
+                filename = str(filename[0])
+            else:
+                filename = ""
+        filename = str(filename or "")
         logger.debug("loading profile from %s" % filename)
         if filename:
             self.layoutFile = filename
@@ -489,14 +494,20 @@ class Preferences(Qt.QObject):
 
     @Qt.pyqtSlot()
     def layoutSave(self):
-        """ loads the current layout into a file
+        """ saves the current layout into a file
         """
         try:
-            filename = str(Qt.QFileDialog.getSaveFileName(
+            filename = Qt.QFileDialog.getSaveFileName(
                 self.ui.storage,
                 "Save Layout",
                 self.layoutFile,
-                "JSON files (*.json);;All files (*)"))
+                "JSON files (*.json);;All files (*)")
+            if isinstance(filename, tuple):
+                if len(filename) > 0:
+                    filename = filename[0]
+                else:
+                    filename = ""
+            filename = str(filename or "")
             logger.debug("saving profile to %s" % filename)
             if filename:
                 if (len(filename) < 4 or filename[-4] != '.') and \

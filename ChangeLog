@@ -1,3 +1,7 @@
+2025-04-25 Jan Kotanski <jankotan@gmail.com>
+	* fix for save/load layout with qt5
+	* tagged as 3.22.1
+
 2024-02-24 Jan Kotanski <jankotan@gmail.com>
 	* make value_ref_* properfies editable  (#106)
 	* tagged as 3.22.0
