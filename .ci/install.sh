@@ -2,7 +2,7 @@
 
 
 # workaround for a bug in debian9, i.e. starting mysql hangs
-if [ "$1" = "debian11" ] || [ "$1" = "debian12" ] || [ "$1" = "ubuntu24.04" ] || [ "$1" = "ubuntu24.10" ]; then
+if [ "$1" = "debian11" ] || [ "$1" = "debian12" ] || [ "$1" = "ubuntu24.04" ] || [ "$1" = "ubuntu24.10" ] || [ "$1" = "ubuntu25.04" ]; then
     docker exec --user root ndts service mariadb restart
 else
     docker exec --user root ndts service mysql stop
@@ -17,7 +17,7 @@ fi
 docker exec  --user root ndts /bin/bash -c 'export DEBIAN_FRONTEND=noninteractive; apt-get -qq update; apt-get -qq install -y xvfb  libxcb1 libx11-xcb1 libxcb-keysyms1 libxcb-image0 libxcb-icccm4 libxcb-render-util0 xkb-data tango-common; sleep 10'
 
 if [ "$?" -ne "0" ]; then exit 255; fi
-if  [ "$1" = "ubuntu24.04" ] || [ "$1" = "ubuntu24.10" ]; then
+if  [ "$1" = "ubuntu24.04" ] || [ "$1" = "ubuntu24.10" ] || [ "$1" = "ubuntu25.04" ]; then
     # docker exec  --user tango ndts /bin/bash -c '/usr/lib/tango/DataBaseds 2 -ORBendPoint giop:tcp::10000  &'
     docker exec  --user root ndts /bin/bash -c 'echo -e "[client]\nuser=root\npassword=rootpw" > /root/.my.cnf'
     docker exec  --user root ndts /bin/bash -c 'echo -e "[client]\nuser=tango\nhost=localhost\npassword=rootpw" > /var/lib/tango/.my.cnf'
@@ -35,7 +35,7 @@ fi
 echo "install tango-db"
 docker exec  --user root ndts /bin/bash -c 'apt-get -qq update; export DEBIAN_FRONTEND=noninteractive; apt-get -qq install -y tango-db; sleep 10'
 if [ "$?" -ne "0" ]; then exit 255; fi
-if  [ "$1" = "ubuntu24.04" ] || [ "$1" = "ubuntu24.10" ]; then
+if  [ "$1" = "ubuntu24.04" ] || [ "$1" = "ubuntu24.10" ] || [ "$1" = "ubuntu25.04" ]; then
     docker exec  --user tango ndts /usr/bin/mysql -e 'create database tango'
     docker exec  --user tango ndts /bin/bash -c '/usr/bin/mysql tango < /usr/share/dbconfig-common/data/tango-db/install/mysql'
 fi
@@ -47,7 +47,7 @@ docker exec  --user root ndts chown -R tango:tango /tmp/runtime-tango
 
 docker exec  --user root ndts /bin/bash -c 'export DEBIAN_FRONTEND=noninteractive; apt-get -qq update; apt-get -qq install -y xvfb  libxcb1 libx11-xcb1 libxcb-keysyms1 libxcb-image0 libxcb-icccm4 libxcb-render-util0 xkb-data'
 if [ "$?" != "0" ]; then exit 255; fi
-if  [ "$1" = "ubuntu24.04" ] || [ "$1" = "ubuntu24.10" ]; then
+if  [ "$1" = "ubuntu24.04" ] || [ "$1" = "ubuntu24.10" ] || [ "$1" = "ubuntu25.04" ]; then
     # docker exec  --user tango ndts /bin/bash -c '/usr/lib/tango/DataBaseds 2 -ORBendPoint giop:tcp::10000  &'
     docker exec  --user root ndts /bin/bash -c 'export DEBIAN_FRONTEND=noninteractive; apt-get -qq update; apt-get -qq install -y libxcb-xinerama0'
     docker exec  --user root ndts /bin/bash -c 'export DEBIAN_FRONTEND=noninteractive; apt-get -qq update; apt-get -qq install -y libxkbcommon-x11-0 libxcb-icccm4 libxcb-image0 libxcb-keysyms1 libxcb-randr0 libxcb-render-util0 libxcb-xinerama0 libxcb-xfixes0 libegl1-mesa '
@@ -75,7 +75,7 @@ if [ "$2" = "2" ]; then
 else
     echo "install nxsconfigserver-db"
     docker exec --user root ndts /bin/bash -c 'export DEBIAN_FRONTEND=noninteractive; apt-get -qq update; apt-get  install -y   nxsconfigserver-db; sleep 10'
-    if [ "$1" = "ubuntu24.04" ] || [ "$1" = "ubuntu24.10" ]; then
+    if [ "$1" = "ubuntu24.04" ] || [ "$1" = "ubuntu24.10" ] || [ "$1" = "ubuntu25.04" ]; then
 	docker exec  --user root ndts /usr/bin/mysql -e 'GRANT ALL PRIVILEGES ON nxsconfig.* TO "tango"@"%" identified by "rootpw"'
 	docker exec  --user root ndts /usr/bin/mysql -e 'GRANT ALL PRIVILEGES ON nxsconfig.* TO "tango"@"localhost" identified by "rootpw"'
 	docker exec  --user root ndts /usr/bin/mysql -e 'FLUSH PRIVILEGES'
@@ -90,7 +90,7 @@ else
 	docker exec  --user root ndts /bin/sh -c 'cd itango-src; git checkout tags/v0.1.7 -b b0.1.7; python3 setup.py install'
 	# docker exec  --user root ndts /bin/sh -c 'cd taurus-src; git checkout; python3 setup.py install'
     fi
-    if  [ "$1" = "ubuntu24.04" ] || [ "$1" = "ubuntu24.10" ] || [ "$1" = "ubuntu20.04" ] || [ "$1" = "ubuntu22.04" ] || [ "$1" = "debian11" ]|| [ "$1" = "debian12" ]; then
+    if  [ "$1" = "ubuntu24.04" ] || [ "$1" = "ubuntu24.10" ] || [ "$1" = "ubuntu25.04" ] || [ "$1" = "ubuntu20.04" ] || [ "$1" = "ubuntu22.04" ] || [ "$1" = "debian11" ]|| [ "$1" = "debian12" ]; then
 	docker exec  --user root ndts /bin/sh -c 'export DEBIAN_FRONTEND=noninteractive; apt-get -qq update; apt-get install -y git python3-six python3-numpy graphviz python3-sphinx g++ build-essential python3-dev pkg-config python3-all-dev  python3-setuptools libtango-dev python3-setuptools python3-tango python3-tz; apt-get -qq install -y nxsconfigserver-db; sleep 10'
     else
 	docker exec  --user root ndts /bin/sh -c 'export DEBIAN_FRONTEND=noninteractive; apt-get -qq update; apt-get install -y git python3-six python3-numpy graphviz python3-sphinx g++ build-essential python3-dev pkg-config python3-all-dev  python3-setuptools libtango-dev python3-setuptools python3-pytango python3-tz python3-enum34 python3ango; apt-get -qq install -y nxsconfigserver-db; sleep 10'
@@ -131,7 +131,7 @@ if [ "$2" = "2" ]; then
 	docker exec  --user root ndts /bin/sh -c 'cd sardana-src; git checkout tags/2.8.4 -b b2.8.4; python setup.py install'
     fi
 else
-    if [ "$1" = "ubuntu24.04" ] || [ "$1" = "ubuntu24.10" ]; then
+    if [ "$1" = "ubuntu24.04" ] || [ "$1" = "ubuntu24.10" ] || [ "$1" = "ubuntu25.04" ]; then
 	docker exec  --user root ndts /bin/sh -c 'export DEBIAN_FRONTEND=noninteractive;  apt-get -qq update; apt-get -qq install -y python3-taurus-pyqtgraph'
     fi
     echo "install sardana, taurus and nexdatas"
@@ -140,7 +140,7 @@ else
     else
 	docker exec  --user root ndts /bin/sh -c 'export DEBIAN_FRONTEND=noninteractive; apt-get -qq update; apt-get -qq install -y python3-nxsconfigserver python3-nxswriter python3-nxstools python3-nxsrecselector python3-setuptools nxsrecselector nxswriter nxsconfigserver nxstools python3-packaging'
     fi
-    if [ "$1" = "ubuntu20.04" ] || [ "$1" = "ubuntu24.04" ] || [ "$1" = "ubuntu24.10" ] || [ "$1" = "ubuntu22.04" ] || [ "$1" = "debian11" ] || [ "$1" = "debian12" ] || [ "$1" = "debian10" ]  ; then
+    if [ "$1" = "ubuntu20.04" ] || [ "$1" = "ubuntu24.04" ] || [ "$1" = "ubuntu24.10" ] || [ "$1" = "ubuntu25.04" ] || [ "$1" = "ubuntu22.04" ] || [ "$1" = "debian11" ] || [ "$1" = "debian12" ] || [ "$1" = "debian10" ]  ; then
 	docker exec  --user root ndts /bin/sh -c 'export DEBIAN_FRONTEND=noninteractive;  apt-get -qq update; apt-get -qq install -y python3-taurus python3-sardana'
     else
 	docker exec  --user root ndts /bin/sh -c 'git clone https://gitlab.com/taurus-org/taurus taurus-src; cd taurus-src'
