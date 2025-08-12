@@ -24,7 +24,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        os: [debian12, debian11, debian10, ubuntu25.04, ubuntu24.04, ubuntu22.04]
+        os: [debian13, debian12, debian11, ubuntu25.04, ubuntu24.04, ubuntu22.04]
     steps:
       - uses: actions/checkout@v2
       - uses: actions/setup-python@v2
@@ -44,32 +44,5 @@ jobs:
         run: .ci/install.sh ${OS} 3
       - name: run tests
         run: .ci/run.sh 3
-      - name: Stop the docker
-        run: docker container stop ndts
-
-  python2_tests:
-    runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        os: [debian10]
-    steps:
-      - uses: actions/checkout@v2
-      - uses: actions/setup-python@v2
-      - name: Update bash files
-        run: |
-          chmod +x .ci/run.sh
-          chmod +x .ci/install.sh
-      - name: Build the docker
-        env:
-          OS: ${{ matrix.os }}
-        run: docker build -t ndts .ci/${OS}_py2
-      - name: Run the docker
-        run: docker run  --name  ndts -d -it -v `pwd`:/home/tango ndts
-      - name: install tango
-        env:
-          OS: ${{ matrix.os }}
-        run: .ci/install.sh ${OS} 2
-      - name: run tests
-        run: .ci/run.sh 2
       - name: Stop the docker
         run: docker container stop ndts
