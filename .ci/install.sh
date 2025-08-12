@@ -140,7 +140,7 @@ else
     else
 	docker exec  --user root ndts /bin/sh -c 'export DEBIAN_FRONTEND=noninteractive; apt-get -qq update; apt-get -qq install -y python3-nxsconfigserver python3-nxswriter python3-nxstools python3-nxsrecselector python3-setuptools nxsrecselector nxswriter nxsconfigserver nxstools python3-packaging'
     fi
-    if [ "$1" = "ubuntu20.04" ] || [ "$1" = "ubuntu24.04" ] || [ "$1" = "ubuntu24.10" ] || [ "$1" = "ubuntu25.04" ] || [ "$1" = "ubuntu22.04" ] || [ "$1" = "debian11" ] || [ "$1" = "debian12" ] || [ "$1" = "debian10" ]  ; then
+    if [ "$1" = "ubuntu20.04" ] || [ "$1" = "ubuntu24.04" ] || [ "$1" = "ubuntu24.10" ] || [ "$1" = "ubuntu25.04" ] || [ "$1" = "ubuntu22.04" ] || [ "$1" = "debian11" ] || [ "$1" = "debian12" ] ||  [ "$1" = "debian13" ] || [ "$1" = "debian10" ]  ; then
 	docker exec  --user root ndts /bin/sh -c 'export DEBIAN_FRONTEND=noninteractive;  apt-get -qq update; apt-get -qq install -y python3-taurus python3-sardana'
     else
 	docker exec  --user root ndts /bin/sh -c 'git clone https://gitlab.com/taurus-org/taurus taurus-src; cd taurus-src'
