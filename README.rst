@@ -61,21 +61,22 @@ Extract the sources and run
 Debian packages
 ^^^^^^^^^^^^^^^
 
-Debian `trixie`, `bookworm`, `bullseye` or Ubuntu  `plucky`, `noble`, `jammy` packages can be found in the HDRI repository.
+Debian `trixie`, `bookworm`, `bullseye` or Ubuntu  `questing`, `noble`, `jammy` packages can be found in the HDRI repository.
 
 To install the debian packages, add the PGP repository key
 
 .. code-block:: console
 
 	  $ sudo su
-	  $ wget -q -O - http://repos.pni-hdri.de/debian_repo.pub.gpg | apt-key add -
+	  $ curl -s http://repos.pni-hdri.de/debian_repo.pub.gpg | gpg --no-default-keyring --keyring gnupg-ring:/etc/apt/trusted.gpg.d/debian-hdri-repo.gpg --import
+	  $ chmod 644 /etc/apt/trusted.gpg.d/debian-hdri-repo.gpg
 
 and then download the corresponding source list, e.g.
 
 .. code-block:: console
 
 	  $ cd /etc/apt/sources.list.d
-	  $ wget http://repos.pni-hdri.de/trixie-pni-hdri.list
+	  $ wget http://repos.pni-hdri.de/trixie-pni-hdri.sources
 
 Finally,
 
