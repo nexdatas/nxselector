@@ -8,7 +8,7 @@ RUN echo 'debconf debconf/frontend select Noninteractive' | debconf-set-selectio
 RUN curl -s http://repos.pni-hdri.de/debian_repo.pub.gpg  | gpg --no-default-keyring --keyring gnupg-ring:/etc/apt/trusted.gpg.d/debian-hdri-repo.gpg --import
 RUN chmod 644 /etc/apt/trusted.gpg.d/debian-hdri-repo.gpg
 
-RUN cd /etc/apt/sources.list.d && wget http://repos.pni-hdri.de/plucky-pni-hdri.sources \
+RUN cd /etc/apt/sources.list.d && wget http://repos.pni-hdri.de/questing-pni-hdri.sources \
     && useradd -ms /bin/bash tango
 
 # switch to the german archive mirror
