@@ -1,3 +1,7 @@
+2025-11-11 Jan Kotanski <jankotan@gmail.com>
+	* comment-out setting GNOME_DESKTOP_SESSION_ID (#121)
+	* tagged as 3.22.2
+
 2025-04-25 Jan Kotanski <jankotan@gmail.com>
 	* fix for save/load layout with qt5
 	* tagged as 3.22.1
