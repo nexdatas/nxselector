@@ -367,7 +367,7 @@ class ServerState(Qt.QObject):
             pipe = subprocess.Popen("ps -ef | grep 'NXSRecSelecto'",
                                     stdout=subprocess.PIPE,
                                     shell=True, bufsize=10000).stdout
-            res = pipe.read().split("\n")
+            res = str(pipe.read(), "utf8").split("\n")
             cres = [r for r in res if 'NXSRecSelector' in r]
             mi = 0
             if len(cres) > 0:
@@ -380,8 +380,8 @@ class ServerState(Qt.QObject):
                     instance = command[mi + 1]
                     server = self.__db.get_device_class_list(
                         "NXSRecSelector/%s" % instance).value_string[2]
-        except Exception:
-            pass
+        except Exception as e:
+            logger.debug(str(e))
         return server
 
     def findServer(self, server=None):
