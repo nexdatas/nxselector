@@ -1,3 +1,7 @@
+2025-11-12 Jan Kotanski <jankotan@gmail.com>
+	* fix finding the selector server (#124)
+	* tagged as 3.22.3
+
 2025-11-11 Jan Kotanski <jankotan@gmail.com>
 	* comment-out setting GNOME_DESKTOP_SESSION_ID (#121)
 	* tagged as 3.22.2
