@@ -71,7 +71,7 @@ class GroupsDlg(Qt.QDialog):
         #: (:class:`nxsselector.ServerState.ServerState`) server state
         self.state = None
         #: (:obj:`str`) group title
-        self.title = "Selectable Detector Elements"
+        self.title = "Selectable Detector Components and DataSources"
         #: (:obj:`dict` <:obj:`str`, :obj:`str``>) \
         #:     datasources to add { name: source }
         self.newdatasources = {}

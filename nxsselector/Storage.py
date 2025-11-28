@@ -385,7 +385,7 @@ class Storage(Qt.QObject):
         """ changes descriptive component groups
         """
         dform = GroupsDlg(self.ui.storage)
-        dform.title = "Preselectable Description Elements"
+        dform.title = "Preselectable Description Components and DataSources"
         dform.state = self.state
         hidden = set(self.state.mcplist)
         hidden.update(self.state.mutedChannels)
