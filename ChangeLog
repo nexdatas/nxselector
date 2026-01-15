@@ -1,3 +1,7 @@
+2026-01-15 Jan Kotanski <jankotan@gmail.com>
+	* use syncProfile command from NXsRecSelector (#127)
+	* tagged as 3.23.0
+
 2025-11-28 Jan Kotanski <jankotan@gmail.com>
 	* update GroupDlg titles (#127)
 	* tagged as 3.22.4

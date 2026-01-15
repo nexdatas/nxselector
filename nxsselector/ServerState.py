@@ -707,7 +707,10 @@ class ServerState(Qt.QObject):
         """
         if not self.__dp:
             self.setServer()
-        self.__command(self.__dp, "fetchProfile")
+        try:
+            self.__command(self.__dp, "syncProfile")
+        except Exception:
+            self.__command(self.__dp, "fetchProfile")
 
     def switchMntGrp(self):
         """ switches mntgrp and profile on the server
