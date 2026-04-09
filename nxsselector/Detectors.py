@@ -142,14 +142,15 @@ class Detectors(Qt.QObject):
                     filtered = set(cpfiltered)
                     filtered.update(dsfiltered)
                     for felem in filtered:
-                        if felem in self.state.avcplist:
-                            group.append(
-                                CPElement(felem, self.state))
-                            ucp.add(felem)
-                        else:
-                            group.append(
-                                DSElement(felem, self.state))
-                            uds.add(felem)
+                        if felem not in uds and felem not in ucp:
+                            if felem in self.state.avcplist:
+                                group.append(
+                                    CPElement(felem, self.state))
+                                ucp.add(felem)
+                            else:
+                                group.append(
+                                    DSElement(felem, self.state))
+                                uds.add(felem)
                 if group:
                     if int(k) not in self.groups:
                         self.groups[int(k)] = []
