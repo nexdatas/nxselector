@@ -1,3 +1,7 @@
+2026-04-09 Jan Kotanski <jankotan@gmail.com>
+	* remove duplicated detector elements (#136)
+	* tagged as 3.24.0
+
 2026-01-15 Jan Kotanski <jankotan@gmail.com>
 	* use syncProfile command from NXsRecSelector (#127)
 	* tagged as 3.23.0
