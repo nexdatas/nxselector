@@ -1,5 +1,7 @@
 2026-04-09 Jan Kotanski <jankotan@gmail.com>
 	* remove duplicated detector elements (#136)
+	* add config for editable scan dir and scan ext (#134)
+	* ad disable datasources button (#135)
 	* tagged as 3.24.0
 
 2026-01-15 Jan Kotanski <jankotan@gmail.com>
