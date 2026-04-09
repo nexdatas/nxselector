@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1031</width>
-    <height>762</height>
+    <width>1002</width>
+    <height>668</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -443,8 +443,8 @@ The set of detector components can be change by pressing Others.</string>
              <rect>
               <x>0</x>
               <y>0</y>
-              <width>1007</width>
-              <height>593</height>
+              <width>978</width>
+              <height>496</height>
              </rect>
             </property>
            </widget>
@@ -490,8 +490,8 @@ The set of description components can be change by pressing Others.</string>
              <rect>
               <x>0</x>
               <y>0</y>
-              <width>1007</width>
-              <height>593</height>
+              <width>978</width>
+              <height>496</height>
              </rect>
             </property>
            </widget>
@@ -537,228 +537,290 @@ Additionally user can add some additional data , e.g. comments.</string>
                 <property name="title">
                  <string>View:</string>
                 </property>
-                <layout class="QGridLayout" name="gridLayout_3">
-                 <item row="0" column="0">
-                  <layout class="QVBoxLayout" name="verticalLayout_3">
+                <layout class="QVBoxLayout" name="verticalLayout_3">
+                 <item>
+                  <spacer name="verticalSpacer_11">
+                   <property name="orientation">
+                    <enum>Qt::Vertical</enum>
+                   </property>
+                   <property name="sizeType">
+                    <enum>QSizePolicy::Maximum</enum>
+                   </property>
+                   <property name="sizeHint" stdset="0">
+                    <size>
+                     <width>20</width>
+                     <height>7</height>
+                    </size>
+                   </property>
+                  </spacer>
+                 </item>
+                 <item>
+                  <layout class="QHBoxLayout" name="horizontalLayout">
                    <item>
-                    <spacer name="verticalSpacer_11">
+                    <widget class="QCheckBox" name="statusCheckBox">
+                     <property name="toolTip">
+                      <string>Show the apply status in the bottom row</string>
+                     </property>
+                     <property name="text">
+                      <string>Status</string>
+                     </property>
+                    </widget>
+                   </item>
+                   <item>
+                    <spacer name="horizontalSpacer">
                      <property name="orientation">
-                      <enum>Qt::Vertical</enum>
+                      <enum>Qt::Horizontal</enum>
                      </property>
                      <property name="sizeType">
-                      <enum>QSizePolicy::Maximum</enum>
+                      <enum>QSizePolicy::Minimum</enum>
                      </property>
                      <property name="sizeHint" stdset="0">
                       <size>
-                       <width>20</width>
+                       <width>10</width>
                        <height>20</height>
                       </size>
                      </property>
                     </spacer>
                    </item>
                    <item>
-                    <layout class="QHBoxLayout" name="horizontalLayout">
-                     <item>
-                      <widget class="QCheckBox" name="statusCheckBox">
-                       <property name="toolTip">
-                        <string>Show the apply status in the bottom row</string>
-                       </property>
-                       <property name="text">
-                        <string>Status</string>
-                       </property>
-                      </widget>
-                     </item>
-                     <item>
-                      <spacer name="horizontalSpacer">
-                       <property name="orientation">
-                        <enum>Qt::Horizontal</enum>
-                       </property>
-                       <property name="sizeType">
-                        <enum>QSizePolicy::Minimum</enum>
-                       </property>
-                       <property name="sizeHint" stdset="0">
-                        <size>
-                         <width>10</width>
-                         <height>20</height>
-                        </size>
-                       </property>
-                      </spacer>
-                     </item>
-                     <item>
-                      <widget class="QLabel" name="rowMaxLabel">
-                       <property name="toolTip">
-                        <string>Maximal number of component rows in the Detectors and Descriptions tabs.</string>
-                       </property>
-                       <property name="text">
-                        <string>Row Max.:</string>
-                       </property>
-                       <property name="buddy">
-                        <cstring>rowMaxSpinBox</cstring>
-                       </property>
-                      </widget>
-                     </item>
-                     <item>
-                      <widget class="QSpinBox" name="rowMaxSpinBox"/>
-                     </item>
-                     <item>
-                      <spacer name="horizontalSpacer_6">
-                       <property name="orientation">
-                        <enum>Qt::Horizontal</enum>
-                       </property>
-                       <property name="sizeType">
-                        <enum>QSizePolicy::Preferred</enum>
-                       </property>
-                       <property name="sizeHint" stdset="0">
-                        <size>
-                         <width>40</width>
-                         <height>20</height>
-                        </size>
-                       </property>
-                      </spacer>
-                     </item>
-                     <item>
-                      <widget class="QLabel" name="fontSizeLabel">
-                       <property name="text">
-                        <string>Font Size:</string>
-                       </property>
-                       <property name="buddy">
-                        <cstring>fontSizeSpinBox</cstring>
-                       </property>
-                      </widget>
-                     </item>
-                     <item>
-                      <widget class="QSpinBox" name="fontSizeSpinBox"/>
-                     </item>
-                     <item>
-                      <spacer name="horizontalSpacer_8">
-                       <property name="orientation">
-                        <enum>Qt::Horizontal</enum>
-                       </property>
-                       <property name="sizeType">
-                        <enum>QSizePolicy::Preferred</enum>
-                       </property>
-                       <property name="sizeHint" stdset="0">
-                        <size>
-                         <width>40</width>
-                         <height>20</height>
-                        </size>
-                       </property>
-                      </spacer>
-                     </item>
-                     <item>
-                      <widget class="QCheckBox" name="fileExtScanCheckBox">
-                       <property name="toolTip">
-                        <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Define scan file extensions separately&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-                       </property>
-                       <property name="text">
-                        <string>Scan File Ext. separated</string>
-                       </property>
-                      </widget>
-                     </item>
-                     <item>
-                      <spacer name="horizontalSpacer_10">
-                       <property name="orientation">
-                        <enum>Qt::Horizontal</enum>
-                       </property>
-                       <property name="sizeType">
-                        <enum>QSizePolicy::Preferred</enum>
-                       </property>
-                       <property name="sizeHint" stdset="0">
-                        <size>
-                         <width>40</width>
-                         <height>20</height>
-                        </size>
-                       </property>
-                      </spacer>
-                     </item>
-                     <item>
-                      <widget class="QCheckBox" name="scanIDEditableCheckBox">
-                       <property name="toolTip">
-                        <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Make scanID editable&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-                       </property>
-                       <property name="text">
-                        <string>ScanID editable</string>
-                       </property>
-                      </widget>
-                     </item>
-                     <item>
-                      <spacer name="horizontalSpacer_11">
-                       <property name="orientation">
-                        <enum>Qt::Horizontal</enum>
-                       </property>
-                       <property name="sizeType">
-                        <enum>QSizePolicy::Expanding</enum>
-                       </property>
-                       <property name="sizeHint" stdset="0">
-                        <size>
-                         <width>40</width>
-                         <height>20</height>
-                        </size>
-                       </property>
-                      </spacer>
-                     </item>
-                    </layout>
+                    <widget class="QLabel" name="rowMaxLabel">
+                     <property name="toolTip">
+                      <string>Maximal number of component rows in the Detectors and Descriptions tabs.</string>
+                     </property>
+                     <property name="text">
+                      <string>Row Max.:</string>
+                     </property>
+                     <property name="buddy">
+                      <cstring>rowMaxSpinBox</cstring>
+                     </property>
+                    </widget>
                    </item>
                    <item>
-                    <spacer name="verticalSpacer_7">
+                    <widget class="QSpinBox" name="rowMaxSpinBox"/>
+                   </item>
+                   <item>
+                    <spacer name="horizontalSpacer_6">
                      <property name="orientation">
-                      <enum>Qt::Vertical</enum>
+                      <enum>Qt::Horizontal</enum>
                      </property>
                      <property name="sizeType">
-                      <enum>QSizePolicy::Maximum</enum>
+                      <enum>QSizePolicy::Preferred</enum>
                      </property>
                      <property name="sizeHint" stdset="0">
                       <size>
-                       <width>20</width>
+                       <width>40</width>
                        <height>20</height>
                       </size>
                      </property>
                     </spacer>
                    </item>
                    <item>
-                    <layout class="QHBoxLayout" name="horizontalLayout_15">
-                     <item>
-                      <widget class="QLabel" name="specialCharactersLabel">
-                       <property name="toolTip">
-                        <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Character of scan file names to be replaced by '_', e.g. '/'&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-                       </property>
-                       <property name="text">
-                        <string>Special Characters:</string>
-                       </property>
-                       <property name="buddy">
-                        <cstring>specialCharactersLineEdit</cstring>
-                       </property>
-                      </widget>
-                     </item>
-                     <item>
-                      <widget class="QLineEdit" name="specialCharactersLineEdit">
-                       <property name="toolTip">
-                        <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Character of scan file names to be replaced by '_', e.g. '/'&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-                       </property>
-                       <property name="text">
-                        <string>/</string>
-                       </property>
-                      </widget>
-                     </item>
-                    </layout>
+                    <widget class="QLabel" name="fontSizeLabel">
+                     <property name="text">
+                      <string>Font Size:</string>
+                     </property>
+                     <property name="buddy">
+                      <cstring>fontSizeSpinBox</cstring>
+                     </property>
+                    </widget>
                    </item>
                    <item>
-                    <spacer name="verticalSpacer_12">
+                    <widget class="QSpinBox" name="fontSizeSpinBox"/>
+                   </item>
+                   <item>
+                    <spacer name="horizontalSpacer_8">
                      <property name="orientation">
-                      <enum>Qt::Vertical</enum>
+                      <enum>Qt::Horizontal</enum>
                      </property>
                      <property name="sizeType">
-                      <enum>QSizePolicy::Maximum</enum>
+                      <enum>QSizePolicy::Preferred</enum>
                      </property>
                      <property name="sizeHint" stdset="0">
                       <size>
-                       <width>20</width>
-                       <height>40</height>
+                       <width>40</width>
+                       <height>20</height>
+                      </size>
+                     </property>
+                    </spacer>
+                   </item>
+                   <item>
+                    <widget class="QCheckBox" name="fileExtScanCheckBox">
+                     <property name="toolTip">
+                      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Define scan file extensions separately&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                     </property>
+                     <property name="text">
+                      <string>Scan File Ext. separated</string>
+                     </property>
+                    </widget>
+                   </item>
+                   <item>
+                    <spacer name="horizontalSpacer_10">
+                     <property name="orientation">
+                      <enum>Qt::Horizontal</enum>
+                     </property>
+                     <property name="sizeType">
+                      <enum>QSizePolicy::Preferred</enum>
+                     </property>
+                     <property name="sizeHint" stdset="0">
+                      <size>
+                       <width>40</width>
+                       <height>20</height>
                       </size>
                      </property>
                     </spacer>
                    </item>
                   </layout>
+                 </item>
+                 <item>
+                  <spacer name="verticalSpacer_8">
+                   <property name="orientation">
+                    <enum>Qt::Vertical</enum>
+                   </property>
+                   <property name="sizeType">
+                    <enum>QSizePolicy::Minimum</enum>
+                   </property>
+                   <property name="sizeHint" stdset="0">
+                    <size>
+                     <width>18</width>
+                     <height>2</height>
+                    </size>
+                   </property>
+                  </spacer>
+                 </item>
+                 <item>
+                  <layout class="QHBoxLayout" name="horizontalLayout_6">
+                   <item>
+                    <widget class="QCheckBox" name="scanIDEditableCheckBox">
+                     <property name="toolTip">
+                      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Make scanID editable&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                     </property>
+                     <property name="text">
+                      <string>ScanID editable</string>
+                     </property>
+                    </widget>
+                   </item>
+                   <item>
+                    <spacer name="horizontalSpacer_11">
+                     <property name="orientation">
+                      <enum>Qt::Horizontal</enum>
+                     </property>
+                     <property name="sizeType">
+                      <enum>QSizePolicy::Expanding</enum>
+                     </property>
+                     <property name="sizeHint" stdset="0">
+                      <size>
+                       <width>40</width>
+                       <height>20</height>
+                      </size>
+                     </property>
+                    </spacer>
+                   </item>
+                   <item>
+                    <widget class="QCheckBox" name="scanFileExtEditableCheckBox">
+                     <property name="text">
+                      <string>ScanFileExt editable</string>
+                     </property>
+                     <property name="checked">
+                      <bool>true</bool>
+                     </property>
+                    </widget>
+                   </item>
+                   <item>
+                    <spacer name="horizontalSpacer_12">
+                     <property name="orientation">
+                      <enum>Qt::Horizontal</enum>
+                     </property>
+                     <property name="sizeHint" stdset="0">
+                      <size>
+                       <width>40</width>
+                       <height>20</height>
+                      </size>
+                     </property>
+                    </spacer>
+                   </item>
+                   <item>
+                    <widget class="QCheckBox" name="scanDirEditableCheckBox">
+                     <property name="text">
+                      <string>ScanDir editable</string>
+                     </property>
+                     <property name="checked">
+                      <bool>true</bool>
+                     </property>
+                    </widget>
+                   </item>
+                   <item>
+                    <spacer name="horizontalSpacer_13">
+                     <property name="orientation">
+                      <enum>Qt::Horizontal</enum>
+                     </property>
+                     <property name="sizeHint" stdset="0">
+                      <size>
+                       <width>40</width>
+                       <height>20</height>
+                      </size>
+                     </property>
+                    </spacer>
+                   </item>
+                  </layout>
+                 </item>
+                 <item>
+                  <spacer name="verticalSpacer_7">
+                   <property name="orientation">
+                    <enum>Qt::Vertical</enum>
+                   </property>
+                   <property name="sizeType">
+                    <enum>QSizePolicy::Maximum</enum>
+                   </property>
+                   <property name="sizeHint" stdset="0">
+                    <size>
+                     <width>20</width>
+                     <height>2</height>
+                    </size>
+                   </property>
+                  </spacer>
+                 </item>
+                 <item>
+                  <layout class="QHBoxLayout" name="horizontalLayout_15">
+                   <item>
+                    <widget class="QLabel" name="specialCharactersLabel">
+                     <property name="toolTip">
+                      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Character of scan file names to be replaced by '_', e.g. '/'&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                     </property>
+                     <property name="text">
+                      <string>Special Characters:</string>
+                     </property>
+                     <property name="buddy">
+                      <cstring>specialCharactersLineEdit</cstring>
+                     </property>
+                    </widget>
+                   </item>
+                   <item>
+                    <widget class="QLineEdit" name="specialCharactersLineEdit">
+                     <property name="toolTip">
+                      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Character of scan file names to be replaced by '_', e.g. '/'&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                     </property>
+                     <property name="text">
+                      <string>/</string>
+                     </property>
+                    </widget>
+                   </item>
+                  </layout>
+                 </item>
+                 <item>
+                  <spacer name="verticalSpacer_12">
+                   <property name="orientation">
+                    <enum>Qt::Vertical</enum>
+                   </property>
+                   <property name="sizeType">
+                    <enum>QSizePolicy::Maximum</enum>
+                   </property>
+                   <property name="sizeHint" stdset="0">
+                    <size>
+                     <width>20</width>
+                     <height>0</height>
+                    </size>
+                   </property>
+                  </spacer>
                  </item>
                 </layout>
                </widget>
@@ -794,6 +856,22 @@ Additionally user can add some additional data , e.g. comments.</string>
                      <string>Layout:</string>
                     </property>
                     <layout class="QGridLayout" name="gridLayout_7">
+                     <item row="2" column="0">
+                      <spacer name="verticalSpacer_21">
+                       <property name="orientation">
+                        <enum>Qt::Vertical</enum>
+                       </property>
+                       <property name="sizeType">
+                        <enum>QSizePolicy::Maximum</enum>
+                       </property>
+                       <property name="sizeHint" stdset="0">
+                        <size>
+                         <width>20</width>
+                         <height>40</height>
+                        </size>
+                       </property>
+                      </spacer>
+                     </item>
                      <item row="0" column="0">
                       <spacer name="verticalSpacer_14">
                        <property name="orientation">
@@ -828,22 +906,6 @@ Additionally user can add some additional data , e.g. comments.</string>
                         <bool>true</bool>
                        </property>
                       </widget>
-                     </item>
-                     <item row="2" column="0">
-                      <spacer name="verticalSpacer_21">
-                       <property name="orientation">
-                        <enum>Qt::Vertical</enum>
-                       </property>
-                       <property name="sizeType">
-                        <enum>QSizePolicy::Maximum</enum>
-                       </property>
-                       <property name="sizeHint" stdset="0">
-                        <size>
-                         <width>20</width>
-                         <height>40</height>
-                        </size>
-                       </property>
-                      </spacer>
                      </item>
                     </layout>
                    </widget>
@@ -1326,6 +1388,7 @@ Component items are defined by list of names in a UNIX wildcard format, i.e. [&q
  <tabstops>
   <tabstop>tabWidget</tabstop>
   <tabstop>fileScanLineEdit</tabstop>
+  <tabstop>fileExtScanLineEdit</tabstop>
   <tabstop>fileScanDirLineEdit</tabstop>
   <tabstop>fileScanDirToolButton</tabstop>
   <tabstop>fileScanIDSpinBox</tabstop>
@@ -1334,11 +1397,20 @@ Component items are defined by list of names in a UNIX wildcard format, i.e. [&q
   <tabstop>mntGrpToolButton</tabstop>
   <tabstop>orderToolButton</tabstop>
   <tabstop>othersEntryCheckBox</tabstop>
-  <tabstop>layoutButtonBox</tabstop>
+  <tabstop>detectorsScrollArea</tabstop>
+  <tabstop>descriptionsScrollArea</tabstop>
+  <tabstop>statusCheckBox</tabstop>
   <tabstop>rowMaxSpinBox</tabstop>
+  <tabstop>fontSizeSpinBox</tabstop>
+  <tabstop>fileExtScanCheckBox</tabstop>
+  <tabstop>scanIDEditableCheckBox</tabstop>
+  <tabstop>scanFileExtEditableCheckBox</tabstop>
+  <tabstop>scanDirEditableCheckBox</tabstop>
+  <tabstop>specialCharactersLineEdit</tabstop>
+  <tabstop>infoPushButton</tabstop>
+  <tabstop>errorsPushButton</tabstop>
   <tabstop>frameLineEdit</tabstop>
   <tabstop>groupLineEdit</tabstop>
-  <tabstop>buttonBox</tabstop>
   <tabstop>mntServerLineEdit</tabstop>
   <tabstop>devSettingsLineEdit</tabstop>
   <tabstop>devConfigLineEdit</tabstop>

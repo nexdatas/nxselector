@@ -232,6 +232,10 @@ class ServerState(Qt.QObject):
         self.scanID = 0
         #: (:obj:`int`) editable scanid
         self.scanIDEditable = 2
+        #: (:obj:`int`) editable scanFileExt
+        self.scanFileExtEditable = 2
+        #: (:obj:`int`) editable scanDir
+        self.scanDirEditable = 2
 
         #: (:obj:`list`<:obj:`str`>) timers
         self.timers = []

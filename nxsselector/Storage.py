@@ -634,6 +634,10 @@ class Storage(Qt.QObject):
             self.ui.fileScanIDSpinBox.setValue(self.state.scanID)
             self.ui.fileScanIDSpinBox.setEnabled(
                 self.state.scanIDEditable != 0)
+            self.ui.fileExtScanLineEdit.setEnabled(
+                self.state.scanFileExtEditable != 0)
+            self.ui.fileScanDirLineEdit.setEnabled(
+                self.state.scanDirEditable != 0)
 
             sfile = ""
             if self.state.scanFile:
