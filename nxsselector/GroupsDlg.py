@@ -119,6 +119,12 @@ class GroupsDlg(Qt.QDialog):
         self.ui.createPushButton.clicked.connect(
             self.__createDataSources)
 
+        self.ui.deselectPushButton = self.ui.closeButtonBox.addButton(
+            "", Qt.QDialogButtonBox.ActionRole)
+        self.ui.deselectPushButton.setText("Deselect DataSources")
+        self.ui.deselectPushButton.clicked.connect(
+            self.__deselectDataSources)
+
     @Qt.pyqtSlot()
     def __dirty(self):
         """ sets dirty to True
@@ -140,6 +146,16 @@ class GroupsDlg(Qt.QDialog):
             self.__populateTable(self.ui.ddsTableView, self.ddsgroup, DS,
                                  datasources, "DataSources:")
             self.dirty = True
+
+    @Qt.pyqtSlot()
+    def __deselectDataSources(self):
+        """ deselect all datasources
+        """
+        for dsname in self.datasources.keys():
+            self.datasources[dsname] = False
+        self.ddsgroup = []
+        self.__populateTable(self.ui.ddsTableView, self.ddsgroup, DS,
+                             self.datasources, "DataSources:")
 
     def __populateTable(self, view, group, eltype, dct, header):
         """ populates the group table

@@ -155,6 +155,11 @@ class Selector(Qt.QDialog, TaurusBaseWidget):
         #: (:obj:`bool`)  negative hidden mode on
         self.hidden = False
 
+        #: (:obj:`str`) widget title
+        self.title = 'NeXus Component Selector'
+        #: (:obj:`bool`) dirty flag
+        self.__dirty = True
+
         #: (:obj:`bool`)  if QSettings loaded
         self.__settingsloaded = False
         if self.__umode:

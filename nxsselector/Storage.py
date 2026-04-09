@@ -339,6 +339,7 @@ class Storage(Qt.QObject):
         """ changes detector component groups
         """
         dform = GroupsDlg(self.ui.storage)
+        dform.title = "Selectable Detector Components and DataSources"
         dform.state = self.state
         # DAC  to be hidden via reselector property
         hidden = set(self.state.mcplist)
