@@ -275,6 +275,25 @@ class Selector(Qt.QDialog, TaurusBaseWidget):
                 settings.value(
                     'Preferences/ScanIDEditable', 0).toInt()[0])
         self.state.scanIDEditable = bool(scanIDEditable)
+
+        try:
+            scanFileExtEditable = int(
+                settings.value('Preferences/ScanFileExtEditable', 2))
+        except Exception:
+            scanFileExtEditable = int(
+                settings.value(
+                    'Preferences/ScanFileExtEditable', 2).toInt()[0])
+        self.state.scanFileExtEditable = bool(scanFileExtEditable)
+
+        try:
+            scanDirEditable = int(
+                settings.value('Preferences/ScanDirEditable', 2))
+        except Exception:
+            scanDirEditable = int(
+                settings.value(
+                    'Preferences/ScanDirEditable', 2).toInt()[0])
+        self.state.scanDirEditable = bool(scanDirEditable)
+
         cnffile = settings.value("Selector/CnfFile", "./")
         if hasattr(cnffile, "toString"):
             self.cnfFile = str(cnffile.toString())
@@ -410,6 +429,7 @@ class Selector(Qt.QDialog, TaurusBaseWidget):
                 settings.value('Preferences/ScanFileExtStatus', 2).toInt()[0]))
         self.ui.fileExtScanCheckBox.setChecked(
             self.scanFileExtStatus != 0)
+
         try:
             self.__scanIDEditableChanged(int(
                 settings.value('Preferences/ScanIDEditable', 0)))
@@ -418,6 +438,25 @@ class Selector(Qt.QDialog, TaurusBaseWidget):
                 settings.value('Preferences/ScanIDEditable', 0).toInt()[0]))
         self.ui.scanIDEditableCheckBox.setChecked(
             self.state.scanIDEditable != 0)
+
+        try:
+            self.__scanFileExtEditableChanged(int(
+                settings.value('Preferences/ScanFileExtEditable', 2)))
+        except Exception:
+            self.__scanFileExtEditableChanged(int(
+                settings.value(
+                    'Preferences/ScanFileExtEditable', 2).toInt()[0]))
+        self.ui.scanFileExtEditableCheckBox.setChecked(
+            self.state.scanFileExtEditable != 0)
+
+        try:
+            self.__scanDirEditableChanged(int(
+                settings.value('Preferences/ScanDirEditable', 2)))
+        except Exception:
+            self.__scanDirEditableChanged(int(
+                settings.value('Preferences/ScanDirEditable', 2).toInt()[0]))
+        self.ui.scanDirEditableCheckBox.setChecked(
+            self.state.scanDirEditable != 0)
 
         self.__settingsloaded = True
         self.__skipconfig = False
@@ -435,6 +474,7 @@ class Selector(Qt.QDialog, TaurusBaseWidget):
         self.__setWidgetValues()
         self.__connectSignals()
         self.__addTips()
+        self.ui.tabWidget.setFocus()
 
     def __addButtonBoxes(self):
         """adds button boxes into the main buttonbox"""
@@ -529,8 +569,15 @@ class Selector(Qt.QDialog, TaurusBaseWidget):
         self.ui.fontSizeSpinBox.setValue(self.fontSize)
         self.ui.statusCheckBox.setChecked(self.displayStatus != 0)
         self.ui.fileExtScanCheckBox.setChecked(self.scanFileExtStatus != 0)
+
         self.ui.scanIDEditableCheckBox.setChecked(
             self.state.scanIDEditable != 0)
+
+        self.ui.scanFileExtEditableCheckBox.setChecked(
+            self.state.scanFileExtEditable != 0)
+
+        self.ui.scanDirEditableCheckBox.setChecked(
+            self.state.scanDirEditable != 0)
 
     def __hideWidgets(self):
         """ hides widgets according to set user mode
@@ -594,6 +641,12 @@ class Selector(Qt.QDialog, TaurusBaseWidget):
             self.__scanFileExtStatusChanged)
         self.ui.scanIDEditableCheckBox.stateChanged.connect(
             self.__scanIDEditableChanged)
+
+        self.ui.scanFileExtEditableCheckBox.stateChanged.connect(
+            self.__scanFileExtEditableChanged)
+
+        self.ui.scanDirEditableCheckBox.stateChanged.connect(
+            self.__scanDirEditableChanged)
 
         self.detectors.dirty.connect(self.setDirty)
         self.preferences.dirty.connect(self.setDirty)
@@ -688,6 +741,12 @@ class Selector(Qt.QDialog, TaurusBaseWidget):
         settings.setValue(
             "Preferences/ScanIDEditable",
             (2 if self.ui.scanIDEditableCheckBox.isChecked() else 0))
+        settings.setValue(
+            "Preferences/ScanFileExtEditable",
+            (2 if self.ui.scanFileExtEditableCheckBox.isChecked() else 0))
+        settings.setValue(
+            "Preferences/ScanDirEditable",
+            (2 if self.ui.scanDirEditableCheckBox.isChecked() else 0))
         settings.setValue(
             "Preferences/Groups",
             (str(self.preferences.mgroups)))
@@ -1360,6 +1419,28 @@ class Selector(Qt.QDialog, TaurusBaseWidget):
         :type index: :obj:`int`
         """
         self.state.scanIDEditable = state
+        self.storage.updateForm(self.scanFileExtStatus != 0)
+        self.setDirty(self.__dirty)
+
+    @Qt.pyqtSlot(int)
+    def __scanFileExtEditableChanged(self, state):
+        """  scanFileExt editable status
+
+        :param state:  status state
+        :type index: :obj:`int`
+        """
+        self.state.scanFileExtEditable = state
+        self.storage.updateForm(self.scanFileExtStatus != 0)
+        self.setDirty(self.__dirty)
+
+    @Qt.pyqtSlot(int)
+    def __scanDirEditableChanged(self, state):
+        """  scanDir editable status
+
+        :param state:  status state
+        :type index: :obj:`int`
+        """
+        self.state.scanDirEditable = state
         self.storage.updateForm(self.scanFileExtStatus != 0)
         self.setDirty(self.__dirty)
 
