@@ -511,7 +511,10 @@ class ServerState(Qt.QObject):
             self.controllers = self.properties["__controllers__"]
         else:
             self.controllers = {}
-        if "__triggergatelist__" in self.properties:
+        if "__triggergatedict__" in self.properties:
+            self.triggergatelist = \
+                list(self.properties["__triggergatedict__"].keys())
+        elif "__triggergatelist__" in self.properties:
             self.triggergatelist = \
                 self.properties["__triggergatelist__"]
         else:
