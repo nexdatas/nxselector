@@ -1,3 +1,7 @@
+2026-04-23 Jan Kotanski <jankotan@gmail.com>
+	* add support for __triggergatedict__ propertys (#140)
+	* tagged as 3.25.0
+
 2026-04-09 Jan Kotanski <jankotan@gmail.com>
 	* remove duplicated detector elements (#136)
 	* add config for editable scan dir and scan ext (#134)
