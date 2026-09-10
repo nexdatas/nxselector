@@ -48,3 +48,32 @@ jobs:
         run: |
              docker exec  --user root ndts  /bin/bash -c "chown -R 1001 /home/tango "
              docker container stop ndts
+
+  pixi_tests:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        os: [debian13, ubuntu26.04]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v2
+      - name: Update bash files
+        run: |
+          chmod +x .ci/run_pixi.sh
+          chmod +x .ci/install_tango.sh
+      - name: Build the docker
+        env:
+          OSYS: ${{ matrix.os }}
+        run: docker build -t ndts .ci/${OSYS}_pixi
+      - name: Run the docker
+        run: docker run  --name  ndts -d -it -v `pwd`:/home/tango  ndts
+      - name: Install tango
+        env:
+          OSYS: ${{ matrix.os }}
+        run: .ci/install_tango.sh ${OSYS}
+      - name: Run pixi and tests
+        run: .ci/run_pixi.sh
+      - name: Stop the docker
+        run: |
+             docker exec  --user root ndts  /bin/bash -c "chown -R 1001 /home/tango "
+             docker container stop ndts
