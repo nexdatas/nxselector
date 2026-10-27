@@ -1,5 +1,9 @@
+2026-XX-YY Jan Kotanski <jankotan@gmail.com>
+	* do not use HDRI repository for pixi tests (#148)
+	* tagged as 3.25.X
+
 2026-04-23 Jan Kotanski <jankotan@gmail.com>
-	* add support for __triggergatedict__ propertys (#140)
+	* add support for __triggergatedict__ properties (#140)
 	* tagged as 3.25.0
 
 2026-04-09 Jan Kotanski <jankotan@gmail.com>
