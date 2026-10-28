@@ -29,6 +29,8 @@ from setuptools.command.build_py import build_py
 from distutils.command.clean import clean
 # from distutils.command.install_scripts import install_scripts
 import shutil
+from importlib.util import module_from_spec, spec_from_file_location
+from pathlib import Path
 
 try:
     from sphinx.setup_command import BuildDoc
@@ -39,7 +41,7 @@ except Exception:
 #: (:obj:`str`) package name
 TOOL = "nxsselector"
 #: (:obj:`str`) package instance
-ITOOL = __import__(TOOL)
+# ITOOL = __import__(TOOL)
 
 
 def read(fname):
@@ -49,6 +51,14 @@ def read(fname):
     :type fname: :obj:`str`
     """
     return open(os.path.join(os.path.dirname(__file__), fname)).read()
+
+
+def get_version():
+    path = Path(__file__).parent / "nxsselector" / "__init__.py"
+    spec = spec_from_file_location("nxsselector", path.as_posix())
+    module = module_from_spec(spec)
+    spec.loader.exec_module(module)
+    return module
 
 
 #: (:obj:`str`) .ui file directory
@@ -176,7 +186,7 @@ package_data = {
 
 
 #: (:obj:`str`) full release number
-release = ITOOL.__version__
+release = get_version().__version__
 #: (:obj:`str`) release version number
 version = ".".join(release.split(".")[:2])
 #: (:obj:`str`) program name
@@ -186,7 +196,7 @@ name = "NXS Component Selector"
 #: (:obj:`dict` <:obj:`str`, `any`>) metadata for distutils
 SETUPDATA = dict(
     name="nxselector",
-    version=ITOOL.__version__,
+    version=get_version().__version__,
     author="Jan Kotanski",
     author_email="jankotan@gmail.com",
     maintainer="Jan Kotanski",

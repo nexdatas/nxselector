@@ -1,6 +1,7 @@
-2026-XX-YY Jan Kotanski <jankotan@gmail.com>
+2026-10-28 Jan Kotanski <jankotan@gmail.com>
 	* do not use HDRI repository for pixi tests (#148)
-	* tagged as 3.25.X
+	* add pyproject.toml file (#150)
+	* tagged as 3.26.0
 
 2026-04-23 Jan Kotanski <jankotan@gmail.com>
 	* add support for __triggergatedict__ properties (#140)
