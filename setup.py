@@ -54,8 +54,8 @@ def read(fname):
 
 
 def get_version():
-    path = Path(__file__).parent / "sardananxsrecorder" / "__init__.py"
-    spec = spec_from_file_location("sardananxsrecorder", path.as_posix())
+    path = Path(__file__).parent / "nxsselector" / "__init__.py"
+    spec = spec_from_file_location("nxsselector", path.as_posix())
     module = module_from_spec(spec)
     spec.loader.exec_module(module)
     return module
