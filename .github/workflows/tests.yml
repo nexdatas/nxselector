@@ -24,7 +24,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        os: [debian13, debian12, ubuntu26.04, ubuntu24.04, ubuntu22.04]
+        os: [debian13, debian12, ubuntu26.10py, ubuntu26.04, ubuntu24.04]
     steps:
       - uses: actions/checkout@v2
       - uses: actions/setup-python@v2
@@ -41,9 +41,47 @@ jobs:
       - name: install tango
         env:
           OS: ${{ matrix.os }}
-        run: .ci/install.sh ${OS} 3
+        run: .ci/install.sh ${OS} 3        
       - name: run tests
         run: .ci/run.sh 3
+
+      - name: Append documentation for the latest release version
+        if: (github.ref == 'refs/heads/develop' ||  github.ref == 'refs/heads/issue_1005') &&  matrix.os == 'debian13'
+        run: |
+             docker  exec ndts /bin/bash -c "cp doc/index.html doc/_config.yml build"
+             docker  exec ndts /bin/bash -c "git config remote.origin.fetch '+refs/heads/*:refs/remotes/origin/*'"
+             docker  exec ndts /bin/bash -c "git fetch && git checkout gh-pages && git pull"
+             docker  exec ndts /bin/bash -c "mkdir -p ./latest && shopt -u dotglob && rm -rf ./latest/*"
+             docker  exec ndts /bin/bash -c "mv -f build/sphinx/html/* ./latest/"
+             docker  exec ndts /bin/bash -c "mv -f build/index.html build/_config.yml ."
+             docker  exec --user root ndts /bin/bash -c "rm -rf build test nxsselector  dist  nxsselector.egg-info testresult.txt *.ds.xml tn.png attachment-metadata-12345678.json"
+
+      - name: Extract the code version from the branch name
+        if: startsWith(github.ref, 'refs/heads/docs_') && matrix.os == 'debian13'
+        shell: bash
+        run: echo "##[set-output name=docver;]$(echo ${GITHUB_REF#refs/heads/docs_})"
+        id: extract_docver
+
+      - name: Append documentation for the extracted release version
+        if: startsWith(github.ref, 'refs/heads/docs_') &&  matrix.os == 'debian13'
+        run: |
+             echo Version: ${{ steps.extract_docver.outputs.docver }}
+             docker  exec ndts /bin/bash -c "git config remote.origin.fetch '+refs/heads/*:refs/remotes/origin/*'"
+             docker  exec ndts /bin/bash -c "git fetch && git checkout gh-pages && git pull"
+             docker  exec ndts /bin/bash -c "mkdir -p ./${{ steps.extract_docver.outputs.docver }} && shopt -u dotglob && rm -rf ./${{ steps.extract_docver.outputs.docver }}/* "
+             docker  exec ndts /bin/bash -c "mv -f build/sphinx/html/* ./${{ steps.extract_docver.outputs.docver }}"
+             docker  exec --user root ndts /bin/bash -c "rm -rf build test nxsselector  dist  nxsselector.egg-info  testresult.txt *.ds.xml tn.png attachment-metadata-12345678.json"
+
+      - name: Deploy documentation
+        if: (github.ref == 'refs/heads/develop' || startsWith(github.ref, 'refs/heads/docs_'))  &&  matrix.os == 'debian13'
+        uses: s0/git-publish-subdir-action@develop
+        env:
+          REPO: self
+          BRANCH: gh-pages
+          FOLDER: .
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          MESSAGE: "Build: ({sha}) {msg}"
+        
       - name: Stop the docker
         run: |
              docker exec  --user root ndts  /bin/bash -c "chown -R 1001 /home/tango "
