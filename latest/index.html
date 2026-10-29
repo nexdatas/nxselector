@@ -1,19 +1,16 @@
 <!DOCTYPE html>
 
-<html lang="en">
+<html lang="en" data-content_root="./">
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Welcome to nxselector’s documentation! &#8212; NXS Component Selector 3.25.0 documentation</title>
-    <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
-    <link rel="stylesheet" type="text/css" href="_static/bootstrap-sphinx.css" />
-    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
-    <script src="_static/jquery.js"></script>
-    <script src="_static/underscore.js"></script>
-    <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
-    <script src="_static/doctools.js"></script>
-    <script src="_static/sphinx_highlight.js"></script>
+    <title>Welcome to nxselector’s documentation! &#8212; nxsselector  documentation</title>
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=fa44fd50" />
+    <link rel="stylesheet" type="text/css" href="_static/bootstrap-sphinx.css?v=4468db6d" />
+    <script src="_static/documentation_options.js?v=5929fcd5"></script>
+    <script src="_static/doctools.js?v=9bcbadda"></script>
+    <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
 <meta charset='utf-8'>
@@ -37,8 +34,8 @@
           <span class="icon-bar"></span>
         </button>
         <a class="navbar-brand" href="#">
-          NXS Component Selector</a>
-        <span class="navbar-text navbar-version pull-left"><b>3.25</b></span>
+          nxsselector</a>
+        <span class="navbar-text navbar-version pull-left"><b>3.26</b></span>
       </div>
 
         <div class="collapse navbar-collapse nav-collapse">
@@ -116,10 +113,48 @@
 
 <div class="container">
   <div class="row">
-    <div class="body col-md-12 content" role="main">
+      <div class="col-md-3">
+        <div id="sidebar" class="bs-sidenav" role="complementary"><ul>
+<li><a class="reference internal" href="#">Welcome to nxselector’s documentation!</a><ul>
+<li><a class="reference internal" href="#installation">Installation</a><ul>
+<li><a class="reference internal" href="#from-sources">From sources</a></li>
+<li><a class="reference internal" href="#debian-packages">Debian packages</a></li>
+<li><a class="reference internal" href="#from-pip">From pip</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#setting-environment">Setting environment</a><ul>
+<li><a class="reference internal" href="#setting-saradna">Setting Saradna</a></li>
+<li><a class="reference internal" href="#setting-nexus-servers">Setting NeXus Servers</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a class="reference internal" href="#general-overview">General overview</a><ul>
+<li><a class="reference internal" href="#device-selection">Device Selection</a></li>
+<li><a class="reference internal" href="#icons">Icons</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#indices-and-tables">Indices and tables</a></li>
+</ul>
+<p>
+  <h3 class='versions'>Versions</h3>
+  <p>
+    <ul>
+      <li><a class="reference external" href="index/../../latest/index.html">v:latest</a></li>
+      <li><a class="reference external" href="index/../../stable/index.html">v:stable</a></li>
+      
+      <li><a class="reference external" href="index/../../v3.26.0/index.html">v3.26.0</a></li>
+      <li><a class="reference external" href="index/../../v3.25.0/index.html">v3.25.0</a></li>
+      
+    </ul>
+  </p>
+</p>
+        </div>
+      </div>
+    <div class="body col-md-9 content" role="main">
       
   <section id="welcome-to-nxselector-s-documentation">
-<h1>Welcome to nxselector’s documentation!<a class="headerlink" href="#welcome-to-nxselector-s-documentation" title="Permalink to this heading">¶</a></h1>
+<h1>Welcome to nxselector’s documentation!<a class="headerlink" href="#welcome-to-nxselector-s-documentation" title="Link to this heading">¶</a></h1>
 <p><a class="reference external" href="https://github.com/nexdatas/nxselector/actions"><img alt="" src="https://github.com/nexdatas/nxselector/actions/workflows/tests.yml/badge.svg" /></a>
 <a class="reference external" href="https://nexdatas.github.io/nxselector/index.html"><img alt="" src="https://img.shields.io/badge/Documentation-webpages-ADD8E6.svg" /></a>
 <a class="reference external" href="https://pypi.python.org/pypi/nxselector"><img alt="" src="https://img.shields.io/pypi/v/nxselector.svg" /></a>
@@ -135,13 +170,13 @@ Nexus Data Writer via Sardana NeXus Recorder.</p>
 <div class="line">NexDaTaS Web page: <a class="reference external" href="https://nexdatas.github.io">https://nexdatas.github.io</a></div>
 </div>
 <section id="installation">
-<h2>Installation<a class="headerlink" href="#installation" title="Permalink to this heading">¶</a></h2>
+<h2>Installation<a class="headerlink" href="#installation" title="Link to this heading">¶</a></h2>
 <p>Install the dependencies:</p>
 <div class="line-block">
 <div class="line">Sardana, tango, sphinx, Taurus, NXSRecSelector</div>
 </div>
 <section id="from-sources">
-<h3>From sources<a class="headerlink" href="#from-sources" title="Permalink to this heading">¶</a></h3>
+<h3>From sources<a class="headerlink" href="#from-sources" title="Link to this heading">¶</a></h3>
 <p>Download the latest version of NeXuS Configuration Server from</p>
 <div class="line-block">
 <div class="line"><a class="reference external" href="https://github.com/nexdatas/nxselector">https://github.com/nexdatas/nxselector</a></div>
@@ -152,7 +187,7 @@ Nexus Data Writer via Sardana NeXus Recorder.</p>
 </div>
 </section>
 <section id="debian-packages">
-<h3>Debian packages<a class="headerlink" href="#debian-packages" title="Permalink to this heading">¶</a></h3>
+<h3>Debian packages<a class="headerlink" href="#debian-packages" title="Link to this heading">¶</a></h3>
 <p>Debian <cite>trixie</cite>, <cite>bookworm</cite>, <cite>bullseye</cite> or Ubuntu  <cite>resolute</cite>, <cite>noble</cite>, <cite>jammy</cite> packages can be found in the HDRI repository.</p>
 <p>To install the debian packages, add the PGP repository key</p>
 <div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>sudo<span class="w"> </span>su
@@ -181,7 +216,7 @@ Nexus Data Writer via Sardana NeXus Recorder.</p>
 <p>for NeXus recorder and MacroGUI packages.</p>
 </section>
 <section id="from-pip">
-<h3>From pip<a class="headerlink" href="#from-pip" title="Permalink to this heading">¶</a></h3>
+<h3>From pip<a class="headerlink" href="#from-pip" title="Link to this heading">¶</a></h3>
 <p>To install it from pip you need also to install pyqt5, e.g.</p>
 <div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>python3<span class="w"> </span>-m<span class="w"> </span>venv<span class="w"> </span>myvenv
 <span class="gp">$ </span>.<span class="w"> </span>myvenv/bin/activate
@@ -204,9 +239,9 @@ Nexus Data Writer via Sardana NeXus Recorder.</p>
 </section>
 </section>
 <section id="setting-environment">
-<h2>Setting environment<a class="headerlink" href="#setting-environment" title="Permalink to this heading">¶</a></h2>
+<h2>Setting environment<a class="headerlink" href="#setting-environment" title="Link to this heading">¶</a></h2>
 <section id="setting-saradna">
-<h3>Setting Saradna<a class="headerlink" href="#setting-saradna" title="Permalink to this heading">¶</a></h3>
+<h3>Setting Saradna<a class="headerlink" href="#setting-saradna" title="Link to this heading">¶</a></h3>
 <p>If sardana is not yet set up run</p>
 <div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>Pool
 </pre></div>
@@ -240,7 +275,7 @@ for MacroServer to 3 and restart servers.</p>
 </div>
 </section>
 <section id="setting-nexus-servers">
-<h3>Setting NeXus Servers<a class="headerlink" href="#setting-nexus-servers" title="Permalink to this heading">¶</a></h3>
+<h3>Setting NeXus Servers<a class="headerlink" href="#setting-nexus-servers" title="Link to this heading">¶</a></h3>
 <p>To set up  NeXus Servers run</p>
 <div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>nxsetup<span class="w"> </span><span class="nb">set</span>
 </pre></div>
@@ -261,9 +296,9 @@ for MacroServer to 3 and restart servers.</p>
 </section>
 </section>
 <section id="general-overview">
-<h1>General overview<a class="headerlink" href="#general-overview" title="Permalink to this heading">¶</a></h1>
+<h1>General overview<a class="headerlink" href="#general-overview" title="Link to this heading">¶</a></h1>
 <section id="device-selection">
-<h2>Device Selection<a class="headerlink" href="#device-selection" title="Permalink to this heading">¶</a></h2>
+<h2>Device Selection<a class="headerlink" href="#device-selection" title="Link to this heading">¶</a></h2>
 <p>Every measurement requires devices to be selected. The Component Selector (CS) is a graphical user interface serving this purpose. It is launched from a Linux terminal by</p>
 <div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>nxselector
 </pre></div>
@@ -275,7 +310,7 @@ for MacroServer to 3 and restart servers.</p>
 <figure class="align-default" id="id1">
 <span id="figure-1-1"></span><img alt="https://github.com/nexdatas/nxselector/blob/develop/doc/png/detectors_23.png?raw=true" src="https://github.com/nexdatas/nxselector/blob/develop/doc/png/detectors_23.png?raw=true" />
 <figcaption>
-<p><span class="caption-text">Figure 1.1: Component Selector: Detectors</span><a class="headerlink" href="#id1" title="Permalink to this image">¶</a></p>
+<p><span class="caption-text">Figure 1.1: Component Selector: Detectors</span><a class="headerlink" href="#id1" title="Link to this image">¶</a></p>
 </figcaption>
 </figure>
 <p>Configuration of the each hardware device for the NeXus files is described inside a configution string, i.e. a configuration component. The employed configuration concept is inspired by the following hardware/configuration correspondences:
@@ -297,7 +332,7 @@ for MacroServer to 3 and restart servers.</p>
 <figure class="align-default" id="id2">
 <span id="figure-1-2"></span><img alt="https://github.com/nexdatas/nxselector/blob/develop/doc/png/descriptions_23.png?raw=true" src="https://github.com/nexdatas/nxselector/blob/develop/doc/png/descriptions_23.png?raw=true" />
 <figcaption>
-<p><span class="caption-text">Figure 1.2: Component Selector: Descriptions</span><a class="headerlink" href="#id2" title="Permalink to this image">¶</a></p>
+<p><span class="caption-text">Figure 1.2: Component Selector: Descriptions</span><a class="headerlink" href="#id2" title="Link to this image">¶</a></p>
 </figcaption>
 </figure>
 <p>The Descriptions tab, <cite>Figure 1.2</cite>, displays components containing metadata which are stored only before or after the scan. They are divided into two groups: the <em>Mandatory</em> beamline-specific components and the <em>Optional</em> discipline-specific components. The <em>Mandatory</em> beamline group describes the source device and the facility. The <em>Optional</em> discipline group contains information about the spatial arrangement of the experimental setup, mainly motor positions. The user can select or deselect the optional components from the current profile.</p>
@@ -308,19 +343,19 @@ This helps to store the metadata informations by other Sardana recorders.</p>
 <figure class="align-default" id="id3">
 <span id="figure-1-3"></span><img alt="https://github.com/nexdatas/nxselector/blob/develop/doc/png/udata_23.png?raw=true" src="https://github.com/nexdatas/nxselector/blob/develop/doc/png/udata_23.png?raw=true" />
 <figcaption>
-<p><span class="caption-text">Figure 1.3: Component Selector: NeXus User Data</span><a class="headerlink" href="#id3" title="Permalink to this image">¶</a></p>
+<p><span class="caption-text">Figure 1.3: Component Selector: NeXus User Data</span><a class="headerlink" href="#id3" title="Link to this image">¶</a></p>
 </figcaption>
 </figure>
 <p>In order to describe the experiment completely some of the client data have to be provided by the user. The <cite>Figure 1.3</cite> shows the CS tab allowing the researcher to supply this information. Typical examples for user-supplied metadata are title, sample name and user comment.</p>
 <p>The layout of the Component Selector can be easily adapted into different beamline specification in the Configuration tab.</p>
 </section>
 <section id="icons">
-<h2>Icons<a class="headerlink" href="#icons" title="Permalink to this heading">¶</a></h2>
+<h2>Icons<a class="headerlink" href="#icons" title="Link to this heading">¶</a></h2>
 <p>Icons fetched from <a class="reference external" href="http://findicons.com/pack/990/vistaico_toolbar">http://findicons.com/pack/990/vistaico_toolbar</a>.</p>
 </section>
 </section>
 <section id="indices-and-tables">
-<h1>Indices and tables<a class="headerlink" href="#indices-and-tables" title="Permalink to this heading">¶</a></h1>
+<h1>Indices and tables<a class="headerlink" href="#indices-and-tables" title="Link to this heading">¶</a></h1>
 <ul class="simple">
 <li><p><a class="reference internal" href="genindex.html"><span class="std std-ref">Index</span></a></p></li>
 <li><p><a class="reference internal" href="py-modindex.html"><span class="std std-ref">Module Index</span></a></p></li>
@@ -343,7 +378,7 @@ This helps to store the metadata informations by other Sardana recorders.</p>
         &copy; Copyright 2012-2017 DESY, Jan Kotanski &lt;jkotan@mail.desy.de&gt;
 
 GNU GENERAL PUBLIC LICENSE, version 3.<br/>
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 5.3.0.<br/>
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 8.1.3.<br/>
     </p>
   </div>
 </footer>
