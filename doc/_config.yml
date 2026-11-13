@@ -1,0 +1,4 @@
+title: NXSelector
+email: jan.kotanski@desy.de
+description: "NXSelector"
+include: ['_sources', '_static', '_modules', '_images']
