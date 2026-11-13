@@ -3,8 +3,8 @@ FROM debian:stretch
 MAINTAINER DESY, Jan Kotanski <jankotan@gmail.com>
 RUN /bin/bash -c 'echo "deb http://ftp.de.debian.org/debian stretch main" > /etc/apt/sources.list.d/debian9de.list'
 RUN apt-get -qq update && apt-get -qq install -y libterm-readline-gnu-perl software-properties-common coreutils gnupg2 procps apt-utils curl apt-transport-https ca-certificates apt-utils
-RUN curl -v --retry 10 http://repos.pni-hdri.de/debian_repo.pub.gpg | apt-key add -
-RUN add-apt-repository "deb http://repos.pni-hdri.de/apt/debian stretch main" -y
+RUN curl -v --retry 10 https://docs.desy.de/pni-hdri/debian_repo.pub.gpg | apt-key add -
+RUN add-apt-repository "deb https://docs.desy.de/pni-hdri/apt/debian stretch main" -y
 RUN apt-get -qq update && apt-get -qq -y dist-upgrade
 RUN apt-get -qq update && apt-get -qq install -y default-mysql-client  python3-h5py python3-sphinx debconf-utils net-tools  omniidl libomniorb4-dev libcos4-dev libomnithread3-dev libzmq3-dev python3-pninexus python3-lxml python3-h5py python3-setuptools ipython3 python3-future
 RUN apt-get -qq install -y  python3-pninexus build-essential autoconf libtool pkg-config qt5-default
