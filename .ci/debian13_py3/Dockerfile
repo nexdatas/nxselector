@@ -2,9 +2,9 @@ FROM debian:trixie
 
 RUN /bin/bash -c 'echo "deb http://ftp.de.debian.org/debian trixie main" > /etc/apt/sources.list.d/debiande.list'
 RUN apt-get -qq update && apt-get -qq install -y libterm-readline-gnu-perl coreutils gnupg2 procps apt-utils curl apt-transport-https gnupg2 ca-certificates wget
-RUN curl -v --retry 10 -s http://repos.pni-hdri.de/debian_repo.pub.gpg  | gpg --no-default-keyring --keyring gnupg-ring:/etc/apt/trusted.gpg.d/debian-hdri-repo.gpg --import
+RUN curl -v --retry 10 -s https://docs.desy.de/pni-hdri/debian_repo.pub.gpg  | gpg --no-default-keyring --keyring gnupg-ring:/etc/apt/trusted.gpg.d/debian-hdri-repo.gpg --import
 RUN chmod 644 /etc/apt/trusted.gpg.d/debian-hdri-repo.gpg
-RUN cd /etc/apt/sources.list.d && wget http://repos.pni-hdri.de/trixie-pni-hdri.list
+RUN cd /etc/apt/sources.list.d && wget https://docs.desy.de/pni-hdri/trixie-pni-hdri.list
 
 RUN apt-get -qq update && apt-get -qq -y dist-upgrade
 RUN apt-get -qq update && apt-get -qq install -y default-mysql-client  python3-h5py  python3-mysqldb python3-sphinx  apt-utils debconf-utils net-tools  omniidl libomniorb4-dev libcos4-dev libomnithread4-dev libzmq3-dev python3-pninexus python3-lxml python3-h5py python3-pninexus python3-pyqt5 python3-pyqt5.qtsvg python3-qtchecker  qtchooser python3-pint  python3-pip python3-pip-whl python3-sphinx-bootstrap-theme git

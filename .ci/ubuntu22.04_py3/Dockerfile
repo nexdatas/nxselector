@@ -3,8 +3,8 @@ FROM ubuntu:22.04
 MAINTAINER DESY, Jan Kotanski <jankotan@gmail.com>
 
 RUN apt-get -qq update && export DEBIAN_FRONTEND=noninteractive && apt-get -qq install -y software-properties-common curl
-RUN curl -v --retry 10 http://repos.pni-hdri.de/debian_repo.pub.gpg | apt-key add -
-RUN add-apt-repository "deb http://repos.pni-hdri.de/apt/ubuntu jammy main" -y
+RUN curl -v --retry 10 https://docs.desy.de/pni-hdri/debian_repo.pub.gpg | apt-key add -
+RUN add-apt-repository "deb https://docs.desy.de/pni-hdri/apt/ubuntu jammy main" -y
 RUN apt-get -qq update && export DEBIAN_FRONTEND=noninteractive && apt-get -qq dist-upgrade
 RUN apt-get -qq update && export DEBIAN_FRONTEND=noninteractive && apt-get -qq install -y mysql-client mysql-client python3-h5py python3-sphinx apt-utils debconf-utils net-tools  omniidl python3-distutils python3-pninexus python3-lxml
 RUN export DEBIAN_FRONTEND=noninteractive && apt-get -qq install -y  python3-pninexus python3-h5py  python3-setuptools python3-pyqt5 python3-pyqt5.qtsvg
