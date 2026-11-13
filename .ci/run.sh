@@ -5,7 +5,7 @@ if [[ $1 == "2" ]]; then
     docker exec  ndts python test
 else
     echo "run python3-nxselector"
-    docker exec  ndts python3 test
+    docker exec  ndts /bin/bash -c 'QT_QPA_PLATFORM=offscreen python3 test'
 fi
 ERR=$?
 
