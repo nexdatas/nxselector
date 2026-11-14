@@ -4,8 +4,8 @@ MAINTAINER DESY, Jan Kotanski <jankotan@gmail.com>
 
 RUN sed -i '/jessie-updates/d' /etc/apt/sources.list
 RUN apt-get -qq update && apt-get -qq install -y software-properties-common curl
-RUN curl -v --retry 10 https://docs.desy.de/pni-hdri/debian_repo.pub.gpg | apt-key add -
-RUN add-apt-repository "deb https://docs.desy.de/pni-hdri/apt/debian jessie main" -y
+RUN curl -v --retry 10 https://repos.desy.de/pni-hdri/debian_repo.pub.gpg | apt-key add -
+RUN add-apt-repository "deb https://repos.desy.de/pni-hdri/apt/debian jessie main" -y
 RUN echo "Acquire::Check-Valid-Until false;" > /etc/apt/apt.conf
 
 RUN apt-get -qq update && apt-get -qq -y dist-upgrade
