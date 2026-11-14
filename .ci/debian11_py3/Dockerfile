@@ -3,8 +3,8 @@ FROM debian:bullseye
 MAINTAINER DESY, Jan Kotanski <jankotan@gmail.com>
 RUN /bin/bash -c 'echo "deb http://ftp.de.debian.org/debian bullseye main" > /etc/apt/sources.list.d/debiande.list'
 RUN apt-get -qq update && apt-get -qq install -y libterm-readline-gnu-perl software-properties-common coreutils gnupg2 procps apt-utils curl apt-transport-https gnupg2 ca-certificates
-RUN curl -v --retry 10 https://docs.desy.de/pni-hdri/debian_repo.pub.gpg | apt-key add -
-RUN add-apt-repository "deb https://docs.desy.de/pni-hdri/apt/debian bullseye main" -y
+RUN curl -v --retry 10 https://repos.desy.de/pni-hdri/debian_repo.pub.gpg | apt-key add -
+RUN add-apt-repository "deb https://repos.desy.de/pni-hdri/apt/debian bullseye main" -y
 RUN apt-get -qq update && apt-get -qq -y dist-upgrade
 RUN apt-get -qq update && apt-get -qq install -y default-mysql-client  python3-h5py  python3-mysqldb python3-sphinx  apt-utils debconf-utils net-tools  omniidl libomniorb4-dev libcos4-dev libomnithread4-dev libzmq3-dev python3-pninexus python3-lxml python3-h5py python3-pninexus python3-pyqt5 python3-pyqt5.qtsvg python3-qtchecker  qtchooser python3-pint
 RUN useradd -ms /bin/bash tango
