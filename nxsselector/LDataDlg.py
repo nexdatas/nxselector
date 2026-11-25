@@ -21,7 +21,6 @@
 
 import json
 import logging
-import sys
 
 try:
     from taurus.external.qt import Qt
@@ -38,9 +37,6 @@ from .ElementModel import PROPTEXT
 logger = logging.getLogger(__name__)
 
 SYNCHTEXT = PROPTEXT["synchronization"]
-
-if sys.version_info > (3,):
-    unicode = str
 
 
 @UILoadable(with_ui='ui')
@@ -276,11 +272,11 @@ class LDataDlg(Qt.QDialog):
         else:
             self.canfail = None
 
-        self.label = unicode(self.ui.labelLineEdit.text())
-        self.path = unicode(self.ui.pathLineEdit.text())
-        self.refpattern = unicode(self.ui.refpatternLineEdit.text())
-        self.dtype = unicode(self.ui.typeLineEdit.text())
-        tshape = unicode(self.ui.shapeLineEdit.text()).replace("None", "null")
+        self.label = str(self.ui.labelLineEdit.text())
+        self.path = str(self.ui.pathLineEdit.text())
+        self.refpattern = str(self.ui.refpatternLineEdit.text())
+        self.dtype = str(self.ui.typeLineEdit.text())
+        tshape = str(self.ui.shapeLineEdit.text()).replace("None", "null")
         try:
             if not tshape:
                 self.shape = None
@@ -302,7 +298,7 @@ class LDataDlg(Qt.QDialog):
 
         for nm, wg in self.widgets.items():
             if nm not in self.extra:
-                self.variables[nm] = unicode(wg.text()) or None
+                self.variables[nm] = str(wg.text()) or None
 
         if not self.label:
             Qt.QMessageBox.warning(self, "Wrong Data", "Empty data label")
@@ -375,7 +371,7 @@ class LExDataDlg(LDataDlg):
         if synch or "synchronization" in self.variables:
             self.variables["synchronization"] = synch
 
-        syncher = unicode(self.ui.synchronizerComboBox.currentText())
+        syncher = str(self.ui.synchronizerComboBox.currentText())
         if syncher != "software" or "synchronizer" in self.variables:
             self.variables["synchronizer"] = syncher
 

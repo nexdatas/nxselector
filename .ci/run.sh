@@ -1,12 +1,7 @@
 #!/usr/bin/env bash
 
-if [[ $1 == "2" ]]; then
-    echo "run python-nxselector"
-    docker exec  ndts python test
-else
-    echo "run python3-nxselector"
-    docker exec  ndts /bin/bash -c 'QT_QPA_PLATFORM=offscreen python3 test'
-fi
+echo "run python3-nxselector"
+docker exec  ndts /bin/bash -c 'QT_QPA_PLATFORM=offscreen python3 test'
 ERR=$?
 
 echo "ERROR: "$ERR

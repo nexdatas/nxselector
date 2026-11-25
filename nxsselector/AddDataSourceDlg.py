@@ -19,7 +19,6 @@
 
 """  editable list dialog """
 
-import sys
 
 try:
     from taurus.external.qt import Qt
@@ -39,10 +38,6 @@ import taurus
 import logging
 #: (:obj:`logging.Logger`) logger object
 logger = logging.getLogger(__name__)
-
-
-if sys.version_info > (3,):
-    unicode = str
 
 
 class SourceLineEdit(Qt.QLineEdit):
@@ -139,8 +134,8 @@ class AddDataSourceDlg(Qt.QDialog):
     def accept(self):
         """ updates class variables with the form content
         """
-        self.name = unicode(self.ui.nameLineEdit.text())
-        self.source = unicode(self.ui.sourceLineEdit.text())
+        self.name = str(self.ui.nameLineEdit.text())
+        self.source = str(self.ui.sourceLineEdit.text())
 
         if not self.name:
             Qt.QMessageBox.warning(

@@ -66,7 +66,7 @@ try:
     sys.path.insert(0, os.path.abspath("../"))  # Adjust path as necessary
     import nxsselector
     version = ".".join(nxsselector.__version__.split(".")[:2])
-    release = release.__version__
+    release = nxsselector.__version__
 except Exception:
     pass
 
@@ -266,8 +266,9 @@ if os.getenv("NXSTOOLS_HIDE_VERSIONS") != 'TRUE':
     html_sidebars['**'].append('versions.html')
 
 html_context = {
-    "current_version": "v3.26.0",
+    "current_version": "v3.27.0",
     "docs_versions": [
+        "v3.27.0",
         "v3.26.0",
         "v3.25.0",
     ]
