@@ -1,3 +1,0 @@
-nxsselector
-nxsselector/qrc
-nxsselector/ui
