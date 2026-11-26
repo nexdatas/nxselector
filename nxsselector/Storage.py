@@ -662,6 +662,7 @@ class Storage(Qt.QObject):
             if self.state.mntgrp is not None:
                 self.ui.mntGrpComboBox.setEditText(self.state.mntgrp)
             self.ui.mntServerLineEdit.setText(self.state.door or "")
+            self.__updateBackendWidgets()
 
             # device group
             self.ui.devWriterLineEdit.setText(self.state.writerDevice or "")
@@ -682,6 +683,24 @@ class Storage(Qt.QObject):
 
         logger.debug("updateForm storage ended")
 
+    def __updateBackendWidgets(self):
+        """ adapts widgets to the scan backend of the selector server,
+            i.e. the target label and timers
+        """
+        label = self.state.doorLabel
+        self.ui.mntServerLabel.setText("%s:" % label)
+        tips = {
+            "Door": "Door of the Sardana MacroServer",
+            "Session": "BLISS session name",
+            "Target": "Scan target name"}
+        self.ui.mntServerLineEdit.setToolTip(tips.get(label, ""))
+        self.ui.mntServerLineEdit.setEnabled(self.state.backend != "null")
+        timers = self.state.hasTimers
+        for name in ["mntTimerLabel", "mntTimerComboBox", "timerFrame",
+                     "timerAddPushButton", "timerDelPushButton"]:
+            if hasattr(self.ui, name):
+                getattr(self.ui, name).setVisible(timers)
+
     def __applyTimer(self, widget, nid):
         """ store timer into server state
 
@@ -697,12 +716,24 @@ class Storage(Qt.QObject):
             elif self.state.timers[nid] != timer:
                 self.state.timers[nid] = timer
 
+    def __currentMntGrp(self):
+        """ provides the current measurement group name
+
+        :returns: measurement group name, in lower case for sardana
+                  whose aliases are case insensitive
+        :rtype: :obj:`str`
+        """
+        current = str(self.ui.mntGrpComboBox.currentText())
+        if self.state.usesMacroServer:
+            current = current.lower()
+        return current
+
     @Qt.pyqtSlot()
     def __mntgrp_edited(self):
         """ updates application state on editing measurement group
         """
         logger.debug("mntgrp edited")
-        current = str(self.ui.mntGrpComboBox.currentText()).lower()
+        current = self.__currentMntGrp()
         if current == self.state.mntgrp:
             return
         self.disconnectSignals()
@@ -726,7 +757,7 @@ class Storage(Qt.QObject):
         """ updates application state on changing measurement group
         """
         logger.debug("mntgrp changed")
-        current = str(self.ui.mntGrpComboBox.currentText()).lower()
+        current = self.__currentMntGrp()
         if current == self.state.mntgrp:
             return
         self.disconnectSignals()
@@ -768,7 +799,7 @@ class Storage(Qt.QObject):
             self.disconnectSignals()
             try:
                 self.state.deleteMntGrp(
-                    str(self.ui.mntGrpComboBox.currentText()).lower())
+                    self.__currentMntGrp())
             finally:
                 self.connectSignals()
             self.resetAll.emit()
@@ -893,8 +924,7 @@ class Storage(Qt.QObject):
                 self.connectSignals()
             return
         try:
-            self.state.mntgrp = str(
-                self.ui.mntGrpComboBox.currentText()).lower()
+            self.state.mntgrp = self.__currentMntGrp()
 
             logger.debug("apply Timers")
             self.__applyTimer(self.ui.mntTimerComboBox, 0)
