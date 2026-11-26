@@ -5,10 +5,10 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Welcome to nxselector’s documentation! &#8212; nxsselector  documentation</title>
+    <title>Welcome to nxselector’s documentation! &#8212; nxsselector 3.27.0 documentation</title>
     <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=fa44fd50" />
     <link rel="stylesheet" type="text/css" href="_static/bootstrap-sphinx.css?v=4468db6d" />
-    <script src="_static/documentation_options.js?v=5929fcd5"></script>
+    <script src="_static/documentation_options.js?v=41c12b4c"></script>
     <script src="_static/doctools.js?v=9bcbadda"></script>
     <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
     <link rel="index" title="Index" href="genindex.html" />
@@ -35,7 +35,7 @@
         </button>
         <a class="navbar-brand" href="#">
           nxsselector</a>
-        <span class="navbar-text navbar-version pull-left"><b>3.26</b></span>
+        <span class="navbar-text navbar-version pull-left"><b>3.27</b></span>
       </div>
 
         <div class="collapse navbar-collapse nav-collapse">
@@ -143,6 +143,7 @@
       <li><a class="reference external" href="index/../../latest/index.html">v:latest</a></li>
       <li><a class="reference external" href="index/../../stable/index.html">v:stable</a></li>
       
+      <li><a class="reference external" href="index/../../v3.27.0/index.html">v3.27.0</a></li>
       <li><a class="reference external" href="index/../../v3.26.0/index.html">v3.26.0</a></li>
       <li><a class="reference external" href="index/../../v3.25.0/index.html">v3.25.0</a></li>
       
@@ -191,13 +192,13 @@ Nexus Data Writer via Sardana NeXus Recorder.</p>
 <p>Debian <cite>trixie</cite>, <cite>bookworm</cite>, <cite>bullseye</cite> or Ubuntu  <cite>resolute</cite>, <cite>noble</cite>, <cite>jammy</cite> packages can be found in the HDRI repository.</p>
 <p>To install the debian packages, add the PGP repository key</p>
 <div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>sudo<span class="w"> </span>su
-<span class="gp">$ </span>curl<span class="w"> </span>-s<span class="w"> </span>http://repos.pni-hdri.de/debian_repo.pub.gpg<span class="w"> </span><span class="p">|</span><span class="w"> </span>gpg<span class="w"> </span>--no-default-keyring<span class="w"> </span>--keyring<span class="w"> </span>gnupg-ring:/etc/apt/trusted.gpg.d/debian-hdri-repo.gpg<span class="w"> </span>--import
+<span class="gp">$ </span>curl<span class="w"> </span>-s<span class="w"> </span>https://repos.desy.de/pni-hdri/debian_repo.pub.gpg<span class="w"> </span><span class="p">|</span><span class="w"> </span>gpg<span class="w"> </span>--no-default-keyring<span class="w"> </span>--keyring<span class="w"> </span>gnupg-ring:/etc/apt/trusted.gpg.d/debian-hdri-repo.gpg<span class="w"> </span>--import
 <span class="gp">$ </span>chmod<span class="w"> </span><span class="m">644</span><span class="w"> </span>/etc/apt/trusted.gpg.d/debian-hdri-repo.gpg
 </pre></div>
 </div>
 <p>and then download the corresponding source list, e.g.</p>
 <div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span><span class="nb">cd</span><span class="w"> </span>/etc/apt/sources.list.d
-<span class="gp">$ </span>wget<span class="w"> </span>http://repos.pni-hdri.de/trixie-pni-hdri.sources
+<span class="gp">$ </span>wget<span class="w"> </span>https://repos.desy.de/pni-hdri/trixie-pni-hdri.sources
 </pre></div>
 </div>
 <p>Finally,</p>
@@ -288,7 +289,7 @@ for MacroServer to 3 and restart servers.</p>
 </div>
 <p>for specific servers.</p>
 <p>If the <cite>RecoderPath</cite> property of MacroServer is not set one can do it by</p>
-<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>nxsetup<span class="w"> </span>add-recoder-path<span class="w"> </span>/usr/lib/python2.7/dist-packages/sardananxsrecorder
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>nxsetup<span class="w"> </span>add-recoder-path<span class="w"> </span>/usr/lib/python3/dist-packages/sardananxsrecorder
 </pre></div>
 </div>
 <p>where the path should point the <cite>sardananxsrecorder</cite> package.</p>
