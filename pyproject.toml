@@ -1,0 +1,7 @@
+[build-system]
+requires = ["setuptools>=42", "wheel"]
+build-backend = "setuptools.build_meta"
+
+# [tool.ruff.lint]
+# # Enable isort (I) rules, in addition to the defaults.
+# select = ["E4", "E7", "E9", "F", "I"]
