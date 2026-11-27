@@ -3,7 +3,8 @@
 	* show Session or Target instead of Door and hide timers for non-sardana backends
 	* do not access Sardana MacroServer for non-sardana backends
 	* keep the case of measurement group names for non-sardana backends
-	* tagged as 3.28.X
+	* add pyproject.toml missing file (#150)
+	* tagged as 3.28.0
 
 2026-11-25 Jan Kotanski <jankotan@gmail.com>
 	* change URL for the HDRI repository (#154)
