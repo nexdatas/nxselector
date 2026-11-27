@@ -25,6 +25,7 @@ import unittest
 
 import nxselector_test
 import checker_test
+import descerrors_test
 
 try:
     try:
@@ -170,6 +171,10 @@ def main():
     suite.addTests(
           unittest.defaultTestLoader.loadTestsFromModule(
               checker_test)
+    )
+    suite.addTests(
+          unittest.defaultTestLoader.loadTestsFromModule(
+              descerrors_test)
     )
 
     # test runner

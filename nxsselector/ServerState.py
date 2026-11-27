@@ -128,7 +128,8 @@ class Checker(object):
             if k not in dct2.keys():
                 return False
             if isinstance(v, dict):
-                return self.compDict(v, dct2[k])
+                if not self.compDict(v, dct2[k]):
+                    return False
             elif sort and k in self.jsortedlists:
                 l1 = sorted(json.loads(v))
                 l2 = sorted(json.loads(dct2[k]))
@@ -137,7 +138,8 @@ class Checker(object):
             elif sort and k in self.jdicts:
                 d1 = json.loads(v)
                 d2 = json.loads(dct2[k])
-                return self.compDict(d1, d2)
+                if not self.compDict(d1, d2):
+                    return False
             else:
                 if v != dct2[k]:
                     return False
@@ -522,6 +524,33 @@ class ServerState(Qt.QObject):
                 self.errors = dc
         logger.debug(" %s = %s" % ("descriptionErrors", self.errors))
         return self.errors
+
+    def errorMessages(self, name):
+        """ provides description errors of a component or a datasource,
+            see :meth:`fetchErrors`
+
+        :param name: component or datasource name
+        :type name: :obj:`str`
+        :returns: error messages
+        :rtype: :obj:`list` < :obj:`str` >
+        """
+        messages = []
+        for er in self.errors or []:
+            try:
+                jer = json.loads(er)
+            except Exception:
+                continue
+            if not isinstance(jer, dict) or \
+               str(jer.get("component")) != str(name):
+                continue
+            message = str(jer.get("message") or "").strip()
+            source = str(jer.get("datasource") or "").strip()
+            if source and source != str(name):
+                message = "%s: %s" % (source, message) if message \
+                    else source
+            if message:
+                messages.append(message)
+        return messages
 
     def setProperties(self):
         """ sets label properties from properties
