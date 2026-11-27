@@ -243,6 +243,9 @@ class ServerState(Qt.QObject):
         self.mntgrp = None
         #: (:obj:`str`) door  device name
         self.door = None
+        #: (:obj:`str`) scan backend of the selector server,
+        #:    i.e. sardana, bliss or null
+        self.backend = "sardana"
 
         #: (:obj:`str`) configuration device name
         self.configDevice = None
@@ -597,6 +600,7 @@ class ServerState(Qt.QObject):
     def __fetchFileData(self):
         """ fetches file data configuration from the server
         """
+        self.backend = self.__fetchBackend()
         self.timers = self.__importList("Timer", True)
         self.mntgrp = str(self.__importData("MntGrp"))
         try:
@@ -889,6 +893,48 @@ class ServerState(Qt.QObject):
             raise Exception("NXSRecSelector (%s) version below 2.0.0" %
                             (self.server or "module"))
 
+    def __fetchBackend(self):
+        """ provides the scan backend of the selector server
+
+        :returns: backend name, sardana for older servers
+        :rtype: :obj:`str`
+        """
+        if not self.__dp:
+            self.setServer()
+        try:
+            backend = self.__dp.backend
+        except Exception:
+            backend = None
+        return str(backend or "sardana").lower()
+
+    @property
+    def usesMacroServer(self):
+        """ the backend uses Sardana MacroServer and its doors
+
+        :returns: True for the sardana backend
+        :rtype: :obj:`bool`
+        """
+        return self.backend == "sardana"
+
+    @property
+    def hasTimers(self):
+        """ the backend uses timers of measurement groups
+
+        :returns: True for the sardana backend
+        :rtype: :obj:`bool`
+        """
+        return self.backend == "sardana"
+
+    @property
+    def doorLabel(self):
+        """ label of the scan target, i.e. door, session or target
+
+        :returns: target label
+        :rtype: :obj:`str`
+        """
+        return {"sardana": "Door", "bliss": "Session"}.get(
+            self.backend, "Target")
+
     def isDoorFromMacroServer(self, door):
         """ checks if door is of the current MacroServer
 
@@ -899,6 +945,9 @@ class ServerState(Qt.QObject):
         """
         if not self.__dp:
             self.setServer()
+        if not self.usesMacroServer:
+            # the backend checks its targets
+            return True
         if hasattr(self.__dp, "macroServer"):
             ms = str(self.__dp.macroServer)
             if ms:
@@ -934,6 +983,9 @@ class ServerState(Qt.QObject):
         if not self.__dp:
             self.setServer()
         status = False
+        if not self.usesMacroServer:
+            # the selector server refuses updates of running scans
+            return status
         if hasattr(self.__dp, "macroServer"):
             ms = str(self.__dp.macroServer)
             if ms:
