@@ -1,8 +1,8 @@
-2026-XX-YY Jan Kotanski <jankotan@gmail.com>
-	* support scan backends of NXSRecSelector: sardana, bliss and null
-	* show Session or Target instead of Door and hide timers for non-sardana backends
-	* do not access Sardana MacroServer for non-sardana backends
-	* keep the case of measurement group names for non-sardana backends
+2026-11-27 Jan Kotanski <jankotan@gmail.com>
+	* support scan backends of NXSRecSelector: sardana, bliss and null (#161)
+	* show Session or Target instead of Door and hide timers for non-sardana backends (#161)
+	* do not access Sardana MacroServer for non-sardana backends (#161)
+	* keep the case of measurement group names for non-sardana backends (#161)
 	* add pyproject.toml missing file (#150)
 	* tagged as 3.28.0
 
