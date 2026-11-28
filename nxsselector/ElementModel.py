@@ -315,6 +315,11 @@ class ElementModel(Qt.QAbstractTableModel):
             if tt.strip():
                 text = "%s\n(%s)" % (text, tt.strip())
 
+        errors = device.state.errorMessages(device.name) \
+            if hasattr(device.state, "errorMessages") else []
+        for error in errors:
+            text = "%s\n ! will not be stored: %s !" % (text, error)
+
         if text.strip():
             return text
 

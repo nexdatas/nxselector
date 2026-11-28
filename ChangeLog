@@ -1,4 +1,11 @@
 2026-11-27 Jan Kotanski <jankotan@gmail.com>
+	* ignore value_stream_ref and streamable keys of Sardana measurement groups with the blissdata publisher in comparisons
+	* compare all nested dictionaries of configurations, not only the first one
+	* create datasources added in the Descriptions tab (#77)
+	* show errors of descriptive components and datasources in their tooltips (#77)
+	* tagged as v3.28.1
+
+2026-11-27 Jan Kotanski <jankotan@gmail.com>
 	* support scan backends of NXSRecSelector: sardana, bliss and null (#161)
 	* show Session or Target instead of Door and hide timers for non-sardana backends (#161)
 	* do not access Sardana MacroServer for non-sardana backends (#161)

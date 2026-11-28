@@ -1171,8 +1171,10 @@ class Selector(Qt.QDialog, TaurusBaseWidget):
         if not isinstance(ecnf['MntGrpConfigs'], dict) or \
            amg not in ecnf['MntGrpConfigs']:
             return False
-        status = Checker().compDict(
-            cnf['MntGrpConfigs'][amg], ecnf['MntGrpConfigs'][amg])
+        checker = Checker()
+        status = checker.compDict(
+            checker.stripMntGrp(cnf['MntGrpConfigs'][amg]),
+            checker.stripMntGrp(ecnf['MntGrpConfigs'][amg]))
 
         return status
 

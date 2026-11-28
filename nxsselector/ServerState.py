@@ -53,6 +53,58 @@ class Checker(object):
         #: (:obj:`list`<:obj:`str`>) special keys for json dicts
         self.jdicts = ['DataSourceSelection']
 
+    #: (:obj:`list` <:obj:`str`>) controller keys of measurement group
+    #:    configurations set by Sardana with blissdata publishing
+    mgruntimectrlkeys = ["streamable"]
+
+    #: (:obj:`list` <:obj:`str`>) channel keys of measurement group
+    #:    configurations set by Sardana at runtime of scans
+    mgruntimechannelkeys = ["value_stream_ref"]
+
+    @classmethod
+    def stripMntGrp(cls, conf):
+        """ removes keys of measurement group configurations which are
+            set by Sardana at runtime, i.e. stream references of scans
+            and streamable controller flags of blissdata publishing
+
+        :param conf: measurement group configuration
+        :type conf: :obj:`dict` or :obj:`str`
+        :returns: configuration without the runtime keys,
+                  of the type of the given configuration
+        :rtype: :obj:`dict` or :obj:`str`
+        """
+        isstr = not isinstance(conf, dict)
+        if isstr:
+            try:
+                dct = json.loads(conf)
+            except Exception:
+                return conf
+            if not isinstance(dct, dict):
+                return conf
+        else:
+            dct = json.loads(json.dumps(conf))
+        controllers = dct.get("controllers")
+        if isinstance(controllers, dict):
+            for ctrl in controllers.values():
+                if not isinstance(ctrl, dict):
+                    continue
+                units = ctrl.get("units")
+                groups = [ctrl]
+                if isinstance(units, dict):
+                    groups.extend(
+                        unit for unit in units.values()
+                        if isinstance(unit, dict))
+                for grp in groups:
+                    for key in cls.mgruntimectrlkeys:
+                        grp.pop(key, None)
+                    channels = grp.get("channels")
+                    if isinstance(channels, dict):
+                        for ch in channels.values():
+                            if isinstance(ch, dict):
+                                for key in cls.mgruntimechannelkeys:
+                                    ch.pop(key, None)
+        return json.dumps(dct) if isstr else dct
+
     def compDict(self, dct, dct2, sort=False):
         """ compare two configuration dictionaries
 
@@ -76,7 +128,8 @@ class Checker(object):
             if k not in dct2.keys():
                 return False
             if isinstance(v, dict):
-                return self.compDict(v, dct2[k])
+                if not self.compDict(v, dct2[k]):
+                    return False
             elif sort and k in self.jsortedlists:
                 l1 = sorted(json.loads(v))
                 l2 = sorted(json.loads(dct2[k]))
@@ -85,7 +138,8 @@ class Checker(object):
             elif sort and k in self.jdicts:
                 d1 = json.loads(v)
                 d2 = json.loads(dct2[k])
-                return self.compDict(d1, d2)
+                if not self.compDict(d1, d2):
+                    return False
             else:
                 if v != dct2[k]:
                     return False
@@ -171,8 +225,8 @@ class SynchThread(Qt.QThread):
                     self.__lastscanid = scanid
                 if (self.__lastmg != mg or self.__lastprof != prof) \
                    and insynch:
-                    m0 = json.loads(self.__lastmg)
-                    m1 = json.loads(mg)
+                    m0 = checker.stripMntGrp(json.loads(self.__lastmg))
+                    m1 = checker.stripMntGrp(json.loads(mg))
                     if not checker.compDict(m0, m1):
                         self.mgconfchanged.emit()
                     else:
@@ -471,6 +525,33 @@ class ServerState(Qt.QObject):
         logger.debug(" %s = %s" % ("descriptionErrors", self.errors))
         return self.errors
 
+    def errorMessages(self, name):
+        """ provides description errors of a component or a datasource,
+            see :meth:`fetchErrors`
+
+        :param name: component or datasource name
+        :type name: :obj:`str`
+        :returns: error messages
+        :rtype: :obj:`list` < :obj:`str` >
+        """
+        messages = []
+        for er in self.errors or []:
+            try:
+                jer = json.loads(er)
+            except Exception:
+                continue
+            if not isinstance(jer, dict) or \
+               str(jer.get("component")) != str(name):
+                continue
+            message = str(jer.get("message") or "").strip()
+            source = str(jer.get("datasource") or "").strip()
+            if source and source != str(name):
+                message = "%s: %s" % (source, message) if message \
+                    else source
+            if message:
+                messages.append(message)
+        return messages
+
     def setProperties(self):
         """ sets label properties from properties
         """
@@ -755,9 +836,11 @@ class ServerState(Qt.QObject):
         """
         if not self.__dp:
             self.setServer()
-        mgconf = json.loads(self.__command(self.__dp, "mntGrpConfiguration"))
-        locmgconf = self.__importDict("MntGrpConfiguration")
         checker = Checker()
+        mgconf = checker.stripMntGrp(
+            json.loads(self.__command(self.__dp, "mntGrpConfiguration")))
+        locmgconf = checker.stripMntGrp(
+            self.__importDict("MntGrpConfiguration"))
         if checker.compDict(mgconf, locmgconf):
             pconf = json.loads(self.__dp.profileConfiguration)
             locpconf = self.__conf
